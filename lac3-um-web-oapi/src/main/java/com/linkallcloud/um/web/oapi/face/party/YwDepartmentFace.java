@@ -84,6 +84,17 @@ public class YwDepartmentFace {
 	}
 
 	@Face(login = false)
+	@RequestMapping(value = "/findZfTopDepartmentsByCompanyGovCode", method = RequestMethod.POST)
+	public @ResponseBody Object findZfTopDepartmentsByCompanyGovCode(ObjectFaceRequest<String> faceReq, Trace t)
+			throws Exception {
+		String govCode = faceReq.getData();
+		if (!Strings.isBlank(govCode)) {
+			return ywDepartmentManager.findZfTopDepartmentsByCompanyGovCode(t, govCode);
+		}
+		return null;
+	}
+
+	@Face(login = false)
 	@RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
 		if (Strings.isBlank(faceReq.getId())) {

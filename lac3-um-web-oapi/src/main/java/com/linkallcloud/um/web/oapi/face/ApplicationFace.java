@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,11 +48,7 @@ public class ApplicationFace {
             return null;
         }
         Application app = applicationManager.fetchById(t, Long.parseLong(faceReq.getId()));
-        if (isInnerVisitor(t, faceReq)) {
-            return app;
-        } else {
-            return desensitization(faceReq, app);
-        }
+        return desensitization(t, faceReq, app);
     }
 
     @Face(login = false)
@@ -60,11 +57,7 @@ public class ApplicationFace {
     Object fetch(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
         String appCode = faceReq.getData();
         Application app = applicationManager.fetchByCode(t, appCode);
-        if (isInnerVisitor(t, faceReq)) {
-            return app;
-        } else {
-            return desensitization(faceReq, app);
-        }
+        return desensitization(t, faceReq, app);
     }
 
     @Face(login = false)
@@ -74,8 +67,8 @@ public class ApplicationFace {
         if (isInnerVisitor(t, faceReq)) {
             Query q = new Query();
             q.addRule(new Equal("status", 0));
-            List<Application> apps =  applicationManager.find(t, q);
-            return desensitization(apps);
+            List<Application> apps = applicationManager.find(t, q);
+            return desensitizations(t, faceReq, apps);
         }
         return null;
     }
@@ -90,8 +83,8 @@ public class ApplicationFace {
             if (wq != null) {
                 q = wq.toQuery();
             }
-            List<Application> apps =  applicationManager.find(t, q);
-            return desensitization(apps);
+            List<Application> apps = applicationManager.find(t, q);
+            return desensitizations(t, faceReq, apps);
         }
         return null;
     }
@@ -110,20 +103,6 @@ public class ApplicationFace {
             return true;
         }
         return false;
-    }
-
-    /**
-     * 访问者appcode匹配，并脱敏
-     *
-     * @param faceReq
-     * @param app
-     * @return
-     */
-    private Application desensitization(FaceRequest faceReq, Application app) {
-        if (app != null && app.getCode().equals(faceReq.getAppCode())) {
-            app.desensitization();
-        }
-        return app;
     }
 
     @Face(login = false)
@@ -163,18 +142,53 @@ public class ApplicationFace {
         }
         if (isInnerVisitor(t, faceReq)) {
             List<Application> apps = applicationManager.find4YwUser(t, Long.parseLong(faceReq.getId()));
-            return desensitization(apps);
+            return desensitizations(t, faceReq, apps);
         }
         return null;
     }
 
-    private List<Application> desensitization(List<Application> apps) {
-        if (apps != null && !apps.isEmpty()) {
-            for (Application app : apps) {
+    /**
+     * 访问者appcode匹配，并脱敏
+     *
+     * @param faceReq
+     * @param app
+     * @return
+     */
+    private Application desensitization(Trace t, FaceRequest faceReq, Application app) {
+        if (isInnerVisitor(t, faceReq)) {
+            return app;
+        } else {
+            if (app != null && app.getCode().equals(faceReq.getAppCode())) {
                 app.desensitization();
+                return app;
             }
+            return null;
         }
-        return apps;
+    }
+
+    /**
+     * 访问者appcode匹配，并脱敏
+     *
+     * @param t
+     * @param faceReq
+     * @param apps
+     * @return
+     */
+    private List<Application> desensitizations(Trace t, FaceRequest faceReq, List<Application> apps) {
+        if (isInnerVisitor(t, faceReq)) {
+            return apps;
+        } else {
+            List<Application> result = new ArrayList<>();
+            if (apps != null && apps.size() > 0) {
+                for (Application app : apps) {
+                    if (app.getCode().equals(faceReq.getAppCode())) {
+                        app.desensitization();
+                        result.add(app);
+                    }
+                }
+            }
+            return result;
+        }
     }
 
 }

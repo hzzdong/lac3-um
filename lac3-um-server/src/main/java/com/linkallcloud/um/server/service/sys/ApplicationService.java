@@ -4,6 +4,7 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.service.BaseService;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
+import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.service.sys.IApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;

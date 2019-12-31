@@ -3,6 +3,7 @@ package com.linkallcloud.um.domain.sys;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.domain.annotation.ShowName;
 import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.principal.AccountMapping;
 
 @ShowName("应用")
 public class Application extends Domain {
@@ -15,6 +16,9 @@ public class Application extends Domain {
     private int sort;
     private int type;
     private String ico;
+
+    private int mappingType;//账号映射类型，参考：com.linkallcloud.core.principal.AccountMapping
+    private String logout;//logout url
 
     /* 接口安全设置 */
     private String host;// 应用host（IP或域名白名单）
@@ -37,14 +41,17 @@ public class Application extends Domain {
 
     public Application() {
         super();
+        this.mappingType = AccountMapping.Unified.getCode();
     }
 
     public Application(Long id, String uuid) {
         super(id, uuid);
+        this.mappingType = AccountMapping.Unified.getCode();
     }
 
     public Application(Long id) {
         super(id);
+        this.mappingType = AccountMapping.Unified.getCode();
     }
 
     public void desensitization() {
@@ -211,4 +218,19 @@ public class Application extends Domain {
         return this.status == 0;
     }
 
+    public int getMappingType() {
+        return mappingType;
+    }
+
+    public void setMappingType(int mappingType) {
+        this.mappingType = mappingType;
+    }
+
+    public String getLogout() {
+        return logout;
+    }
+
+    public void setLogout(String logout) {
+        this.logout = logout;
+    }
 }

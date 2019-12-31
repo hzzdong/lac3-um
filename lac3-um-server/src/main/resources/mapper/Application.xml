@@ -5,12 +5,12 @@
 	<!-- 通用查询结果列 -->
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,
-		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout
+		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout
 	</sql>
 	
 	<sql id="Column_with_owner">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,
-		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,
+		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,
 		c.id AS ownerId,c.uuid AS ownerUuid, c.name AS ownerName
 	</sql>
 	
@@ -60,6 +60,7 @@
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
@@ -102,6 +103,7 @@
 			</if>
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
@@ -122,6 +124,7 @@
 		WHERE
 			u.status &lt;&gt; 9 
 			<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.mappingType != null"> AND u.mappingType = #{query.cnds.mappingType}</if>
 		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 		<choose>
@@ -135,8 +138,8 @@
 	</select>
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.Application" useGeneratedKeys="true" keyProperty="entity.id">
-		insert into um_application (uuid, status,createTime,updateTime,code,name,sort,url,type,ico,remark)
-		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.code},#{entity.name},#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark})
+		insert into um_application (uuid, status,createTime,updateTime,code,name,sort,url,type,ico,remark,mappingType,logout)
+		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.code},#{entity.name},#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.mappingType},#{entity.logout})
 	</insert>
 	
 	<update id="updateInterfaceInfo">
@@ -153,7 +156,8 @@
 		update 
 			um_application 
 		set 
-			name=#{entity.name},sort=#{entity.sort},url=#{entity.url},ico=#{entity.ico},remark=#{entity.remark}
+			name=#{entity.name},sort=#{entity.sort},url=#{entity.url},ico=#{entity.ico},logout=#{entity.logout},remark=#{entity.remark}
+			<if test="entity.mappingType != null"> ,mappingType=#{entity.mappingType}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			,updateTime=now()
 		where 

@@ -56,6 +56,16 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">账号映射模式：</label>
+					<div class="control-inline">
+						<select class="form-control form-search" id="mappingType" name="mappingType" oper="eq" stype="I">
+							<option value="">全部</option>
+							<option value="1">统一账号</option>
+							<option value="2">映射账号</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">状态：</label>
 					<div class="control-inline">
 						<select class="form-control form-search" id="status" name="status" oper="eq" stype="I">
@@ -80,7 +90,8 @@
 					<th>应用名称</th>
 					<th>编码</th>
 					<th>说明</th>
-					<th>类型</th>
+					<th>应用类型</th>
+					<th>账号类型</th>
 					<th>状态</th>
 					<th>操作</th>
 					<th>UUID</th>
@@ -192,6 +203,18 @@
 												return '<span class="badge bg-green">内部</span>';
 											} else if (data == 1) {
 												return '<span class="badge bg-light-blue">外部</span>';
+											} else {
+												return "";
+											}
+										}
+									}, {
+										"data" : "mappingType",
+										"width" : "40px",
+										"render" : function(data, type, row) {
+											if (data == 1) {
+												return '<span class="badge bg-green">统一账号</span>';
+											} else if (data == 2) {
+												return '<span class="badge bg-light-blue">映射账号</span>';
 											} else {
 												return "";
 											}

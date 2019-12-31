@@ -5,7 +5,10 @@ import com.linkallcloud.core.activity.BaseActivity;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseException;
 import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.core.query.Query;
+import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
+import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.exception.AppException;
 import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
@@ -120,7 +123,17 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
     @Override
     public List<Application> find4YwUser(Trace t, Long ywUserId) {
-        return dao().find4YwUser(t, ywUserId);
+        YwUser user = ywUserDao.fetchById(t, ywUserId);
+        if (user != null) {
+            if (user.getAccount().equals("superadmin")) {
+                Query query = new Query();
+                query.addRule(new Equal("status", 0));
+                return dao().find(t, query);
+            } else {
+                return dao().find4YwUser(t, ywUserId);
+            }
+        }
+        return null;
     }
 
     @Override
