@@ -141,6 +141,11 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
     }
 
     @Override
+    public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+        return activity().findByRoleCompany(t, companyId, roleId);
+    }
+
+    @Override
     public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
         return activity().findDepartmentUser4Role(t, departmentId, roleId);
     }

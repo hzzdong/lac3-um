@@ -1,14 +1,5 @@
 package com.linkallcloud.um.server.manager.party;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import com.linkallcloud.um.service.party.IRoleService;
-import com.linkallcloud.um.service.sys.IAreaService;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -21,6 +12,14 @@ import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IRoleManager;
+import com.linkallcloud.um.service.party.IRoleService;
+import com.linkallcloud.um.service.sys.IAreaService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class RoleManager<T extends Role, U extends User, S extends IRoleService<T, U>>
         extends PartyManager<T, S> implements IRoleManager<T, U> {
@@ -47,11 +46,11 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     }
 
     @Override
-	public List<T> findCompanyRolesByLevel(Trace t, Long companyId, Integer roleLevel) throws BaseRuntimeException {
-    	return service().findCompanyRolesByLevel(t, companyId, roleLevel);
-	}
+    public List<T> findCompanyRolesByLevel(Trace t, Long companyId, Integer roleLevel) throws BaseRuntimeException {
+        return service().findCompanyRolesByLevel(t, companyId, roleLevel);
+    }
 
-	@Override
+    @Override
     public Page<T> findCompanyAllRolePage(Trace t, Long companyId, Page<T> page)
             throws BaseRuntimeException {
         return service().findCompanyAllRolePage(t, companyId, page);
@@ -104,19 +103,19 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
 
     @Override
     public Boolean saveRoleAppMenuPerm(Trace t, Long roleId, String roleUuid, Long appId, String appUuid,
-            Map<String, Long> menuUuidIds) {
+                                       Map<String, Long> menuUuidIds) {
         return service().saveRoleAppMenuPerm(t, roleId, roleUuid, appId, appUuid, menuUuidIds);
     }
 
     @Override
     public Boolean saveRoleAppOrgPerm(Trace t, Long roleId, String roleUuid, Long appId, String appUuid,
-            Map<String, Long> orgUuidIds) {
+                                      Map<String, Long> orgUuidIds) {
         return service().saveRoleAppOrgPerm(t, roleId, roleUuid, appId, appUuid, orgUuidIds);
     }
 
     @Override
     public Boolean saveRoleAppAreaPerm(Trace t, Long roleId, String roleUuid, Long appId, String appUuid,
-            Map<String, Long> areaUuidIds) {
+                                       Map<String, Long> areaUuidIds) {
         return service().saveRoleAppAreaPerm(t, roleId, roleUuid, appId, appUuid, areaUuidIds);
     }
 
@@ -195,7 +194,7 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
         }
         return result;
     }
-    
+
     protected PermedAreaVo assemblePermedAreaVo(Trace t, Long parentAreaId, List<Area> areas) {
         PermedAreaVo result = new PermedAreaVo();
         result.setParentAreaId(parentAreaId);
@@ -220,4 +219,8 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
         return result;
     }
 
+    @Override
+    public List<T> findCompanyRoles4Me(Trace t, long userId) {
+        return service().findCompanyRoles4Me(t, userId);
+    }
 }

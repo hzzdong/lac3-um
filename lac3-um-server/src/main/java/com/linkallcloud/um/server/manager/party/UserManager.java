@@ -174,6 +174,11 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	}
 
 	@Override
+	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+		return service().findByRoleCompany(t, companyId, roleId);
+	}
+
+	@Override
 	public List<T> find4Role(Trace t, String[] roleGovCodes) {
 		return service().find4Role(t, roleGovCodes);
 	}

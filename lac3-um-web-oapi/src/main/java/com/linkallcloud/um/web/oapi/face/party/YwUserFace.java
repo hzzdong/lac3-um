@@ -23,6 +23,7 @@ import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
+import com.linkallcloud.um.oapi.request.CompanyEntityRequest;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
 import org.apache.dubbo.config.annotation.Reference;
@@ -189,6 +190,16 @@ public class YwUserFace {
         return page;
     }
 
+    @Face(login = false)
+    @RequestMapping(value = "/findPage4Select", method = RequestMethod.POST)
+    public @ResponseBody
+    Object findPage4Select(PageFaceRequest faceReq, Trace t) {
+        Page<YwUser> page = new Page<>(faceReq);
+        page = ywUserManager.findPage4Select(t, page);
+        desensitization(page.getData());
+        return page;
+    }
+
     private void desensitization(List<YwUser> users) {
         if (users != null && users.size() > 0) {
             for (YwUser user : users) {
@@ -196,5 +207,17 @@ public class YwUserFace {
             }
         }
     }
+
+
+    @Face(login = false)
+    @RequestMapping(value = "/findByRoleCompany", method = RequestMethod.POST)
+    public @ResponseBody
+    Object findByRoleCompany(CompanyEntityRequest faceReq, Trace t) throws Exception {
+        if (faceReq.getCompanyId() == null || faceReq.getEntityId() == null) {
+            return null;
+        }
+        return ywUserManager.findByRoleCompany(t, faceReq.getCompanyId(), faceReq.getEntityId());
+    }
+
 
 }

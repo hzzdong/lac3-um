@@ -92,6 +92,7 @@
 					<th>说明</th>
 					<th>应用类型</th>
 					<th>账号类型</th>
+					<th>适用屏幕</th>
 					<th>状态</th>
 					<th>操作</th>
 					<th>UUID</th>
@@ -220,6 +221,24 @@
 											}
 										}
 									}, {
+									"data" : "screenType",
+									"width" : "40px",
+									"render" : function(data, type, row) {
+										if (data == 1) {
+											return '<span class="badge bg-green">电脑</span>';
+										} else if (data == 2) {
+											return '<span class="badge bg-light-blue">平板</span>';
+										} else if (data == 3) {
+											return '<span class="badge bg-blue">手机</span>';
+										} else if (data == 4) {
+											return '<span class="badge bg-aqua">电视</span>';
+										} else if (data == 5) {
+											return '<span class="badge bg-aqua">其它</span>';
+										} else {
+											return "";
+										}
+									}
+								}, {
 										"data" : "status",
 										"width" : "40px",
 										"render" : function(data, type, row) {

@@ -101,6 +101,8 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	 */
 	List<T> find4Role(Trace t, String[] roleGovCodes);
 
+	List<T> findByRoleCompany(Trace t, Long companyId, Long roleId);
+
 	/**
 	 * 查询某角色已分配给某部门的用户
 	 * 

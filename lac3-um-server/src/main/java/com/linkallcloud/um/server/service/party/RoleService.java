@@ -176,4 +176,12 @@ public abstract class RoleService<R extends Role, U extends User, O extends Org,
         return activity().clearRoleUsers(t, roleId, roleUuid);
     }
 
+    @Override
+    public List<R> findCompanyRoles4Me(Trace t, long userId) {
+        U user = userActivity().fetchById(t, userId);
+        if (user != null) {
+
+        }
+        return null;
+    }
 }

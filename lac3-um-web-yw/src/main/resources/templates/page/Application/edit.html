@@ -115,6 +115,30 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
+										<label for="screenType" class="col-sm-4 control-label">适用屏幕*</label>
+										<div class="col-sm-8">
+											<select name="screenType" id="screenType" class="form-control">
+												<option value="1">电脑或笔记本</option>
+												<option value="2">平板（PAD）</option>
+												<option value="3">手机</option>
+												<option value="4">电视</option>
+												<option value="5">其它</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="ico" class="col-sm-4 control-label">图标</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control validate[maxSize[127]]" name="ico" id="ico" placeholder="请输入应用字体图标...">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
 										<label for="sort" class="col-sm-4 control-label">排序号*</label>
 										<div class="col-sm-8">
 											<input type="text" class="form-control validate[custom[integer],maxSize[5]]" name="sort" id="sort" value="1" placeholder="请输入应用编号...">
@@ -123,31 +147,19 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-md-12">
+								<div class="col-md-6">
 									<div class="form-group">
-										<label for="url" class="col-sm-2 control-label">首页地址*</label>
-										<div class="col-sm-10">
+										<label for="url" class="col-sm-4 control-label">首页地址*</label>
+										<div class="col-sm-8">
 											<input type="text" class="form-control validate[required,maxSize[127]]" name="url" id="url" placeholder="请输入应用首页地址URL...">
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
+								<div class="col-md-6">
 									<div class="form-group">
-										<label for="logout" class="col-sm-2 control-label">登出地址*</label>
-										<div class="col-sm-10">
+										<label for="logout" class="col-sm-4 control-label">登出地址*</label>
+										<div class="col-sm-8">
 											<input type="text" class="form-control validate[required,maxSize[127]]" name="logout" id="logout" placeholder="请输入应用登出地址URL...">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label for="ico" class="col-sm-2 control-label">图标</label>
-										<div class="col-sm-10">
-											<input type="text" class="form-control validate[maxSize[127]]" name="ico" id="ico" placeholder="请输入应用字体图标...">
 										</div>
 									</div>
 								</div>

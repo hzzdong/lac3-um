@@ -220,6 +220,11 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
     }
 
     @Override
+    public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+        return dao().findByRoleCompany(t, companyId, roleId);
+    }
+
+    @Override
     public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
         return dao().findDepartmentUser4RoleById(t, departmentId, roleId);
     }

@@ -290,6 +290,15 @@
 			</otherwise>
 		</choose>
 	</select>
+
+	<select id="findByRoleCompany" resultType="com.linkallcloud.um.domain.party.YwUser">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		um_yw_user u join um_yw_rel_role_user rel on u.id=rel.userId
+		WHERE
+		u.status =0 AND u.companyId = #{companyId} AND rel.roleId = #{roleId}
+	</select>
 	
 	<select id="find4RoleById" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT

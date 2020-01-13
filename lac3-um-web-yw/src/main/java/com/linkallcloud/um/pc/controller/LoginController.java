@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URLEncoder;
 
 @Controller
 @RequestMapping
@@ -59,8 +60,14 @@ public class LoginController {
     @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IAreaManager areaManager;
 
-    @Value("${oapi.appcode}")
-    protected String myAppCode;
+    @Value("${lac.lf.appcode}")
+    private String myAppCode;
+
+    @Value("${lac.lf.appServerName:localhost}")
+    private String appServerName;
+
+    @Value("${lac.lf.ssoServer:http://localhost/sso}")
+    private String ssoServer;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String localLogin(HttpSession session, HttpServletRequest request, ModelMap modelMap) {
@@ -152,6 +159,26 @@ public class LoginController {
         } catch (Exception e) {
         }
         return localLogin(session, request, modelMap);
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(ModelMap modelMap, HttpSession session, HttpServletRequest request) {
+        try {
+            session.invalidate();
+        } catch (Exception e) {
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(request.isSecure() ? "https://" : "http://");
+        buffer.append(appServerName);
+        buffer.append(request.getContextPath());
+        buffer.append("/index");
+        String service = buffer.toString();
+        try {
+            service = URLEncoder.encode(service, "UTF-8");
+        } catch (Exception e) {
+        }
+        return Controllers.redirect(ssoServer + "/logout?from=" + myAppCode + "&service=" + service);
     }
 
 }

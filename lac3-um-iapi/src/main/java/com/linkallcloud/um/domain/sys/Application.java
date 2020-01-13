@@ -17,6 +17,7 @@ public class Application extends Domain {
     private int type;
     private String ico;
 
+    private int screenType;//适合屏幕尺寸：参考：com.linkallcloud.um.enums.ScreenType
     private int mappingType;//账号映射类型，参考：com.linkallcloud.core.principal.AccountMapping
     private String logout;//logout url
 
@@ -224,6 +225,14 @@ public class Application extends Domain {
 
     public void setMappingType(int mappingType) {
         this.mappingType = mappingType;
+    }
+
+    public int getScreenType() {
+        return screenType;
+    }
+
+    public void setScreenType(int screenType) {
+        this.screenType = screenType;
     }
 
     public String getLogout() {
