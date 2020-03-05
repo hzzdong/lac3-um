@@ -152,8 +152,8 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 			}
 		}
 
-		if (roles != null && !roles.isEmpty() && userId != null && userUuid != null) {
-			List<R> userRoles = getRoleManager().find4User(t, userId, userUuid);
+		if (roles != null && !roles.isEmpty() && userId != null) {
+			List<R> userRoles = getRoleManager().find4User(t, userId);
 			if (userRoles != null && !userRoles.isEmpty()) {
 				for (R role : roles) {
 					for (R userrole : userRoles) {

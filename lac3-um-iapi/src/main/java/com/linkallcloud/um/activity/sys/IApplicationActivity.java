@@ -12,6 +12,7 @@ public interface IApplicationActivity extends IActivity<Application> {
     Application fetchByCode(Trace t, String code);
 
     Boolean updateInterfaceInfo(Trace t, Application app);
+    Boolean updateMappingInfo(Trace t, Application app);
 
     /**
      * 查询某角色许可的应用
@@ -29,4 +30,5 @@ public interface IApplicationActivity extends IActivity<Application> {
     List<Application> find4YwUser(Trace t, Long ywUserId);
 
     List<Application> find4KhUser(Trace t, Long khUserId);
+
 }

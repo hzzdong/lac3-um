@@ -25,4 +25,5 @@ public interface IApplicationDao extends IDao<Application> {
 
 	int updateInterfaceInfo(@Param("t") Trace t, @Param("entity") Application entity);
 
+    int updateMappingInfo(@Param("t") Trace t, @Param("entity")Application entity);
 }

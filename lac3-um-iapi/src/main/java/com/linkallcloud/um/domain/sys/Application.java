@@ -31,6 +31,26 @@ public class Application extends Domain {
     private String signatureKey;// 签名密钥
     /* end 接口安全设置 */
 
+    /* 账号映射模式认证接口设置:
+        调用时机
+        根据以上设置，当用户首次访问此应用时，SSO会发起账户绑定操作。用户在绑定界面上输入账号信息后，SSO会以rest方式调用应用的账号认证接口
+        接口调用方式
+        POST调用：账号认证接口地址?loginName=XXX&password=XXX&time=XXX$sign=XXX
+        参数说明
+        （1）password=原文或者MD5(原文)
+        （2）time=当前时间new Date().getTime()
+        （3）sign=MD5/SHA1(loginName+password+time+签名密钥)
+        接口返回
+        接口返回JSON结果如下：
+        （1）成功：{code:"0",message:"成功"}
+        （2）失败：{code:"XXX",message:"失败原因"}
+    */
+    private String authAddr;//认证接口地址
+    private Integer authPassMode;//密码模式，参考：com.linkallcloud.core.enums.EnumBase.PasswordMode
+    private Integer authSignAlg;//签名算法,参考：com.linkallcloud.core.enums.EnumBase.SignAlg
+    private String authSignKey;//签名密钥
+    /* end 账号映射模式认证接口设置 */
+
     private String remark;
 
     /*
@@ -241,5 +261,37 @@ public class Application extends Domain {
 
     public void setLogout(String logout) {
         this.logout = logout;
+    }
+
+    public String getAuthAddr() {
+        return authAddr;
+    }
+
+    public void setAuthAddr(String authAddr) {
+        this.authAddr = authAddr;
+    }
+
+    public Integer getAuthPassMode() {
+        return authPassMode;
+    }
+
+    public void setAuthPassMode(Integer authPassMode) {
+        this.authPassMode = authPassMode;
+    }
+
+    public Integer getAuthSignAlg() {
+        return authSignAlg;
+    }
+
+    public void setAuthSignAlg(Integer authSignAlg) {
+        this.authSignAlg = authSignAlg;
+    }
+
+    public String getAuthSignKey() {
+        return authSignKey;
+    }
+
+    public void setAuthSignKey(String authSignKey) {
+        this.authSignKey = authSignKey;
     }
 }

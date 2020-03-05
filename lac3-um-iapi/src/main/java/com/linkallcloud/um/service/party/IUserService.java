@@ -32,17 +32,17 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配的用户
-	 * 
+	 *
 	 * @param t
 	 * @param page 查询条件中必须包含：roleId和roleUuid参数
-	 * 
+	 *
 	 * @return
 	 */
 	Page<T> findPage4Role(Trace t, Page<T> page) throws IllegalParameterException;
 
 	/**
 	 * 查询某角色已分配的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleId
 	 * @return
@@ -51,7 +51,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleIds
 	 * @return
@@ -60,7 +60,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleGovCode
 	 * @return
@@ -69,7 +69,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleGovCodes
 	 * @return
@@ -81,7 +81,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配给某部门的用户
-	 * 
+	 *
 	 * @param t
 	 * @param departmentId
 	 * @param roleId
@@ -91,7 +91,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配给某部门的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleIds
 	 * @return
@@ -100,7 +100,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配给某部门的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleGovCode
 	 * @return
@@ -109,7 +109,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 查询某角色已分配给某部门的用户
-	 * 
+	 *
 	 * @param t
 	 * @param roleGovCodes
 	 * @return
@@ -118,7 +118,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 返回某用户某角色具有权限的菜单资源的resCode数组
-	 * 
+	 *
 	 * @param t
 	 * @param userId
 	 * @param appId
@@ -128,7 +128,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 返回某用户某角色具有权限的菜单资源的resCode数组
-	 * 
+	 *
 	 * @param t
 	 * @param userId
 	 * @param appId
@@ -138,7 +138,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 获取某用户某App的组织权限，不区分superadmin和管理员，都按照表中权限数据查询。
-	 * 
+	 *
 	 * @param t
 	 * @param userId
 	 * @param appId
@@ -148,7 +148,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
-	 * 
+	 *
 	 * @param t
 	 * @param page
 	 * @return
@@ -157,7 +157,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 根据政务服务网uid查询用户
-	 * 
+	 *
 	 * @param t
 	 * @param zwuid
 	 * @return
@@ -166,7 +166,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 根据钉钉uid查询用户
-	 * 
+	 *
 	 * @param t
 	 * @param dduid
 	 * @return
@@ -175,7 +175,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 更新用户的政务服务网uid
-	 * 
+	 *
 	 * @param t
 	 * @param umUserId
 	 * @param zwuid
@@ -185,7 +185,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 更新用户的钉钉uid
-	 * 
+	 *
 	 * @param t
 	 * @param umUserId
 	 * @param dduid
@@ -196,17 +196,17 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	/**
 	 * 更新单位下所有用户的状态
-	 * 
+	 *
 	 * @param t
 	 * @param status
 	 * @param companyId
 	 * @return
 	 */
 	boolean updateStatusByCompany(Trace t, int status, Long companyId);
-	
+
 	/**
 	 * 更新部门下所有用户的状态
-	 * 
+	 *
 	 * @param t
 	 * @param status
 	 * @param departmentId

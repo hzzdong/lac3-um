@@ -61,4 +61,10 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
         return activity().updateInterfaceInfo(t, app);
     }
 
+    @Transactional(readOnly = false)
+    @Override
+    public Boolean updateMappingInfo(Trace t, Application app) {
+        return activity().updateMappingInfo(t, app);
+    }
+
 }

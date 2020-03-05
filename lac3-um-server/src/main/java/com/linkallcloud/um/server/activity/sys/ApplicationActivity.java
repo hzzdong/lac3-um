@@ -147,4 +147,10 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
         int rows = dao().updateInterfaceInfo(t, app);
         return rows == 1;
     }
+
+    @Override
+    public Boolean updateMappingInfo(Trace t, Application app) {
+        int rows = dao().updateMappingInfo(t, app);
+        return rows == 1;
+    }
 }

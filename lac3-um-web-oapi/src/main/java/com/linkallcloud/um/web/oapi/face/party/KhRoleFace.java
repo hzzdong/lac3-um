@@ -9,8 +9,8 @@ import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
-import com.linkallcloud.um.domain.party.YwRole;
-import com.linkallcloud.um.iapi.party.IYwRoleManager;
+import com.linkallcloud.um.domain.party.KhRole;
+import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.web.face.annotation.Face;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/face/YwRole", method = RequestMethod.POST)
-@Module(name = "运维角色")
-public class YwRoleFace {
+@RequestMapping(value = "/face/KhRole", method = RequestMethod.POST)
+@Module(name = "客户角色")
+public class KhRoleFace {
 
     @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-    private IYwRoleManager ywRoleManager;
+    private IKhRoleManager khRoleManager;
 
     @Face(login = false)
     @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
@@ -33,7 +33,7 @@ public class YwRoleFace {
         if (Strings.isBlank(faceReq.getId())) {
             return null;
         }
-        return ywRoleManager.fetchById(t, Long.parseLong(faceReq.getId()));
+        return khRoleManager.fetchById(t, Long.parseLong(faceReq.getId()));
     }
 
     @Face(login = false)
@@ -42,7 +42,7 @@ public class YwRoleFace {
     Object fetchByGovCode(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
         String govCode = faceReq.getData();
         if (!Strings.isBlank(govCode)) {
-            return ywRoleManager.fetchByGovCode(t, govCode);
+            return khRoleManager.fetchByGovCode(t, govCode);
         }
         return null;
     }
@@ -53,7 +53,7 @@ public class YwRoleFace {
     Object find(ListFaceRequest faceReq, Trace t) throws Exception {
         WebQuery wq = faceReq.getQuery();
         if (wq != null) {
-            return ywRoleManager.find(t, wq.toQuery());
+            return khRoleManager.find(t, wq.toQuery());
         }
         return null;
     }
@@ -62,16 +62,16 @@ public class YwRoleFace {
     @RequestMapping(value = "/findPage", method = RequestMethod.POST)
     public @ResponseBody
     Object findPage(PageFaceRequest faceReq, Trace t) throws Exception {
-        Page<YwRole> page = new Page<>(faceReq);
-        return ywRoleManager.findPage(t, page);
+        Page<KhRole> page = new Page<>(faceReq);
+        return khRoleManager.findPage(t, page);
     }
 
     @Face(login = false)
     @RequestMapping(value = "/findPage4Select", method = RequestMethod.POST)
     public @ResponseBody
     Object findPage4Select(PageFaceRequest faceReq, Trace t) throws Exception {
-        Page<YwRole> page = new Page<>(faceReq);
-        return ywRoleManager.findPage4Select(t, page);
+        Page<KhRole> page = new Page<>(faceReq);
+        return khRoleManager.findPage4Select(t, page);
     }
 
     @Face(login = false)
@@ -81,7 +81,6 @@ public class YwRoleFace {
         if (Strings.isBlank(faceReq.getId())) {
             return null;
         }
-        return ywRoleManager.find4User(t, Long.parseLong(faceReq.getId()));
+        return khRoleManager.find4User(t, Long.parseLong(faceReq.getId()));
     }
-
 }

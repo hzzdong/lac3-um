@@ -74,4 +74,9 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
         return service().updateInterfaceInfo(t, app);
     }
 
+    @Override
+    public Boolean updateMappingInfo(Trace t, Application app) {
+        return service().updateMappingInfo(t, app);
+    }
+
 }

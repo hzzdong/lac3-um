@@ -67,7 +67,7 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     }
 
     @Override
-    public List<T> find4User(Trace t, Long userId, String userUuid) {
+    public List<T> find4User(Trace t, Long userId) {
         return service().find4User(t, userId);
     }
 

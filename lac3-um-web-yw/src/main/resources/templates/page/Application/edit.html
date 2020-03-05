@@ -33,7 +33,8 @@
 			<div class="nav-tabs-custom">
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#app_base" data-toggle="tab" aria-expanded="true">基本信息</a></li>
-					<li class=""><a href="#app_interface" data-toggle="tab" aria-expanded="false">安全设置</a></li>
+					<li th:if="${id != null }" class=""><a href="#app_interface" data-toggle="tab" aria-expanded="false">安全设置</a></li>
+					<li th:if="${id != null && app.mappingType == 2 }" class=""><a href="#app_mapping" data-toggle="tab" aria-expanded="false">映射接口设置</a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="app_base">
@@ -91,11 +92,11 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="mappingType" class="col-sm-4 control-label">账号类型*</label>
+										<label for="status" class="col-sm-4 control-label">状态*</label>
 										<div class="col-sm-8">
-											<select name="mappingType" id="mappingType" class="form-control">
-												<option value="1">统一账号</option>
-												<option value="2">映射账号</option>
+											<select name="status" id="status" class="form-control">
+												<option value="0">正常</option>
+												<option value="1">禁用</option>
 											</select>
 										</div>
 									</div>
@@ -104,11 +105,11 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="status" class="col-sm-4 control-label">状态*</label>
+										<label for="mappingType" class="col-sm-4 control-label">账号类型*</label>
 										<div class="col-sm-8">
-											<select name="status" id="status" class="form-control">
-												<option value="0">正常</option>
-												<option value="1">禁用</option>
+											<select name="mappingType" id="mappingType" class="form-control">
+												<option value="1">统一账号</option>
+												<option value="2">映射账号</option>
 											</select>
 										</div>
 									</div>
@@ -177,7 +178,7 @@
 
 						</form>
 					</div>
-					<div class="tab-pane" id="app_interface">
+					<div th:if="${id != null }" class="tab-pane" id="app_interface">
 						<form id="f_app_interface" class="form-horizontal" method="post" action="/Application/saveInter" th:action="@{/Application/saveInter}">
 							<input type="hidden" id="id" name="id" th:value="${id}"/>
 							<input type="hidden" id="uuid" name="uuid" th:value="${uuid}"/>
@@ -262,6 +263,78 @@
 			
 						</form>
 					</div>
+					<div th:if="${id != null }" class="tab-pane" id="app_mapping">
+						<form id="f_app_mapping" class="form-horizontal" method="post" action="/Application/saveMappingInter" th:action="@{/Application/saveMappingInter}">
+							<input type="hidden" id="id" name="id" th:value="${id}"/>
+							<input type="hidden" id="uuid" name="uuid" th:value="${uuid}"/>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="authAddr" class="col-sm-4 control-label">接口地址*</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control validate[required,maxSize[512]]" name="authAddr" id="authAddr" placeholder="请输入账号认证接口地址...">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="authPassMode" class="col-sm-4 control-label">密码模式*</label>
+										<div class="col-sm-8">
+											<select name="authPassMode" id="authPassMode" class="form-control validate[required]">
+												<option value="1">MD5加密</option>
+												<option value="0">原文</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="authSignAlg" class="col-sm-4 control-label">签名算法*</label>
+										<div class="col-sm-8">
+											<select name="authSignAlg" id="authSignAlg" class="form-control validate[required]">
+												<option value="1">SHA1</option>
+												<option value="0">MD5</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="authSignKey" class="col-sm-4 control-label">签名密钥*</label>
+										<div class="col-sm-8">
+											<input type="text" class="form-control validate[required]" name="authSignKey" id="authSignKey" placeholder="请输入签名密钥...">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="col-sm-2 control-label">说明</label>
+										<div class="col-sm-10">
+											<dl>
+												<dt>调用时机</dt>
+												<dd>根据以上设置，当用户首次访问此应用时，SSO会发起账户绑定操作。用户在绑定界面上输入账号信息后，SSO会以rest方式调用应用的账号认证接口</dd>
+												<dt>接口调用方式</dt>
+												<dd>POST调用：账号认证接口地址?loginName=XXX&password=XXX&time=XXX$sign=XXX</dd>
+												<dt>参数说明</dt>
+												<dd>（1）password=原文或者MD5(原文)</dd>
+												<dd>（2）time=当前时间new Date().getTime()</dd>
+												<dd>（3）sign=MD5/SHA1(loginName+password+time+签名密钥)</dd>
+												<dt>接口返回</dt>
+												<dd>接口返回JSON结果如下：</dd>
+												<dd>（1）成功：{code:"0",message:"成功"}</dd>
+												<dd>（2）失败：{code:"XXX",message:"失败原因"}</dd>
+											</dl>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
 				</div>
 			</div>
 			
@@ -302,14 +375,23 @@
 		$("#f_app_base").initLacForm(ctx + "/Application/get?id=" + $("#id").val() + "&uuid=" + $("#uuid").val(), function(data){
 			if($("#id").val() && $("#id").val()!=""){
 				$("#type").attr("disabled","disabled");
+				$("#mappingType").attr("disabled","disabled");
+
+				$("#appKey").val(data.code);
+				$("#host").val(data.host);
+				$("#timeout").val(data.timeout);
+				$("#messageEncAlg").val(data.messageEncAlg);
+				$("#messageEncKey").val(data.messageEncKey);
+				$("#signatureAlg").val(data.signatureAlg);
+				$("#signatureKey").val(data.signatureKey);
+
+				if(data.mappingType == 2){
+					$("#authAddr").val(data.authAddr);
+					$("#authPassMode").val(data.authPassMode);
+					$("#authSignAlg").val(data.authSignAlg);
+					$("#authSignKey").val(data.authSignKey);
+				}
 			}
-			$("#appKey").val(data.code);
-			$("#host").val(data.host);
-			$("#timeout").val(data.timeout);
-			$("#messageEncAlg").val(data.messageEncAlg);
-			$("#messageEncKey").val(data.messageEncKey);
-			$("#signatureAlg").val(data.signatureAlg);
-			$("#signatureKey").val(data.signatureKey);
 			$("#btn_app_save").permissionEnabled();
 		});
 
@@ -323,11 +405,14 @@
 				$('#f_app_base').saveClose();
 			} else if($("#app_interface").hasClass("active")){
 				$('#f_app_interface').saveClose();
+			} else if($("#app_mapping").hasClass("active")){
+				$('#f_app_mapping').saveClose();
 			}
 		});
 		
 		$("#f_app_base").validationEngine("attach", { notShowPrompt : true }).bindValidationEngineHelper();
 		$("#f_app_interface").validationEngine("attach", { notShowPrompt : true }).bindValidationEngineHelper();
+		$("#f_app_mapping").validationEngine("attach", { notShowPrompt : true }).bindValidationEngineHelper();
 	});
 </script>
 </body>

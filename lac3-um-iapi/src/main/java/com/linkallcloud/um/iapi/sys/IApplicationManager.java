@@ -13,6 +13,8 @@ public interface IApplicationManager extends IManager<Application> {
 
     Boolean updateInterfaceInfo(Trace t, Application app);
 
+    Boolean updateMappingInfo(Trace t, Application dbApp);
+
     Page<Application> findPage4YwRole(Trace t, Page<Application> page);
 
     Page<Application> findPage4KhRole(Trace t, Page<Application> page);

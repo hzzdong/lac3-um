@@ -85,7 +85,7 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
      */
     Page<T> findNoRolePage4User(Trace t, Page<T> page);
 
-    List<T> find4User(Trace t, Long userId, String userUuid);
+    List<T> find4User(Trace t, Long userId);
 
     /**
      * 给角色分配人员

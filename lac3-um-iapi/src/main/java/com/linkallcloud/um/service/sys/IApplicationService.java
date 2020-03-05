@@ -12,11 +12,12 @@ public interface IApplicationService extends IService<Application> {
     Application fetchByCode(Trace t, String code);
     
     Boolean updateInterfaceInfo(Trace t, Application app);
+    Boolean updateMappingInfo(Trace t, Application app);
 
     /**
      * 查询某角色许可的应用
      * 
-     * @param tid
+     * @param t
      * @param page
      *            查询条件中必须包含：roleId和roleUuid参数
      * 
@@ -30,5 +31,4 @@ public interface IApplicationService extends IService<Application> {
     
     List<Application> find4YwUser(Trace t, Long ywUserId);
     List<Application> find4KhUser(Trace t, Long khUserId);
-
 }

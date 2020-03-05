@@ -5,12 +5,12 @@
 	<!-- 通用查询结果列 -->
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,u.screenType,
-		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout
+		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,u.authAddr,u.authPassMode,u.authSignAlg,u.authSignKey
 	</sql>
 	
 	<sql id="Column_with_owner">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,u.screenType,
-		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,
+		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,u.authAddr,u.authPassMode,u.authSignAlg,u.authSignKey,
 		c.id AS ownerId,c.uuid AS ownerUuid, c.name AS ownerName
 	</sql>
 	
@@ -152,6 +152,15 @@
 			messageEncKey=#{entity.messageEncKey},messageEncAlg=#{entity.messageEncAlg},signatureKey=#{entity.signatureKey},signatureAlg=#{entity.signatureAlg},host=#{entity.host},timeout=#{entity.timeout}
 			,updateTime=now()
 		where 
+			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+
+	<update id="updateMappingInfo">
+		update
+			um_application
+		set
+			authAddr=#{entity.authAddr},authPassMode=#{entity.authPassMode},authSignAlg=#{entity.authSignAlg},authSignKey=#{entity.authSignKey},updateTime=now()
+		where
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>
 	
