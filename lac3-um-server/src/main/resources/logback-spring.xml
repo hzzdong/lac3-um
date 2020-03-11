@@ -23,7 +23,6 @@
         </encoder>
     </appender>
     
-    <logger name="com.apache.ibatis" level="DEBUG"/>
     <logger name="com.linkallcloud.um.server.dao" level="DEBUG"/>
 
     <root level="DEBUG">

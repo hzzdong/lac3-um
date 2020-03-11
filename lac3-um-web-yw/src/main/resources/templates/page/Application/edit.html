@@ -318,7 +318,7 @@
 												<dt>调用时机</dt>
 												<dd>根据以上设置，当用户首次访问此应用时，SSO会发起账户绑定操作。用户在绑定界面上输入账号信息后，SSO会以rest方式调用应用的账号认证接口</dd>
 												<dt>接口调用方式</dt>
-												<dd>POST调用：账号认证接口地址?loginName=XXX&password=XXX&time=XXX$sign=XXX</dd>
+												<dd>POST调用：账号认证接口地址?loginName=XXX&password=XXX&time=XXX&sign=XXX</dd>
 												<dt>参数说明</dt>
 												<dd>（1）password=原文或者MD5(原文)</dd>
 												<dd>（2）time=当前时间new Date().getTime()</dd>
