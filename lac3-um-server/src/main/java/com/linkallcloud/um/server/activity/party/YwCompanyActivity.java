@@ -1,5 +1,10 @@
 package com.linkallcloud.um.server.activity.party;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -12,23 +17,22 @@ import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.*;
+import com.linkallcloud.um.domain.sys.Account;
+import com.linkallcloud.um.domain.sys.Application;
+import com.linkallcloud.um.domain.sys.Area;
+import com.linkallcloud.um.domain.sys.Menu;
+import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.exception.AccountException;
 import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.exception.AuthException;
 import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
-import com.linkallcloud.um.server.dao.party.IYwRoleDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IAreaDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
 import com.linkallcloud.um.server.dao.sys.IYwSystemConfigDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class YwCompanyActivity extends CompanyActivity<YwCompany, IYwCompanyDao, YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao> implements IYwCompanyActivity {
@@ -42,8 +46,8 @@ public class YwCompanyActivity extends CompanyActivity<YwCompany, IYwCompanyDao,
     @Autowired
     private IYwDepartmentDao ywDepartmentDao;
 
-    @Autowired
-    private IYwRoleDao ywRoleDao;
+//    @Autowired
+//    private IYwRoleDao ywRoleDao;
 
     @Autowired
     private IAreaDao areaDao;

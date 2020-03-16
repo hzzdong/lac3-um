@@ -1,7 +1,9 @@
 package com.linkallcloud.um.exception;
 
 public class ArgException extends UmException {
-    public ArgException() {
+	private static final long serialVersionUID = 2085227189999440308L;
+
+	public ArgException() {
         super("arg", "参数错误");
     }
 

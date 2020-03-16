@@ -1,5 +1,11 @@
 package com.linkallcloud.um.server.service.party;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
@@ -7,16 +13,10 @@ import com.linkallcloud.um.activity.party.IDepartmentActivity;
 import com.linkallcloud.um.activity.party.IUserActivity;
 import com.linkallcloud.um.activity.sys.IAccountActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
-import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.service.party.ICompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 @Transactional(readOnly = true)
 public abstract class CompanyService<C extends Company, CA extends ICompanyActivity<C>, U extends User, UA extends IUserActivity<U>, D extends Department, DA extends IDepartmentActivity<D>>
@@ -25,8 +25,8 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
     @Autowired
     protected IAccountActivity accountActivity;
 
-    @Autowired
-    private IAreaActivity areaActivity;
+//    @Autowired
+//    private IAreaActivity areaActivity;
 
     @Autowired
     protected IApplicationActivity applicationActivity;

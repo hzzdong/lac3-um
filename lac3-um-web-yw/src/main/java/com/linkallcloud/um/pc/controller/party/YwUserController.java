@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -25,10 +24,11 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.util.Domains;
+import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.Org;
 import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.iapi.party.IOrgManager;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
@@ -37,8 +37,7 @@ import com.linkallcloud.um.iapi.party.IYwRoleManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.um.pc.oapi.dd.ZzdUserOapi;
-import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 @Controller
 @RequestMapping(value = "/YwUser", method = RequestMethod.POST)

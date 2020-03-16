@@ -3,7 +3,6 @@ package com.linkallcloud.um.iapi.sys;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.IManager;
 import com.linkallcloud.um.domain.sys.Account;
-import com.linkallcloud.um.exception.AuthException;
 
 public interface IAccountManager extends IManager<Account> {
 

@@ -1,19 +1,19 @@
 package com.linkallcloud.um.server.activity.sys;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.linkallcloud.core.activity.BaseTreeActivity;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
-import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.um.activity.sys.IDictTypeActivity;
 import com.linkallcloud.um.domain.sys.Dict;
 import com.linkallcloud.um.domain.sys.DictType;
 import com.linkallcloud.um.server.dao.sys.IDictDao;
 import com.linkallcloud.um.server.dao.sys.IDictTypeDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class DictTypeActivity extends BaseTreeActivity<DictType, IDictTypeDao> implements IDictTypeActivity {

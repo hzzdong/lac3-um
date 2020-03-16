@@ -1,25 +1,24 @@
 package com.linkallcloud.um.server.service.party;
 
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
 import com.linkallcloud.um.activity.party.IDepartmentActivity;
 import com.linkallcloud.um.activity.party.IUserActivity;
-import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.service.party.IDepartmentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional(readOnly = true)
 public abstract class DepartmentService<T extends Department, DA extends IDepartmentActivity<T>, U extends User, UA extends IUserActivity<U>, C extends Company, CA extends ICompanyActivity<C>>
         extends OrgService<T, DA, U, UA> implements IDepartmentService<T> {
 
-    @Autowired
-    private IAreaActivity areaActivity;
+//    @Autowired
+//    private IAreaActivity areaActivity;
 
     protected abstract CA getCompanyActivity();
 

@@ -1,17 +1,20 @@
 package com.linkallcloud.um.server.service.party;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
-import com.linkallcloud.um.activity.party.*;
-import com.linkallcloud.um.activity.sys.IAreaActivity;
+import com.linkallcloud.um.activity.party.IKhCompanyActivity;
+import com.linkallcloud.um.activity.party.IKhDepartmentActivity;
+import com.linkallcloud.um.activity.party.IKhRoleActivity;
+import com.linkallcloud.um.activity.party.IKhUserActivity;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.service.party.IKhUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,14 +34,14 @@ public class KhUserService extends
     @Autowired
     private IKhRoleActivity khRoleActivity;
 
-    @Autowired
-    private IYwCompanyActivity ywCompanyActivity;
-
-    @Autowired
-    private IYwUserActivity ywUserActivity;
-
-    @Autowired
-    private IAreaActivity areaActivity;
+//    @Autowired
+//    private IYwCompanyActivity ywCompanyActivity;
+//
+//    @Autowired
+//    private IYwUserActivity ywUserActivity;
+//
+//    @Autowired
+//    private IAreaActivity areaActivity;
 
     @Override
     public IKhUserActivity activity() {

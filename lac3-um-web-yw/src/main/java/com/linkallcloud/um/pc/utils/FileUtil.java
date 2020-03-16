@@ -3,15 +3,12 @@ package com.linkallcloud.um.pc.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.repo.Base64;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
@@ -19,6 +16,9 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.entity.enmus.ExcelType;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.repo.Base64;
 
 public class FileUtil {
 	
@@ -102,7 +102,6 @@ public class FileUtil {
 		return list;
 	}
 	
-	@SuppressWarnings("restriction")
 	public static boolean base64ToBinFile(String baseStr, String binFile) {
 		if (baseStr == null) return false;
 		//sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();

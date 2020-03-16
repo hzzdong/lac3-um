@@ -1,23 +1,22 @@
 package com.linkallcloud.um.server.service.party;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
-import com.linkallcloud.um.activity.party.*;
-import com.linkallcloud.um.activity.sys.IApplicationActivity;
-import com.linkallcloud.um.activity.sys.IAreaActivity;
-import com.linkallcloud.um.activity.sys.IKhSystemConfigActivity;
-import com.linkallcloud.um.activity.sys.IMenuActivity;
+import com.linkallcloud.um.activity.party.IKhCompanyActivity;
+import com.linkallcloud.um.activity.party.IKhDepartmentActivity;
+import com.linkallcloud.um.activity.party.IKhUserActivity;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.service.party.IKhCompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,29 +30,29 @@ public class KhCompanyService
     @Autowired
     private IKhUserActivity khUserActivity;
 
-    @Autowired
-    private IYwCompanyActivity ywCompanyActivity;
-
-    @Autowired
-    private IYwUserActivity ywUserActivity;
+//    @Autowired
+//    private IYwCompanyActivity ywCompanyActivity;
+//
+//    @Autowired
+//    private IYwUserActivity ywUserActivity;
 
     @Autowired
     private IKhDepartmentActivity khDepartmentActivity;
 
-    @Autowired
-    private IKhRoleActivity khRoleActivity;
-
-    @Autowired
-    private IAreaActivity areaActivity;
-
-    @Autowired
-    private IKhSystemConfigActivity khSystemConfigActivity;
-
-    @Autowired
-    private IApplicationActivity applicationActivity;
-
-    @Autowired
-    private IMenuActivity menuActivity;
+//    @Autowired
+//    private IKhRoleActivity khRoleActivity;
+//
+//    @Autowired
+//    private IAreaActivity areaActivity;
+//
+//    @Autowired
+//    private IKhSystemConfigActivity khSystemConfigActivity;
+//
+//    @Autowired
+//    private IApplicationActivity applicationActivity;
+//
+//    @Autowired
+//    private IMenuActivity menuActivity;
 
     @Override
     protected IKhUserActivity getUserActivity() {

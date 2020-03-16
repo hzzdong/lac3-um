@@ -33,7 +33,8 @@ public abstract class RoleActivity<R extends Role, U extends User, O extends Org
     protected Mirror<U> userMirror;
     protected Mirror<O> orgMirror;
 
-    public RoleActivity() {
+    @SuppressWarnings("unchecked")
+	public RoleActivity() {
         super();
         try {
             userMirror = Mirror.me((Class<U>) Mirror.getTypeParams(getClass())[1]);

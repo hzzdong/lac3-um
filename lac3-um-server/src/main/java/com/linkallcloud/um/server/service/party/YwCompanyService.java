@@ -1,25 +1,21 @@
 package com.linkallcloud.um.server.service.party;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.activity.party.IYwDepartmentActivity;
-import com.linkallcloud.um.activity.party.IYwRoleActivity;
 import com.linkallcloud.um.activity.party.IYwUserActivity;
-import com.linkallcloud.um.activity.sys.IApplicationActivity;
-import com.linkallcloud.um.activity.sys.IAreaActivity;
-import com.linkallcloud.um.activity.sys.IMenuActivity;
-import com.linkallcloud.um.activity.sys.IYwSystemConfigActivity;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.service.party.IYwCompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,20 +32,20 @@ public class YwCompanyService
     @Autowired
     private IYwDepartmentActivity ywDepartmentActivity;
 
-    @Autowired
-    private IYwRoleActivity ywRoleActivity;
-
-    @Autowired
-    private IAreaActivity areaActivity;
-
-    @Autowired
-    private IApplicationActivity applicationActivity;
-
-    @Autowired
-    private IMenuActivity menuActivity;
-
-    @Autowired
-    private IYwSystemConfigActivity ywSystemConfigActivity;
+//    @Autowired
+//    private IYwRoleActivity ywRoleActivity;
+//
+//    @Autowired
+//    private IAreaActivity areaActivity;
+//
+//    @Autowired
+//    private IApplicationActivity applicationActivity;
+//
+//    @Autowired
+//    private IMenuActivity menuActivity;
+//
+//    @Autowired
+//    private IYwSystemConfigActivity ywSystemConfigActivity;
 
     @Override
     protected IYwUserActivity getUserActivity() {

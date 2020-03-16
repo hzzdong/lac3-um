@@ -22,7 +22,7 @@ public class YwUserServiceTest {
         Trace trace = new Trace("20000");
         YwUser user = ywUserService.fetchById(trace, 2L);
 
-        YwUser user2 = ywUserService.fecthByAccount(trace, "zhoudong");
+        //YwUser user2 = ywUserService.fecthByAccount(trace, "zhoudong");
 
         user.setRemark(user.getRemark() + 1);
         trace.addKey("ID-2");

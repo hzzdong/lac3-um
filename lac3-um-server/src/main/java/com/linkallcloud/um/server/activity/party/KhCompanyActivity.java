@@ -52,8 +52,8 @@ public class KhCompanyActivity extends CompanyActivity<KhCompany, IKhCompanyDao,
     @Autowired
     private IKhDepartmentDao khDepartmentDao;
 
-    @Autowired
-    private IKhRoleDao khRoleDao;
+//    @Autowired
+//    private IKhRoleDao khRoleDao;
 
     @Autowired
     private IAreaDao areaDao;

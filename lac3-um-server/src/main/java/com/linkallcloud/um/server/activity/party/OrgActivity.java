@@ -18,7 +18,8 @@ public abstract class OrgActivity<T extends Org, OD extends IOrgDao<T>, U extend
 
     protected Mirror<U> userMirror;
 
-    public OrgActivity() {
+    @SuppressWarnings("unchecked")
+	public OrgActivity() {
         super();
         try {
             this.userMirror = Mirror.me((Class<U>) Mirror.getTypeParams(getClass())[2]);

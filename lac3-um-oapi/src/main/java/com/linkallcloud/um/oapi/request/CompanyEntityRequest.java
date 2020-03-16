@@ -3,7 +3,9 @@ package com.linkallcloud.um.oapi.request;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 
 public class CompanyEntityRequest extends FaceRequest {
-    private Long companyId;
+	private static final long serialVersionUID = -6745209675273872967L;
+	
+	private Long companyId;
     private Long entityId;
 
     public CompanyEntityRequest(Long companyId, Long entityId) {
