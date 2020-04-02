@@ -151,21 +151,26 @@
 	        url: ctx + "/SelfKhCompany/loadTree",
 	        type: "GET",
 	        dataType: 'json',
-	        success: function (data) {
-	        	LAC.dealTreeNodeIcon(data, static_server + "/lac/imgs/");
-	        	var treeObj = $.fn.zTree.init($("#dataTree"), setting, data);
-	        	treeObj.expandAll(true);
-	        	var nodes = treeObj.getNodes();
-	        	if(nodes && nodes.length>0){
-	        		for(var i=0; i<nodes.length; i++){
-	        			var node = nodes[i];
-	        			//if(node.id.indexOf('COM-') != -1 ){
-	        			if(node.id.indexOf('-') != -1 ){
-	        				treeObj.selectNode(node);
-	        				curTreeNode = node;
-	        				break;
-	    	        	}
-	        		}
+	        success: function (ret) {
+	        	if(ret!=null && ret.code == "0"){
+	        		var data = ret.data;
+	        		LAC.dealTreeNodeIcon(data, static_server + "/lac/imgs/");
+		        	var treeObj = $.fn.zTree.init($("#dataTree"), setting, data);
+		        	treeObj.expandAll(true);
+		        	var nodes = treeObj.getNodes();
+		        	if(nodes && nodes.length>0){
+		        		for(var i=0; i<nodes.length; i++){
+		        			var node = nodes[i];
+		        			//if(node.id.indexOf('COM-') != -1 ){
+		        			if(node.id.indexOf('-') != -1 ){
+		        				treeObj.selectNode(node);
+		        				curTreeNode = node;
+		        				break;
+		    	        	}
+		        		}
+		        	}
+	        	} else {
+	        		LAC.tip(ret.message || "系统出错啦！！！", "error");
 	        	}
 	        }
 	    });

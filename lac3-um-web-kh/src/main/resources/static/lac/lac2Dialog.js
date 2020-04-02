@@ -335,10 +335,12 @@
 			var boxBody = $('<div class="box-body"></div>').appendTo(box);
 		}
 
-		box.find(".btn-box-tool").on("click", function(){
-			alert("hide");
+		/*
+		box.find(".btn-box-tool>i.fa-times").on("click", function(){
+			//alert("hide");
 			box.hide();
 		});
+		*/
 		
 		if (content && content != '') {
 			box.find(".box-body").html(content);
@@ -359,10 +361,14 @@
 			box.addClass(typeCss);
 		}
 		
-		box.hide();
-
+		//box.hide();
 		box.show();
-
+		
+		var win = window.parent ? window.top : window;
+		var wintip = win['LAC'].createTipWin(tipId);
+		wintip.bindColseEvent();
+		win['LAC'].wintip = wintip;
+/*
 		box.setDialogContent = function(message) {
 			box.find(".box-body").html(message);
 		};
@@ -381,10 +387,11 @@
 			}
 		};
 		box.reset = function(content, type) {
-			box.setDialogContent(content);
-			box.setType(type);
+			$(this).setDialogContent(content);
+			$(this).setType(type);
 		};
-		return box;
+		*/
+		return wintip;
 	};
-
+	
 })(jQuery);

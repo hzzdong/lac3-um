@@ -300,8 +300,14 @@
 					type : "POST",
 					cache : false,
 					data : JSON2.stringify(pData),
-					success : function(result) {
-						callback(result);
+					success : function(ret) {
+						//console.log(oSettings.oInit.url, ret);
+						if(ret && ret.code=="0"){
+			        		var data = ret.data;
+			        		callback(data);
+						} else {
+							LAC.tip(ret.message || "系统出错啦！！！", "error");
+						}
 					}
 				});
 			},
@@ -410,7 +416,7 @@
 				}).nodes().each(function(cell, i) {
 					cell.innerHTML = i + 1 + page_start;
 				});
-			}).draw();
+			});//.draw();
 		}
 		return dtable;
 	};

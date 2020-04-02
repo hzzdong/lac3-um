@@ -100,7 +100,6 @@ public class FileUtil {
 		return list;
 	}
 	
-	@SuppressWarnings("restriction")
 	public static boolean base64ToBinFile(String baseStr, String binFile) {
 		if (baseStr == null) return false;
 		//sun.misc.BASE64Decoder decoder = new sun.misc.BASE64Decoder();

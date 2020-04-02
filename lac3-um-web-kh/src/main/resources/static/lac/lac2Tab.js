@@ -72,18 +72,31 @@
 	    scrollToTab(_this);
 	}
 	
+	function changeAndRefreshTab(options){
+	    findEL('#tab-menu a').removeClass('active');
+	    var _this =  findEL('#tab-menu a[data-pageid='+options.id+']');
+	    _this.addClass('active');
+	    findEL('.tabs_box>div').removeClass('active');
+	    var thisIframe = findEL('#iframe_'+ options.id);
+	    thisIframe.parent().addClass('active');
+	    thisIframe.attr("src", options.url);
+	    scrollToTab(_this);
+	}
+	
 	LacTab.addTab = function(options){
 		var options = $.extend(true, {}, { canClose:true }, options)
 		if(findTabs(options.id)){
-	        changeTabs(options.id);
+	        //changeTabs(options.id);
+			changeAndRefreshTab(options);
 	        return;
 	    }
 	    var tabTmp;
 	    if(options.canClose){
-	        tabTmp = `<a href="javascript:void(0);" data-pageid="${options.id}" class="menu_tab active canClose"><span class="page_tab_title">${options.title}</span><i class="fa fa-remove page_tab_close" style="cursor: pointer" onclick="LacTab.closeTab(this);" data-pageid="${options.id}"></i></a>`
-		    var $tabPanel = $('<div role="tabpanel" class="tab-pane active canClose"></div>');
+	        tabTmp = '<a href="javascript:void(0);" data-pageid="'+options.id+'" class="menu_tab active canClose"><span class="page_tab_title">'+options.title+'</span><i class="fa fa-remove page_tab_close" style="cursor: pointer" onclick="LacTab.closeTab(this);" data-pageid="'+options.id+'"></i></a>';
+	    		    
+	        var $tabPanel = $('<div role="tabpanel" class="tab-pane active canClose"></div>');
 	    }else{
-	    	tabTmp = `<a href="javascript:void(0);" data-pageid="${options.id}" class="menu_tab active"><span class="page_tab_title">${options.title}</span></a>`
+	    	tabTmp = '<a href="javascript:void(0);" data-pageid="'+options.id+'" class="menu_tab active"><span class="page_tab_title">'+options.title+'</span></a>';
 		    var $tabPanel = $('<div role="tabpanel" class="tab-pane active"></div>');
 	    }
 	    findEL('#tab-menu>.page-tabs-content a').removeClass('active');
@@ -149,6 +162,21 @@
 	    }
 	}
 	
+	LacTab.removeTab = function(tabId){
+		var me = window['LacTab'];
+		if(window.parent){
+			me =  window.top['LacTab'];
+		}
+		me.removeTabFromCache(tabId);
+	}
+	
+	LacTab.removeTabFromCache = function(tabId){
+		var tab = getLacTabs()[tabId];
+		if(tab){
+			delete tab;
+		}
+	}
+	
 	LacTab.closeTab = function(ele){
 		var id = $(ele).attr('data-pageid');
 		var parent = $(ele).parent('a');
@@ -182,11 +210,18 @@
 	    	thisTab.callback(data);
 	    }
 	    
+	    if(thisTab){
+	    	LacTab.removeTab(tabId);
+	    }
+	    
 	    var currTab = prod.find('.page-tabs-content a[data-pageid="'+fid+'"]');
 	    if(currTab.length>0){
-	    	prod.find('.active.canClose').remove();
-	        currTab.addClass('active');
+	    	var thiss = prod.find('.active.canClose');
+	        $(currTab).addClass('active');
 	        prod.find('#iframe_'+fid).parent().addClass('active');
+	        if(thiss){
+	        	thiss.remove();
+	        }
 	    }else {
 	        var prevTab = prod.find('.menu_tab.active.canClose').prev();
 	        var nextTab = prod.find('.menu_tab.active.canClose').next();
@@ -200,10 +235,6 @@
 	            prevTab.addClass('active');
 	            prevTabPane.addClass('active');
 	        }
-	    }
-	    
-	    if(thisTab){
-	    	delete getLacTabs()[tabId];
 	    }
 	};
 	
@@ -247,7 +278,7 @@
 	        height = height - $tabs.outerHeight();
 	    }
 	    findEL(".tab_iframe").css({
-	        height: height - 10,
+	        height: height - 16,
 	        width: "100%"
 	    });
 	};

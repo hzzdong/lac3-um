@@ -235,7 +235,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
             return null;
         }
 
-        List<Tree> result = new ArrayList<Tree>();
+        List<Tree> nodes = new ArrayList<Tree>();
 
         /* 公司根节点 */
         Tree root = company.toTreeNode();
@@ -243,7 +243,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
         root.setId("-" + company.getId());
         root.setpId(null);
         root.setOpen(true);
-        result.add(root);
+        //result.add(root);
 
         /* 直接子公司 */
         List<T> directCompanies = findDirectCompaniesByParentId(t, companyId);
@@ -252,7 +252,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
             // directCompanies, "COM-");
             List<Tree> dcTreeNodeList = Trees.assembleDirectTreeNodeList(root.getId(), directCompanies, "-");
             if (dcTreeNodeList != null && !dcTreeNodeList.isEmpty()) {
-                result.addAll(dcTreeNodeList);
+                nodes.addAll(dcTreeNodeList);
             }
         }
 
@@ -261,11 +261,14 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
         if (depts != null && !depts.isEmpty()) {
             List<Tree> depTreeNodeList = Trees.assembleTreeList(root.getId(), depts);
             if (depTreeNodeList != null && !depTreeNodeList.isEmpty()) {
-                result.addAll(depTreeNodeList);
+                nodes.addAll(depTreeNodeList);
             }
         }
+        
+        Trees.assembleTree(root, nodes);
 
-        result = Trees.filterTreeNode(result);
+        List<Tree> result = new ArrayList<Tree>();
+        result.add(root);
         return result;
     }
 

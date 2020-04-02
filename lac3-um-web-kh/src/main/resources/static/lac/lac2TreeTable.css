@@ -1,111 +1,137 @@
+.icon_div {
+	display: inline-block;
+	height: 25px;
+	width: 35px;
+}
 
-    .icon_div {
-        display: inline-block;
-        height: 25px;
-        width: 35px;
-    }
+.icon_div a {
+	display: inline-block;
+	width: 27px;
+	height: 20px;
+	cursor: pointer;
+}
 
-    .icon_div a {
-        display: inline-block;
-        width: 27px;
-        height: 20px;
-        cursor: pointer;
-    }
+/*end--按钮*/
 
-    /*end--按钮*/
+/*ztree表格*/
+.ztree {
+	padding: 0;
+	border: 1px solid #f4f4f4;
+}
 
-    /*ztree表格*/
-    .ztree {
-        padding: 0;
-        border: 1px solid #f4f4f4;
-    }
+.ztree li a {
+	vertical-align: middle;
+	height: 30px;
+}
 
-    .ztree li a {
-        vertical-align: middle;
-        height: 30px;
-    }
+.ztree li>a {
+	width: 100%;
+}
 
-    .ztree li > a {
-        width: 100%;
-    }
+.ztree li>a, .ztree li a.curSelectedNode {
+	padding-top: 0px;
+	background: none;
+	height: auto;
+	border: none;
+	cursor: default;
+	opacity: 1;
+}
 
-    .ztree li > a,
-    .ztree li a.curSelectedNode {
-        padding-top: 0px;
-        background: none;
-        height: auto;
-        border: none;
-        cursor: default;
-        opacity: 1;
-    }
+.ztree li ul {
+	padding-left: 0px;
+	/* padding: 0 0 0 18px; */
+}
 
-    .ztree li ul {
-        padding-left: 0px;
-        /* padding: 0 0 0 18px; */
-    }
+.ztree div.diy span {
+	/* line-height: 30px;  */
+	vertical-align: middle !important;
+}
 
-    .ztree div.diy span {
-        /* line-height: 30px;  */
-        vertical-align: middle!important;
-    }
+.ztree div.diy button.icon-btn {
+	padding: 0px 5px;
+}
 
-    .ztree div.diy {
-        height: 100%;
-        width: 20%;
-        line-height: 30px;
-        border-top: 1px solid #f4f4f4;
-        border-left: 1px solid #f4f4f4;
-        display: inline-block;
-        box-sizing: border-box;
-        color: #212529;
-        float: left;
-        font-size: 1rem;
-        overflow: hidden;
-        padding:0 8px;
-    }
+.ztree div.diy small {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
 
-    .ztree div.diy:first-child {
-        text-align: left;
-        text-indent: 10px;
-        border-left: none;
-    }
+.ztree div.diy {
+	height: 100%;
+	width: 20%;
+	line-height: 30px;
+	border-top: 1px solid #f4f4f4;
+	border-left: 1px solid #f4f4f4;
+	display: inline-block;
+	box-sizing: border-box;
+	color: #212529;
+	float: left;
+	/* font-size: 1rem; */
+	overflow: hidden;
+	padding: 0 8px;
+}
 
-    .ztree .head {
-        background: #fff;
-        border-bottom: 2px solid #f4f4f4;
-    }
+.ztree div.diy:first-child {
+	text-align: left;
+	text-indent: 10px;
+	border-left: none;
+}
 
-    .ztree .head div.diy {
-        border-top: none;
-        color: #000;
-        font-weight: bold;
-        font-family: "Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-        font-size: 1rem;
-        padding: 6px;
-    }
-    .ztree li a:hover{
-        background-color: #f5f5f5;
-    }
-    .ztree .head a:hover{
-        background-color: #fff;
-    }
-    .ztree li a.curSelectedNode{
-        /* background-color: #f5f5f5; */
-        background-color: #b0bed9;
-    }
-    .ztree *{
-    	margin: 0;
-    font-family: "Source Sans Pro",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    text-align: left;
-    }
-    .ztree .fa{
-    	display: inline-block;
-	    font: normal normal normal 14px/1 FontAwesome;
-	    font-size: inherit;
-	    text-rendering: auto;
-	    -webkit-font-smoothing: antialiased;
-    }
+.ztree .head {
+	background: #fff;
+	border-bottom: 2px solid #f4f4f4;
+}
+
+.ztree .head div.diy {
+	border-top: none;
+	color: #000;
+	font-weight: bold;
+	font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+		"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	/* font-size: 1rem; */
+	padding: 6px;
+}
+
+.ztree li a:hover {
+	background-color: #f5f5f5;
+}
+
+.ztree .head a:hover {
+	background-color: #fff;
+}
+
+.ztree li a.curSelectedNode {
+	/* background-color: #f5f5f5; */
+	background-color: #b0bed9;
+}
+
+.ztree * {
+	margin: 0;
+	font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+		"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	/* font-size: 1rem; */
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	text-align: left;
+}
+
+.ztree .fa {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+}

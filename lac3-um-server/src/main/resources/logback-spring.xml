@@ -23,9 +23,9 @@
         </encoder>
     </appender>
     
-    <logger name="com.linkallcloud.um.server.dao" level="DEBUG"/>
+    <logger name="com.linkallcloud.um.server" level="INFO"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>

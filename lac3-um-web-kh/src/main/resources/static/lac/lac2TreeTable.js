@@ -57,6 +57,24 @@
 		return li_head;
 	}
 	
+	LAC_TreeTable.updateTreeTableColumns = function (treeId, treeNode){
+		var options = LAC_TreeTable[treeId] || {};
+		if(options.columns && options.columns.length>0){
+        	for(var i=0; i<options.columns.length; i++){
+    			var column = options.columns[i];
+    			var fv = '';
+    			if(column.render){
+    				fv = column.render(treeNode);
+    			} else {
+    				fv = parseObjectValue(treeNode, column.feName);
+    			}
+    			
+    			var columnDivId=$('#LTT_'+treeNode.tId+'_'+treeNode.id+'_'+column.feName);
+    			columnDivId.html(fv);
+        	}
+        }
+	}
+	
 	var defaultOptions = {
 			defaultColumnWidth: '20%',
 			defaultColumnName: '名称',
@@ -100,9 +118,9 @@
 			        				fv = parseObjectValue(treeNode, column.feName);
 			        			}
 			        			if(column.width){
-			        				editStr += '<div class="diy" style="width:'+column.width+'">'+ fv +'</div>';
+			        				editStr += '<div id="LTT_'+treeNode.tId+'_'+treeNode.id+'_'+column.feName+'" class="diy" style="width:'+column.width+'">'+ fv +'</div>';
 			        			}else{
-			        				editStr += '<div class="diy">'+ fv +'</div>';
+			        				editStr += '<div id="LTT_'+treeNode.tId+'_'+treeNode.id+'" class="diy">'+ fv +'</div>';
 			        			}
 			            	}
 			            }
@@ -144,27 +162,32 @@
 	        url: options.url,
 	        type: "GET",
 	        dataType: 'json',
-	        success: function (data) {
-	        	//console.log(data);
-	        	if(options.iconBasePath && options.iconBasePath.length>0){
-	        		LAC.dealTreeNodeIcon(data, options.iconBasePath);
+	        success: function (ret) {
+	        	//console.log(ret);
+	        	if(ret && ret.code=="0"){
+	        		var data = ret.data;
+	        		if(options.iconBasePath && options.iconBasePath.length>0){
+		        		LAC.dealTreeNodeIcon(data, options.iconBasePath);
+		        	}
+		        	var treeObj = $.fn.zTree.init(my, options.setting, data);
+		            var li_head = lacTreeTableHeader(options);
+		            var rows = my.find('li');
+		            if (rows.length > 0) {
+		                rows.eq(0).before(li_head)
+		            } else {
+		            	my.append(li_head);
+		            	my.append('<li ><div style="text-align: center;line-height: 30px;" >无符合条件数据</div></li>')
+		            }
+		            
+		            if(options.expandAll){
+		            	treeObj.expandAll(true);
+		            }
+		            if(options.callback){
+		            	options.callback(data);
+		            }
+	        	} else {
+	        		LAC.tip(ret.message || "系统出错啦！！！", "error");
 	        	}
-	        	var treeObj = $.fn.zTree.init(my, options.setting, data);
-	            var li_head = lacTreeTableHeader(options);
-	            var rows = my.find('li');
-	            if (rows.length > 0) {
-	                rows.eq(0).before(li_head)
-	            } else {
-	            	my.append(li_head);
-	            	my.append('<li ><div style="text-align: center;line-height: 30px;" >无符合条件数据</div></li>')
-	            }
-	            
-	            if(options.expandAll){
-	            	treeObj.expandAll(true);
-	            }
-	            if(options.callback){
-	            	options.callback(data);
-	            }
 	        }
 	    });
 

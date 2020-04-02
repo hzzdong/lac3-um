@@ -55,6 +55,70 @@
 		win['LAC'].DIALOG_Z_INDEX++;
 		return win['LAC'].DIALOG_Z_INDEX;
 	};
+	
+	function LacTipWin(tipId) {
+		this.tipId = tipId;
+		this.wintipInvokeCount = 1;
+		this.state = 'show';
+		
+		this.getTipWin = function(){
+			var mainBody = window.parent ? $(window.top.document.body) : $(window.document.body);
+			return mainBody.find("#" + this.tipId);
+		}
+		
+		this.next = function(){
+			return ++ this.wintipInvokeCount;
+		}
+		this.setContent = function(message) {
+			this.getTipWin().find(".box-body").html(message);
+		}
+		this.setType = function(type) {
+			var typeCss = LAC.DIALOG_TYPES.info.tipCss;
+			var thisTip = this.getTipWin();
+			$.each(LAC.DIALOG_TYPES, function(k, v) {
+				if (k == type) {
+					typeCss = v.tipCss;
+				}
+				if (thisTip.hasClass(v.tipCss)) {
+					thisTip.removeClass(v.tipCss);
+				}
+			});
+			if (typeCss) {
+				thisTip.addClass(typeCss);
+			}
+		}
+		this.reset = function(content, type) {
+			this.setContent(content);
+			this.setType(type);
+		};
+		this.hide = function() {
+			this.state = 'hide';
+			this.getTipWin().hide();
+		};
+		this.show = function() {
+			this.state = 'show';
+			this.getTipWin().show();
+		};
+		this.bindColseEvent = function(){
+			var tipWin = this.getTipWin();
+			tipWin.find(".btn-box-tool").on("click", function(){
+				tipWin.hide();
+			});
+		};
+		this.autoClose = function(idx) {
+			var myIndex = idx;
+			var tipWin = this.getTipWin();
+			setTimeout(function() {
+				if (this.state=='show' && myIndex >= this.wintipInvokeCount) {
+					tipWin.hide();
+				}
+			}, 3000);
+		};
+	}
+	
+	LAC.createTipWin = function(tipId){
+		return new LacTipWin(tipId);
+	}
 
 	/**
 	 * tip提醒框
@@ -67,25 +131,19 @@
 	 */
 	LAC.tip = function(message, type) {
 		var win = window.parent ? window.top : window;
-		if (!win['LAC'].wintipInvokeCount) {
-			win['LAC'].wintipInvokeCount = 0;
-		}
-		var myIndex = ++win['LAC'].wintipInvokeCount;
-		if (win['LAC'].wintip) {
-			win['LAC'].wintip.reset(message, type);
-			if (!win['LAC'].wintipIsOpen) {
-				win['LAC'].wintip.show();
-				win['LAC'].wintipIsOpen = true;
+		var myIndex = 1;
+		var wintip = win['LAC'].wintip;
+		if (wintip) {
+			myIndex = wintip.next();
+			wintip.reset(message, type);
+			if (wintip.state != 'show') {
+				wintip.show();
 			}
 		} else {
-			win['LAC'].wintip = $.LacDialog.tip(message, type);
-			// win['LAC'].wintip.close = function () {
-			// win['LAC'].wintip.hide();
-			// win['LAC'].wintipIsOpen = false;
-			// };
-			win['LAC'].wintipIsOpen = true;
+			wintip = $.LacDialog.tip(message, type);
 		}
 		win['LAC'].autoCloseTip(myIndex);
+		//wintip.autoClose(myIndex);
 	};
 
 	/**
@@ -96,11 +154,11 @@
 	 */
 	LAC.autoCloseTip = function(idx) {
 		var myIndex = idx;
+		var win = window.parent ? window.top : window;
+		var wintip = win['LAC'].wintip;
 		setTimeout(function() {
-			if (LAC.wintipIsOpen && myIndex >= LAC.wintipInvokeCount) {
-				// LAC.wintip.close();
-				LAC.wintip.hide();
-				LAC.wintipIsOpen = false;
+			if (wintip.state == 'show' && myIndex >= wintip.wintipInvokeCount) {
+				wintip.hide();
 			}
 		}, 3000);
 	};
@@ -224,8 +282,7 @@
 		var contentType = p.contentType || "application/json; charset=utf-8";
 		var type = p.type || 'post';
 		// alert("LAC.ajax : " + JSON2.stringify(options));
-		$
-				.ajax({
+		$.ajax({
 					cache : false,
 					async : true,
 					dataType : dataType,
@@ -259,7 +316,7 @@
 							window.top.location.href = result.redirectUrl;
 						} else if (result.toUrl) {
 							window.location.href = result.toUrl;
-						} else if (result.error) {
+						} else if (result.error || (result.code && result.code != "0")) {
 							if (result.nonce) {
 								$("#nonce").val(result.nonce);
 							}
@@ -432,11 +489,17 @@
 	 */
 	$.fn.initLacForm = function(url, cb) {
 		var me = this;
-		LAC.GET(url, function(data) {
-			me.initLacFormData(data);
-			if (cb) {
-				cb(data);
-			}
+		LAC.GET(url, function(ret) {
+			//console.log('initLacForm GET', ret);
+			if(ret && ret.code=="0"){
+				var data = ret.data;
+				me.initLacFormData(data);
+				if (cb) {
+					cb(data);
+				}
+			} else {
+        		LAC.tip(ret.message || "系统出错啦！！！", "error");
+        	}
 		});
 	};
 
@@ -595,11 +658,11 @@
 
 		/* eslint-disable no-mixed-operators */
 		if (successful
-				&& (!n || el.disabled || t === 'reset' || t === 'button'
+				&& (!n || t === 'reset' || t === 'button'
 						|| (t === 'checkbox' || t === 'radio') && !el.checked
 						|| (t === 'submit' || t === 'image') && el.form
 						&& el.form.clk !== el || tag === 'select'
-						&& el.selectedIndex === -1)) {
+						&& el.selectedIndex === -1)) {//|| el.disabled 
 			/* eslint-enable no-mixed-operators */
 			return null;
 		}
@@ -682,7 +745,7 @@
 		for (i = 0, max = els.length; i < max; i++) {
 			el = els[i];
 			n = el.name;
-			if (!n || el.disabled) {
+			if (!n) {// || el.disabled
 				continue;
 			}
 
@@ -976,19 +1039,22 @@
 	 * form提交：带验证
 	 * 
 	 * @param {Object}
-	 *            obj ： 数据对象
+	 *            appendObj ： 数据对象
 	 * @param {function}
 	 *            cb : 保存成功后的回调函数
 	 * 
 	 * 注意： 1)数据以stream的方式递交； 2)调用示例：form.submitForm(callBack);
 	 */
-	$.fn.save = function(obj, cb) {
+	$.fn.save = function(appendObj, cb) {
 		if (this.length === 0) {
 			return;
 		}
 		if (this.validationEngine('validate')) {
 			var obj = this.lacFormToObject();
 			obj.isUpdate = (obj.id && obj.id > 0) ? true : false;
+			if(appendObj){
+				obj = $.extend(obj, appendObj);
+			}
 			LAC.ajax({
 				type : "post",
 				dataType : 'json',
@@ -996,13 +1062,17 @@
 				contentType : "application/json",
 				url : this.attr('action'),
 				data : JSON2.stringify(obj),
-				success : function(data) {
-					obj = $.extend(obj, data);
-					if (cb) {
-						cb(data);
-					} else {
-						LacTab.callback(obj);
-						LAC.tip('操作成功!', 'success');
+				success : function(ret) {
+					if(ret && ret.code=="0"){
+		        		var data = ret.data;
+		        		obj = $.extend(obj, data);
+						if (cb) {
+							cb(data);
+						} else {
+							LAC.tip('操作成功!', 'success');
+						}
+					} else{
+						LAC.tip(ret.message || "系统出错啦！！！", "error");
 					}
 				}
 			});
@@ -1013,37 +1083,80 @@
 	 * form提交，并关闭
 	 * 
 	 * @param {Object}
-	 *            obj ： 数据对象
+	 *            appendObj ： 数据对象
 	 * @param {function}
 	 *            cb : 保存成功后的回调函数
 	 * 
 	 * 注意： 1)数据以stream的方式递交； 2)调用示例：form.submitForm(callBack);
 	 */
-	$.fn.saveClose = function(obj, cb) {
-		if (this.length === 0) {
-			return;
-		}
-		if (this.validationEngine('validate')) {
-			var obj = this.lacFormToObject();
-			obj.isUpdate = (obj.id && obj.id > 0) ? true : false;
-			LAC.ajax({
-				type : "post",
-				dataType : 'json',
-				cache : false,
-				contentType : "application/json",
-				url : this.attr('action'),
-				data : JSON2.stringify(obj),
-				success : function(data) {
-					obj = $.extend(obj, data);
-					if (cb) {
-						cb(data);
-					} else {
-						LAC.tip('操作成功!', 'success');
-						LacTab.closeThisTab(obj);
-					}
-				}
-			});
-		}
+	$.fn.saveClose = function(appendObj, cb) {
+  		if (this.length === 0) {
+  			return;
+  		}
+  		if (this.validationEngine('validate')) {
+  			var obj = this.lacFormToObject();
+  			obj.isUpdate = (obj.id && obj.id > 0) ? true : false;
+  			if(appendObj){
+  				obj = $.extend(obj, appendObj);
+  			}
+  			LAC.ajax({
+  				type : "post",
+  				dataType : 'json',
+  				cache : false,
+  				contentType : "application/json",
+  				url : this.attr('action'),
+  				data : JSON2.stringify(obj),
+  				success : function(ret) {
+  					if(ret && ret.code=="0"){
+  		        		var data = ret.data;
+  		        		obj = $.extend(obj, data);
+  						if (cb) {
+  							cb(data);
+  						} else {
+  							LAC.tip('操作成功!', 'success');
+  							LacTab.closeThisTab(obj);
+  						}
+  					} else{
+  						LAC.tip(ret.message || "系统出错啦！！！", "error");
+  					}
+  				}
+  			});
+  		}
+	};
+	
+	$.fn.saveDlg = function(dlgId, appendObj, cb) {
+  		if (this.length === 0) {
+  			return;
+  		}
+  		if (this.validationEngine('validate')) {
+  			var obj = this.lacFormToObject();
+  			obj.isUpdate = (obj.id && obj.id > 0) ? true : false;
+  			if(appendObj){
+  				obj = $.extend(obj, appendObj);
+  			}
+  			LAC.ajax({
+  				type : "post",
+  				dataType : 'json',
+  				cache : false,
+  				contentType : "application/json",
+  				url : this.attr('action'),
+  				data : JSON2.stringify(obj),
+  				success : function(ret) {
+  					if(ret && ret.code=="0"){
+  		        		var data = ret.data;
+  		        		obj = $.extend(obj, data);
+  						if (cb) {
+  							cb(data);
+  						} else {
+  							LAC.tip('操作成功!', 'success');
+  							LAC.getModel(dlgId).getCallback()(obj);
+  						}
+  					} else{
+  						LAC.tip(ret.message || "系统出错啦！！！", "error");
+  					}
+  				}
+  			});
+  		}
 	};
 
 	/**
@@ -1072,36 +1185,97 @@
 	};
 
 	/**
-	 * 新增一行
-	 * 
-	 * @param dataTable
-	 * @param url
-	 * @param tabId
-	 * @param tabTitle
-	 * @param cb
-	 *            callback
-	 */
-	LAC.addRow4DataTable = function(dataTable, url, tabId, tabTitle, cb) {
-		LacTab.addTab({
-			id : tabId ? tabId : "default-tab-id",
-			title : tabTitle ? tabTitle : '新增',
-			url : url,
-			autoLink : true,
+     * 新增一行(TabPage)
+     *
+     * @param dataTable
+     * @param url
+     * @param tabId
+     * @param tabTitle
+     * @param cb
+     *            callback
+     */
+    LAC.addRow4DataTable = function(dataTable, url, tabId, tabTitle, cb) {
+        LacTab.addTab({
+            id : tabId ? tabId : "default-tab-id",
+            title : tabTitle ? tabTitle : '新增',
+            url : url,
+            autoLink : true,
+            callback : function(data) {
+                if (data) {
+                    dataTable.row.add(data).draw();
+                    if(cb){
+                        cb(data);
+                    } else {
+                        $(".btn-permed").permissionEnabled();
+                    }
+                }
+            }
+        });
+    };
+    
+    /**
+     * 新增一行(Dialog)
+     *
+     * @param dataTable
+     * @param url
+     * @param tabId
+     * @param tabTitle
+     * @param cb
+     *            callback
+     */
+    LAC.addRow4DataTable2Dlg = function(dataTable, url, dlgId, dlgTitle, cb) {
+    	var dlg = LAC.showModel({
+			id : dlgId ? dlgId : "default-tab-id",
+			type : "common",// primary common
+			sizeCss : "modal-lg",
+			title : dlgTitle ? dlgTitle : '编辑',
+			url :  url,
+			method : "get",
 			callback : function(data) {
-				if (data) {
-					dataTable.row.add(data).draw();
-					if(cb){
-						cb(data);
-					} else {
-						$(".btn-permed").permissionEnabled();
+				LAC.closeModel(dlgId ? dlgId : "default-tab-id");
+				if(cb){
+					cb(data);
+				} else {
+					if (data) {
+						dataTable.row.add(data).draw();
 					}
+					$(".btn-permed").permissionEnabled();
 				}
 			}
 		});
-	};
+    };
+
+    /**
+     * 新增一行(返回)
+     *
+     * @param dataTable
+     * @param url
+     * @param tabId
+     * @param tabTitle
+     * @param cb
+     *            callback
+     */
+    LAC.addRow4DataTable2 = function(dataTable, url, tabId, tabTitle, cb) {
+        LacTab.addTab({
+            id : tabId ? tabId : "default-tab-id",
+            title : tabTitle ? tabTitle : '新增',
+            url : url,
+            autoLink : true,
+            callback : function(data) {
+                if (data) {
+                    if(cb){
+                        cb(data);
+                    } else {
+                        dataTable.row.add(data).draw();
+                        $(".btn-permed").permissionEnabled();
+                    }
+                }
+            }
+        });
+    };
 
 	/**
-	 * 点击DataTable上某行进行编辑
+	 * 点击DataTable上某行进行编辑（TabPage）
 	 * 
 	 * @param curRow
 	 * @param url
@@ -1145,6 +1319,56 @@
 			}
 		});
 	};
+	
+	/**
+	 * 点击DataTable上某行进行编辑(Dialog)
+	 * 
+	 * @param curRow
+	 * @param url
+	 * @param tabId
+	 * @param tabTitle
+	 * @param td0
+	 * @param cb
+	 *            callback
+	 */
+	LAC.editCurRow4DataTable2Dlg = function(curRow, url, dlgId, dlgTitle, td0, cb) {
+		var data = curRow.data();
+		url = LAC.appendParam2URL(url, "id", data.id);
+		url = LAC.appendParam2URL(url, "uuid", data.uuid);
+
+		var idx = -1;
+		if (td0) {
+			if($.isFunction(td0)){
+				cb = td0;
+			} else {
+				idx = td0.text();
+			}
+		}
+		
+		var dlg = LAC.showModel({
+			id : dlgId ? dlgId : "default-tab-id",
+			type : "common",// primary common
+			sizeCss : "modal-lg",
+			title : dlgTitle ? dlgTitle : '编辑',
+			url :  url,
+			method : "get",
+			callback : function(data) {
+				LAC.closeModel(dlgId ? dlgId : "default-tab-id");
+				if(cb){
+					cb(data);
+				} else {
+					if (data) {
+						curRow.data(data);// .draw(false);
+					}
+					$(".btn-permed").permissionEnabled();
+				}
+				if (td0 && !($.isFunction(td0))) {
+					td0.text(idx);
+				}
+			}
+		});
+
+	};
 
 	/**
 	 * 删除一条记录
@@ -1172,7 +1396,102 @@
 	};
 
 	/**
-	 * 新增一行
+	 * DataTable批量删除记录
+	 * 
+	 * @param datatable
+	 * @param url
+	 * @param confirmMsg
+	 * @param callBack
+	 */
+	LAC.deletes4DataTable = function(datatable, url, confirmMsg, callBack) {
+		var rows = datatable.rows('.selected').data();
+		if (rows && rows.length < 1) {
+			LAC.showWarn("请至少选择一行。");
+		} else {
+			var iduuids = {};
+			for (var i = 0; i < rows.length; i++) {
+				var rowData = rows[i];
+				iduuids[rowData.uuid] = rowData.id;
+			}
+
+			LAC.confirmExecute(url, iduuids, function(ret) {
+				if (ret) {
+					if (callBack)
+						callBack(ret);
+					else
+						datatable.draw();
+				} else {
+					LAC.tip("删除失败！！！", "error");
+				}
+			}, confirmMsg || "你确定要执行此操作吗？", true);
+		}
+	};
+	
+	/**
+	 * 更新状态（一条记录）
+	 * 
+	 * @param curRow
+	 * @param url
+	 * @param status
+	 * @param confirmMsg
+	 * @param callBack
+	 */
+	LAC.status4DataTable = function(curRow, url, status, confirmMsg, callBack) {
+		var data = curRow.data();
+		url = LAC.appendParam2URL(url, "status", status);
+		url = LAC.appendParam2URL(url, "id", data.id);
+		url = LAC.appendParam2URL(url, "uuid", data.uuid);
+		LAC.confirmExecute(url, {}, function(ret) {
+			console.log(ret);
+			if(ret && ret.code=="0"){
+				if (callBack) {
+					callBack(ret.data);
+				} else {
+					data.status = status;
+					curRow.data(data).draw(false);
+				}
+			} else {
+				LAC.tip(ret.message || "操作执行失败！！！", "error");
+			}
+		}, confirmMsg || "你确定要执行此操作吗？", true);
+	};
+	
+	/**
+	 * 更新状态(批量)
+	 * 
+	 * @param datatable
+	 * @param url
+	 * @param status
+	 * @param confirmMsg
+	 * @param callBack
+	 */
+	LAC.statuss4DataTable = function(datatable, url, status, confirmMsg, callBack) {
+		var rows = datatable.rows('.selected').data();
+		if (rows && rows.length < 1) {
+			LAC.showWarn("请至少选择一行。");
+		} else {
+			var iduuids = {};
+			for (var i = 0; i < rows.length; i++) {
+				var rowData = rows[i];
+				iduuids[rowData.uuid] = rowData.id;
+			}
+
+			url = LAC.appendParam2URL(url, "status", status);
+			LAC.confirmExecute(url, iduuids, function(ret) {
+				if (ret) {
+					if (callBack)
+						callBack(ret);
+					else
+						datatable.draw();
+				} else {
+					LAC.tip("删除失败！！！", "error");
+				}
+			}, confirmMsg || "你确定要执行此操作吗？", true);
+		}
+	};
+	
+	/**
+	 * 新增一行(TabPage)
 	 * 
 	 * @param treeId
 	 * @param url
@@ -1187,10 +1506,48 @@
 			autoLink : true,
 			callback : function(data) {
 				if (data) {
-					var zTree = $.fn.zTree.getZTreeObj(treeId), nodes = zTree
-							.getSelectedNodes(), treeNode = nodes[0];
-					if (treeNode) {
-						treeNode = zTree.addNodes(treeNode, data);
+					var zTree = $.fn.zTree.getZTreeObj(treeId);
+					var nodes = zTree.getSelectedNodes();
+					if(nodes != null && nodes.length > 0){
+						var treeNode = nodes[0];
+						zTree.addNodes(treeNode, data);
+					} else {
+						zTree.addNodes(null, data);
+					}
+				}
+			}
+		});
+	};
+	
+	/**
+	 * 新增一行(Dialog)
+	 * 
+	 * @param treeId
+	 * @param url
+	 * @param tabId
+	 * @param tabTitle
+	 * @param cb
+	 */
+	LAC.addRow4TreeTableDlg = function(treeId, url, dlgId, dlgTitle, cb) {
+		var dlg = LAC.showModel({
+			id : dlgId ? dlgId : "default-tab-id",
+			type : "common",// primary common
+			sizeCss : "modal-lg",
+			title : dlgTitle ? dlgTitle : '编辑',
+			url :  url,
+			method : "get",
+			callback : function(data) {
+				LAC.closeModel(dlgId ? dlgId : "default-tab-id");
+				if(cb){
+					cb(data);
+				} else {
+					var zTree = $.fn.zTree.getZTreeObj(treeId);
+					var nodes = zTree.getSelectedNodes();
+					if(nodes != null && nodes.length > 0){
+						var treeNode = nodes[0];
+						zTree.addNodes(treeNode, data);
+					} else {
+						zTree.addNodes(null, data);
 					}
 				}
 			}
@@ -1212,12 +1569,50 @@
 			url : url,
 			autoLink : true,
 			callback : function(data) {
+				//console.log('LAC.editCurRow4TreeTable', data);
 				if (data) {
 					var zTree = $.fn.zTree.getZTreeObj(treeId), nodes = zTree
 							.getSelectedNodes(), treeNode = nodes[0];
 					if (treeNode) {
 						$.extend(treeNode, data);
+						//console.log("treeNode", treeNode);
 						zTree.updateNode(treeNode);
+						LAC_TreeTable.updateTreeTableColumns(treeId, treeNode);
+					}
+				}
+			}
+		});
+	};
+	
+	/**
+	 * 点击TreeTable上某行进行编辑(Dialog)
+	 * 
+	 * @param treeId
+	 * @param url
+	 * @param tabId
+	 * @param tabTitle
+	 * @param cb
+	 */
+	LAC.editCurRow4TreeTableDlg = function(treeId, url, dlgId, dlgTitle, cb) {
+		var dlg = LAC.showModel({
+			id : dlgId ? dlgId : "default-tab-id",
+			type : "common",// primary common
+			sizeCss : "modal-lg",
+			title : dlgTitle ? dlgTitle : '编辑',
+			url :  url,
+			method : "get",
+			callback : function(data) {
+				LAC.closeModel(dlgId ? dlgId : "default-tab-id");
+				if(cb){
+					cb(data);
+				} else {
+					var zTree = $.fn.zTree.getZTreeObj(treeId);
+					var nodes = zTree.getSelectedNodes();
+					if(nodes != null && nodes.length > 0){
+						var treeNode = nodes[0];
+						$.extend(treeNode, data);
+						zTree.updateNode(treeNode);
+						LAC_TreeTable.updateTreeTableColumns(treeId, treeNode);
 					}
 				}
 			}
@@ -1234,9 +1629,10 @@
 	 */
 	LAC.delete4TreeTable = function(treeId, url, confirmMsg, callBack) {
 		LAC.confirmExecute(url, {}, function(ret) {
-			if (ret) {
+			//console.log('delete4TreeTable', ret);
+			if(ret && ret.code=="0"){
 				if (callBack) {
-					callBack(ret);
+					callBack(ret.data);
 				} else {
 					var zTree = $.fn.zTree.getZTreeObj(treeId), nodes = zTree
 							.getSelectedNodes(), treeNode = nodes[0];
@@ -1245,7 +1641,48 @@
 					}
 				}
 			} else {
-				LAC.tip("操作执行失败！！！", "error");
+				LAC.tip(ret.message || "操作执行失败！！！", "error");
+			}
+		}, confirmMsg || "你确定要执行此操作吗？", true);
+	};
+	
+	/**
+	 * 更新节点状态
+	 */
+	LAC.changeStatus4TreeTable = function(status, treeId, url, skipChkChildren, confirmMsg, callBack) {
+		var zTree = $.fn.zTree.getZTreeObj(treeId);
+		var nodes = zTree.getSelectedNodes();
+		if (!nodes && nodes.length > 1) {
+			LAC.showError("请选择一个节点!");
+			return;
+		}
+		var treeNode = nodes[0];
+		if (treeNode && !skipChkChildren) {
+			if (treeNode.children && treeNode.children.length > 0) {
+				LAC.showError("该节点下有子节点，不能操作!");
+				return;
+			}
+		}
+		
+		LAC.confirmExecute(url, {}, function(ret) {
+			//console.log('changeStatus4TreeTable', ret);
+			if(ret && ret.code=="0"){
+				if (callBack) {
+					callBack(ret.data);
+				} else {
+					var zTree = $.fn.zTree.getZTreeObj(treeId);
+					if(zTree){
+						var nodes = zTree.getSelectedNodes();
+						if(nodes){
+							var treeNode = nodes[0];
+							treeNode.status = status;
+							zTree.updateNode(treeNode);
+							LAC_TreeTable.updateTreeTableColumns(treeId, treeNode);
+						}
+					}
+				}
+			} else {
+				LAC.tip(ret.message || "操作执行失败！！！", "error");
 			}
 		}, confirmMsg || "你确定要执行此操作吗？", true);
 	};
@@ -1271,81 +1708,15 @@
 					success : function(ret) {
 						if (callBack) {
 							callBack(ret);
-						}
-						if (ret && needHint) {
-							LAC.tip('操作成功!', 'success');
+						}else{
+							if (ret && needHint) {
+								LAC.tip('操作成功!', 'success');
+							}
 						}
 					}
 				});
 			}
 		});
-	};
-
-	/**
-	 * DataTable批量更新多条记录状态
-	 * 
-	 * @param status
-	 * @param datatable
-	 * @param url
-	 * @param confirmMsg
-	 * @param callBack
-	 */
-	LAC.batchChangeStatus4DataTable = function(status, datatable, url,
-			confirmMsg, callBack) {
-		var rows = datatable.rows('.selected').data();
-		if (rows && rows.length < 1) {
-			LAC.showWarn("请至少选择一行。");
-		} else {
-			var iduuids = {};
-			for (var i = 0; i < rows.length; i++) {
-				var rowData = rows[i];
-				iduuids[rowData.uuid] = rowData.id;
-			}
-
-			var sattusUrl = LAC.appendParam2URL(url, "status", status);
-			LAC.confirmExecute(sattusUrl, iduuids, function(ret) {
-				if (ret) {
-					if (callBack)
-						callBack(ret);
-					else
-						datatable.draw();
-				} else {
-					LAC.tip("状态更新失败！！！", "error");
-				}
-			}, confirmMsg || "你确定要执行此操作吗？", true);
-		}
-	};
-
-	/**
-	 * DataTable更新状态
-	 * 
-	 * @param status
-	 * @param datatable
-	 * @param curRow
-	 * @param url
-	 * @param confirmMsg
-	 * @param callBack
-	 */
-	LAC.changeStatus4DataTable = function(status, datatable, curRow, url,
-			confirmMsg, callBack) {
-		var obj = curRow.data();
-		url = LAC.appendParam2URL(url, "status", status);
-		url = LAC.appendParam2URL(url, "id", obj.id);
-		url = LAC.appendParam2URL(url, "uuid", obj.uuid);
-		LAC.confirmExecute(url, {}, function(ret) {
-			if (ret) {
-				if (callBack) {
-					callBack(ret);
-				} else {
-					// obj.status = status;
-					// curRow.data(obj).draw();
-					datatable.draw();
-				}
-
-			} else {
-				LAC.tip("状态更新失败！！！", "error");
-			}
-		}, confirmMsg || "你确定要执行此操作吗？", true);
 	};
 
 	/**
@@ -1585,9 +1956,42 @@
 		}
 		return '';
 	}
+	
+	LAC.myBrowser = function (){
+	    var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+	    var isOpera = userAgent.indexOf("Opera") > -1;
+	    if (isOpera) {
+	        return "Opera"
+	    }; //判断是否Opera浏览器
+	    if (userAgent.indexOf("Firefox") > -1) {
+	        return "FF";
+	    } //判断是否Firefox浏览器
+	    if (userAgent.indexOf("Chrome") > -1){
+		  return "Chrome";
+		}
+	    if (userAgent.indexOf("Safari") > -1) {
+	        return "Safari";
+	    } //判断是否Safari浏览器
+	    if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
+	       if (userAgent.indexOf("MSIE 6.0") > -1) { return "IE6"; }
+	       if (userAgent.indexOf("MSIE 7.0") > -1) { return "IE7"; }
+	       if (userAgent.indexOf("MSIE 8.0") > -1) { return "IE8"; }
+	       if (userAgent.indexOf("MSIE 9.0") > -1) { return "IE9"; }
+	       if (userAgent.indexOf("MSIE 10.0") > -1) { return "IE10"; }
+	       return "IE";
+	    } //判断是否IE6-9浏览器
+	    if (userAgent.toLowerCase().indexOf("trident") > -1 && userAgent.indexOf("rv") > -1 && !isOpera) {
+	       if (userAgent.indexOf("rv:10.0") > -1) { return "IE10"; }
+	       if (userAgent.indexOf("rv:11.0") > -1) { return "IE11"; }
+	       return "IE11";
+	    } //判断是否IE10-11浏览器
+	    else
+	    {
+	       return userAgent;
+	    }
+	}
 
-	$
-			.extend(
+	$.extend(
 					$.fn,
 					{
 						mask : function(msg, maskDivClass) {

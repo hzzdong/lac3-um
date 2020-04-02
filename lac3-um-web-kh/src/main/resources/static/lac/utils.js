@@ -278,7 +278,7 @@ String.prototype.ltrim = function() {
 String.prototype.rtrim = function() {
 	return this.replace(/(\s*$)/g, "");
 }
- 
+
 /**
  * 日期格式化
  */
@@ -531,12 +531,12 @@ function getWidthHeightInteger(wh) {
 	if (!wh) {
 		return 0;
 	}
-	
+
 	var index = wh.indexOf('%');
 	if (index != -1) {
 		return -10000;
 	}
-	
+
 	index = wh.indexOf('px');
 	try {
 		if (index == -1) {
@@ -549,4 +549,109 @@ function getWidthHeightInteger(wh) {
 		return 0;
 	}
 
+}
+
+/*
+ * 手机、身份证、名称等脱敏
+ */
+function makeMask(str, frontLen, endLen) {
+	if (!str || str.length <= 1) {
+		return "*";
+	} else if (str.length - frontLen - endLen <= 0) {
+		if (str.length < 4) {
+			var xing = '';
+			for (var i = 1; i < str.length; i++) {
+				xing += '*';
+			}
+			return str.substring(0, 1) + xing;
+		} else if (str.length < 8) {
+			var xing = '';
+			for (var i = 2; i < str.length; i++) {
+				xing += '*';
+			}
+			return str.substring(0, 2) + xing + str.substring(str.length - 2);
+		} else {
+			var xing = '';
+			for (var i = 3; i < str.length; i++) {
+				xing += '*';
+			}
+			return str.substring(0, 3) + xing + str.substring(str.length - 3);
+		}
+	} else {
+		var len = str.length - frontLen - endLen;
+		var xing = '';
+		for (var i = 0; i < len; i++) {
+			xing += '*';
+		}
+		return str.substring(0, frontLen) + xing
+				+ str.substring(str.length - endLen);
+	}
+}
+
+/**
+ * 统计subStr在str中出现的次数
+ * 
+ * @param str
+ * @param subStr
+ * @returns
+ */
+function countSubStr(str, subStr) {
+	if(!str || !subStr){
+		return 0;
+	}
+	var n = (str.split(subStr)).length-1;
+	return n;
+}
+
+function getLastChar(str){
+	if(!str || str.length<=0){
+		return '';
+	}
+	return str.substr(str.length - 1);
+}
+
+function lastCharEquals(str, lastChar){
+	if(!str || str.length<=0 || !lastChar){
+		return false;
+	}
+	return  str.substr(str.length - 1) == lastChar;
+}
+
+/**
+ * 判断浏览器
+ * 
+ * @returns
+ */
+function myBrowser(){
+    var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+    var isOpera = userAgent.indexOf("Opera") > -1;
+    if (isOpera) {
+        return "Opera"
+    }; //判断是否Opera浏览器
+    if (userAgent.indexOf("Firefox") > -1) {
+        return "FF";
+    } //判断是否Firefox浏览器
+    if (userAgent.indexOf("Chrome") > -1){
+	  return "Chrome";
+	}
+    if (userAgent.indexOf("Safari") > -1) {
+        return "Safari";
+    } //判断是否Safari浏览器
+    if (userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera) {
+       if (userAgent.indexOf("MSIE 6.0") > -1) { return "IE6"; }
+       if (userAgent.indexOf("MSIE 7.0") > -1) { return "IE7"; }
+       if (userAgent.indexOf("MSIE 8.0") > -1) { return "IE8"; }
+       if (userAgent.indexOf("MSIE 9.0") > -1) { return "IE9"; }
+       if (userAgent.indexOf("MSIE 10.0") > -1) { return "IE10"; }
+       return "IE";
+    } //判断是否IE6-9浏览器
+    if (userAgent.toLowerCase().indexOf("trident") > -1 && userAgent.indexOf("rv") > -1 && !isOpera) {
+       if (userAgent.indexOf("rv:10.0") > -1) { return "IE10"; }
+       if (userAgent.indexOf("rv:11.0") > -1) { return "IE11"; }
+       return "IE11";
+    } //判断是否IE10-11浏览器
+    else
+    {
+       return userAgent;
+    }
 }
