@@ -208,5 +208,14 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	 * @return
 	 */
 	boolean updateStatusByDepartment(Trace t, int status, Long departmentId);
+	
+	/**
+	 * 是否部门管理员
+	 * 
+	 * @param t
+	 * @param userId
+	 * @return
+	 */
+	boolean isUserDepartmentAdmin(Trace t, Long userId);
 
 }

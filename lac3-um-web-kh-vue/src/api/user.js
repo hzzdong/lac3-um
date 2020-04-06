@@ -10,9 +10,8 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/umkh/fetchLoginUser',
-    method: 'get',
-    params: { token }
+    url: '/umkh/face/KhUser/fetchLoginUser',
+    method: 'post'
   })
 }
 

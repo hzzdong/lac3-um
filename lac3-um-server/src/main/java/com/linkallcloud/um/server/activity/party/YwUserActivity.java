@@ -1,5 +1,11 @@
 package com.linkallcloud.um.server.activity.party;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
@@ -14,11 +20,6 @@ import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IYwRoleDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Component
 public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao> implements IYwUserActivity {
@@ -99,5 +100,10 @@ public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartmen
     public YwUser findByMobileAndDdStatus(Trace t, String mobile) {
         return dao().findByMobileAndDdStatus(t, mobile);
     }
+
+	@Override
+	protected String departmentAdminRoleCode() {
+		return "YwRole_sys_dept";
+	}
 
 }

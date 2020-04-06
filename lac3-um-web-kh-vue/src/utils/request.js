@@ -24,33 +24,47 @@ service.interceptors.request.use(
       config.headers['token'] = getToken()
     }
 
-    const data = config.data
-    if (data && data.page && data.limit && Number.parseInt(data.page) > 0 && Number.parseInt(data.limit) > 0) {
-      const page = {
-        start: (data.page - 1) * data.limit,
-        length: data.limit,
-        cnds: [],
-        orderby: { orderby: 'id', order: 'desc' }
-      }
-      if (data.rules) {
-        for (const field in data.rules) {
-          const rule = data.rules[field]
-          if (rule && rule.fv !== undefined && rule.fv !== '') {
-            page.cnds.push({
-              field: field,
-              data: rule.fv,
-              type: rule.stype,
-              op: rule.oper
-            })
+    if (config.data) {
+      if (config.data.dataType && config.data.dataType === 'Object') {
+        const faceReq = { appCode: 'lac_app_um_kh', data: config.data }
+        config.data = faceReq
+      } else {
+        const data = config.data
+        if (data && data.page && data.limit && Number.parseInt(data.page) > 0 && Number.parseInt(data.limit) > 0) {
+          const page = {
+            appCode: 'lac_app_um_kh',
+            start: (data.page - 1) * data.limit,
+            length: data.limit,
+            cnds: [],
+            orderby: { orderby: 'id', order: 'desc' }
           }
+          if (data.rules) {
+            for (const field in data.rules) {
+              const rule = data.rules[field]
+              if (rule && rule.fv !== undefined && rule.fv !== '') {
+                page.cnds.push({
+                  field: field,
+                  data: rule.fv,
+                  type: rule.stype,
+                  op: rule.oper
+                })
+              }
+            }
+          }
+          if (data.orderby && data.orderby.orderby !== '') {
+            page.orderby.orderby = data.orderby.orderby
+            page.orderby.order = data.orderby.order
+          }
+          config.data = page
+        } else {
+          const faceReq = Object.assign({ appCode: 'lac_app_um_kh' }, config.data)
+          config.data = faceReq
         }
       }
-      if (data.orderby && data.orderby.orderby !== '') {
-        page.orderby.orderby = data.orderby.orderby
-        page.orderby.order = data.orderby.order
-      }
-      config.data = page
+    } else {
+      config.data = { appCode: 'lac_app_um_kh' }
     }
+
     return config
   },
   error => {
@@ -93,7 +107,7 @@ service.interceptors.response.use(
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
             // location.reload()
-            window.location = 'http://localhost:8013/umkh/vue'
+            window.location = 'http://localhost:8013/umkh/ssoauth'
           })
         })
       }

@@ -245,7 +245,9 @@
             <el-row v-if="company.khTypeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="证照类型" prop="certificateType">
-                  <el-input v-model="company.entity.certificateType" placeholder="请选择证照类型" />
+                  <el-select v-model="company.entity.certificateType" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in commonData.certificateTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -298,7 +300,9 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="证照类型" prop="jType">
-                  <el-input v-model="company.entity.jType" placeholder="请选择证照类型" />
+                  <el-select v-model="company.entity.jType" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in commonData.personCertificateTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -327,7 +331,7 @@
 import Vue from 'vue'
 import ZkTable from 'vue-table-with-tree-grid'
 Vue.use(ZkTable)
-import { getOrgTree, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
+import { getOrgTree, fetchKhDepartment, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
 // import { loadAreaTree } from '@/api/area'
 import { loadCachedMyCompanyAreaTree, loacOrgCertificateType, loacPersonCertificateType } from '@/utils/laccache'
 
@@ -420,12 +424,14 @@ export default {
       ],
       statusOptions,
       commonData: {
-        orgCertificateType: [],
-        personCertificateType: []
+        certificateTypeOptions: [],
+        personCertificateTypeOptions: []
       },
       department: {
         entity: {
+          dataType: 'Object',
           id: undefined,
+          uuid: '',
           companyId: '',
           parentId: '',
           parentClass: '',
@@ -457,7 +463,11 @@ export default {
       company: {
         khTypeCode: '',
         entity: {
+          dataType: 'Object',
           id: undefined,
+          uuid: '',
+          parentId: undefined,
+          parentClass: 'KhCompany',
           khTypeCode: '',
           orgName: '',
           name: '',
@@ -470,13 +480,13 @@ export default {
           address: '',
           scale: 10,
           businessStart: new Date(),
-          certificateType: 1,
+          certificateType: 'certificate_type_org-yy',
           certificateNo: '',
           business: '',
           credentials: '',
           juridical: '',
           jphone: '',
-          jType: 1,
+          jType: 'certificate_type_person-id',
           jNo: '',
           sort: 1,
           status: 0,
@@ -531,15 +541,25 @@ export default {
   },
   methods: {
     loadCommonData() {
-      loacOrgCertificateType().then(response => {
-        // console.log('orgCertificateType Data', response.data)
-        this.commonData.orgCertificateType = response
+      loacOrgCertificateType().then(ct => {
+        console.log('orgCertificateType Data', ct)
+        this.commonData.certificateTypeOptions = []
+        if (ct && ct.length > 0) {
+          for (let i = 0; i < ct.length; i++) {
+            this.commonData.certificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
+          }
+        }
       }).catch(() => {
         // 取消
       })
-      loacPersonCertificateType().then(response => {
-        // console.log('personCertificateType Data', response.data)
-        this.commonData.personCertificateType = response
+      loacPersonCertificateType().then(ct => {
+        console.log('personCertificateType Data', ct)
+        this.commonData.personCertificateTypeOptions = []
+        if (ct && ct.length > 0) {
+          for (let i = 0; i < ct.length; i++) {
+            this.commonData.personCertificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
+          }
+        }
       }).catch(() => {
         // 取消
       })
@@ -582,7 +602,7 @@ export default {
     },
     getTree() {
       getOrgTree().then(response => {
-        // console.log('Company Tree Data', response.data)
+        console.log('Company Tree Data', response.data)
         const items = response.data
         this.autoChildren(items)
         this.data = items
@@ -603,47 +623,53 @@ export default {
       })
       */
     },
-    resetDepartmentEntity(parent) {
+    resetDepartmentEntity(parent, me) {
       this.department.entity = {
-        id: undefined,
-        parentId: (parent && parent.id > 0) ? parent.id : 0,
+        dataType: 'Object',
+        id: (me && me.id) ? me.id : undefined,
+        uuid: (me && me.uuid) ? me.uuid : '',
+        parentId: me ? me.parentId : (parent ? parent.id : 0),
         parentClass: (parent && parent.id > 0) ? 'KhDepartment' : 'KhCompany',
         orgName: parent ? parent.name : '',
-        name: '',
-        govCode: '',
-        linkUserName: '',
-        linkUserPhone: '',
-        sort: 1,
-        status: 0,
-        remark: ''
+        name: (me && me.name) ? me.name : '',
+        govCode: (me && me.govCode) ? me.govCode : '',
+        linkUserName: (me && me.linkUserName) ? me.linkUserName : '',
+        linkUserPhone: (me && me.linkUserPhone) ? me.linkUserPhone : '',
+        sort: (me && me.sort) ? me.sort : 1,
+        status: (me && me.status) ? me.status : 0,
+        remark: (me && me.remark) ? me.remark : ''
       }
     },
-    resetCompanyEntity(parent) {
+    resetCompanyEntity(parent, me) {
       this.company.entity = {
-        id: undefined,
-        khTypeCode: parent ? parent.attributes.khTypeCode : this.company.khTypeCode,
+        dataType: 'Object',
+        id: (me && me.id) ? me.id : undefined,
+        uuid: (me && me.uuid) ? me.uuid : '',
+        khTypeCode: parent ? parent.attributes.khTypeCode : (me ? me.khTypeCode : this.company.khTypeCode),
+        parentId: me ? me.parentId : (parent ? parent.id : 0),
+        parentClass: 'KhCompany',
         orgName: parent ? parent.name : '',
-        name: '',
-        govCode: '',
-        phone: '',
-        fax: '',
-        areaId: undefined,
-        areaName: '',
-        url: '',
-        address: '',
-        scale: 10,
-        businessStart: new Date(),
-        certificateType: 1,
-        certificateNo: '',
-        business: '',
-        credentials: '',
-        juridical: '',
-        jphone: '',
-        jType: 1,
-        jNo: '',
-        sort: 1,
-        status: 0,
-        remark: ''
+        name: (me && me.name) ? me.name : '',
+        govCode: (me && me.govCode) ? me.govCode : '',
+        phone: (me && me.phone) ? me.phone : '',
+        fax: (me && me.fax) ? me.fax : '',
+        areaId: (me && me.areaId) ? me.areaId : undefined,
+        areaName: (me && me.areaName) ? me.areaName : '',
+        url: (me && me.url) ? me.url : '',
+        address: (me && me.address) ? me.address : '',
+        scale: (me && me.scale) ? me.scale : 10,
+        businessStart: (me && me.businessStart) ? me.businessStart : new Date(),
+        certificateType: (me && me.certificateType) ? me.certificateType : 'certificate_type_org-yy',
+        certificateNo: (me && me.certificateNo) ? me.certificateNo : '',
+        business: (me && me.business) ? me.business : '',
+        credentials: (me && me.credentials) ? me.credentials : '',
+        juridical: (me && me.juridical) ? me.juridical : '',
+        jphone: (me && me.jphone) ? me.jphone : '',
+        jType: (me && me.jType) ? me.jType : 'certificate_type_person-id',
+        jNo: (me && me.jNo) ? me.jNo : '',
+        sort: (me && me.sort) ? me.sort : 1,
+        status: (me && me.status) ? me.status : 0,
+        remark: (me && me.remark) ? me.remark : ''
       }
     },
     handleAddDepartment(row) {
@@ -659,7 +685,9 @@ export default {
       this.$refs['depForm'].validate((valid) => {
         if (valid) {
           createKhDepartment(this.department.entity).then((response) => {
-            const tempData = Object.assign({ children: [] }, response.data)
+            debugger
+            const tempData = Object.assign({ dataType: 'Object', children: [] }, response.data)
+            tempData.pId = this.currentNode.id
             if (!this.currentNode.children) {
               this.$set(this.currentNode, 'children', [])
               this.$set(this.currentNode.children, 0, tempData)
@@ -685,8 +713,8 @@ export default {
       this.$refs['companyForm'].validate((valid) => {
         if (valid) {
           createKhCompany(this.company.entity).then((response) => {
-            const tempData = Object.assign({ children: [] }, response.data)
-            tempData.id = tempData.id * -1
+            debugger
+            const tempData = Object.assign({ dataType: 'Object', children: [] }, response.data)
             if (!this.currentNode.children) {
               this.$set(this.currentNode, 'children', [])
               this.$set(this.currentNode.children, 0, tempData)
@@ -707,31 +735,35 @@ export default {
         this.editCompany(row)
       }
     },
-    editDepartment(dep) {
-      const tmp = { linkUserName: dep.attributes.linkUserName, linkUserPhone: dep.attributes.linkUserPhone }
-      this.department.entity = Object.assign(tmp, dep)
-      if (!this.department.entity.orgName || this.department.entity.orgName === '') {
-        const parent = this.pickTreeNode(this.data, dep.pId)
-        this.department.entity.orgName = parent ? parent.name : ''
-      }
-      this.department.dialogStatus = 'update'
-      this.department.dialogVisible = true
-      this.$nextTick(() => {
-        this.$refs['depForm'].clearValidate()
+    editDepartment(department) {
+      const { id, uuid } = department
+      fetchKhDepartment({ id, uuid }).then((response) => {
+        const dep = response.data
+        const parentId = this.currentNode.pId
+        const parent = this.pickTreeNode(this.data, parentId)
+        this.resetDepartmentEntity(parent, dep)
+        console.log('this.department.entity', this.department.entity)
+
+        this.department.dialogStatus = 'update'
+        this.department.dialogVisible = true
+        this.$nextTick(() => {
+          this.$refs['depForm'].clearValidate()
+        })
       })
     },
     updateDepartment() {
       this.$refs['depForm'].validate((valid) => {
         if (valid) {
-          const parent = this.pickTreeNode(this.data, this.department.entity.pId)
-          const tempData = Object.assign({}, this.department.entity)
-          tempData.attributes['linkUserName'] = tempData.linkUserName
-          tempData.attributes['linkUserPhone'] = tempData.linkUserPhone
-          updateKhDepartment(tempData).then(() => {
-            for (const v of parent.children) {
-              if (v.id === tempData.id) {
-                const index = parent.children.indexOf(v)
-                parent.children.splice(index, 1, tempData)
+          const parent = this.pickTreeNode(this.data, this.currentNode.pId)
+          const tempData = Object.assign({ dataType: 'Object' }, this.department.entity)
+          // console.log('updateDepartment tempData', tempData)
+          updateKhDepartment(tempData).then((response) => {
+            const dep = response.data
+            dep.pId = parent.id
+            dep.children = this.currentNode.children
+            for (let i = 0; i < parent.children.length; i++) {
+              if (parent.children[i].id === dep.id) {
+                parent.children.splice(i, 1, dep)
                 break
               }
             }
@@ -742,13 +774,14 @@ export default {
       })
     },
     editCompany(company) {
-      const { id, uuid } = company
-      fetchKhCompany({ id: id * -1, uuid }).then((com) => {
-        this.company.entity = Object.assign({}, company, com.data)
-        if (!this.company.entity.orgName || this.company.entity.orgName === '') {
-          const parent = this.pickTreeNode(this.data, com.pId)
-          this.company.entity.orgName = parent ? parent.name : ''
-        }
+      const data = { id: company.id.substring(1), uuid: company.uuid }
+      fetchKhCompany(data).then((response) => {
+        const com = response.data
+        const parentId = '-' + com.parentId
+        const parent = this.pickTreeNode(this.data, parentId)
+        this.resetCompanyEntity(parent, com)
+        console.log('this.company.entity', this.company.entity)
+
         this.company.dialogStatus = 'update'
         this.company.dialogVisible = true
         this.$nextTick(() => {
@@ -759,13 +792,16 @@ export default {
     updateCompany() {
       this.$refs['companyForm'].validate((valid) => {
         if (valid) {
-          const parent = this.pickTreeNode(this.data, this.company.entity.pId)
-          const tempData = Object.assign({}, this.company.entity)
-          updateKhCompany(tempData).then(() => {
-            for (const v of parent.children) {
-              if (v.id === tempData.id) {
-                const index = parent.children.indexOf(v)
-                parent.children.splice(index, 1, tempData)
+          debugger
+          const parentId = '-' + this.company.entity.parentId
+          const parent = this.pickTreeNode(this.data, parentId)
+          const tempData = Object.assign({ dataType: 'Object' }, this.company.entity)
+          console.log('updateCompany tempData', tempData)
+          updateKhCompany(tempData).then((response) => {
+            const com = response.data
+            for (let i = 0; i < parent.children.length; i++) {
+              if (parent.children[i].id === com.id) {
+                parent.children.splice(i, 1, com)
                 break
               }
             }

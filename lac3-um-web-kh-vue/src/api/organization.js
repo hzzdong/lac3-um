@@ -1,15 +1,24 @@
 import request from '@/utils/request'
 
-export function getOrgTree() {
+export function getOrgTree(data) {
   return request({
-    url: '/umkh/SelfKhCompany/loadTree',
-    method: 'get'
+    url: '/umkh/face/KhCompany/loadTree',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchKhDepartment(data) {
+  return request({
+    url: '/umkh/face/KhDepartment/fetch',
+    method: 'post',
+    data
   })
 }
 
 export function createKhDepartment(data) {
   return request({
-    url: '/umkh/SelfKhDepartment/save',
+    url: '/umkh/face/KhDepartment/save',
     method: 'post',
     data
   })
@@ -17,31 +26,31 @@ export function createKhDepartment(data) {
 
 export function updateKhDepartment(data) {
   return request({
-    url: '/umkh/SelfKhDepartment/save',
+    url: '/umkh/face/KhDepartment/save',
     method: 'post',
     data
   })
 }
 
-export function deleteKhDepartment(params) {
+export function deleteKhDepartment(data) {
   return request({
-    url: '/umkh/SelfKhDepartment/delete',
+    url: '/umkh/face/KhDepartment/delete',
     method: 'post',
-    params
+    data
   })
 }
 
-export function fetchKhCompany(params) {
+export function fetchKhCompany(data) {
   return request({
-    url: '/umkh/SelfKhCompany/get',
-    method: 'get',
-    params
+    url: '/umkh/face/KhCompany/fetch',
+    method: 'post',
+    data
   })
 }
 
 export function createKhCompany(data) {
   return request({
-    url: '/umkh/SelfKhCompany/save',
+    url: '/umkh/face/KhCompany/save',
     method: 'post',
     data
   })
@@ -49,16 +58,16 @@ export function createKhCompany(data) {
 
 export function updateKhCompany(data) {
   return request({
-    url: '/umkh/SelfKhCompany/save',
+    url: '/umkh/face/KhCompany/save',
     method: 'post',
     data
   })
 }
 
-export function deleteKhCompany(params) {
+export function deleteKhCompany(data) {
   return request({
-    url: '/umkh/SelfKhCompany/delete',
+    url: '/umkh/face/KhCompany/delete',
     method: 'post',
-    params
+    data
   })
 }

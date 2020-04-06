@@ -135,4 +135,9 @@ public class KhUserActivity extends UserActivity<KhUser, IKhUserDao, KhDepartmen
         }
     }
 
+	@Override
+	protected String departmentAdminRoleCode() {
+		return "KhRole_sys_dept";
+	}
+
 }

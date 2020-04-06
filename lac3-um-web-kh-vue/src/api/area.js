@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
-export function loadAreaTree() {
+export function loadAreaTree(data) {
   return request({
-    url: '/umkh/area/loadTree4MyCompany',
-    method: 'get'
+    url: '/umkh/face/Area/loadTree4MyCompany',
+    method: 'post',
+    data
   })
 }

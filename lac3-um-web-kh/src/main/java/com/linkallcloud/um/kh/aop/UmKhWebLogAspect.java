@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Order(5)
-public class XfWebLogAspect extends BusiWebLogAspect<UmWebLog, IUmWebLogManager> {
+public class UmKhWebLogAspect extends BusiWebLogAspect<UmWebLog, IUmWebLogManager> {
 
     @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IUmWebLogManager lacWebBusiLogManager;
@@ -25,7 +25,7 @@ public class XfWebLogAspect extends BusiWebLogAspect<UmWebLog, IUmWebLogManager>
 	}
 
 	// @Pointcut("@annotation(com.linkallcloud.core.busilog.annotation.WebLog)")
-	@Pointcut("execution(public * com.linkallcloud.um.kh.controller..*.*(..))")
+	@Pointcut("execution(public * com.linkallcloud.um.kh.face..*.*(..))")
 	public void xfWebLog() {
 	}
 

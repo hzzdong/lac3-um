@@ -71,6 +71,17 @@
 			u.status &lt;&gt; 9 AND u.parentId=#{parentCompanyId}
 	</select>
 	
+	<select id="findAllCompaniesByParentCode" resultType="com.linkallcloud.um.domain.party.KhCompany">
+		select
+			<include refid="Base_Column_List" />
+		from um_kh_company u 
+		where 
+			u.status &lt;&gt; 9 
+			AND substring(u.code, 1, #{len}) = #{parentCode}
+			AND u.code &lt;&gt; #{parentCode}
+		order by u.sort
+	</select>
+	
 	<select id="findPage" resultType="com.linkallcloud.um.domain.party.KhCompany">
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.khTypeCode,

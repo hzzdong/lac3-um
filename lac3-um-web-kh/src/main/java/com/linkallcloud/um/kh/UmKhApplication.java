@@ -84,7 +84,7 @@ public class UmKhApplication implements WebMvcConfigurer {
 	public FilterRegistrationBean<AuthenticationFilter> authenticationFilter() {
 		FilterRegistrationBean<AuthenticationFilter> frb = new FilterRegistrationBean<AuthenticationFilter>();
 		frb.setFilter(new AuthenticationFilter(myAppCode, appServerName, ssoServer));
-		frb.addUrlPatterns("/*");
+		frb.addUrlPatterns("/ssoauth");
 		frb.setName("AuthenticationFilter");
 		return frb;
 	}
@@ -95,7 +95,7 @@ public class UmKhApplication implements WebMvcConfigurer {
 		FilterRegistrationBean<TicketValidationFilter> frb = new FilterRegistrationBean<TicketValidationFilter>();
 		frb.setFilter(new TicketValidationFilter(myAppCode, appServerName, null,
 				new ServiceTicketValidator(ssoServer, false)));
-		frb.addUrlPatterns("/*");
+		frb.addUrlPatterns("/ssoauth");
 		frb.setName("ServiceTicketValidationFilter");
 		return frb;
 	}
@@ -105,7 +105,7 @@ public class UmKhApplication implements WebMvcConfigurer {
 	public FilterRegistrationBean<LoginFilter> loginFilterReg() {
 		FilterRegistrationBean<LoginFilter> frb = new FilterRegistrationBean<LoginFilter>();
 		frb.setFilter(new LoginFilter(myAppCode, khUserManager, loginUrl));
-		frb.addUrlPatterns("/*");
+		frb.addUrlPatterns("/ssoauth");
 		frb.setName("LoginFilter");
 		return frb;
 	}
@@ -123,10 +123,9 @@ public class UmKhApplication implements WebMvcConfigurer {
 		envpi.order(4);
 
 		InterceptorRegistration pi = registry.addInterceptor(getLacPermissionInterceptor());
-		pi.excludePathPatterns("/js/**", "/css/**", "/images/**", "/img/**", "/static/**", "/login/**", "/verifyCode",
+		pi.excludePathPatterns("/index","/js/**", "/css/**", "/images/**", "/img/**", "/static/**", "/login/**", "/verifyCode",
 				"/imageValidate", "/exit", "/unsupport", "/error", "/pub/**", "/nnl/**", "/face/**");
-		pi.addPathPatterns("/**");
-		pi.addPathPatterns("/**");
+		pi.addPathPatterns("/face/**");
 		pi.order(5);
 
 		WebMvcConfigurer.super.addInterceptors(registry);

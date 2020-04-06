@@ -5,12 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.linkallcloud.um.service.party.ICompanyService;
-import com.linkallcloud.um.service.party.IDepartmentService;
-import com.linkallcloud.um.service.party.IRoleService;
-import com.linkallcloud.um.service.party.IUserService;
-import com.linkallcloud.um.service.sys.IAreaService;
-import com.linkallcloud.um.service.sys.IMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.dto.Trace;
@@ -24,6 +18,12 @@ import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.ICompanyManager;
+import com.linkallcloud.um.service.party.ICompanyService;
+import com.linkallcloud.um.service.party.IDepartmentService;
+import com.linkallcloud.um.service.party.IRoleService;
+import com.linkallcloud.um.service.party.IUserService;
+import com.linkallcloud.um.service.sys.IAreaService;
+import com.linkallcloud.um.service.sys.IMenuService;
 
 public abstract class CompanyManager<T extends Company, S extends ICompanyService<T>, D extends Department, DS extends IDepartmentService<D>, U extends User, US extends IUserService<U>, R extends Role, RS extends IRoleService<R, U>>
 		extends OrgManager<T, S> implements ICompanyManager<T> {
@@ -110,55 +110,7 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 
 	@Override
 	public List<Tree> getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
-		U user = userService().fetchById(t, userId);
-		if (user == null) {
-			throw new BaseRuntimeException("100001", "userId参数错误:" + userId);
-		}
-
-		if (user.getAccount().equals("superadmin") || user.isAdmin()) {
-			return service().getCompanyOrgTreeList(t, user.getCompanyId());
-		} else {
-			boolean depAdmin = false;
-			List<R> roles = roleService().find4User(t, userId);
-			for (R role : roles) {
-				if (role.getGovCode().equals("YwRole_sys_dept")) {
-					depAdmin = true;
-					break;
-				}
-			}
-
-			if (depAdmin) {
-				if ("YwDepartment".equals(user.getParentClass()) || "KhDepartment".equals(user.getParentClass())) {
-					Long depId = user.getParentId();
-					if (depId != null) {
-						D dep = departmentService().fetchById(t, depId);
-						if (dep != null) {
-							List<Tree> result = new ArrayList<Tree>();
-							Tree node = dep.toTreeNode();
-							result.add(node);
-							return result;
-						}
-					}
-				}
-				return null;
-			} else {
-				List<Long> permedOrgIds = userService().findUserAppPermedOrgs(t, userId, appId);
-				if (permedOrgIds == null || permedOrgIds.isEmpty()) {
-					return null;
-				}
-
-				List<Tree> orgs = service().getCompanyOrgTreeList(t, user.getCompanyId());
-				List<Tree> result = new ArrayList<Tree>();
-				for (Tree node : orgs) {
-					for (Long orgId : permedOrgIds) {
-						if (node.getId().equals(orgId.toString())) {
-							result.add(node);
-						}
-					}
-				}
-				return result;
-			}
-		}
+		return service().getPermedCompanyOrgs(t, appId, userId);
 	}
 
 	protected void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {

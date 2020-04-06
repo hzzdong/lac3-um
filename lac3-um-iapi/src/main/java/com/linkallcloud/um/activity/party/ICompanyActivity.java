@@ -1,74 +1,84 @@
 package com.linkallcloud.um.activity.party;
 
+import java.util.List;
+import java.util.Map;
+
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 
-import java.util.List;
-import java.util.Map;
-
 public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 
-    List<T> findSubCompanies(Trace t, Long companyId);
+	List<T> findSubCompanies(Trace t, Long companyId);
 
-    Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
-    Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId);
+	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
 
-    Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
+	Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId);
 
-    /**
-     * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点。
-     *
-     * @param t
-     * @param companyId
-     * @return
-     */
-    List<Tree> getCompanyOrgTreeList(Trace t, Long companyId);
+	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
 
-    /**
-     * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-     *
-     * @param t
-     * @param companyId
-     * @return
-     */
-    List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId);
+	/**
+	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点Tree
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree getCompanyOrgTrees(Trace t, Long companyId);
 
-    /**
-     * 根据父公司的ID，查找直接子公司列表
-     *
-     * @param t
-     * @param parentId
-     * @return
-     */
-    List<T> findDirectCompaniesByParentId(Trace t, Long parentId);
+	/**
+	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点Tree平行列表
+	 *
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	List<Tree> getCompanyOrgTreeList(Trace t, Long companyId);
 
-    /**
-     * 根据父公司的govCode，查找所有子公司列表
-     *
-     * @param t
-     * @param govCode
-     * @return
-     */
-    List<T> findAllCompaniesByParentCode(Trace t, String govCode);
+	/**
+	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
+	 *
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId);
 
-    Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId);
+	/**
+	 * 根据父公司的ID，查找直接子公司列表
+	 *
+	 * @param t
+	 * @param parentId
+	 * @return
+	 */
+	List<T> findDirectCompaniesByParentId(Trace t, Long parentId);
 
-    List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
+	/**
+	 * 根据父公司的govCode，查找所有子公司列表
+	 *
+	 * @param t
+	 * @param govCode
+	 * @return
+	 */
+	List<T> findAllCompaniesByParentCode(Trace t, String govCode);
 
-    List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
+	Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId);
 
-    PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId);
+	List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
 
-    Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
+	List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
 
-    Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-                                   Map<String, Long> areaUuidIds);
+	PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId);
 
-    Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId);
+	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
 
-    Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-                                   Map<String, Long> menuUuidIds);
+	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
+			Map<String, Long> areaUuidIds);
+
+	Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId);
+
+	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
+			Map<String, Long> menuUuidIds);
 
 }

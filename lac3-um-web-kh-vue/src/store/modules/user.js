@@ -79,7 +79,6 @@ const actions = {
   // user login by token
   loginByToken({ commit }, token) {
     return new Promise((resolve, reject) => {
-      debugger
       commit('SET_TOKEN', token)
       setToken(token)
       resolve(token)

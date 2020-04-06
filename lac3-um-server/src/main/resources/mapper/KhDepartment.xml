@@ -17,7 +17,7 @@
 		select
 			<include refid="Column_with_orgName" />
 		from 
-			um_kh_department u left join um_kh_department d on u.parentId=d.id 
+			um_kh_department u left join um_kh_department d on u.parentId=d.id and u.parentClass='KhDepartment' 
 		where 
 			u.id=#{id}
 	</select>
@@ -26,7 +26,7 @@
 		SELECT
 			<include refid="Column_with_orgName" />
 		FROM
-			um_kh_department u left join um_kh_department d on u.parentId=d.id 
+			um_kh_department u left join um_kh_department d on u.parentId=d.id and u.parentClass='KhDepartment' 
 		WHERE
 			u.id = #{id} and u.uuid=#{uuid} and u.status &lt;&gt; 9
 	</select>
