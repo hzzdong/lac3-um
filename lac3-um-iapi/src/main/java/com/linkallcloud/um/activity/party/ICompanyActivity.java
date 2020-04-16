@@ -46,6 +46,15 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId);
 
 	/**
+	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree getCompanyFullOrgTree(Trace t, Long companyId);
+
+	/**
 	 * 根据父公司的ID，查找直接子公司列表
 	 *
 	 * @param t

@@ -8,48 +8,58 @@
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
 		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid
 	</sql>
-	
-	<sql id="Column_with_orgName">
+
+	<sql id="Column_with_dep_com_Name">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,c.name as orgName
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 	</sql>
 	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.KhUser">
 		select
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		from um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		where u.companyId = #{companyId}
 	</select>
 	
 	<select id="find4Department" resultType="com.linkallcloud.um.domain.party.KhUser">
 		select
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		from um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		where u.parentId = #{departmentId} AND u.parentClass='KhDepartment'
 	</select>	
 	
 	<select id="fetchById" resultType="com.linkallcloud.um.domain.party.KhUser">
 		select
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		from 
 			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		where 
 			u.id=#{id}
 	</select>
 	
 	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
-			u.id = #{id} and u.uuid=#{uuid} and u.status &lt;&gt; 9
+			u.id = #{id} and u.uuid=#{uuid}
 	</select>
 	
 	<select id="fetchByIdUuidJoinParent" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Column_with_orgName" />
+			u.id,u.uuid,u.status,u.createTime,u.updateTime,
+			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,c.name as orgName
 		FROM
 		<choose>
 			<when test="parentClass != null and parentClass == 'KhCompany' ">
@@ -65,8 +75,10 @@
 	
 	<select id="findByIds" resultType="com.linkallcloud.um.domain.party.KhUser">
 		select
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		from um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		where u.id in
 			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
 				#{id}
@@ -75,47 +87,55 @@
 	
 	<select id="fecthByAccount" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.account = #{account} and u.status &lt;&gt; 9
 	</select>
 	
 	<select id="findByMobile" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.mobile = #{mobile} and u.status &lt;&gt; 9
 	</select>
 	
 	<select id="fecthByAZwuid" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.zwuid = #{zwuid} and u.status &lt;&gt; 9
 	</select>
 	
 	<select id="fecthByDduid" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Base_Column_List" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.dduid = #{dduid} and u.status &lt;&gt; 9
 	</select>
 	
 	<select id="findPage" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			u.id,u.uuid,u.status,u.createTime,u.updateTime,
-			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,c.name as orgName
+			<include refid="Column_with_dep_com_Name" />
 		FROM
-			um_kh_user u left join um_kh_company c on u.companyId=c.id  AND u.parentClass='KhDepartment'
+			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.account &lt;&gt; 'superadmin' 
 			<choose>
@@ -149,9 +169,11 @@
 	
 	<select id="findSelfUserPage" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Column_with_orgName" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
-			um_kh_user u left join um_kh_department c on u.parentId=c.id AND u.parentClass='KhDepartment' 
+			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.account &lt;&gt; 'superadmin' 
 			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId}</if>
@@ -181,10 +203,11 @@
 							else ku.parentId*-1
 							end parentId,
 							ku.parentClass,ku.account,ku.name,ku.nickName,ku.mobile,ku.idCard,ku.sex,ku.birthday,ku.remark,ku.lastLoginTime,
-							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,c.name as orgName
+							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
-							LEFT JOIN um_kh_department c on ku.parentId=c.id
+							LEFT JOIN um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+							LEFT JOIN um_kh_company c on u.companyId=c.id 
 						WHERE
 							ku.status &lt;&gt; 9 AND ku.account &lt;&gt; 'superadmin' 
 							AND ku.companyId = #{page.cnds.companyId}
@@ -212,10 +235,10 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,d.name as orgName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM
 			um_kh_user u 
-				left join um_kh_department d on u.parentId=d.id 
+				left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 				left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.account &lt;&gt; 'superadmin' 
@@ -266,10 +289,10 @@
 							else ku.parentId*-1
 							end parentId,
 							ku.parentClass,ku.account,ku.name,ku.nickName,ku.mobile,ku.idCard,ku.sex,ku.birthday,ku.remark,ku.lastLoginTime,
-							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,c.name as companyName
+							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
-								LEFT JOIN um_kh_department d on ku.parentId=d.id
+								LEFT JOIN um_kh_department d on ku.parentId=d.id AND u.parentClass='KhDepartment' 
 								LEFT JOIN um_kh_company c on u.companyId=c.id 
 						WHERE
 							ku.status &lt;&gt; 9 AND ku.account &lt;&gt; 'superadmin' 
@@ -308,10 +331,12 @@
 	
 	<select id="findPage4Role" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Column_with_orgName" />
+			<include refid="Column_with_dep_com_Name" />
 		FROM
-			um_kh_user u left join um_kh_department c on u.parentId=c.id 
-				join um_kh_rel_role_user rel on u.id=rel.userId
+			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
+			join um_kh_rel_role_user rel on u.id=rel.userId
 		WHERE
 			rel.roleId = #{page.cnds.roleId}
 			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
@@ -325,6 +350,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -337,11 +363,11 @@
 	
 	<select id="find" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.parentId,u.parentClass,u.account,u.salt,
-			u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid
+			<include refid="Column_with_dep_com_Name" />
 		FROM
 			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9
 			<if test="query!=null and query.cnds!=null and query.cnds.companyId != null"> AND u.companyId = #{query.cnds.companyId}</if>

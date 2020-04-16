@@ -35,14 +35,16 @@ service.interceptors.request.use(
             appCode: 'lac_app_um_kh',
             start: (data.page - 1) * data.limit,
             length: data.limit,
-            cnds: [],
-            orderby: { orderby: 'id', order: 'desc' }
+            query: {
+              cnds: [],
+              orderby: { orderby: 'id', order: 'desc' }
+            }
           }
           if (data.rules) {
             for (const field in data.rules) {
               const rule = data.rules[field]
               if (rule && rule.fv !== undefined && rule.fv !== '') {
-                page.cnds.push({
+                page.query.cnds.push({
                   field: field,
                   data: rule.fv,
                   type: rule.stype,
@@ -52,8 +54,8 @@ service.interceptors.request.use(
             }
           }
           if (data.orderby && data.orderby.orderby !== '') {
-            page.orderby.orderby = data.orderby.orderby
-            page.orderby.order = data.orderby.order
+            page.query.orderby.orderby = data.orderby.orderby
+            page.query.orderby.order = data.orderby.order
           }
           config.data = page
         } else {

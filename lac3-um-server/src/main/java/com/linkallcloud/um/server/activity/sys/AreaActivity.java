@@ -59,7 +59,7 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	@Override
 	public List<Tree> getTreeNodes(Trace t, boolean valid) {
 		List<Tree> result = super.getTreeNodes(t, valid);
-		Tree root = new Tree("0", null, "中华人民共和国");
+		Tree root = new Tree(null, null, "中华人民共和国");
 		root.setOpen(true);
 		//result = Trees.assembleChildren2Parent(result, root);
 		Trees.assembleTree(root, result);

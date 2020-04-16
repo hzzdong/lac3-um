@@ -8,6 +8,14 @@ export function getOrgTree(data) {
   })
 }
 
+export function getFullOrgTree(data) {
+  return request({
+    url: '/umkh/face/KhCompany/loadFullTree',
+    method: 'post',
+    data
+  })
+}
+
 export function fetchKhDepartment(data) {
   return request({
     url: '/umkh/face/KhDepartment/fetch',

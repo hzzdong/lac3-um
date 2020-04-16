@@ -15,6 +15,14 @@ export function getInfo(token) {
   })
 }
 
+export function fetchById(data) {
+  return request({
+    url: '/umkh/face/KhUser/fetch',
+    method: 'post',
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/umkh/logout',
@@ -24,7 +32,7 @@ export function logout() {
 
 export function getPage(data) {
   return request({
-    url: '/umkh/SelfKhUser/page',
+    url: '/umkh/face/KhUser/page',
     method: 'post',
     data
   })
@@ -32,7 +40,7 @@ export function getPage(data) {
 
 export function createUser(data) {
   return request({
-    url: '/umkh/SelfKhUser/save',
+    url: '/umkh/face/KhUser/save',
     method: 'post',
     data
   })
@@ -40,16 +48,40 @@ export function createUser(data) {
 
 export function updateUser(data) {
   return request({
-    url: '/umkh/SelfKhUser/save',
+    url: '/umkh/face/KhUser/save',
     method: 'post',
     data
   })
 }
 
-export function deleteUser(params) {
+export function deleteUser(data) {
   return request({
-    url: '/umkh/SelfKhUser/delete',
+    url: '/umkh/face/KhUser/delete',
     method: 'post',
-    params
+    data
+  })
+}
+
+export function getPage4Role(data) {
+  return request({
+    url: '/umkh/face/KhUser/page4Role',
+    method: 'post',
+    data
+  })
+}
+
+export function findRoleUsers(data) {
+  return request({
+    url: '/umkh/face/KhUser/page4Role',
+    method: 'post',
+    data
+  })
+}
+
+export function findUnRoleUsers(data) {
+  return request({
+    url: '/umkh/face/KhUser/page4Select',
+    method: 'post',
+    data
   })
 }

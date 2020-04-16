@@ -100,7 +100,10 @@
 		FROM
 			um_kh_role u 
 		WHERE
-			u.status &lt;&gt; 9  AND ( u.companyId = #{companyId} OR u.type = 9 )
+			u.status &lt;&gt; 9  AND ( u.companyId = #{companyId} OR u.type = 9 ) 
+			<if test="cnds!=null and cnds.name != null"> AND u.name like #{cnds.name}</if>
+			<if test="cnds!=null and cnds.govCode != null"> AND u.govCode like #{cnds.govCode}</if>
+			<if test="cnds!=null and cnds.status != null"> AND u.status = #{cnds.status}</if>
 	</select>
 	
 	<select id="findCompanyRolesByLevel" resultType="com.linkallcloud.um.domain.party.KhRole">
@@ -110,7 +113,7 @@
 			um_kh_role u 
 		WHERE
 			u.status &lt;&gt; 9  AND ( u.companyId = #{companyId} OR u.type = 9 ) 
-			<if test="levelNotEqual != null"> AND u.level &lt;&gt; #{levelNotEqual}</if>
+			<if test="roleLevel == null or roleLevel != 9"> AND u.level &lt;&gt; 9</if>
 	</select>
 	
 	<select id="findPage4Select" resultType="com.linkallcloud.um.domain.party.KhRole">

@@ -96,7 +96,12 @@ const actions = {
         }
 
         commit('SET_USER', data)
-        commit('SET_PERMISSIONS', data.menuPermissions)
+        if (data.menuPermissions && data.menuPermissions.length > 0) {
+          commit('SET_PERMISSIONS', data.menuPermissions)
+        } else {
+          commit('SET_PERMISSIONS', ['NO_PERMISSION'])
+        }
+
         resolve(data)
       }).catch(error => {
         reject(error)

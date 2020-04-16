@@ -49,7 +49,8 @@ public abstract class User extends Party {
 	 * 以下字段为查询字段
 	 */
 	private String companyName;
-	List<Long> roleIds;// 新增和编辑界面上选中中角色
+	private List<Long> roleIds;// 新增和编辑界面上选中中角色
+	private boolean roleEnabled;//编辑时否维护用户的角色
 
 	/** 原密码 */
 	@JSONField(serialize = false)
@@ -57,10 +58,11 @@ public abstract class User extends Party {
 
 	public User() {
 		super();
+		roleEnabled = false;
 	}
 
 	public User(String name, String account, String mobile, String password) {
-		super();
+		this();
 		this.setName(name);
 		this.setAccount(account);
 		this.setMobile(mobile);
@@ -235,6 +237,14 @@ public abstract class User extends Party {
 
 	public void setRoleIds(List<Long> roleIds) {
 		this.roleIds = roleIds;
+	}
+
+	public boolean isRoleEnabled() {
+		return roleEnabled;
+	}
+
+	public void setRoleEnabled(boolean roleEnabled) {
+		this.roleEnabled = roleEnabled;
 	}
 
 	public String getOldpassword() {

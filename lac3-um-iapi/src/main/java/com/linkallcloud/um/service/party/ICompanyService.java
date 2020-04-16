@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICompanyService<T extends Company> extends IOrgService<T> {
-	
+
 	List<T> findSubCompanies(Trace t, Long companyId);
 
 	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
+
 	Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId);
 
 	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
-	
+
 	/**
 	 * 得到某用户某应用的机构权限树
 	 * 
@@ -37,6 +38,15 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	List<Tree> getCompanyOrgTreeList(Trace t, Long companyId);
 
 	/**
+	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree getCompanyFullOrgTree(Trace t, Long companyId);
+
+	/**
 	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
 	 * 
 	 * @param t
@@ -53,7 +63,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	List<T> findDirectCompaniesByParentId(Trace t, Long parentId);
-	
+
 	/**
 	 * 根据父公司的govCode，查找所有子公司列表
 	 * 
@@ -74,11 +84,11 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
 
 	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-                                   Map<String, Long> areaUuidIds);
+			Map<String, Long> areaUuidIds);
 
 	Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId);
 
 	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-                                   Map<String, Long> menuUuidIds);
+			Map<String, Long> menuUuidIds);
 
 }

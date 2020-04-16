@@ -83,7 +83,7 @@ public class YwCompanyActivity extends CompanyActivity<YwCompany, IYwCompanyDao,
     @Override
     public boolean checkUserExist(Trace t, boolean isNew, YwCompany entity) {
         if (isNew) {
-            if (!Strings.isBlank(entity.getJphone())) {
+            if (!Strings.isBlank(entity.getGovCode())) {
                 YwUser dbUser = getUserDao().fecthByAccount(t, entity.getGovCode());
                 if (dbUser != null) {
                     throw new AccountException(Exceptions.CODE_ERROR_PARAMETER,

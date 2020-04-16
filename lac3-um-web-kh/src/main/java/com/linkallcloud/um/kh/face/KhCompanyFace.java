@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.um.domain.party.KhCompany;
@@ -46,6 +47,13 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		return khCompanyManager.getPermedCompanyOrgs(t, app.getId(), Long.parseLong(su.getId()));
 	}
 
+	@Face(simple = true)
+	@RequestMapping(value = "/loadFullTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadKhCompanyFullTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+		Tree root = khCompanyManager.getCompanyFullOrgTree(t, Long.parseLong(su.getCompanyId()));
+		return root.getChildren();
+	}
+
 	@Override
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {
 		entity.setParentId(Long.valueOf(su.getCompanyId()));
@@ -54,7 +62,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 	}
 
 	@Override
-	protected Object convert(String method, KhCompany entity) {
+	protected Object convert(Trace t, String method, FaceRequest fr, KhCompany entity) {
 		if (!Strings.isBlank(method) && method.equals("save")) {
 			Tree node = entity.toTreeNode();
 			node.setId("-" + node.getId());

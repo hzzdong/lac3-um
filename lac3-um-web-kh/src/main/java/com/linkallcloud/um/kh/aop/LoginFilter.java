@@ -42,16 +42,17 @@ public class LoginFilter extends AbstractPrincipalFilter {
 
 	@Override
 	protected SessionUser getUserByLoginName(String loginName) {
-		return khUserManager.assembleSessionUser(new Trace(true), loginName, myAppCode);
+		SessionUser su =  khUserManager.assembleSessionUser(new Trace(true), loginName, myAppCode);
+		return su;
 	}
 
 	@Override
 	protected SessionUser getSessionUserByToken(String token) throws BizException {
 		SessionUser su = super.getSessionUserByToken(token);
 		if (su != null) {
-			return khUserManager.assembleSessionUser(new Trace(true), su.getLoginName(), myAppCode);
+			su = khUserManager.assembleSessionUser(new Trace(true), su.getLoginName(), myAppCode);
 		}
-		return null;
+		return su;
 	}
 
 }

@@ -12,9 +12,6 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        导出
-      </el-button>
     </div>
 
     <el-row>
@@ -51,30 +48,32 @@
           style="width: 100%;"
           @sort-change="sortChange"
         >
-          <el-table-column label="姓名" min-width="180px">
+          <el-table-column prop="status" label="" class-name="status-col" width="40">
             <template slot-scope="{row}">
-              <span class="link-type" @click="handleUpdate(row)">{{ row.name }}</span>
+              <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
+            </template>
+          </el-table-column>
+          <el-table-column label="姓名" min-width="180px" prop="name" sortable>
+            <template slot-scope="{row}">
+              <router-link :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
+                <span>{{ row.name }}</span>
+              </router-link>
               <el-tag v-if="row.type == 9">管</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="账号" width="180px" align="center">
+          <el-table-column label="账号" width="180px" align="center" prop="account" sortable>
             <template slot-scope="scope">
               <span>{{ scope.row.account }}</span>
             </template>
           </el-table-column>
           <el-table-column label="部门" width="200px" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.orgName || (tree.data[0] ? tree.data[0].name : '') }}</span>
+              <span>{{ scope.row.orgName || (tree.checkedNode ? tree.checkedNode.name : '') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="手机" width="120px" align="center">
+          <el-table-column label="手机" width="120px" align="center" prop="mobile" sortable>
             <template slot-scope="scope">
               <span>{{ scope.row.mobile }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" class-name="status-col" width="80">
-            <template slot-scope="{row}">
-              <el-tag>{{ row.status | statusFilter }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" width="120" class-name="small-padding">
@@ -89,79 +88,119 @@
       </el-col>
     </el-row>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="60%">
-      <el-form ref="dataForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="75%">
+      <el-form ref="dataForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="所属机构" prop="orgName">
-              <el-input v-model="temp.orgName" :disabled="true">
-                <el-button slot="append" icon="el-icon-search" :disabled="true" />
-              </el-input>
-            </el-form-item>
+          <el-col :span="16">
+            <el-card class="box-card" style="margin-top: -20px;">
+              <div slot="header" class="clearfix">
+                <span>用户基本信息</span>
+                <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+              </div>
+              <div class="text item">
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="所属机构" prop="orgName">
+                      <el-input v-model="temp.orgName" :disabled="true">
+                        <el-button slot="append" icon="el-icon-search" :disabled="true" />
+                      </el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="状态" prop="status">
+                      <el-radio-group v-model="temp.status" size="small">
+                        <el-radio-button label="0">正常</el-radio-button>
+                        <el-radio-button label="1">禁用</el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="姓名" prop="name">
+                      <el-input v-model="temp.name" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="手机" prop="mobile">
+                      <el-input v-model="temp.mobile" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="账号" prop="account">
+                      <el-input v-model="temp.account" :disabled="temp.id != undefined" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="工号" prop="govCode">
+                      <el-input v-model="temp.govCode" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="密码" prop="password">
+                      <el-input v-model="temp.password" type="password" autocomplete="off" placeholder="请输入密码" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="确认密码" prop="checkPass">
+                      <el-input v-model="temp.checkPass" type="password" autocomplete="off" placeholder="请输入确认密码" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="用户类型" prop="type">
+                      <el-select v-model="temp.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                        <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="昵称" prop="nickName">
+                      <el-input v-model="temp.nickName" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="备注">
+                      <el-input v-model="temp.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-card>
+
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="temp.status" class="filter-item" placeholder="请选择" style="width:100%;">
-                <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="temp.name" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="手机" prop="mobile">
-              <el-input v-model="temp.mobile" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="账号" prop="account">
-              <el-input v-model="temp.account" :disabled="temp.id != undefined" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="工号" prop="govCode">
-              <el-input v-model="temp.govCode" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="temp.password" type="password" autocomplete="off" placeholder="请输入密码" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="确认密码" prop="checkPass">
-              <el-input v-model="temp.checkPass" type="password" autocomplete="off" placeholder="请输入确认密码" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户类型" prop="type">
-              <el-select v-model="temp.type" class="filter-item" placeholder="请选择" style="width:100%;">
-                <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="昵称" prop="nickName">
-              <el-input v-model="temp.nickName" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="备注">
-              <el-input v-model="temp.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
-            </el-form-item>
+          <el-col :span="8">
+            <el-card class="box-card" style="margin-top: -20px; margin-left: 10px;">
+              <div slot="header" class="clearfix">
+                <span>用户角色分配</span>
+                <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+              </div>
+              <div class="text item">
+                <el-table
+                  ref="roleTable"
+                  :data="roles"
+                  tooltip-effect="dark"
+                  style="width: 100%"
+                  @selection-change="handleUserRoleChange"
+                >
+                  <el-table-column
+                    type="selection"
+                    width="55"
+                  />
+                  <el-table-column
+                    prop="name"
+                    label="请选择角色分配给用户"
+                  />
+                </el-table>
+              </div>
+            </el-card>
           </el-col>
         </el-row>
       </el-form>
@@ -189,10 +228,12 @@
 
 <script>
 import { getPage, createUser, updateUser, deleteUser } from '@/api/user'
+import { findCompanyRoles, findUserRoleIds } from '@/api/khrole'
 import { getOrgTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import { validateMobile } from '@/utils/validate'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import md5 from 'js-md5'
 
 const statusOptions = [
   { key: 0, display_name: '正常' },
@@ -222,6 +263,14 @@ export default {
   filters: {
     statusFilter(status) {
       return statusKeyValue[status]
+    },
+    statusTypeFilter(status) {
+      const statusMap = {
+        0: 'success',
+        1: 'warning',
+        9: 'danger'
+      }
+      return statusMap[status]
     },
     typeFilter(type) {
       return typeKeyValue[type]
@@ -264,13 +313,16 @@ export default {
     }
     return {
       tree: {
-        checkedId: undefined,
+        checkedNode: undefined,
         data: [],
         defaultProps: {
           children: 'children',
           label: 'name'
         }
       },
+      roles: [],
+      userRoles: [],
+      userRoleIds: [],
       tableKey: 0,
       list: null,
       total: 0,
@@ -280,6 +332,7 @@ export default {
         limit: 20,
         rules: {
           parentId: { fv: undefined, oper: 'eq', stype: 'L' },
+          companyId: { fv: undefined, oper: 'eq', stype: 'L' },
           name: { fv: undefined, oper: 'cn', stype: 'S' },
           mobile: { fv: undefined, oper: 'cn', stype: 'S' },
           status: { fv: undefined, oper: 'eq', stype: 'I' }
@@ -290,6 +343,7 @@ export default {
       typeOptions,
       temp: {
         id: undefined,
+        uuid: '',
         parentId: '',
         parentClass: '',
         orgName: '',
@@ -302,13 +356,15 @@ export default {
         nickName: '',
         type: 1,
         status: 0,
-        remark: ''
+        remark: '',
+        roleEnabled: true,
+        roleIds: []
       },
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑',
-        create: '新增'
+        update: '编辑用户',
+        create: '新增用户'
       },
       dialogPvVisible: false,
       pvData: [],
@@ -343,24 +399,45 @@ export default {
       getOrgTree().then(response => {
         this.tree.data = response.data
         if (this.tree.data[0]) {
-          this.tree.checkedId = this.tree.data[0].id
-          this.$refs.tree.setCheckedKeys([this.tree.checkedId])
+          this.tree.checkedNode = this.tree.data[0]
+          this.$refs.tree.setCheckedKeys([this.tree.checkedNode.id])
         }
       })
     },
+    getCompanyRoles(parentId, parentClass) {
+      findCompanyRoles({ parentId, parentClass }).then(response => {
+        this.roles = response.data
+      })
+    },
+    getUserCompanyRoles(id, uuid) {
+      const p1 = findCompanyRoles({ id, uuid })
+      const p2 = findUserRoleIds({ id, uuid })
+      return Promise.all([p1, p2])
+    },
+    handleUserRoleChange(val) {
+      this.userRoles = val
+      this.userRoleIds = []
+      if (this.userRoles && this.userRoles.length > 0) {
+        for (let i = 0; i < this.userRoles.length; i++) {
+          this.userRoleIds[i] = this.userRoles[i].id
+        }
+      }
+    },
     handleNodeClick(data, checked, node) {
-      this.tree.checkedId = data.id
+      this.tree.checkedNode = data
       this.$refs.tree.setCheckedNodes([data])
     },
     handleCheckChange(data, checked, node) {
       if (checked === true) {
-        this.tree.checkedId = data.id
+        this.tree.checkedNode = data
         this.$refs.tree.setCheckedNodes([data])
         if (data.id > 0) {
           this.listQuery.rules.parentId.fv = data.id
+          this.listQuery.rules.companyId.fv = undefined
           this.handleFilter()
         } else {
           this.listQuery.rules.parentId.fv = undefined
+          this.listQuery.rules.companyId.fv = data.id.substring(1)
           this.handleFilter()
         }
       }
@@ -401,8 +478,9 @@ export default {
       const selectNode = this.$refs.tree.getCheckedNodes()[0]
       this.temp = {
         id: undefined,
-        parentId: this.tree.checkedId,
-        parentClass: this.tree.checkedId > 0 ? 'KhDepartment' : 'KhCompany',
+        uuid: '',
+        parentId: this.tree.checkedNode.id,
+        parentClass: this.tree.checkedNode.id > 0 ? 'KhDepartment' : 'KhCompany',
         orgName: selectNode.name,
         name: '',
         account: '',
@@ -413,16 +491,23 @@ export default {
         nickName: '',
         type: 1,
         status: 0,
-        remark: ''
+        remark: '',
+        roleEnabled: true,
+        roleIds: []
       }
     },
     selectOrg() {
       // TODO
     },
     handleCreate() {
-      if (!this.tree.checkedId) {
+      if (!this.tree.checkedNode) {
         this.$notify({ title: '提示', message: '请先选择一个机构节点，再继续操作！', type: 'warning', duration: 4000 })
         return
+      }
+      if (this.tree.checkedNode.id > 0) {
+        this.getCompanyRoles(this.tree.checkedNode.id, 'KhDepartment')
+      } else {
+        this.getCompanyRoles(this.tree.checkedNode.id.substring(1), 'KhCompany')
       }
       this.resetTemp()
       this.dialogStatus = 'create'
@@ -434,7 +519,12 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createUser(this.temp).then((response) => {
+          const user = Object.assign({ dataType: 'Object' }, this.temp)
+          user.password = md5(user.password)
+          user.checkPass = ''
+          user.roleEnabled = true
+          user.roleIds = this.userRoleIds
+          createUser(user).then((response) => {
             const tempData = Object.assign({}, response.data)
             this.list.unshift(tempData)
             this.dialogFormVisible = false
@@ -444,25 +534,52 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row)
-      if (!this.temp.orgName || this.temp.orgName === '') {
-        this.temp.orgName = this.tree.data[0].name
-      }
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+      this.getUserCompanyRoles(row.id, row.uuid).then((response) => {
+        this.roles = response[0].data
+        const selectedRoleIds = response[1].data
+
+        this.temp = Object.assign({}, row)
+        if (!this.temp.orgName || this.temp.orgName === '') {
+          this.temp.orgName = this.tree.data[0].name
+        }
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+          if (selectedRoleIds && selectedRoleIds.length > 0) {
+            const selectedRoles = []
+            for (let i = 0; i < selectedRoleIds.length; i++) {
+              for (let j = 0; j < this.roles.length; j++) {
+                if (selectedRoleIds[i] === this.roles[j].id) {
+                  selectedRoles.push(this.roles[j])
+                  break
+                }
+              }
+            }
+
+            this.$refs.roleTable.clearSelection()
+            selectedRoles.forEach(row => {
+              this.$refs.roleTable.toggleRowSelection(row, true)
+            })
+          }
+        })
       })
+        .catch(e => console.log(e))
     },
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          updateUser(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
+          const user = Object.assign({ dataType: 'Object' }, this.temp)
+          if (user.password && user.password !== '') {
+            user.password = md5(user.password)
+            user.checkPass = ''
+          }
+          user.roleEnabled = true
+          user.roleIds = this.userRoleIds
+          updateUser(user).then(() => {
+            for (let i = 0; i < this.list.length; i++) {
+              if (this.list[i].id === user.id) {
+                this.list.splice(i, 1, user)
                 break
               }
             }
@@ -488,20 +605,6 @@ export default {
         })
       }).catch(() => {
         // 取消
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
       })
     }
   }

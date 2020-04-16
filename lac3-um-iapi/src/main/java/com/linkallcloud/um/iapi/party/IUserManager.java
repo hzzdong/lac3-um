@@ -6,14 +6,14 @@ import java.util.Map;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.web.session.SessionUser;
 
 public abstract interface IUserManager<T extends User> extends IPartyManager<T> {
-	
+
 	List<T> find4Company(Trace t, Long companyId);
+
 	List<T> find4Department(Trace t, Long departmentId);
 
 	List<T> findByMobile(Trace t, String mobile);
@@ -63,7 +63,7 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	 * 
 	 * @return
 	 */
-	Page<T> findPage4Role(Trace t, Page<T> page) throws IllegalParameterException;
+	Page<T> findPage4Role(Trace t, Page<T> page);
 
 	/**
 	 * 查询某角色已分配的用户

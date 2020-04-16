@@ -1,6 +1,7 @@
 package com.linkallcloud.um.server.dao.party;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -19,7 +20,8 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * @param companyId
 	 * @return
 	 */
-	List<T> findCompanyAllRole(@Param("t") Trace t, @Param("companyId") Long companyId);
+	List<T> findCompanyAllRole(@Param("t") Trace t, @Param("companyId") Long companyId,
+			@Param("cnds") Map<String, Object> cnds);
 
 	/**
 	 * 根据orgId和levelNotEqual，获取companyId所在公司的所有角色，包含level符合的系统角色

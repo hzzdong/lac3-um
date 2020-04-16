@@ -1,13 +1,15 @@
 import { loadAreaTree } from '@/api/area'
 import {
-  loacCertificateType4Org,
-  loacCertificateType4Person
+  loadCertificateType4Org,
+  loadCertificateType4Person,
+  loadOrgTypes
 } from '@/api/dict'
 
 const state = {
   myCompanyAreaTree: [],
   orgCertificateType: [],
-  personCertificateType: []
+  personCertificateType: [],
+  orgType: []
 }
 
 const mutations = {
@@ -19,6 +21,9 @@ const mutations = {
   },
   SET_PERSON_CERTIFICATE_TYPE: (state, data) => {
     state.personCertificateType = data
+  },
+  SET_ORG_TYPE: (state, data) => {
+    state.orgType = data
   }
 }
 
@@ -39,9 +44,9 @@ const actions = {
   },
 
   // 加载公司证照类型
-  loacOrgCertificateType({ commit }) {
+  loadOrgCertificateType({ commit }) {
     return new Promise((resolve, reject) => {
-      loacCertificateType4Org()
+      loadCertificateType4Org()
         .then(response => {
           const { data } = response
           commit('SET_ORG_CERTIFICATE_TYPE', data)
@@ -54,9 +59,9 @@ const actions = {
   },
 
   // 加载个人证照类型
-  loacPersonCertificateType({ commit }) {
+  loadPersonCertificateType({ commit }) {
     return new Promise((resolve, reject) => {
-      loacCertificateType4Person()
+      loadCertificateType4Person()
         .then(response => {
           const { data } = response
           commit('SET_PERSON_CERTIFICATE_TYPE', data)
@@ -66,7 +71,23 @@ const actions = {
           reject(error)
         })
     })
+  },
+
+  // 加载机构类型
+  loadOrgType({ commit }) {
+    return new Promise((resolve, reject) => {
+      loadOrgTypes()
+        .then(response => {
+          const { data } = response
+          commit('SET_ORG_TYPE', data)
+          resolve(data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
+
 }
 
 export default {

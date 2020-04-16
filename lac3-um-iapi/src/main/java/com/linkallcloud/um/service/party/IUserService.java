@@ -38,7 +38,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	 *
 	 * @return
 	 */
-	Page<T> findPage4Role(Trace t, Page<T> page) throws IllegalParameterException;
+	Page<T> findPage4Role(Trace t, Page<T> page);
 
 	/**
 	 * 查询某角色已分配的用户
@@ -77,7 +77,6 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	List<T> find4Role(Trace t, String[] roleGovCodes);
 
 	List<T> findByRoleCompany(Trace t, Long companyId, Long roleId);
-
 
 	/**
 	 * 查询某角色已分配给某部门的用户

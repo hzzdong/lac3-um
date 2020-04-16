@@ -18,10 +18,10 @@
       :selection-type="props.selectionType"
     >
       <template slot="typeTemplate" slot-scope="{row}">
-        <el-tag :effect="row.attributes.alias==='Company' ? 'dark' : 'plain'">{{ row.attributes.alias | typeFilter }}</el-tag>
+        <el-tag :effect="row.attributes.alias==='Company' ? 'dark' : 'plain'">{{ row.attributes.alias | typeFilter }}<span v-if="row.type === '1'">(管)</span></el-tag>
       </template>
       <template slot="statusTemplate" slot-scope="{row}">
-        <el-tag :type="row.status | statusTypeFilter">{{ row.status | statusFilter }}</el-tag>
+        <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
       </template>
       <template slot="operations" slot-scope="{row}">
         <el-button
@@ -57,15 +57,16 @@
           title="新增子单位"
           @click="handleAddCompany(row)"
         />
-        <el-button
-          v-if="row.attributes.alias === 'Company' && !row.pId"
-          type="primary"
-          size="mini"
-          title="组织树预览"
-          @click="handleShowOrgTree(row)"
-        >
-          <svg-icon icon-class="tree" />
-        </el-button>
+        <router-link v-if="row.attributes.alias === 'Company' && !row.pId" :to="'/Org/tree-view'" class="link-type" style="margin-left: 10px;">
+          <el-button
+            type="primary"
+            size="mini"
+            title="组织树预览"
+            @click="handleShowOrgTree(row)"
+          >
+            <svg-icon icon-class="tree" />
+          </el-button>
+        </router-link>
       </template>
     </zk-table>
 
@@ -81,9 +82,10 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="状态" prop="status">
-              <el-select v-model="department.entity.status" class="filter-item" placeholder="请选择" style="width:100%;">
-                <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
+              <el-radio-group v-model="department.entity.status" size="small">
+                <el-radio-button label="0">正常</el-radio-button>
+                <el-radio-button label="1">禁用</el-radio-button>
+              </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,13 +115,22 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="department.entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
+            <el-form-item label="机构类型" prop="type">
+              <el-select v-model="department.entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                <el-option v-for="item in commonData.orgTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="排序号" prop="sort">
               <el-input v-model.number="department.entity.sort" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="department.entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -152,9 +163,10 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="状态" prop="status">
-                  <el-select v-model="company.entity.status" class="filter-item" placeholder="请选择" style="width:100%;">
-                    <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-                  </el-select>
+                  <el-radio-group v-model="company.entity.status" size="small">
+                    <el-radio-button label="0">正常</el-radio-button>
+                    <el-radio-button label="1">禁用</el-radio-button>
+                  </el-radio-group>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -333,7 +345,7 @@ import ZkTable from 'vue-table-with-tree-grid'
 Vue.use(ZkTable)
 import { getOrgTree, fetchKhDepartment, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
 // import { loadAreaTree } from '@/api/area'
-import { loadCachedMyCompanyAreaTree, loacOrgCertificateType, loacPersonCertificateType } from '@/utils/laccache'
+import { loadCachedMyCompanyAreaTree, loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
 
 const statusOptions = [
   { key: 0, display_name: '正常' },
@@ -410,7 +422,7 @@ export default {
         {
           label: '状态',
           prop: 'statusTemplate',
-          width: '90px',
+          width: '50px',
           type: 'template',
           template: 'statusTemplate'
         },
@@ -425,7 +437,8 @@ export default {
       statusOptions,
       commonData: {
         certificateTypeOptions: [],
-        personCertificateTypeOptions: []
+        personCertificateTypeOptions: [],
+        orgTypeOptions: []
       },
       department: {
         entity: {
@@ -440,6 +453,7 @@ export default {
           govCode: '',
           linkUserName: '',
           linkUserPhone: '',
+          type: '0',
           sort: 1,
           status: 0,
           remark: ''
@@ -541,8 +555,7 @@ export default {
   },
   methods: {
     loadCommonData() {
-      loacOrgCertificateType().then(ct => {
-        console.log('orgCertificateType Data', ct)
+      loadOrgCertificateType().then(ct => {
         this.commonData.certificateTypeOptions = []
         if (ct && ct.length > 0) {
           for (let i = 0; i < ct.length; i++) {
@@ -550,10 +563,9 @@ export default {
           }
         }
       }).catch(() => {
-        // 取消
       })
-      loacPersonCertificateType().then(ct => {
-        console.log('personCertificateType Data', ct)
+
+      loadPersonCertificateType().then(ct => {
         this.commonData.personCertificateTypeOptions = []
         if (ct && ct.length > 0) {
           for (let i = 0; i < ct.length; i++) {
@@ -561,7 +573,16 @@ export default {
           }
         }
       }).catch(() => {
-        // 取消
+      })
+
+      loadOrgType().then(ct => {
+        this.commonData.orgTypeOptions = []
+        if (ct && ct.length > 0) {
+          for (let i = 0; i < ct.length; i++) {
+            this.commonData.orgTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
+          }
+        }
+      }).catch(() => {
       })
     },
     handleNodeClick(data, checked, node) {
@@ -635,6 +656,7 @@ export default {
         govCode: (me && me.govCode) ? me.govCode : '',
         linkUserName: (me && me.linkUserName) ? me.linkUserName : '',
         linkUserPhone: (me && me.linkUserPhone) ? me.linkUserPhone : '',
+        type: (me && me.type) ? (me.type + '') : '0',
         sort: (me && me.sort) ? me.sort : 1,
         status: (me && me.status) ? me.status : 0,
         remark: (me && me.remark) ? me.remark : ''
@@ -827,6 +849,11 @@ export default {
       })
     },
     deleteDepartment(dep) {
+      debugger
+      if (dep.children && dep.children.length > 0) {
+        this.$notify({ title: '提醒', message: '此机构节点下有子节点，删除所有子节点后再才能删除！', type: 'warning', duration: 4000 })
+        return
+      }
       const parent = this.pickTreeNode(this.data, dep.pId)
       if (parent && parent.children) {
         const { id, uuid } = dep

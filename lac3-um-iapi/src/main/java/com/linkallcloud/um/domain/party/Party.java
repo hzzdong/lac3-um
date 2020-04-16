@@ -12,6 +12,7 @@ public abstract class Party extends TreeDomain {
 	 * 以下字段为查询字段
 	 */
 	private String orgName;
+	private String orgFullName;
 
 	public Party() {
 		super();
@@ -33,6 +34,14 @@ public abstract class Party extends TreeDomain {
 		this.orgName = orgName;
 	}
 
+	public String getOrgFullName() {
+		return orgFullName;
+	}
+
+	public void setOrgFullName(String orgFullName) {
+		this.orgFullName = orgFullName;
+	}
+
 	/**
 	 * 根据自己code得到公司的code
 	 * 
@@ -45,9 +54,9 @@ public abstract class Party extends TreeDomain {
 	public Long myCompanyId() {
 		return Domains.parseMyCompanyId(this.getCode());
 	}
-	
+
 	public Long rootCompanyId() {
-        return Domains.parseMyRootCompanyId(this.getCode());
-    }
+		return Domains.parseMyRootCompanyId(this.getCode());
+	}
 
 }

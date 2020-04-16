@@ -102,7 +102,7 @@ public class KhUserManager
             }
 
             Application app = applicationService.fetchByCode(t, appCode);
-            String[] perms = this.getUserAppPermissions4Menu(t, Long.valueOf(su.getId()), app.getId());
+            String[] perms = this.getUserAppPermissions4Menu(t, dbUser.getId(), app.getId());
             su.setPermissions(perms, null, null);
             su.setAppInfo(app.getId().toString(), app.getUuid(), app.getName());
             return su;

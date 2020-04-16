@@ -44,8 +44,8 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     public List<T> findCompanyAllRoles(Trace t, Long companyId) throws BaseRuntimeException {
         return service().findCompanyAllRoles(t, companyId);
     }
-
-    @Override
+    
+	@Override
     public List<T> findCompanyRolesByLevel(Trace t, Long companyId, Integer roleLevel) throws BaseRuntimeException {
         return service().findCompanyRolesByLevel(t, companyId, roleLevel);
     }
@@ -120,6 +120,12 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     }
 
     @Override
+	public Tree findPermedMenuTree(Trace t, Long companyId, Long roleId, Long appId) {
+    	List<Tree> items = findPermedMenus(t, companyId, roleId, appId);
+		return Trees.assembleTree(items);
+	}
+
+	@Override
     public List<Tree> findPermedMenus(Trace t, Long companyId, Long roleId, Long appId) {
         List<Tree> items = findCompanyValidMenus(t, companyId, appId);
         Long[] permedMenuIds = service().findPermedMenuIds(t, roleId, appId);
@@ -148,6 +154,12 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     }
 
     @Override
+	public Tree findPermedOrgTree(Trace t, Long companyId, Long roleId, Long appId) {
+    	List<Tree> items = findPermedOrgs(t, companyId, roleId, appId);
+		return Trees.assembleTree(items);
+	}
+
+	@Override
     public List<Tree> findPermedOrgs(Trace t, Long companyId, Long roleId, Long appId) {
         List<Tree> items = findCompanyValidOrgs(t, companyId);
         Long[] permedItemIds = service().findPermedOrgIds(t, roleId, appId);
@@ -159,6 +171,12 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
     }
 
     protected abstract List<Tree> findCompanyValidOrgs(Trace t, Long companyId);
+
+	@Override
+	public Tree findPermedAreaTree(Trace t, Long companyId, Long roleId, Long appId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     @Override
     public PermedAreaVo findPermedRoleAppAreas(Trace t, Long parentAreaId, Long companyId, Long roleId, Long appId) {

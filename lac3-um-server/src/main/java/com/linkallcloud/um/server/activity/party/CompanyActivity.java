@@ -163,69 +163,41 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
+	public Tree getCompanyFullOrgTree(Trace t, Long companyId) {
+		T company = dao().fetchById(t, companyId);
+		if (company == null) {
+			throw new ArgException("companyId参数错误");
+		}
+
+		Tree root = company.toTreeNode();
+		root.setId("-" + company.getId());
+		root.setpId(null);
+		root.setOpen(true);
+
+		List<Tree> children = getCompanyChildrenFullTreeNodes(t, company);
+		Trees.assembleTree(root, children);
+		root.sort();
+
+		return root;
+	}
+
+	@Override
 	public List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId) {
 		T company = dao().fetchById(t, companyId);
 		if (company == null) {
-			return null;
+			throw new ArgException("companyId参数错误");
 		}
 
-		List<Tree> result = new ArrayList<Tree>();
-
-		/* 公司根节点 */
 		Tree root = company.toTreeNode();
-		// root.setId("COM-" + company.getId());
 		root.setId("-" + company.getId());
-		root.setpId("0");
-		root.setOpen(true);
-		result.add(root);
-
-		Map<Long, T> companyIdsMap = new HashMap<>();
-		companyIdsMap.put(company.getId(), company);
-
-		/* 所有子公司 */
-		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
-		if (allCompanies != null && !allCompanies.isEmpty()) {
-			for (T node : allCompanies) {
-				if (node.getStatus() == 0) {
-					companyIdsMap.put(node.getId(), node);
-					if (node.isTopParent()) {
-						Tree item = node.toTreeNode();
-						item.setId("-" + item.getId());
-						item.setpId(root.getId());
-						result.add(item);
-					} else {
-						Tree item = node.toTreeNode();
-						item.setId("-" + item.getId());
-						item.setpId("-" + item.getpId());
-						result.add(item);
-					}
-				}
-			}
-		}
-
-		/* 部门树 */
-		List<D> depts = getDepartmentDao().findAllDepartments(t, new ArrayList<>(companyIdsMap.keySet()));
-		if (depts != null && !depts.isEmpty()) {
-			for (D enode : depts) {
-				if (enode.getStatus() == 0) {
-					Tree tnode = enode.toTreeNode();
-					T myCompany = companyIdsMap.get(enode.getCompanyId());
-					if (myCompany != null) {
-						tnode.addAttribute("areaId", myCompany.getAreaId());
-
-						if (enode.getParentId() == null || enode.getParentId().equals(0L)
-								|| Strings.isBlank(enode.getParentClass())) {
-							tnode.setpId("-" + enode.getCompanyId());
-						}
-						result.add(tnode);
-					}
-				}
-			}
-		}
-
 		root.setpId(null);
-		result = Trees.filterTreeNode(result);
-		return result;
+		root.setOpen(true);
+
+		List<Tree> items = getCompanyChildrenFullTreeNodes(t, company);
+		items.add(root);
+
+		items = Trees.filterTreeNode(items);
+		return items;
 	}
 
 	private Tree getCompanyTreeNode(Trace t, Long companyId) {
@@ -260,6 +232,55 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 			List<Tree> depTreeNodeList = Trees.assembleTreeList(rootId, depts);
 			if (depTreeNodeList != null && !depTreeNodeList.isEmpty()) {
 				nodes.addAll(depTreeNodeList);
+			}
+		}
+
+		return nodes;
+	}
+
+	private List<Tree> getCompanyChildrenFullTreeNodes(Trace t, T company) {
+		String rootId = "-" + company.getId();
+		List<Tree> nodes = new ArrayList<Tree>();
+
+		Map<Long, T> companyIdsMap = new HashMap<>();
+		companyIdsMap.put(company.getId(), company);
+
+		/* 所有子公司 */
+		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
+		if (allCompanies != null && !allCompanies.isEmpty()) {
+			for (T node : allCompanies) {
+				if (node.getStatus() == 0) {
+					companyIdsMap.put(node.getId(), node);
+					if (node.isTopParent()) {
+						Tree item = node.toTreeNode();
+						item.setId("-" + item.getId());
+						item.setpId(rootId);
+						nodes.add(item);
+					} else {
+						Tree item = node.toTreeNode();
+						item.setId("-" + item.getId());
+						item.setpId("-" + item.getpId());
+						nodes.add(item);
+					}
+				}
+			}
+		}
+
+		/* 部门树 */
+		List<D> depts = getDepartmentDao().findAllDepartments(t, new ArrayList<>(companyIdsMap.keySet()));
+		if (depts != null && !depts.isEmpty()) {
+			for (D enode : depts) {
+				Tree tnode = enode.toTreeNode();
+				T myCompany = companyIdsMap.get(enode.getCompanyId());
+				if (myCompany != null) {
+					tnode.addAttribute("areaId", myCompany.getAreaId());
+
+					if (enode.getParentId() == null || enode.getParentId().equals(0L)
+							|| Strings.isBlank(enode.getParentClass())) {
+						tnode.setpId("-" + enode.getCompanyId());
+					}
+					nodes.add(tnode);
+				}
 			}
 		}
 
@@ -504,7 +525,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	 * @param entity
 	 */
 	protected void autoCreateAdmin(Trace t, T entity) {
-		U user = userMirror.born(entity.getName() + "_管理员", entity.getPhone(), entity.getPhone(), entity.getPhone());
+		U user = userMirror.born(entity.getName() + "_管理员", entity.getJphone(), entity.getJphone(), entity.getJphone());
 		user.setSalt(user.generateUuid());
 		user.setPassword(Securities.password4Src(user.getPassword(), user.getSalt()));
 		user.setCompanyId(entity.getId());

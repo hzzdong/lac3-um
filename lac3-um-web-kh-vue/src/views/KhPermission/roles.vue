@@ -6,10 +6,8 @@
       <el-select v-model="listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain @click="handleFilter" />
+      <el-button class="filter-item" style="float: right;" type="primary" icon="el-icon-plus" @click="handleCreate">
         添加
       </el-button>
     </div>
@@ -24,39 +22,38 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="角色名称" min-width="180px">
+      <el-table-column label="" class-name="status-col" width="40" prop="status" sortable>
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.name }}</span>
+          <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
         </template>
       </el-table-column>
-      <el-table-column label="角色编号" width="180px" align="center">
+      <el-table-column label="角色名称" width="250px" prop="name" sortable>
+        <template slot-scope="{row}">
+          <router-link :to="'/Role/role-view/'+row.id+'/'+row.uuid" class="link-type">
+            <span>{{ row.name }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="角色编号" width="250px" prop="govCode" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.govCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="备注说明" width="400px" align="center">
+      <el-table-column label="排序号" width="100px" align="center" sortable>
+        <template slot-scope="scope">
+          <span>{{ scope.row.sort }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注说明" min-width="150px">
         <template slot-scope="scope">
           <span>{{ scope.row.remark }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="80">
-        <template slot-scope="{row}">
-          <el-tag :type="row.status | statusTypeFilter">
-            {{ row.status | statusFilter }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" width="120" class-name="small-padding">
-        <template slot-scope="{row}">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(row)" />
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(row)" />
         </template>
       </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog title="角色新增" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="temp.name" />
@@ -78,19 +75,15 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          保存
-        </el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="createData()">保存</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getPage, createKhRole, updateKhRole, deleteKhRole } from '@/api/khrole'
+import { findCompanyRolePage, createKhRole } from '@/api/khrole'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -136,7 +129,7 @@ export default {
           govCode: { fv: undefined, oper: 'eq', stype: 'S' },
           status: { fv: undefined, oper: 'eq', stype: 'I' }
         },
-        orderby: { orderby: 'id', order: 'desc' }
+        orderby: { orderby: 'sort', order: 'asc' }
       },
       statusOptions,
       temp: {
@@ -147,11 +140,6 @@ export default {
         remark: ''
       },
       dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '新增'
-      },
       rules: {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }, { min: 2, max: 20, message: '名称长度在 2 到 64 个字符', trigger: 'blur' }],
         govCode: [{ required: true, message: '角色编号不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '编号长度在 2 到32 个字符', trigger: 'blur' }],
@@ -165,13 +153,10 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getPage(this.listQuery).then(response => {
+      findCompanyRolePage(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.recordsTotal
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
       })
     },
     handleFilter() {
@@ -209,7 +194,6 @@ export default {
     },
     handleCreate() {
       this.resetTemp()
-      this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -218,68 +202,14 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          createKhRole(this.temp).then((response) => {
+          const tempData = Object.assign({ dataType: 'Object' }, this.temp)
+          createKhRole(tempData).then((response) => {
             const tempData = Object.assign({}, response.data)
             this.list.unshift(tempData)
             this.dialogFormVisible = false
-            this.$notify({
-              title: '提示',
-              message: '创建成功！',
-              type: 'success',
-              duration: 2000
-            })
+            this.$notify({ title: '提示', message: '创建成功！', type: 'success', duration: 2000 })
           })
         }
-      })
-    },
-    handleUpdate(row) {
-      debugger
-      this.temp = Object.assign({}, row) // copy obj
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          updateKhRole(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, tempData)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '提示',
-              message: '保存成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$confirm('您确定要执行删除操作吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const { id, uuid } = row
-        deleteKhRole({ id, uuid }).then(() => {
-          const index = this.list.indexOf(row)
-          this.list.splice(index, 1)
-          this.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
-        }).catch(() => {
-          this.$notify({ title: '错误', message: '删除失败！', type: 'error', duration: 4000 })
-        })
-      }).catch(() => {
-        // 取消
       })
     }
   }

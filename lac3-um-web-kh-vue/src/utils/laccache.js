@@ -22,7 +22,7 @@ export function loadCachedMyCompanyAreaTree() {
   }
 }
 
-export function loacOrgCertificateType() {
+export function loadOrgCertificateType() {
   const ocdata = store.getters.orgCertificateType
   if (ocdata && ocdata instanceof Array && ocdata.length > 0) {
     return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export function loacOrgCertificateType() {
   } else {
     return new Promise((resolve, reject) => {
       store
-        .dispatch('laccache/loacOrgCertificateType')
+        .dispatch('laccache/loadOrgCertificateType')
         .then(data => {
           console.log('Load OrgCertificateType from SERVER', data)
           resolve(data)
@@ -44,7 +44,7 @@ export function loacOrgCertificateType() {
   }
 }
 
-export function loacPersonCertificateType() {
+export function loadPersonCertificateType() {
   const ocdata = store.getters.personCertificateType
   if (ocdata && ocdata instanceof Array && ocdata.length > 0) {
     return new Promise((resolve, reject) => {
@@ -54,9 +54,31 @@ export function loacPersonCertificateType() {
   } else {
     return new Promise((resolve, reject) => {
       store
-        .dispatch('laccache/loacPersonCertificateType')
+        .dispatch('laccache/loadPersonCertificateType')
         .then(data => {
           console.log('Load personCertificateType from SERVER', data)
+          resolve(data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  }
+}
+
+export function loadOrgType() {
+  const ocdata = store.getters.orgType
+  if (ocdata && ocdata instanceof Array && ocdata.length > 0) {
+    return new Promise((resolve, reject) => {
+      console.log('Load orgType from CACHE', ocdata)
+      resolve(ocdata)
+    })
+  } else {
+    return new Promise((resolve, reject) => {
+      store
+        .dispatch('laccache/loadOrgType')
+        .then(data => {
+          console.log('Load orgType from SERVER', data)
           resolve(data)
         })
         .catch(error => {

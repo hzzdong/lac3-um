@@ -105,87 +105,63 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/KhCompany',
+    path: '/Org',
     component: Layout,
-    name: 'KhCompany',
-    alwaysShow: true,
-    redirect: 'noRedirect',
-    meta: {
-      title: '机构和用户',
-      icon: 'peoples',
-      requires: ['selfkh_org_user']
-    },
     children: [
       {
-        path: 'tree',
+        path: 'index',
         component: () => import('@/views/KhCompany/tree'),
-        name: 'KhCompanyTree',
-        meta: {
-          title: '组织机构',
-          requires: ['selfkh_org_user-org']
-        }
+        name: 'KhCompany',
+        meta: { title: '组织机构', icon: 'tree-table', requires: ['selfkh_org_user-org'] }
       },
       {
-        path: 'users',
-        component: () => import('@/views/KhCompany/users'),
-        name: 'KhCompanyUsers',
-        meta: {
-          title: '用户管理',
-          requires: ['selfkh_org_user-user']
-        }
+        path: 'tree-view',
+        component: () => import('@/views/KhCompany/tree-view'),
+        name: 'KhCompanyTreeView',
+        meta: { title: '组织机构树预览', noCache: true, activeMenu: '/Org/index', requires: ['selfkh_org_user-org_view'] },
+        hidden: true
       }
     ]
   },
   {
-    path: '/KhPermission',
+    path: '/User',
     component: Layout,
-    name: 'KhPermission',
-    alwaysShow: true,
-    redirect: 'noRedirect',
-    meta: {
-      title: '权限管理',
-      icon: 'skill',
-      requires: ['selfkh_role_perm']
-    },
     children: [
       {
-        path: 'roles',
-        component: () => import('@/views/KhPermission/roles'),
-        name: 'SelfKhRole',
-        meta: {
-          title: '角色管理',
-          requires: ['selfkh_role_perm-role']
-        }
+        path: 'index',
+        component: () => import('@/views/KhUser/users'),
+        name: 'KhUser',
+        meta: { title: '用户管理', icon: 'peoples', requires: ['selfkh_org_user-user'] }
       },
       {
-        path: 'roleusers',
-        component: () => import('@/views/KhPermission/roleusers'),
-        name: 'KhRoleUsers',
-        meta: {
-          title: '角色分配',
-          requires: ['selfkh_role_perm-role_users']
-        }
-      },
-      {
-        path: 'roleapps',
-        component: () => import('@/views/KhPermission/roleapps'),
-        name: 'KhRoleApps',
-        meta: {
-          title: '应用许可',
-          requires: ['selfkh_role_perm-role_apps']
-        }
-      },
-      {
-        path: 'roleappperm',
-        component: () => import('@/views/KhPermission/roleappperm'),
-        name: 'KhRoleAppPerm',
-        meta: {
-          title: '应用授权',
-          requires: ['selfkh_role_perm-role_app_perm']
-        }
+        path: 'user-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/KhUser/user-view'),
+        name: 'UserView',
+        meta: { title: '用户预览', noCache: true, activeMenu: '/User/index', requires: ['selfkh_org_user-user'] },
+        hidden: true
       }
     ]
   },
+  {
+    path: '/Role',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/KhPermission/roles'),
+        name: 'KhRole',
+        meta: { title: '角色管理', icon: 'skill', requires: ['selfkh_role_perm-role'] }
+      },
+      {
+        path: 'role-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/KhPermission/role-view'),
+        name: 'RoleView',
+        meta: { title: '角色预览', noCache: true, activeMenu: '/Role/index', requires: ['selfkh_role_perm-role'] },
+        hidden: true
+      }
+    ]
+  },
+
   {
     path: '/permission',
     component: Layout,

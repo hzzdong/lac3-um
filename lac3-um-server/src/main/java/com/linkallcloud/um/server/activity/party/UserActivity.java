@@ -84,7 +84,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	@Override
 	public boolean update(Trace t, T entity) {
 		boolean ret = super.update(t, entity);
-		if (ret) {
+		if (ret && entity.isRoleEnabled()) {
 			dao().removeUserAllRoles(t, entity.getId());
 			if (entity.getRoleIds() != null && !entity.getRoleIds().isEmpty()) {
 				dao().addUserRoles(t, entity.getId(), entity.getRoleIds());
@@ -280,8 +280,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (user.getAccount().equals("superadmin")) {
 			List<Menu> menus = menuDao.findAppMenusWithButton(t, appId, true);
 			return menu2RescodeArray(menus);
-		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) ||
-			// "lac_app_um_kh".equals(app.getCode()))
+		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode()))
 			List<Menu> menus = null;
 			if (user.getUserType().equals(KhUser.class.getSimpleName())) {
 				menus = menuDao.findKhCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);

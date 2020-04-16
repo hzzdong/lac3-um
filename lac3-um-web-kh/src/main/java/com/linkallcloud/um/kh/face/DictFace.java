@@ -21,7 +21,7 @@ import com.linkallcloud.um.iapi.sys.IDictTypeManager;
 import com.linkallcloud.web.face.annotation.Face;
 
 @Controller
-@RequestMapping(value = "/face/Area", method = RequestMethod.POST)
+@RequestMapping(value = "/face/Dict", method = RequestMethod.POST)
 @Module(name = "数据字典")
 public class DictFace {
 
