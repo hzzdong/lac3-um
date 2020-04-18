@@ -74,7 +74,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId) {
+	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
 		T company = dao().fetchById(t, companyId);
 		if (company.isTopParent()) {
 			Long[] companyAreaRootIds = new Long[0];

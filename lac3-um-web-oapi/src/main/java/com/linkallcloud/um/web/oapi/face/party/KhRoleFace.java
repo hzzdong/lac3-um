@@ -30,10 +30,10 @@ public class KhRoleFace {
     @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
     public @ResponseBody
     Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khRoleManager.fetchById(t, Long.parseLong(faceReq.getId()));
+        return khRoleManager.fetchById(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -78,9 +78,9 @@ public class KhRoleFace {
     @RequestMapping(value = "/find4User", method = RequestMethod.POST)
     public @ResponseBody
     Object find4User(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khRoleManager.find4User(t, Long.parseLong(faceReq.getId()));
+        return khRoleManager.find4User(t, faceReq.getId());
     }
 }

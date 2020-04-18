@@ -3,6 +3,7 @@ package com.linkallcloud.um.activity.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
@@ -13,8 +14,6 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	List<T> findSubCompanies(Trace t, Long companyId);
 
 	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
-
-	Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId);
 
 	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
 
@@ -89,5 +88,24 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 
 	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
 			Map<String, Long> menuUuidIds);
+
+	/**
+	 * 公司某应用的根区域ids
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @param appId
+	 * @return
+	 */
+	Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId);
+	
+	/**
+	 * 得到公司管理员在系统设置中设定的根区域ids。若未设定，返回null。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
 
 }

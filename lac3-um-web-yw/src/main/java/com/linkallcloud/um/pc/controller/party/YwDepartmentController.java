@@ -22,7 +22,6 @@ import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.enums.Logical;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
@@ -33,7 +32,7 @@ import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IDictTypeManager;
 import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.web.perm.RequirePermissions;
-import com.linkallcloud.web.utils.Controllers;
+import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/YwDepartment", method = RequestMethod.POST)
@@ -52,24 +51,24 @@ public class YwDepartmentController {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IDictTypeManager dictTypeManager;
-	
+
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwSystemConfigManager ywSystemConfigManager;
 
 	@RequirePermissions({ "sys_org_user-org_add" })
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(@RequestParam(value = "parentId", required = false) Long parentId,
-			@RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		modelMap.put("companyId", Long.valueOf(su.getCompanyId()));
+			@RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
+			SessionUser su) {
+		modelMap.put("companyId", su.companyId());
 
 		Tree zfOrgDictTree = dictTypeManager.getDictTypeTreeWithDictsByLeafCode(t, "org_type");
 		modelMap.put("zfOrgDicts", zfOrgDictTree != null ? zfOrgDictTree.getChildren() : new ArrayList<Tree>());
-		
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, Long.parseLong(su.getCompanyId()));
+
+		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
 		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 
-		return edit(parentId, parentClass, null, null, t, modelMap);
+		return edit(parentId, parentClass, null, null, t, modelMap, su);
 	}
 
 	@RequirePermissions({ "sys_org_user-org_edit" })
@@ -77,9 +76,8 @@ public class YwDepartmentController {
 	public String edit(@RequestParam(value = "parentId", required = false) Long parentId,
 			@RequestParam(value = "parentClass", required = false) String parentClass,
 			@RequestParam(value = "id", required = false) Long id,
-			@RequestParam(value = "uuid", required = false) String uuid, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		modelMap.put("companyId", Long.valueOf(su.getCompanyId()));
+			@RequestParam(value = "uuid", required = false) String uuid, Trace t, ModelMap modelMap, SessionUser su) {
+		modelMap.put("companyId", su.companyId());
 		modelMap.put("parentId", parentId);
 		modelMap.put("parentClass", parentClass);
 		modelMap.put("id", id);
@@ -87,8 +85,8 @@ public class YwDepartmentController {
 
 		Tree zfOrgDictTree = dictTypeManager.getDictTypeTreeWithDictsByLeafCode(t, "org_type");
 		modelMap.put("zfOrgDicts", zfOrgDictTree != null ? zfOrgDictTree.getChildren() : new ArrayList<Tree>());
-		
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, Long.parseLong(su.getCompanyId()));
+
+		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
 		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 
 		return "page/party/YwDepartment/YwDepartmentEdit";
@@ -98,8 +96,7 @@ public class YwDepartmentController {
 	public @ResponseBody Result<YwDepartment> get(@RequestParam(value = "parentId", required = false) Long parentId,
 			@RequestParam(value = "parentClass", required = false) String parentClass,
 			@RequestParam(value = "id", required = false) Long id,
-			@RequestParam(value = "uuid", required = false) String uuid, Trace t) {
-		ISessionUser su = Controllers.getSessionUser();
+			@RequestParam(value = "uuid", required = false) String uuid, Trace t, SessionUser su) {
 		YwDepartment entity = null;
 		if (id != null && id > 0) {// && uuid != null
 			// entity = ywDepartmentManager.fetchByIdUuid(t, id, uuid);
@@ -121,20 +118,19 @@ public class YwDepartmentController {
 			}
 		}
 		if (entity.isTopParent()) {
-			YwCompany company = ywCompanyManager.fetchById(t, Long.valueOf(su.getCompanyId()));
+			YwCompany company = ywCompanyManager.fetchById(t, su.companyId());
 			if (company != null) {
 				entity.setOrgName(company.getName());
 			}
 		}
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+		entity.setCompanyId(su.companyId());
 		return new Result<YwDepartment>(entity);
 	}
 
 	@RequirePermissions(value = { "sys_org_user-org_add", "sys_org_user-org_edit" }, logical = Logical.OR)
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public @ResponseBody Result<Tree> save(@RequestBody @Valid YwDepartment entity, Trace t) {
-		ISessionUser su = Controllers.getSessionUser();
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+	public @ResponseBody Result<Tree> save(@RequestBody @Valid YwDepartment entity, Trace t, SessionUser su) {
+		entity.setCompanyId(su.companyId());
 		entity.setParentClass(entity.isTopParent() ? null : YwDepartment.class.getSimpleName());
 		if (entity.getId() != null && entity.getId() > 0 && entity.getUuid() != null) {
 			ywDepartmentManager.update(t, entity);
@@ -142,7 +138,7 @@ public class YwDepartmentController {
 			Long id = ywDepartmentManager.insert(t, entity);
 			entity.setId(id);
 		}
-		
+
 		entity = ywDepartmentManager.fetchById(t, entity.getId());
 		Tree depTreeNode = entity.toTreeNode();
 		if (entity.isTopParent()) {

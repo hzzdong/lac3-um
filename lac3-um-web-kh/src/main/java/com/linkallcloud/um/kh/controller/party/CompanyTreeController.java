@@ -22,13 +22,13 @@ import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.iapi.party.ICompanyManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 public abstract class CompanyTreeController<C extends Company, CS extends ICompanyManager<C>, U extends User, US extends IUserManager<U>> {
@@ -91,9 +91,9 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
+		SessionUser su = Controllers.getSessionUser();
 		Application app = applicationManager.fetchByCode(t, "lac_app_um_kh");
-		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, app.getId(), Long.parseLong(su.getId()));
+		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, app.getId(), su.id());
 		return new Result<>(nodeList);
 	}
 
@@ -135,10 +135,10 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 		} else {
 			entity = cmirror.born();
 
-			ISessionUser su = Controllers.getSessionUser();
-			entity.setParentId(Long.valueOf(su.getCompanyId()));
+			SessionUser su = Controllers.getSessionUser();
+			entity.setParentId(su.companyId());
 			entity.setParentClass(getCompanyClass().getSimpleName());
-			C company = getComapnyManager().fetchById(t, Long.valueOf(su.getCompanyId()));
+			C company = getComapnyManager().fetchById(t, su.companyId());
 			if (company != null) {
 				entity.setOrgName(company.getName());
 			}
@@ -149,8 +149,8 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@WebLog(db = true)
 	public @ResponseBody Result<Object> save(@RequestBody C entity, Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
-		entity.setParentId(Long.valueOf(su.getCompanyId()));
+		SessionUser su = Controllers.getSessionUser();
+		entity.setParentId(su.companyId());
 		entity.setParentClass(getCompanyClass().getSimpleName());
 		if (entity.getId() != null && entity.getUuid() != null) {
 			getComapnyManager().update(t, entity);

@@ -19,18 +19,18 @@ import com.linkallcloud.um.service.party.IYwCompanyService;
 
 @Service
 @Transactional(readOnly = true)
-public class YwCompanyService
-        extends CompanyService<YwCompany, IYwCompanyActivity, YwUser, IYwUserActivity, YwDepartment, IYwDepartmentActivity>
-        implements IYwCompanyService {
+public class YwCompanyService extends
+		CompanyService<YwCompany, IYwCompanyActivity, YwUser, IYwUserActivity, YwDepartment, IYwDepartmentActivity>
+		implements IYwCompanyService {
 
-    @Autowired
-    private IYwCompanyActivity ywwCompanyActivity;
+	@Autowired
+	private IYwCompanyActivity ywwCompanyActivity;
 
-    @Autowired
-    private IYwUserActivity ywUserActivity;
+	@Autowired
+	private IYwUserActivity ywUserActivity;
 
-    @Autowired
-    private IYwDepartmentActivity ywDepartmentActivity;
+	@Autowired
+	private IYwDepartmentActivity ywDepartmentActivity;
 
 //    @Autowired
 //    private IYwRoleActivity ywRoleActivity;
@@ -47,40 +47,39 @@ public class YwCompanyService
 //    @Autowired
 //    private IYwSystemConfigActivity ywSystemConfigActivity;
 
-    @Override
-    protected IYwUserActivity getUserActivity() {
-        return ywUserActivity;
-    }
+	@Override
+	protected IYwUserActivity getUserActivity() {
+		return ywUserActivity;
+	}
 
-    @Override
-    public IYwCompanyActivity activity() {
-        return ywwCompanyActivity;
-    }
+	@Override
+	public IYwCompanyActivity activity() {
+		return ywwCompanyActivity;
+	}
 
-    @Override
-    protected IYwDepartmentActivity getDepartmentActivity() {
-        return ywDepartmentActivity;
-    }
+	@Override
+	protected IYwDepartmentActivity getDepartmentActivity() {
+		return ywDepartmentActivity;
+	}
 
+	@Override
+	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
+		return activity().findCompanyValidMenuTree(t, companyId, appId);
+	}
 
-    @Override
-    public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
-        return activity().findCompanyValidMenuTree(t, companyId, appId);
-    }
+	@Override
+	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
+		return activity().findCompanyValidMenus(t, companyId, appId);
+	}
 
-    @Override
-    public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-        return activity().findCompanyValidMenus(t, companyId, appId);
-    }
+	@Override
+	public PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId) {
+		return activity().findCompanyValidAreaResource(t, companyId, appId);
+	}
 
-    @Override
-    public PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId) {
-        return activity().findCompanyValidAreaResource(t, companyId, appId);
-    }
-
-    @Override
-    public Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId) {
-        return activity().getCompanyAreaRootIdBySystemConfig(t, companyId);
-    }
+	@Override
+	public Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId) {
+		return activity().getCompanyAreaRootIdBySystemConfig(t, companyId);
+	}
 
 }

@@ -366,3 +366,60 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+/**
+ * treeItems中节点和子节点，查看是否有checkedId，有的话把节点找出来加入ids数组
+ *
+ * @param {*} ids
+ * @param {*} checkedId
+ * @param {*} treeItems
+ */
+export function parseTreeNodeChecked(ids, checkedId, treeItems) {
+  if (treeItems && treeItems.length > 0) {
+    for (const item of treeItems) {
+      if (item.id === checkedId) {
+        ids.push(item.id)
+        return
+      }
+      if (item.children && item.children.length > 0) {
+        parseTreeNodeChecked(ids, checkedId, item.children)
+      }
+    }
+  }
+}
+
+/**
+ * treeItems中节点和子节点，查看是否有checked属性为true的节点，有的话把节点找出来加入ids数组
+ *
+ * @param {*} ids
+ * @param {*} treeItems
+ */
+export function parseCheckedTreeIds(ids, treeItems) {
+  if (treeItems && treeItems.length > 0) {
+    for (const item of treeItems) {
+      if (item.checked) {
+        ids.push(item.id)
+      }
+      if (item.children && item.children.length > 0) {
+        parseCheckedTreeIds(ids, item.children)
+      }
+    }
+  }
+}
+
+export function sheetClose(me) {
+  me.$store.dispatch('tagsView/delView', me.$route)
+  me.$router.go(-1)
+}
+
+export function sheetRefresh(me) {
+  const view = me.$route
+  me.$store.dispatch('tagsView/delCachedView', view).then(() => {
+    const { fullPath } = view
+    me.$nextTick(() => {
+      me.$router.replace({
+        path: '/redirect' + fullPath
+      })
+    })
+  })
+}

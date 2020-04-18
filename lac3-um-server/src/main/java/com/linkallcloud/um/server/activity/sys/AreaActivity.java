@@ -57,11 +57,20 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	}
 
 	@Override
+	public Tree tree(Trace t) {
+		List<Tree> result = super.getTreeNodes(t, true);
+		Tree root = Trees.vroot("中华人民共和国");
+		root.setOpen(true);
+		Trees.assembleTree(root, result);
+		return root;
+	}
+
+	@Override
 	public List<Tree> getTreeNodes(Trace t, boolean valid) {
 		List<Tree> result = super.getTreeNodes(t, valid);
 		Tree root = new Tree(null, null, "中华人民共和国");
 		root.setOpen(true);
-		//result = Trees.assembleChildren2Parent(result, root);
+		// result = Trees.assembleChildren2Parent(result, root);
 		Trees.assembleTree(root, result);
 		return root.getChildren();
 	}
@@ -70,8 +79,17 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	// #statusRule.toString()")
 	@Override
 	public List<Tree> findChildrenTreeNodes(Trace t, Long areaRootId, QueryRule statusRule) {
+		Tree root = findChildrenTree(t, areaRootId, statusRule);
+		if (root != null) {
+			return root.getChildren();
+		}
+		return null;
+	}
+
+	@Override
+	public Tree findChildrenTree(Trace t, Long areaRootId, QueryRule statusRule) {
 		if (areaRootId == null || areaRootId.equals(0L)) {
-			return getTreeNodes(t, true);
+			return tree(t);
 		}
 
 		Area root = dao().fetchById(t, areaRootId);
@@ -79,15 +97,12 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 			throw new BaseRuntimeException("10001", "areaRootId参数错误：" + areaRootId);
 		}
 
+		Tree parent = root.toTreeNode();
 		List<Area> areas = dao().findByParentCode(t, root.getCode(), root.getCode().length(), statusRule);
 		if (areas != null && areas.size() > 0) {
-			// List<Tree> treeNodes = castArea2TreeNode(root, areas);
-			// return Trees.filterTreeNode(treeNodes);
-			Tree parent = root.toTreeNode();
 			Trees.assembleDomain2Tree(parent, areas);
-			return parent.getChildren();
 		}
-		return null;
+		return parent;
 	}
 
 //	private List<Tree> castArea2TreeNode(Area root, List<Area> areas) {

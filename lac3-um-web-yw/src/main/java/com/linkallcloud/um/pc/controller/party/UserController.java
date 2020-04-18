@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.linkallcloud.web.controller.BaseLController4ParentTree;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -21,6 +19,7 @@ import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.MockUser;
@@ -32,7 +31,9 @@ import com.linkallcloud.um.iapi.party.IDepartmentManager;
 import com.linkallcloud.um.iapi.party.IOrgManager;
 import com.linkallcloud.um.iapi.party.IRoleManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.controller.BaseLController4ParentTree;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 public abstract class UserController<T extends User, S extends IUserManager<T>, R extends Role, RS extends IRoleManager<R, T>, P extends Org, PS extends IOrgManager<P>>
 		extends BaseLController4ParentTree<T, S, P, PS> {
@@ -91,10 +92,10 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 
 	@Override
 	protected Page<T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
+		SessionUser su = Controllers.getSessionUser();
 		Page<T> page = webPage.toPage();
 		if (!page.hasRule4Field("companyId")) {
-			page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+			page.addRule(new Equal("companyId", su.companyId()));
 		}
 		return manager().findPage(t, page);
 	}
@@ -216,8 +217,8 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 				&& user.getParentClass().endsWith("Company")) {
 			user.setCompanyId(user.getParentId());
 		} else {
-			ISessionUser su = Controllers.getSessionUser();
-			user.setCompanyId(Long.valueOf(su.getCompanyId()));
+			SessionUser su = Controllers.getSessionUser();
+			user.setCompanyId(su.companyId());
 		}
 
 		if (!av.isAdmin()) {
@@ -245,33 +246,30 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 
 		Equal cR = (Equal) page.getRule4Field("companyId");
 		if (cR != null) {
-			cR.setValue(Long.valueOf(av.getCompanyId()));
+			cR.setValue(av.companyId());
 		} else {
-			page.addRule(new Equal("companyId", Long.valueOf(av.getCompanyId())));
+			page.addRule(new Equal("companyId", av.companyId()));
 		}
 
-		ISessionUser su = Controllers.getSessionUser();
-		if (su.isAdmin()) {
+		if (av.isAdmin()) {
 			return manager().findPage4Select(t, page);
 		} else {
-			page.addRule(new Equal("appId", Long.parseLong(su.getAppId())));
-			page.addRule(new Equal("userId", Long.valueOf(su.getId())));
+			page.addRule(new Equal("appId", av.appId()));
+			page.addRule(new Equal("userId", av.id()));
 			return manager().findPermedUserPage4Select(t, page);
 		}
 	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public String profile(Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		T user = manager().fetchById(t, Long.parseLong(su.getId()));
+	public String profile(Trace t, ModelMap modelMap, SessionUser su) {
+		T user = manager().fetchById(t, su.id());
 		modelMap.put("user", user);
 		return "page/party/" + getDomainClass().getSimpleName() + "/profile";
 	}
 
 	@RequestMapping(value = "/saveProfile", method = RequestMethod.POST)
-	public @ResponseBody Result<Object> saveProfile(@RequestBody T user, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		T dbUser = manager().fetchById(t, Long.parseLong(su.getId()));
+	public @ResponseBody Result<Object> saveProfile(@RequestBody T user, Trace t, ModelMap modelMap, SessionUser su) {
+		T dbUser = manager().fetchById(t, su.id());
 		dbUser.setPassword(null);
 		dbUser.setName(user.getName());
 		dbUser.setMobile(user.getMobile());
@@ -286,9 +284,8 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 	}
 
 	@RequestMapping(value = "/changePwd", method = RequestMethod.POST)
-	public @ResponseBody Result<Object> changePwd(@RequestBody T user, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		T dbUser = manager().fetchById(t, Long.parseLong(su.getId()));
+	public @ResponseBody Result<Object> changePwd(@RequestBody T user, Trace t, ModelMap modelMap, SessionUser su) {
+		T dbUser = manager().fetchById(t, su.id());
 		Boolean ret = false;
 		if (dbUser != null && !Strings.isBlank(user.getOldpassword()) && !Strings.isBlank(user.getPassword())
 				&& user.getPassword().length() >= 6) {
@@ -302,9 +299,9 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 	}
 
 	@RequestMapping(value = "/changePwd2", method = RequestMethod.POST)
-	public @ResponseBody Result<Object> changePwd2(@RequestBody MockUser user, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		T dbUser = manager().fetchById(t, Long.parseLong(su.getId()));
+	public @ResponseBody Result<Object> changePwd2(@RequestBody MockUser user, Trace t, ModelMap modelMap,
+			SessionUser su) {
+		T dbUser = manager().fetchById(t, su.id());
 		Boolean ret = false;
 		if (dbUser != null && !Strings.isBlank(user.getOldpass()) && !Strings.isBlank(user.getPass())) {
 			ret = manager().updatePassword(t, dbUser.getId(), dbUser.getUuid(), user.getOldpass(), user.getPass());

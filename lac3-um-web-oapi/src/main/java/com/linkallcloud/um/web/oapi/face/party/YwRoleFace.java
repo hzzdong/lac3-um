@@ -30,10 +30,10 @@ public class YwRoleFace {
     @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
     public @ResponseBody
     Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return ywRoleManager.fetchById(t, Long.parseLong(faceReq.getId()));
+        return ywRoleManager.fetchById(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -78,10 +78,10 @@ public class YwRoleFace {
     @RequestMapping(value = "/find4User", method = RequestMethod.POST)
     public @ResponseBody
     Object find4User(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return ywRoleManager.find4User(t, Long.parseLong(faceReq.getId()));
+        return ywRoleManager.find4User(t, faceReq.getId());
     }
 
 }

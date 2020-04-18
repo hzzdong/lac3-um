@@ -88,5 +88,15 @@ public interface IAreaManager extends ITreeManager<Area> {
 	List<Area> findPermedYwCompanyAppAreas(Trace t, Long ywCompanyId, Long appId);
 
 	PermedAreaVo findValidAreaResourceByParent(Trace t, Long parentAreaId);
+	
+	/**
+	 * 根据areaRootIds得到其下所有树（Tree结构）
+	 * 
+	 * @param t
+	 * @param areaRootId
+	 * @param statusRule
+	 * @return
+	 */
+	List<Tree> findChildrenTrees(Trace t, List<Long> areaRootIds, QueryRule statusRule);
 
 }

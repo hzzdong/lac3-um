@@ -30,10 +30,10 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywDepartmentManager.fetchById(t, Long.parseLong(faceReq.getId()));
+		return ywDepartmentManager.fetchById(t, faceReq.getId());
 	}
 
 	@Face(login = false)
@@ -66,10 +66,10 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findCompanyDepartments", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywDepartmentManager.findCompanyDepartments(t, Long.parseLong(faceReq.getId()));
+		return ywDepartmentManager.findCompanyDepartments(t, faceReq.getId());
 	}
 
 	@Face(login = false)
@@ -97,10 +97,10 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywDepartmentManager.findCompanyDirectDepartments(t, Long.parseLong(faceReq.getId()));
+		return ywDepartmentManager.findCompanyDirectDepartments(t, faceReq.getId());
 	}
 
 	@Face(login = false)
@@ -118,10 +118,10 @@ public class YwDepartmentFace {
 	@RequestMapping(value = "/findDirectDepartmentsByParentDepartmentId", method = RequestMethod.POST)
 	public @ResponseBody Object findDirectDepartmentsByParentDepartmentId(IdFaceRequest faceReq, Trace t)
 			throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, Long.parseLong(faceReq.getId()));
+		return ywDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, faceReq.getId());
 	}
 
 }

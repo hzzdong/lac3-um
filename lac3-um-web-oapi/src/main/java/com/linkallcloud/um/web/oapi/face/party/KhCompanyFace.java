@@ -30,10 +30,10 @@ public class KhCompanyFace {
     @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
     public @ResponseBody
     Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khCompanyManager.fetchById(t, Long.parseLong(faceReq.getId()));
+        return khCompanyManager.fetchById(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -63,10 +63,10 @@ public class KhCompanyFace {
     @Face(login = false)
     @RequestMapping(value = "/findSubCompanies", method = RequestMethod.POST)
     public @ResponseBody Object findSubCompanies(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khCompanyManager.findSubCompanies(t, Long.parseLong(faceReq.getId()));
+        return khCompanyManager.findSubCompanies(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -75,7 +75,7 @@ public class KhCompanyFace {
         if (faceReq.getId() == null) {
             return null;
         }
-        return khCompanyManager.getCompanyFullOrgTreeList(t, Long.parseLong(faceReq.getId()));
+        return khCompanyManager.getCompanyFullOrgTreeList(t, faceReq.getId());
     }
 
     @Face(login = false)

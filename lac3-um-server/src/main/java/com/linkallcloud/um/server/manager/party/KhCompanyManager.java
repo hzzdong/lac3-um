@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.linkallcloud.um.service.party.*;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import org.apache.dubbo.config.annotation.Service;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -21,6 +20,11 @@ import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
+import com.linkallcloud.um.service.party.IKhCompanyService;
+import com.linkallcloud.um.service.party.IKhDepartmentService;
+import com.linkallcloud.um.service.party.IKhRoleService;
+import com.linkallcloud.um.service.party.IKhUserService;
+import com.linkallcloud.um.service.party.IYwCompanyService;
 
 @Service(interfaceClass = IKhCompanyManager.class, version = "${dubbo.service.version}")
 @Component

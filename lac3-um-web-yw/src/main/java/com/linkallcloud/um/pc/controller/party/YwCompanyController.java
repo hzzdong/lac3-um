@@ -71,7 +71,7 @@ public class YwCompanyController extends
 
 	@Override
 	protected String toTree(Trace t, ModelMap modelMap, AppVisitor av) {
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, Long.parseLong(av.getCompanyId()));
+		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
 		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 		return super.toTree(t, modelMap, av);
 	}
@@ -136,8 +136,8 @@ public class YwCompanyController extends
 	@RequestMapping(value = "/getPermedCompanyAppMenuTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> getPermedCompanyAppMenuTree(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid, Trace t, AppVisitor av) throws IllegalParameterException {
-		List<Tree> items = getComapnyManager().findPermedCompanyAppMenus(t, Long.parseLong(av.getCompanyId()), id,
-				Long.parseLong(av.getAppId()));
+		List<Tree> items = getComapnyManager().findPermedCompanyAppMenus(t, av.companyId(), id,
+				av.appId());
 		return new Result<List<Tree>>(items);
 	}
 
@@ -145,8 +145,8 @@ public class YwCompanyController extends
 	public @ResponseBody Result<Object> saveCompanyAppMenuPerm(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid, @RequestBody Map<String, Long> menuUuidIds, Trace t,
 			AppVisitor av) {
-		Boolean ret = getComapnyManager().saveCompanyAppMenuPerm(t, id, uuid, Long.parseLong(av.getAppId()),
-				av.getAppUuid(), menuUuidIds);
+		Boolean ret = getComapnyManager().saveCompanyAppMenuPerm(t, id, uuid, av.appId(),
+				av.appUuid(), menuUuidIds);
 		return new Result<Object>(!ret, Exceptions.CODE_ERROR_UNKNOW, "保存失败");
 	}
 
@@ -155,16 +155,16 @@ public class YwCompanyController extends
 			@RequestParam(value = "uuid") String uuid,
 			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t, AppVisitor av)
 			throws IllegalParameterException {
-		PermedAreaVo pavo = getComapnyManager().findPermedCompanyAppAreas(t, Long.parseLong(av.getCompanyId()), id,
-				parentAreaId, Long.parseLong(av.getAppId()));
+		PermedAreaVo pavo = getComapnyManager().findPermedCompanyAppAreas(t, av.companyId(), id,
+				parentAreaId, av.appId());
 		return new Result<PermedAreaVo>(pavo);
 	}
 
 	@RequestMapping(value = "/saveCompanyAppAreaPerm", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> saveCompanyAppAreaPerm(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid, @RequestBody Map<String, Long> uuidIds, Trace t, AppVisitor av) {
-		Boolean ret = getComapnyManager().saveCompanyAppAreaPerm(t, id, uuid, Long.parseLong(av.getAppId()),
-				av.getAppUuid(), uuidIds);
+		Boolean ret = getComapnyManager().saveCompanyAppAreaPerm(t, id, uuid, av.appId(),
+				av.appUuid(), uuidIds);
 		return new Result<Object>(!ret, Exceptions.CODE_ERROR_UNKNOW, "保存失败");
 	}
 

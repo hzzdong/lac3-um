@@ -30,10 +30,10 @@ public class KhDepartmentFace {
     @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
     public @ResponseBody
     Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khDepartmentManager.fetchById(t, Long.parseLong(faceReq.getId()));
+        return khDepartmentManager.fetchById(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -66,10 +66,10 @@ public class KhDepartmentFace {
     @Face(login = false)
     @RequestMapping(value = "/findCompanyDepartments", method = RequestMethod.POST)
     public @ResponseBody Object findCompanyDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khDepartmentManager.findCompanyDepartments(t, Long.parseLong(faceReq.getId()));
+        return khDepartmentManager.findCompanyDepartments(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -97,10 +97,10 @@ public class KhDepartmentFace {
     @Face(login = false)
     @RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
     public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khDepartmentManager.findCompanyDirectDepartments(t, Long.parseLong(faceReq.getId()));
+        return khDepartmentManager.findCompanyDirectDepartments(t, faceReq.getId());
     }
 
     @Face(login = false)
@@ -118,9 +118,9 @@ public class KhDepartmentFace {
     @RequestMapping(value = "/findDirectDepartmentsByParentDepartmentId", method = RequestMethod.POST)
     public @ResponseBody Object findDirectDepartmentsByParentDepartmentId(IdFaceRequest faceReq, Trace t)
             throws Exception {
-        if (Strings.isBlank(faceReq.getId())) {
+        if (faceReq.getId()!=null) {
             return null;
         }
-        return khDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, Long.parseLong(faceReq.getId()));
+        return khDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, faceReq.getId());
     }
 }

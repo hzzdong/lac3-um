@@ -1,7 +1,5 @@
 package com.linkallcloud.um.kh.controller.party;
 
-import com.linkallcloud.web.controller.BaseLController4ParentTree;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Mirror;
@@ -21,7 +19,9 @@ import com.linkallcloud.um.iapi.party.IDepartmentManager;
 import com.linkallcloud.um.iapi.party.IOrgManager;
 import com.linkallcloud.um.iapi.party.IRoleManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.controller.BaseLController4ParentTree;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 public abstract class UserController<T extends User, S extends IUserManager<T>, R extends Role, RS extends IRoleManager<R, T>, P extends Org, PS extends IOrgManager<P>>
         extends BaseLController4ParentTree<T, S, P, PS> {
@@ -82,10 +82,10 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 
     @Override
     protected Page<T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
-        ISessionUser su = Controllers.getSessionUser();
+        SessionUser su = Controllers.getSessionUser();
         Page<T> page = webPage.toPage();
         if (!page.hasRule4Field("companyId")) {
-            page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+            page.addRule(new Equal("companyId", su.companyId()));
         }
         return manager().findPage(t, page);
     }
@@ -128,8 +128,8 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
                 && user.getParentClass().endsWith("Company")) {
             user.setCompanyId(user.getParentId());
         } else {
-            ISessionUser su = Controllers.getSessionUser();
-            user.setCompanyId(Long.valueOf(su.getCompanyId()));
+            SessionUser su = Controllers.getSessionUser();
+            user.setCompanyId(su.companyId());
         }
 
         if (user.getId() != null && user.getId() > 0 && user.getUuid() != null) {
@@ -184,13 +184,13 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
         if (r != null) {
             R role = getRoleManager().fetchById(t, (Long) r.getValue());
             // if (role.getType() == Domains.ROLE_NORMAL) {
-            // ISessionUser su = Controllers.getSessionUser();
-            // page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+            // SessionUser su = Controllers.getSessionUser();
+            // page.addRule(new Equal("companyId", su.companyId()));
             // }
 
-            ISessionUser su = Controllers.getSessionUser();
+            SessionUser su = Controllers.getSessionUser();
             page.addRule(new Equal("type", role.getType()));
-            page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+            page.addRule(new Equal("companyId", su.companyId()));
         }
         return manager().findPage4Select(t, page);
     }

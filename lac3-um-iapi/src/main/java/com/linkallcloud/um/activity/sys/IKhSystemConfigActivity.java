@@ -6,6 +6,6 @@ import com.linkallcloud.um.domain.sys.KhSystemConfig;
 
 public interface IKhSystemConfigActivity extends IActivity<KhSystemConfig> {
 
-    KhSystemConfig fetchByCompanyId(Trace t, Long companyId);
+	KhSystemConfig fetch(Trace t, Long companyId, String configItemCode);
 
 }

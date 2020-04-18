@@ -1,5 +1,6 @@
 package com.linkallcloud.um.pc.controller;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,18 +9,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Account;
 import com.linkallcloud.um.iapi.party.IUserManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IAccountManager;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 @Controller
 @RequestMapping(value = "/uprofile", method = RequestMethod.POST)
@@ -36,10 +37,9 @@ public class UserProfileController {
 	 * 个人设置
 	 */
 	@RequestMapping(value = "/info", method = RequestMethod.GET)
-	public String info(Trace t, ModelMap modelMap) {
-		ISessionUser suser = Controllers.getSessionUser();
-		if (suser != null && suser.getId() != null) {
-			User dbUser = getConcreteUserServcie(suser.getUserType()).fetchById(t, Long.valueOf(suser.getId()));
+	public String info(Trace t, ModelMap modelMap, SessionUser suser) {
+		if (suser != null && suser.getSid() != null) {
+			User dbUser = getConcreteUserServcie(suser.getUserType()).fetchById(t, suser.id());
 			dbUser.setPassword(null);
 			dbUser.setSalt(null);
 			modelMap.put("user", dbUser);
@@ -49,10 +49,9 @@ public class UserProfileController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "save", method = RequestMethod.POST)
-	public @ResponseBody <T extends User> boolean save(@RequestBody User user, Trace t) {
-		ISessionUser suser = Controllers.getSessionUser();
-		if (suser != null && suser.getId() != null) {
-			T dbUser = (T) getConcreteUserServcie(suser.getUserType()).fetchById(t, Long.valueOf(suser.getId()));
+	public @ResponseBody <T extends User> boolean save(@RequestBody User user, Trace t, SessionUser suser) {
+		if (suser != null && suser.getSid() != null) {
+			T dbUser = (T) getConcreteUserServcie(suser.getUserType()).fetchById(t, suser.id());
 			dbUser.setPassword(null);
 			dbUser.setName(user.getName());
 			dbUser.setIco(user.getIco());

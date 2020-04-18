@@ -73,16 +73,16 @@ public class KhCompanyController extends BaseLController<KhCompany, IKhCompanyMa
 	@Override
 	protected Page<KhCompany> doPage4Select(WebPage webPage, Trace t, AppVisitor av) {
 		Page<KhCompany> page = webPage.toPage();
-		page.addRule(new Equal("ywUserId", Long.parseLong(av.getId())));
-		page.addRule(new Equal("appId", Long.parseLong(av.getAppId())));
+		page.addRule(new Equal("ywUserId", av.id()));
+		page.addRule(new Equal("appId", av.appId()));
 		return manager().findPage4Select(t, page);
 	}
 
 	@Override
 	protected Page<KhCompany> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
 		Page<KhCompany> page = webPage.toPage();
-		page.addRule(new Equal("ywUserId", Long.parseLong(av.getId())));
-		page.addRule(new Equal("appId", Long.parseLong(av.getAppId())));
+		page.addRule(new Equal("ywUserId", av.id()));
+		page.addRule(new Equal("appId", av.appId()));
 		return manager().findPage(t, page);
 	}
 
@@ -168,7 +168,7 @@ public class KhCompanyController extends BaseLController<KhCompany, IKhCompanyMa
 	public @ResponseBody Result<List<Tree>> getUmTree(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid, @RequestParam(value = "appId") Long appId,
 			@RequestParam(value = "appUuid") String appUuid, Trace t, AppVisitor av) throws IllegalParameterException {
-		List<Tree> items = manager().findPermedKhCompanyAppMenus(t, Long.parseLong(av.getCompanyId()), id, appId);
+		List<Tree> items = manager().findPermedKhCompanyAppMenus(t, av.companyId(), id, appId);
 		return new Result<>(items);
 	}
 

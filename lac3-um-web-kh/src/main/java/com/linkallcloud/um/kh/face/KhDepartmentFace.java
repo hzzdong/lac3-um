@@ -39,7 +39,7 @@ public class KhDepartmentFace extends BaseFace<KhDepartment, IKhDepartmentManage
 
 	@Override
 	protected void doSave(Trace t, KhDepartment entity, SessionUser su) {
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+		entity.setCompanyId(su.companyId());
 		if (!entity.getParentClass().equals(KhDepartment.class.getSimpleName()) || entity.getParentId() == null
 				|| entity.getParentId().longValue() == 0) {
 			entity.setParentClass(null);

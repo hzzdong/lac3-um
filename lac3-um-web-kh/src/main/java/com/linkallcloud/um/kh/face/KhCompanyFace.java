@@ -44,19 +44,19 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 	@RequestMapping(value = "/loadTree", method = RequestMethod.POST)
 	public @ResponseBody Object loadKhCompanyTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
 		Application app = applicationManager.fetchByCode(t, myAppCode);
-		return khCompanyManager.getPermedCompanyOrgs(t, app.getId(), Long.parseLong(su.getId()));
+		return khCompanyManager.getPermedCompanyOrgs(t, app.getId(), su.id());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/loadFullTree", method = RequestMethod.POST)
 	public @ResponseBody Object loadKhCompanyFullTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
-		Tree root = khCompanyManager.getCompanyFullOrgTree(t, Long.parseLong(su.getCompanyId()));
+		Tree root = khCompanyManager.getCompanyFullOrgTree(t, su.companyId());
 		return root.getChildren();
 	}
 
 	@Override
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {
-		entity.setParentId(Long.valueOf(su.getCompanyId()));
+		entity.setParentId(su.companyId());
 		entity.setParentClass(KhCompany.class.getSimpleName());
 		super.doSave(t, entity, su);
 	}
@@ -70,6 +70,26 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 			return node;
 		}
 		return entity;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/loadCompanyAreaFullTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadCompanyAreaFullTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+		Tree root = manager().loadCompanyAreaFullTree(t, su.getCompany());
+		return root.getChildren();
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/loadCompanyAreaTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadCompanyAreaTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+		Tree root = manager().loadCompanyAreaTree(t, su.getCompany());
+		return root.getChildren();
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/getConfigCompanyAreaRootIds", method = RequestMethod.POST)
+	public @ResponseBody Object getConfigCompanyAreaRootIds(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+		return manager().getConfigCompanyAreaRootIds(t, su.getCompany());
 	}
 
 }

@@ -42,6 +42,16 @@ public interface IAreaActivity extends ITreeActivity<Area> {
      * @return
      */
     List<Tree> findChildrenTreeNodes(Trace t, Long areaRootId, QueryRule statusRule);
+    /**
+	 * 根据areaRootId得到其下所有树节点
+	 * 
+	 * @param t
+	 * @param areaRootId
+	 * @param statusRule
+	 * @return
+	 */
+	Tree findChildrenTree(Trace t, Long areaRootId, QueryRule statusRule);
+	Tree tree(Trace t);
 
     /**
      * 返回parentId节点下的直接子节点

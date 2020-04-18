@@ -34,6 +34,10 @@ public class KhRoleFace extends
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhDepartmentManager khDepartmentManager;
 
+	public KhRoleFace() {
+		super();
+	}
+
 	@Override
 	protected IKhRoleManager manager() {
 		return khRoleManager;

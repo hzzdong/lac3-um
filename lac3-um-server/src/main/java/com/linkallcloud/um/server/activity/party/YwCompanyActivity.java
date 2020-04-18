@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -217,5 +218,11 @@ public class YwCompanyActivity extends CompanyActivity<YwCompany, IYwCompanyDao,
                     "您所在公司的区域未设置，请联系管理员设置后再进场查询。");
         }
     }
+
+	@Override
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

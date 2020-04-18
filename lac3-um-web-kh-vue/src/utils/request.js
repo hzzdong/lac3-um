@@ -30,34 +30,40 @@ service.interceptors.request.use(
         config.data = faceReq
       } else {
         const data = config.data
-        if (data && data.page && data.limit && Number.parseInt(data.page) > 0 && Number.parseInt(data.limit) > 0) {
-          const page = {
+        if (data.rules || data.orderby || (data.page && data.limit)) {
+          const req = {
             appCode: 'lac_app_um_kh',
-            start: (data.page - 1) * data.limit,
-            length: data.limit,
+            start: 0,
+            length: 20,
             query: {
               cnds: [],
               orderby: { orderby: 'id', order: 'desc' }
             }
           }
-          if (data.rules) {
-            for (const field in data.rules) {
-              const rule = data.rules[field]
-              if (rule && rule.fv !== undefined && rule.fv !== '') {
-                page.query.cnds.push({
-                  field: field,
-                  data: rule.fv,
-                  type: rule.stype,
-                  op: rule.oper
-                })
-              }
+
+          for (const field in data.rules) { // ListFaceRequest
+            const rule = data.rules[field]
+            if (rule && rule.fv !== undefined && rule.fv !== '') {
+              req.query.cnds.push({
+                field: field,
+                data: rule.fv,
+                type: rule.stype,
+                op: rule.oper
+              })
             }
           }
+
           if (data.orderby && data.orderby.orderby !== '') {
-            page.query.orderby.orderby = data.orderby.orderby
-            page.query.orderby.order = data.orderby.order
+            req.query.orderby.orderby = data.orderby.orderby
+            req.query.orderby.order = data.orderby.order
           }
-          config.data = page
+
+          if (data.page && data.limit && Number.parseInt(data.page) > 0 && Number.parseInt(data.limit) > 0) {
+            req.start = (data.page - 1) * data.limit
+            req.length = data.limit
+          }
+
+          config.data = req
         } else {
           const faceReq = Object.assign({ appCode: 'lac_app_um_kh' }, config.data)
           config.data = faceReq

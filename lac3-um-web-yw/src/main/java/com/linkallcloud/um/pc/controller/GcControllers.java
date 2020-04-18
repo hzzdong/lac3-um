@@ -23,7 +23,7 @@ public class GcControllers {
                 page.addRule(new Equal("areaId", 0L));
             } else {
                 page.addRule(new Equal("level", av.getAreaLevel()));
-                page.addRule(new Equal("areaId", Long.parseLong(av.getAreaId())));
+                page.addRule(new Equal("areaId", av.areaId()));
             }
         }
     }

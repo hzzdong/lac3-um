@@ -138,11 +138,11 @@
           </el-col>
           <el-col :span="12">
             <div class="filter-container">
-              <el-button class="filter-item" style="float: right;" type="primary" icon="el-icon-circle-check" @click="onSaveRoleAppPermission()">
+              <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-circle-check" @click="onSaveRoleAppPermission()">
                 保存权限配置
               </el-button>
             </div>
-            <div style="padding-top: 46px; padding-left: 10px;">
+            <div style="padding-left: 10px;">
               <el-tabs v-model="activePermissionTab" type="border-card" @tab-click="handlePermissionTabClick">
                 <el-tab-pane name="tabPermMenu" label="菜单权限">
                   <el-tree
@@ -177,7 +177,6 @@
                     show-checkbox
                     :data="areaTree.data"
                     :props="areaTree.defaultProps"
-                    :default-expand-all="true"
                     :expand-on-click-node="false"
                     :check-on-click-node="true"
                     :check-strictly="true"
@@ -333,6 +332,7 @@
 import { fetchById, updateKhRole, deleteKhRole, addRoleUsers, removeRoleUser, addRoleApps, removeRoleApp, getPermedMenuTree, getPermedOrgTree, getPermedAreaTree, saveRoleAppMenuPerm, saveRoleAppOrgPerm, saveRoleAppAreaPerm } from '@/api/khrole'
 import { findRoleUsers, findUnRoleUsers } from '@/api/user'
 import { findAppPage4KhRole, findAppPage4UnKhRole } from '@/api/application'
+import { sheetClose, sheetRefresh, parseCheckedTreeIds } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -619,19 +619,10 @@ export default {
       })
     },
     onClose() {
-      this.$store.dispatch('tagsView/delView', this.$route)
-      this.$router.go(-1)
+      sheetClose(this)
     },
     onRefresh() {
-      const view = this.$route
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: '/redirect' + fullPath
-          })
-        })
-      })
+      sheetRefresh(this)
     },
     // 以下为角色用户分配
     findRoleUsers() {
@@ -801,18 +792,6 @@ export default {
         }
       }
     },
-    parseCheckedTreeIds(ids, treeItems) {
-      if (treeItems && treeItems.length > 0) {
-        for (const item of treeItems) {
-          if (item.checked) {
-            ids.push(item.id)
-          }
-          if (item.children && item.children.length > 0) {
-            this.parseCheckedTreeIds(ids, item.children)
-          }
-        }
-      }
-    },
     handleAppSelectedChange(val) {
       this.currentApp = val
       if (this.activePermissionTab === 'tabPermMenu') {
@@ -837,7 +816,7 @@ export default {
       getPermedMenuTree(req).then(response => {
         this.menuTree.data = response.data
         const checkedIds = []
-        this.parseCheckedTreeIds(checkedIds, this.menuTree.data)
+        parseCheckedTreeIds(checkedIds, this.menuTree.data)
         this.$refs.tree_menu.setCheckedKeys(checkedIds)
       })
     },
@@ -846,7 +825,7 @@ export default {
       getPermedOrgTree(req).then(response => {
         this.orgTree.data = response.data
         const checkedIds = []
-        this.parseCheckedTreeIds(checkedIds, this.orgTree.data)
+        parseCheckedTreeIds(checkedIds, this.orgTree.data)
         this.$refs.tree_org.setCheckedKeys(checkedIds)
       })
     },
@@ -855,7 +834,7 @@ export default {
       getPermedAreaTree(req).then(response => {
         this.areaTree.data = response.data
         const checkedIds = []
-        this.parseCheckedTreeIds(checkedIds, this.areaTree.data)
+        parseCheckedTreeIds(checkedIds, this.areaTree.data)
         this.$refs.tree_area.setCheckedKeys(checkedIds)
       })
     },

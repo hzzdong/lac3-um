@@ -31,7 +31,7 @@ public class SystemConfigController {
 
 	@RequestMapping(value = "/config", method = RequestMethod.GET)
 	public String configArea(Trace t, ModelMap modelMap, AppVisitor av) {
-		YwSystemConfig sc = ywSystemConfigManager.fetchByCompanyId(t, Long.parseLong(av.getCompanyId()));
+		YwSystemConfig sc = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
 		modelMap.put("sc", sc == null ? new YwSystemConfig() : sc);
 
 		String areaName = "";
@@ -48,7 +48,7 @@ public class SystemConfigController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@WebLog(db = true)
 	public @ResponseBody Result<Object> save(@RequestBody YwSystemConfig sc, Trace t, AppVisitor av) {
-		sc.setCompanyId(Long.parseLong(av.getCompanyId()));
+		sc.setCompanyId(av.companyId());
 		ywSystemConfigManager.save(t, sc);
 		return new Result<>(true);
 	}

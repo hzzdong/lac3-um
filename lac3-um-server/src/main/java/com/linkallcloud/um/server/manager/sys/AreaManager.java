@@ -86,4 +86,9 @@ public class AreaManager extends BaseTreeManager<Area, IAreaService> implements 
 		return service().findValidAreaResourceByParent(t, parentAreaId);
 	}
 
+	@Override
+	public List<Tree> findChildrenTrees(Trace t, List<Long> areaRootIds, QueryRule statusRule) {
+		return service().findChildrenTrees(t, areaRootIds, statusRule);
+	}
+
 }

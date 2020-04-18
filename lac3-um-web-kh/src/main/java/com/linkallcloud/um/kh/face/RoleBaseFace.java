@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -49,7 +50,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@RequestMapping(value = "/findCompanyAllRolePage", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyAllRolePage(PageFaceRequest fr, Trace t, SessionUser suser) {
 		Page<R> page = new Page<>(fr);
-		return manager().findCompanyAllRolePage(t, Long.parseLong(suser.getCompanyId()), page);
+		return manager().findCompanyAllRolePage(t, suser.companyId(), page);
 	}
 
 	@Face(simple = true)
@@ -57,21 +58,19 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	public @ResponseBody Object findCompanyRolePage(PageFaceRequest fr, Trace t, SessionUser suser) {
 		int type = getRoleType();
 		Page<R> page = new Page<>(fr);
-		return manager().findCompanyRolePage(t, Long.parseLong(suser.getCompanyId()), type, page);
+		return manager().findCompanyRolePage(t, suser.companyId(), type, page);
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/findCompanyRoles", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyRoles(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		Long parentId = Strings.isBlank(fr.getParentId()) ? null : Long.parseLong(fr.getParentId());
-		Long userId = Strings.isBlank(fr.getId()) ? null : Long.parseLong(fr.getId());
-		return findCompanyRoles4Me(t, parentId, fr.getParentClass(), userId, fr.getUuid());
+		return findCompanyRoles4Me(t, fr.getParentId(), fr.getParentClass(), fr.getId(), fr.getUuid());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/findUserRoleIds", method = RequestMethod.POST)
 	public @ResponseBody Object findUserRoleIds(IdFaceRequest fr, Trace t, SessionUser suser) {
-		List<R> roles = findUserRoles(t, Long.parseLong(fr.getId()), fr.getUuid());
+		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid());
 		List<Long> ids = Domains.getIds(roles);
 		return ids;
 	}
@@ -79,81 +78,79 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@Face(simple = true)
 	@RequestMapping(value = "/findUserRoles", method = RequestMethod.POST)
 	public @ResponseBody Object findUserRoles(IdFaceRequest fr, Trace t, SessionUser suser) {
-		List<R> roles = findUserRoles(t, Long.parseLong(fr.getId()), fr.getUuid());
+		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid());
 		return roles;
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/addUsers", method = RequestMethod.POST)
 	public @ResponseBody Object addUsers(RelFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().addRoleUsers(t, Long.parseLong(fr.getId()), fr.getUuid(), fr.getUuidIds());
+		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
 	public @ResponseBody Object removeUser(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
 		Map<String, Long> userUuidIds = new HashMap<String, Long>();
-		userUuidIds.put(fr.getUuid(), Long.parseLong(fr.getId()));
-		return manager().removeRoleUsers(t, Long.parseLong(fr.getParentId()), fr.getParentUuid(), userUuidIds);
+		userUuidIds.put(fr.getUuid(), fr.getId());
+		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds);
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
 	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().addRoleApps(t, Long.parseLong(fr.getId()), fr.getUuid(), fr.getUuidIds());
+		return manager().addRoleApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
 	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
 		Map<String, Long> appUuidIds = new HashMap<String, Long>();
-		appUuidIds.put(fr.getUuid(), Long.parseLong(fr.getId()));
-		return manager().removeRoleApps(t, Long.parseLong(fr.getParentId()), fr.getParentUuid(), appUuidIds);
+		appUuidIds.put(fr.getUuid(), fr.getId());
+		return manager().removeRoleApps(t, fr.getParentId(), fr.getParentUuid(), appUuidIds);
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getPermedMenuTree", method = RequestMethod.POST)
 	public @ResponseBody Object getPermedMenuTree(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		Tree tree = manager().findPermedMenuTree(t, Long.parseLong(suser.getCompanyId()),
-				Long.parseLong(fr.getParentId()), Long.parseLong(fr.getId()));
+		Tree tree = manager().findPermedMenuTree(t, suser.companyId(), fr.getParentId(), fr.getId());
 		return tree.getChildren();
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppMenuPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppMenuPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().saveRoleAppMenuPerm(t, Long.parseLong(fr.getParentId()), fr.getParentUuid(),
-				Long.parseLong(fr.getId()), fr.getUuid(), fr.getUuidIds());
+		return manager().saveRoleAppMenuPerm(t, fr.getParentId(), fr.getParentUuid(), fr.getId(), fr.getUuid(),
+				fr.getUuidIds());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getPermedOrgTree", method = RequestMethod.POST)
 	public @ResponseBody Object getPermedOrgTree(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		Tree tree = manager().findPermedOrgTree(t, Long.parseLong(suser.getCompanyId()),
-				Long.parseLong(fr.getParentId()), Long.parseLong(fr.getId()));
+		Tree tree = manager().findPermedOrgTree(t, suser.companyId(), fr.getParentId(), fr.getId());
 		return tree.getChildren();
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppOrgPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppOrgPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().saveRoleAppOrgPerm(t, Long.parseLong(fr.getParentId()), fr.getParentUuid(),
-				Long.parseLong(fr.getId()), fr.getUuid(), fr.getUuidIds());
+		return manager().saveRoleAppOrgPerm(t, fr.getParentId(), fr.getParentUuid(), fr.getId(), fr.getUuid(),
+				fr.getUuidIds());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getPermedAreaTree", method = RequestMethod.POST)
 	public @ResponseBody Object getPermedAreaTree(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		Tree tree = manager().findPermedAreaTree(t, Long.parseLong(suser.getCompanyId()),
-				Long.parseLong(fr.getParentId()), Long.parseLong(fr.getId()));
+		Tree tree = manager().findPermedAreaTree(t, suser.getCompany(), new Sid(fr.getParentId(), fr.getParentUuid()),
+				new Sid(fr.getId(), fr.getUuid()));
 		return tree.getChildren();
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppAreaPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppAreaPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().saveRoleAppAreaPerm(t, Long.parseLong(fr.getParentId()), fr.getParentUuid(),
-				Long.parseLong(fr.getId()), fr.getUuid(), fr.getUuidIds());
+		return manager().saveRoleAppAreaPerm(t, fr.getParentId(), fr.getParentUuid(), fr.getId(), fr.getUuid(),
+				fr.getUuidIds());
 	}
 
 	protected List<R> findCompanyRoles(Trace t, Long companyId, Integer roleLevel) {
@@ -216,11 +213,11 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 
 	@Override
 	protected void doSave(Trace t, R entity, SessionUser suser) {
-		entity.setCompanyId(Long.valueOf(suser.getCompanyId()));
+		entity.setCompanyId(suser.companyId());
 
 		entity.setType(getRoleType());
 		if (entity.getType() == Domains.ROLE_NORMAL) {
-			entity.setParentId(Long.valueOf(suser.getCompanyId()));
+			entity.setParentId(suser.companyId());
 		} else {
 			entity.setParentId(0L);
 		}

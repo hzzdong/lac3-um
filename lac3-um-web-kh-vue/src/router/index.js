@@ -150,7 +150,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/KhPermission/roles'),
         name: 'KhRole',
-        meta: { title: '角色管理', icon: 'skill', requires: ['selfkh_role_perm-role'] }
+        meta: { title: '权限管理', icon: 'skill', requires: ['selfkh_role_perm-role'] }
       },
       {
         path: 'role-view/:id(\\d+)/:uuid',
@@ -158,6 +158,18 @@ export const asyncRoutes = [
         name: 'RoleView',
         meta: { title: '角色预览', noCache: true, activeMenu: '/Role/index', requires: ['selfkh_role_perm-role'] },
         hidden: true
+      }
+    ]
+  },
+  {
+    path: '/Config',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/KhSystemConfig/config'),
+        name: 'KhSystemConfig',
+        meta: { title: '系统设置', icon: 'example', requires: ['selfkh_role_perm-role'] }
       }
     ]
   },

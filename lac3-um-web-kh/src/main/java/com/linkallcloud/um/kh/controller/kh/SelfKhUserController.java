@@ -3,6 +3,7 @@ package com.linkallcloud.um.kh.controller.kh;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
@@ -31,7 +30,8 @@ import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.party.IOrgManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.kh.controller.party.UserController;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 @Controller
 @RequestMapping(value = "/SelfKhUser", method = RequestMethod.POST)
@@ -93,10 +93,10 @@ public class SelfKhUserController
 
     @Override
     protected Page<KhUser> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
-        ISessionUser su = Controllers.getSessionUser();
+        SessionUser su = Controllers.getSessionUser();
         Page<KhUser> page = webPage.toPage();
         if (!page.hasRule4Field("companyId")) {
-            page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+            page.addRule(new Equal("companyId", su.companyId()));
         }
 
         if (page.hasRule4Field("parentId")) {// 查部门下的人
@@ -105,8 +105,8 @@ public class SelfKhUserController
             if (su.isAdmin()) {
                 return manager().findSelfUserPage(t, page);
             } else {
-                page.addRule(new Equal("appId", Long.parseLong(su.getAppId())));
-                page.addRule(new Equal("userId", Long.valueOf(su.getId())));
+                page.addRule(new Equal("appId", su.appId()));
+                page.addRule(new Equal("userId", su.id()));
                 return manager().findPermedSelfUserPage(t, page);
             }
         }
@@ -125,8 +125,8 @@ public class SelfKhUserController
             modelMap.put("roleName", role.getName());
         }
 
-        ISessionUser su = Controllers.getSessionUser();
-        List<KhRole> roles = khRoleManager.findCompanyAllRoles(t, Long.parseLong(su.getCompanyId()));
+        SessionUser su = Controllers.getSessionUser();
+        List<KhRole> roles = khRoleManager.findCompanyAllRoles(t, su.companyId());
         modelMap.put("roles", roles);
 
         modelMap.put("roleId", roleId);
@@ -142,8 +142,8 @@ public class SelfKhUserController
             throw new IllegalParameterException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
         }
 
-        ISessionUser su = Controllers.getSessionUser();
-        Long companyId = Long.parseLong(su.getCompanyId());
+        SessionUser su = Controllers.getSessionUser();
+        Long companyId = su.companyId();
         Equal r = (Equal) page.getRule4Field("companyId");
         if (r != null) {
             r.setValue(companyId);
@@ -180,9 +180,9 @@ public class SelfKhUserController
         Page<KhUser> page = webPage.toPage();
         Equal r = (Equal) page.getRule4Field("companyId");
         if (r != null) {
-            r.setValue(Long.valueOf(av.getCompanyId()));
+            r.setValue(av.companyId());
         } else {
-            page.addRule(new Equal("companyId", Long.valueOf(av.getCompanyId())));
+            page.addRule(new Equal("companyId", av.companyId()));
         }
         return manager().findPage4Select(t, page);
     }

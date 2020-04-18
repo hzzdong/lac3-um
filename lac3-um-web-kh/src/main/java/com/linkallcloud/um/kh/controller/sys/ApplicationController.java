@@ -2,6 +2,7 @@ package com.linkallcloud.um.kh.controller.sys;
 
 import java.util.List;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.controller.BaseLController;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
@@ -22,6 +20,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
@@ -30,8 +29,9 @@ import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.um.iapi.party.IYwRoleManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
-import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.controller.BaseLController;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 @Controller
 @RequestMapping(value = "/Application", method = RequestMethod.POST)
@@ -63,9 +63,9 @@ public class ApplicationController extends BaseLController<Application, IApplica
             modelMap.put("khCompanyName", company.getName());
         }
 
-        ISessionUser su = Controllers.getSessionUser();
+        SessionUser su = Controllers.getSessionUser();
         List<KhCompany> companies =
-                khCompanyManager.findDirectCompaniesByParentId(t, Long.parseLong(su.getCompanyId()));
+                khCompanyManager.findDirectCompaniesByParentId(t, su.companyId());
         modelMap.put("companies", companies);
 
         modelMap.put("khCompanyId", id == null ? "" : id);
@@ -81,8 +81,8 @@ public class ApplicationController extends BaseLController<Application, IApplica
             throw new IllegalParameterException(Exceptions.CODE_ERROR_PARAMETER,
                     "khCompanyId,khCompanyUuid参数错误。");
         }
-        ISessionUser su = Controllers.getSessionUser();
-        page.addRule(new Equal("parentCompanyId", Long.parseLong(su.getCompanyId())));
+        SessionUser su = Controllers.getSessionUser();
+        page.addRule(new Equal("parentCompanyId", su.companyId()));
         return manager().findPage4KhCompany(t, page);
     }
 
@@ -94,10 +94,10 @@ public class ApplicationController extends BaseLController<Application, IApplica
             modelMap.put("roleName", role.getName());
         }
 
-        ISessionUser su = Controllers.getSessionUser();
-        modelMap.put("khCompanyId", Long.parseLong(su.getCompanyId()));
+        SessionUser su = Controllers.getSessionUser();
+        modelMap.put("khCompanyId", su.companyId());
 
-        List<KhRole> roles = khRoleManager.findCompanyRoles(t, Long.parseLong(su.getCompanyId()), Domains.ROLE_NORMAL);
+        List<KhRole> roles = khRoleManager.findCompanyRoles(t, su.companyId(), Domains.ROLE_NORMAL);
         modelMap.put("roles", roles);
 
         modelMap.put("roleId", roleId);
@@ -122,7 +122,7 @@ public class ApplicationController extends BaseLController<Application, IApplica
         if (page.hasRule4Field("command")) {
             Equal r = (Equal) page.getRule4Field("command");
             if (r.getValue().toString().equals("subKhCompanyApp4Perm")) {
-                KhCompany company = khCompanyManager.fetchById(t, Long.parseLong(av.getCompanyId()));
+                KhCompany company = khCompanyManager.fetchById(t, av.companyId());
                 Long rootKhCompanyId = Domains.parseMyRootCompanyId(company.getCode());
                 page.addRule(new Equal("rootKhCompanyId", rootKhCompanyId));
             }
@@ -131,7 +131,7 @@ public class ApplicationController extends BaseLController<Application, IApplica
                 if (!page.hasRule4Field("roleType")) {
                     page.addRule(new Equal("roleType", "KhRole"));
                 }
-                page.addRule(new Equal("khCompanyId", Long.parseLong(av.getCompanyId())));
+                page.addRule(new Equal("khCompanyId", av.companyId()));
             }
         }
 

@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
@@ -70,8 +71,8 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public Long[] getCompanyAreaRootIds(Trace t, Long companyId, Long appId) {
-		return service().getCompanyAreaRootIds(t, companyId, appId);
+	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
+		return service().getCompanyAppAreaRootIds(t, companyId, appId);
 	}
 
 	@Override
@@ -198,6 +199,26 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 			userService().updateStatusByCompany(t, status, id);
 		}
 		return super.updateStatus(t, status, id, uuid);
+	}
+
+	@Override
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+		return service().getConfigCompanyAreaRootIds(t, companyId);
+	}
+
+	@Override
+	public Long[] getCompanyAreaRootIds(Trace t, Sid companyId) {
+		return service().getCompanyAreaRootIds(t, companyId);
+	}
+
+	@Override
+	public Tree loadCompanyAreaFullTree(Trace t, Sid companyId) {
+		return service().loadCompanyAreaFullTree(t, companyId);
+	}
+
+	@Override
+	public Tree loadCompanyAreaTree(Trace t, Sid companyId) {
+		return service().loadCompanyAreaTree(t, companyId);
 	}
 
 }

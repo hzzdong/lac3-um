@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.WebLog;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -31,7 +30,6 @@ import com.linkallcloud.um.iapi.party.ICompanyManager;
 import com.linkallcloud.um.iapi.party.IDepartmentManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
-import com.linkallcloud.core.www.ISessionUser;
 
 public abstract class CompanyTreeController<C extends Company, CS extends ICompanyManager<C>, U extends User, US extends IUserManager<U>, D extends Department, DS extends IDepartmentManager<D>> {
 
@@ -99,8 +97,7 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> loadTree(Trace t, AppVisitor av) {
-		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, Long.parseLong(av.getAppId()),
-				Long.parseLong(av.getId()));
+		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, av.appId(),av.id());
 		if (nodeList == null || nodeList.isEmpty()) {
 			nodeList = new ArrayList<Tree>();
 			nodeList.add(new Tree("0", "", "无数据"));
@@ -118,7 +115,7 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	@RequestMapping(value = "/loadFullTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> loadFullTree(
 			@RequestParam(value = "companyId", required = false) Long companyId, Trace t, AppVisitor av) {
-		Long myCompanyId = Long.parseLong(av.getCompanyId());
+		Long myCompanyId = av.companyId();
 		if (companyId != null && companyId < myCompanyId) {
 			myCompanyId = companyId;
 		}
@@ -164,10 +161,9 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 		} else {
 			entity = cmirror.born();
 
-			ISessionUser su = Controllers.getSessionUser();
-			entity.setParentId(Long.valueOf(su.getCompanyId()));
+			entity.setParentId(av.companyId());
 			entity.setParentClass(getCompanyClass().getSimpleName());
-			C company = getComapnyManager().fetchById(t, Long.valueOf(su.getCompanyId()));
+			C company = getComapnyManager().fetchById(t, av.companyId());
 			if (company != null) {
 				entity.setOrgName(company.getName());
 			}
@@ -178,8 +174,7 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@WebLog(db = true)
 	public @ResponseBody Result<Tree> save(@RequestBody C entity, Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
-		entity.setParentId(Long.valueOf(su.getCompanyId()));
+		entity.setParentId(av.companyId());
 		entity.setParentClass(getCompanyClass().getSimpleName());
 		if (entity.getId() != null && entity.getUuid() != null) {
 			getComapnyManager().update(t, entity);

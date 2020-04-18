@@ -79,3 +79,27 @@ export function deleteKhCompany(data) {
     data
   })
 }
+
+export function loadCompanyAreaFullTree(data) {
+  return request({
+    url: '/umkh/face/KhCompany/loadCompanyAreaFullTree',
+    method: 'post',
+    data
+  })
+}
+
+export function loadCompanyAreaTree(data) {
+  return request({
+    url: '/umkh/face/KhCompany/loadCompanyAreaTree',
+    method: 'post',
+    data
+  })
+}
+
+export function getConfigCompanyAreaRootIds(data) {
+  return request({
+    url: '/umkh/face/KhCompany/getConfigCompanyAreaRootIds',
+    method: 'post',
+    data
+  })
+}

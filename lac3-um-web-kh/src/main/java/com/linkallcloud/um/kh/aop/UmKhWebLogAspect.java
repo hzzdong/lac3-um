@@ -29,7 +29,7 @@ public class UmKhWebLogAspect extends BusiWebLogAspect<UmWebLog, IUmWebLogManage
 	public void xfWebLog() {
 	}
 
-	@Pointcut("execution(* com.linkallcloud.web.controller.*.*(..))")
+	@Pointcut("execution(* com.linkallcloud.web.face.base.*.*(..))")
 	public void webLog() {
 	}
 

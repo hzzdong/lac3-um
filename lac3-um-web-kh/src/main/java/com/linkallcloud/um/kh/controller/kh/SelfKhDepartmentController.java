@@ -17,11 +17,11 @@ import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 @Controller
@@ -38,8 +38,8 @@ public class SelfKhDepartmentController {
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(@RequestParam(value = "parentId", required = false) Long parentId,
 			@RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		modelMap.put("companyId", Long.valueOf(su.getCompanyId()));
+		SessionUser su = Controllers.getSessionUser();
+		modelMap.put("companyId", su.companyId());
 		return edit(parentId, parentClass, null, null, t, modelMap);
 	}
 
@@ -48,8 +48,8 @@ public class SelfKhDepartmentController {
 			@RequestParam(value = "parentClass", required = false) String parentClass,
 			@RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "uuid", required = false) String uuid, Trace t, ModelMap modelMap) {
-		ISessionUser su = Controllers.getSessionUser();
-		modelMap.put("companyId", Long.valueOf(su.getCompanyId()));
+		SessionUser su = Controllers.getSessionUser();
+		modelMap.put("companyId", su.companyId());
 		modelMap.put("parentId", parentId);
 		modelMap.put("parentClass", parentClass);
 		modelMap.put("id", id);
@@ -62,7 +62,7 @@ public class SelfKhDepartmentController {
 			@RequestParam(value = "parentClass", required = false) String parentClass,
 			@RequestParam(value = "id", required = false) Long id,
 			@RequestParam(value = "uuid", required = false) String uuid, Trace t) {
-		ISessionUser su = Controllers.getSessionUser();
+		SessionUser su = Controllers.getSessionUser();
 		KhDepartment entity = null;
 		if (id != null && id > 0 && uuid != null) {
 			entity = khDepartmentManager.fetchByIdUuid(t, id, uuid);
@@ -83,19 +83,19 @@ public class SelfKhDepartmentController {
 			}
 		}
 		if (entity.isTopParent()) {
-			KhCompany company = khCompanyManager.fetchById(t, Long.valueOf(su.getCompanyId()));
+			KhCompany company = khCompanyManager.fetchById(t, su.companyId());
 			if (company != null) {
 				entity.setOrgName(company.getName());
 			}
 		}
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+		entity.setCompanyId(su.companyId());
 		return new Result<Object>(entity);
 	}
 
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public @ResponseBody Result<Object> save(@RequestBody @Valid KhDepartment entity, Trace t) {
-		ISessionUser su = Controllers.getSessionUser();
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+		SessionUser su = Controllers.getSessionUser();
+		entity.setCompanyId(su.companyId());
 		entity.setParentClass(entity.isTopParent() ? null : KhDepartment.class.getSimpleName());
 		if (entity.getId() != null && entity.getId() > 0 && entity.getUuid() != null) {
 			khDepartmentManager.update(t, entity);

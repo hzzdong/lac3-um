@@ -6,10 +6,8 @@
       <el-select v-model="listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" />
+      <el-button class="filter-item" style="margin-left: 10px; float: right;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加
       </el-button>
     </div>
@@ -53,7 +51,7 @@
               <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
             </template>
           </el-table-column>
-          <el-table-column label="姓名" min-width="180px" prop="name" sortable>
+          <el-table-column label="姓名" width="160px" prop="name" sortable>
             <template slot-scope="{row}">
               <router-link :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
                 <span>{{ row.name }}</span>
@@ -61,25 +59,24 @@
               <el-tag v-if="row.type == 9">管</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="账号" width="180px" align="center" prop="account" sortable>
+          <el-table-column label="账号" width="160px" prop="account" sortable>
             <template slot-scope="scope">
               <span>{{ scope.row.account }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="部门" width="200px" align="center">
+          <el-table-column label="部门" width="200px">
             <template slot-scope="scope">
               <span>{{ scope.row.orgName || (tree.checkedNode ? tree.checkedNode.name : '') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="手机" width="120px" align="center" prop="mobile" sortable>
+          <el-table-column label="手机" width="110px" align="center" prop="mobile" sortable>
             <template slot-scope="scope">
               <span>{{ scope.row.mobile }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="120" class-name="small-padding">
-            <template slot-scope="{row}">
-              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(row)" />
-              <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(row)" />
+          <el-table-column label="备注说明" min-width="100px" prop="remark">
+            <template slot-scope="scope">
+              <span>{{ scope.row.remark }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -88,7 +85,7 @@
       </el-col>
     </el-row>
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="75%">
+    <el-dialog title="新增用户" :visible.sync="dialogFormVisible" width="75%">
       <el-form ref="dataForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
         <el-row>
           <el-col :span="16">
@@ -205,29 +202,16 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          保存
-        </el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="createData()">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getPage, createUser, updateUser, deleteUser } from '@/api/user'
+import { getPage, createUser } from '@/api/user'
 import { findCompanyRoles, findUserRoleIds } from '@/api/khrole'
 import { getOrgTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
@@ -361,13 +345,6 @@ export default {
         roleIds: []
       },
       dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑用户',
-        create: '新增用户'
-      },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
         orgName: [{ required: true, message: '请选择归属机构', trigger: 'blur' }],
         account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 6, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
@@ -409,11 +386,6 @@ export default {
         this.roles = response.data
       })
     },
-    getUserCompanyRoles(id, uuid) {
-      const p1 = findCompanyRoles({ id, uuid })
-      const p2 = findUserRoleIds({ id, uuid })
-      return Promise.all([p1, p2])
-    },
     handleUserRoleChange(val) {
       this.userRoles = val
       this.userRoleIds = []
@@ -447,10 +419,7 @@ export default {
       getPage(this.listQuery).then(response => {
         this.list = response.data.data
         this.total = response.data.recordsTotal
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        this.listLoading = false
       })
     },
     handleFilter() {
@@ -496,9 +465,6 @@ export default {
         roleIds: []
       }
     },
-    selectOrg() {
-      // TODO
-    },
     handleCreate() {
       if (!this.tree.checkedNode) {
         this.$notify({ title: '提示', message: '请先选择一个机构节点，再继续操作！', type: 'warning', duration: 4000 })
@@ -510,7 +476,6 @@ export default {
         this.getCompanyRoles(this.tree.checkedNode.id.substring(1), 'KhCompany')
       }
       this.resetTemp()
-      this.dialogStatus = 'create'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
@@ -531,80 +496,6 @@ export default {
             this.$notify({ title: '提示', message: '用户创建成功！', type: 'success', duration: 2000 })
           })
         }
-      })
-    },
-    handleUpdate(row) {
-      this.getUserCompanyRoles(row.id, row.uuid).then((response) => {
-        this.roles = response[0].data
-        const selectedRoleIds = response[1].data
-
-        this.temp = Object.assign({}, row)
-        if (!this.temp.orgName || this.temp.orgName === '') {
-          this.temp.orgName = this.tree.data[0].name
-        }
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-          if (selectedRoleIds && selectedRoleIds.length > 0) {
-            const selectedRoles = []
-            for (let i = 0; i < selectedRoleIds.length; i++) {
-              for (let j = 0; j < this.roles.length; j++) {
-                if (selectedRoleIds[i] === this.roles[j].id) {
-                  selectedRoles.push(this.roles[j])
-                  break
-                }
-              }
-            }
-
-            this.$refs.roleTable.clearSelection()
-            selectedRoles.forEach(row => {
-              this.$refs.roleTable.toggleRowSelection(row, true)
-            })
-          }
-        })
-      })
-        .catch(e => console.log(e))
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const user = Object.assign({ dataType: 'Object' }, this.temp)
-          if (user.password && user.password !== '') {
-            user.password = md5(user.password)
-            user.checkPass = ''
-          }
-          user.roleEnabled = true
-          user.roleIds = this.userRoleIds
-          updateUser(user).then(() => {
-            for (let i = 0; i < this.list.length; i++) {
-              if (this.list[i].id === user.id) {
-                this.list.splice(i, 1, user)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({ title: '提示', message: '用户信息保存成功', type: 'success', duration: 2000 })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$confirm('您确定要执行删除操作吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const { id, uuid } = row
-        deleteUser({ id, uuid }).then(() => {
-          const index = this.list.indexOf(row)
-          this.list.splice(index, 1)
-          this.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
-        }).catch(() => {
-          this.$notify({ title: '错误', message: '删除失败！', type: 'error', duration: 4000 })
-        })
-      }).catch(() => {
-        // 取消
       })
     }
   }

@@ -3,6 +3,7 @@ package com.linkallcloud.um.kh.controller.kh;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -21,10 +20,9 @@ import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
-import com.linkallcloud.um.domain.party.KhCompany;
+import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
-import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
@@ -33,8 +31,8 @@ import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.iapi.sys.IKhSystemConfigManager;
 import com.linkallcloud.um.kh.controller.party.RoleController;
-import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
 
 @Controller
 @RequestMapping(value = "/SelfKhRole", method = RequestMethod.POST)
@@ -118,7 +116,7 @@ public class SelfKhRoleController extends RoleController<KhRole, KhUser, IKhRole
     public String permSetup(@RequestParam(value = "roleId", required = false) Long roleId,
             @RequestParam(value = "roleUuid", required = false) String roleUuid, Trace t, ModelMap modelMap,
             AppVisitor av) {
-        KhSystemConfig sc = getKhSystemConfig(t, Long.parseLong(av.getCompanyId()));
+        KhSystemConfig sc = getKhSystemConfig(t, av.companyId());
         modelMap.put("sc", sc);
 
         if (roleId != null && roleUuid != null) {
@@ -126,8 +124,8 @@ public class SelfKhRoleController extends RoleController<KhRole, KhUser, IKhRole
             modelMap.put("roleName", role.getName());
         }
 
-        ISessionUser su = Controllers.getSessionUser();
-        List<KhRole> roles = manager().findCompanyRoles(t, Long.parseLong(su.getCompanyId()), Domains.ROLE_NORMAL);
+        SessionUser su = Controllers.getSessionUser();
+        List<KhRole> roles = manager().findCompanyRoles(t, su.companyId(), Domains.ROLE_NORMAL);
         modelMap.put("roles", roles);
 
         modelMap.put("roleId", roleId == null ? 0L : roleId);
@@ -137,29 +135,30 @@ public class SelfKhRoleController extends RoleController<KhRole, KhUser, IKhRole
     }
 
     private KhSystemConfig getKhSystemConfig(Trace t, Long companyId) {
-        KhCompany company = khCompanyManager.fetchById(t, companyId);
-        KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, company.rootCompanyId());
-        if (sc == null) {
-            sc = new KhSystemConfig();
-        }
-
-        String areaName = "";
-        if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
-            Area area = areaManager.fetchById(t, sc.getRootAreaId());
-            areaName = area.getName();
-        } else {
-            areaName = "中华人民共和国";
-        }
-        sc.setRootAreaName(areaName);
-        return sc;
+//        KhCompany company = khCompanyManager.fetchById(t, companyId);
+//        KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, company.rootCompanyId());
+//        if (sc == null) {
+//            sc = new KhSystemConfig();
+//        }
+//
+//        String areaName = "";
+//        if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
+//            Area area = areaManager.fetchById(t, sc.getRootAreaId());
+//            areaName = area.getName();
+//        } else {
+//            areaName = "中华人民共和国";
+//        }
+//        sc.setRootAreaName(areaName);
+//        return sc;
+    	return null;
     }
 
     @RequestMapping(value = "/getPermedMenuTree", method = RequestMethod.GET)
     public @ResponseBody List<Tree> getUmTree(@RequestParam(value = "roleId") Long roleId,
             @RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
             @RequestParam(value = "appUuid") String appUuid, Trace t) throws IllegalParameterException {
-        ISessionUser su = Controllers.getSessionUser();
-        List<Tree> items = manager().findPermedMenus(t, Long.parseLong(su.getCompanyId()), roleId, appId);
+        SessionUser su = Controllers.getSessionUser();
+        List<Tree> items = manager().findPermedMenus(t, su.companyId(), roleId, appId);
         return items;
     }
 
@@ -175,8 +174,8 @@ public class SelfKhRoleController extends RoleController<KhRole, KhUser, IKhRole
     public @ResponseBody List<Tree> getPermedOrgTree(@RequestParam(value = "roleId") Long roleId,
             @RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
             @RequestParam(value = "appUuid") String appUuid, Trace t) throws IllegalParameterException {
-        ISessionUser su = Controllers.getSessionUser();
-        List<Tree> items = manager().findPermedOrgs(t, Long.parseLong(su.getCompanyId()), roleId, appId);
+        SessionUser su = Controllers.getSessionUser();
+        List<Tree> items = manager().findPermedOrgs(t, su.companyId(), roleId, appId);
         return items;
     }
 
@@ -194,8 +193,8 @@ public class SelfKhRoleController extends RoleController<KhRole, KhUser, IKhRole
             @RequestParam(value = "appUuid") String appUuid,
             @RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t)
             throws IllegalParameterException {
-        ISessionUser su = Controllers.getSessionUser();
-        return manager().findPermedRoleAppAreas(t, parentAreaId, Long.parseLong(su.getCompanyId()), roleId, appId);
+        SessionUser su = Controllers.getSessionUser();
+        return manager().findPermedRoleAppAreas(t, parentAreaId, su.companyId(), roleId, appId);
     }
 
     @RequestMapping(value = "/saveRoleAppAreaPerm", method = RequestMethod.GET)

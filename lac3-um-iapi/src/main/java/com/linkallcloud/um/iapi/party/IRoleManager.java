@@ -3,6 +3,7 @@ package com.linkallcloud.um.iapi.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
@@ -242,7 +243,7 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	 * @param appId
 	 * @return
 	 */
-	Tree findPermedAreaTree(Trace t, Long companyId, Long roleId, Long appId);
+	Tree findPermedAreaTree(Trace t, Sid companyId, Sid roleId, Sid appId);
 
 	// Long getRoleAreaRootId(Trace t, Long roleId, Long appId);
 
@@ -274,12 +275,12 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	 */
 	PermedAreaVo findCompanyValidAreaResource4Role(Trace t, Long companyId);
 
-	/**
-	 * 根据用户id，得到此用户拥有的所在公司的role列表
-	 *
-	 * @param t
-	 * @param userId
-	 * @return
-	 */
-	List<T> findCompanyRoles4Me(Trace t, long userId);
+//	/**
+//	 * 根据用户id，得到此用户拥有的所在公司的role列表
+//	 *
+//	 * @param t
+//	 * @param userId
+//	 * @return
+//	 */
+//	List<T> findCompanyRoles4Me(Trace t, long userId);
 }

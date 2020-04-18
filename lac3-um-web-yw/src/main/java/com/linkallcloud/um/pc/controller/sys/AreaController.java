@@ -90,15 +90,15 @@ public class AreaController extends BaseTreeLContorller<Area, IAreaManager> {
 	public @ResponseBody Result<List<Tree>> loadTree4MyCompany(
 			@RequestParam(value = "appId", required = false) Long appId,
 			@RequestParam(value = "appUuid", required = false) String appUuid, Trace t, AppVisitor av) {
-		List<Tree> result = ywCompanyManager.getDefinedCompanyAreas(t, Long.parseLong(av.getCompanyId()),
-				Long.parseLong(av.getAppId()));//(appId == null) ? Long.parseLong(av.getAppId()) : appId
+		List<Tree> result = ywCompanyManager.getDefinedCompanyAreas(t, av.companyId(),
+				av.appId());//(appId == null) ? av.appId() : appId
 		return new Result<List<Tree>>(result);
 	}
 
 	@Override
 	protected List<Tree> doLoadTree(Trace t, AppVisitor av) {
-		Long[] areaRootIds = ywCompanyManager.getCompanyAreaRootIds(t, Long.parseLong(av.getCompanyId()),
-				Long.parseLong(av.getAppId()));
+		Long[] areaRootIds = ywCompanyManager.getCompanyAppAreaRootIds(t, av.companyId(),
+				av.appId());
 		List<Tree> result = new ArrayList<>();
 		if (areaRootIds != null && areaRootIds.length > 0) {
 			for (Long areaRootId : areaRootIds) {
@@ -110,8 +110,8 @@ public class AreaController extends BaseTreeLContorller<Area, IAreaManager> {
 
 		}
 
-//		Long areaRootId = ywCompanyManager.getCompanyAreaRootId(t, Long.parseLong(av.getCompanyId()),
-//				Long.parseLong(av.getAppId()));
+//		Long areaRootId = ywCompanyManager.getCompanyAreaRootId(t, av.companyId(),
+//				av.appId());
 //		List<Tree> result = manager().findChildrenTreeNodes(t, areaRootId, new NotEqual("status", 9));
 
 		if (result != null && !result.isEmpty() && areaRootIds != null && areaRootIds.length == 1) {

@@ -25,11 +25,11 @@ import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
 import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.iapi.party.IRoleManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 public abstract class RoleController<T extends Role, U extends User, M extends IRoleManager<T, U>, UM extends IUserManager<U>> {
@@ -83,10 +83,10 @@ public abstract class RoleController<T extends Role, U extends User, M extends I
 
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
+		SessionUser su = Controllers.getSessionUser();
 		int type = getRoleType();
 		Page<T> page = webPage.toPage();
-		page = manager().findCompanyRolePage(t, Long.parseLong(su.getCompanyId()), type, page);
+		page = manager().findCompanyRolePage(t, su.companyId(), type, page);
 		return new Result<Object>(page);
 	}
 
@@ -114,8 +114,8 @@ public abstract class RoleController<T extends Role, U extends User, M extends I
 			modelMap.put("entity", entity);
 		} else {
 			T entity = mirror.born();
-			ISessionUser su = Controllers.getSessionUser();
-			entity.setParentId(Long.parseLong(su.getCompanyId()));
+			SessionUser su = Controllers.getSessionUser();
+			entity.setParentId(su.companyId());
 			modelMap.put("entity", entity);
 		}
 
@@ -137,12 +137,12 @@ public abstract class RoleController<T extends Role, U extends User, M extends I
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@WebLog(db = true)
 	public @ResponseBody Result<Object> save(@RequestBody @Valid T entity, Trace t, AppVisitor av) {
-		ISessionUser su = Controllers.getSessionUser();
-		entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+		SessionUser su = Controllers.getSessionUser();
+		entity.setCompanyId(su.companyId());
 
 		entity.setType(getRoleType());
 		if (entity.getType() == Domains.ROLE_NORMAL) {
-			entity.setParentId(Long.valueOf(su.getCompanyId()));
+			entity.setParentId(su.companyId());
 		} else {
 			entity.setParentId(0L);
 		}

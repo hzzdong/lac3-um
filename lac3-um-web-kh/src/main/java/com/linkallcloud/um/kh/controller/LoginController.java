@@ -96,8 +96,8 @@ public class LoginController {
 			Controllers.login(myAppCode, su);
 
 //			// userType, loginName, userName, userId, companyId, companyName, validPeriod
-			String token = Controllers.createToken("KhUser", lvo.getLoginName(), su.getName(),
-					Long.parseLong(su.getId()), Long.parseLong(su.getCompanyId()), su.getCompanyName(), 60 * 10);
+			String token = Controllers.createToken("KhUser", lvo.getLoginName(), su.name(), su.id(), su.companyId(),
+					su.companyName(), 60 * 10);
 
 			try {
 				token = URLEncoder.encode(token, "UTF8");
@@ -124,23 +124,23 @@ public class LoginController {
 				orgName = parent.getName();
 			}
 		}
-		SessionUser su = new SessionUser(String.valueOf(dbUser.getId()), dbUser.getUuid(), dbUser.getAccount(),
-				dbUser.getName(), dbUser.getUserType(), dbUser.getCompanyId().toString(), dbCompany.getName(),
-				dbUser.getParentId() != null ? dbUser.getParentId().toString() : dbUser.getCompanyId().toString(),
-				orgName, dbUser.getClass().getSimpleName().substring(0, 2));
+		SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
+				dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(),
+				dbUser.getParentId() != null ? dbUser.getParentId() : dbUser.getCompanyId(), orgName,
+				dbUser.getClass().getSimpleName().substring(0, 2));
 		su.setAdmin(dbUser.isAdmin());
 
 		if (dbCompany.getAreaId() != null) {
 			Area area = areaManager.fetchById(t, dbCompany.getAreaId());
 			if (area != null) {
-				su.setAreaInfo(area.getId(), area.getLevel(), area.getName());
+				su.setAreaInfo(area.getId(), area.getUuid(), area.getCode(), area.getName(), area.getLevel());
 			}
 		}
 
 		Application app = applicationManager.fetchByCode(t, "lac_app_um_kh");
-		String[] perms = khUserManager.getUserAppPermissions4Menu(t, Long.valueOf(su.getId()), app.getId());
+		String[] perms = khUserManager.getUserAppPermissions4Menu(t, su.id(), app.getId());
 		su.setPermissions(perms, null, null);
-		su.setAppInfo(app.getId().toString(), app.getUuid(), app.getCode(), app.getName());
+		su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
 		return su;
 	}
 

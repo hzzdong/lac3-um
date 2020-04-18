@@ -37,7 +37,7 @@ public class KhRoleService extends RoleService<KhRole, KhUser, KhCompany, IKhRol
     }
 
     @Override
-    public IKhCompanyActivity orgActivity() {
+    public IKhCompanyActivity comapnyActivity() {
         return khCompanyActivity;
     }
 

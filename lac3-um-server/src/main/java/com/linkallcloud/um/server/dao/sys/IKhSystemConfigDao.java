@@ -8,6 +8,7 @@ import com.linkallcloud.um.domain.sys.KhSystemConfig;
 
 public interface IKhSystemConfigDao extends IDao<KhSystemConfig> {
 
-    KhSystemConfig fetchByCompanyId(@Param("t") Trace t, @Param("companyId") Long companyId);
+	KhSystemConfig fetch(@Param("t") Trace t, @Param("companyId") Long companyId,
+			@Param("configItemCode") String configItemCode);
 
 }

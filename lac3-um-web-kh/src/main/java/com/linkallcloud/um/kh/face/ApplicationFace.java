@@ -47,9 +47,9 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IMenuManager menuManager;
-	
+
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-    private IKhCompanyManager khCompanyManager;
+	private IKhCompanyManager khCompanyManager;
 
 	@Override
 	protected IApplicationManager manager() {
@@ -70,24 +70,24 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 
 	@Override
 	protected Page<Application> doPage4Select(Trace t, Page<Application> page, SessionUser su) {
-        addAreaCnd2Page(page, su);
-        if (page.hasRule4Field("command")) {
-            Equal r = (Equal) page.getRule4Field("command");
-            if (r.getValue().toString().equals("subKhCompanyApp4Perm")) {
-                KhCompany company = khCompanyManager.fetchById(t, Long.parseLong(su.getCompanyId()));
-                Long rootKhCompanyId = Domains.parseMyRootCompanyId(company.getCode());
-                page.addRule(new Equal("rootKhCompanyId", rootKhCompanyId));
-            }
-        } else {
-            if (su.getUserType().equals(KhUser.class.getSimpleName())) {
-                if (!page.hasRule4Field("roleType")) {
-                    page.addRule(new Equal("roleType", "KhRole"));
-                }
-                page.addRule(new Equal("khCompanyId", Long.parseLong(su.getCompanyId())));
-            }
-        }
+		addAreaCnd2Page(page, su);
+		if (page.hasRule4Field("command")) {
+			Equal r = (Equal) page.getRule4Field("command");
+			if (r.getValue().toString().equals("subKhCompanyApp4Perm")) {
+				KhCompany company = khCompanyManager.fetchById(t, su.companyId());
+				Long rootKhCompanyId = Domains.parseMyRootCompanyId(company.getCode());
+				page.addRule(new Equal("rootKhCompanyId", rootKhCompanyId));
+			}
+		} else {
+			if (su.getUserType().equals(KhUser.class.getSimpleName())) {
+				if (!page.hasRule4Field("roleType")) {
+					page.addRule(new Equal("roleType", "KhRole"));
+				}
+				page.addRule(new Equal("khCompanyId", su.companyId()));
+			}
+		}
 
-        return manager().findPage4Select(t, page);
+		return manager().findPage4Select(t, page);
 	}
 
 	@Override
@@ -159,10 +159,10 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 	@Face(simple = true)
 	@RequestMapping(value = "/loadAppUriRescodeMap", method = RequestMethod.POST)
 	public @ResponseBody Object loadAppUriRescodeMap(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
-		Map<String, String[]> result = operationManager.loadAppUriRescodeMap(t, Long.parseLong(faceReq.getId()));
+		Map<String, String[]> result = operationManager.loadAppUriRescodeMap(t, faceReq.getId());
 		return result;
 	}
 
@@ -184,11 +184,11 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 	@Face(simple = true)
 	@RequestMapping(value = "/findByYwUserId", method = RequestMethod.POST)
 	public @ResponseBody Object findByYwUserId(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
 		if (isInnerVisitor(t, faceReq)) {
-			List<Application> apps = applicationManager.find4YwUser(t, Long.parseLong(faceReq.getId()));
+			List<Application> apps = applicationManager.find4YwUser(t, faceReq.getId());
 			return converts(t, "findByYwUserId", faceReq, apps);
 		}
 		return null;

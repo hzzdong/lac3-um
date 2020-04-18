@@ -39,7 +39,7 @@ public class YwRoleService extends RoleService<YwRole, YwUser, YwCompany, IYwRol
     }
 
     @Override
-    public IYwCompanyActivity orgActivity() {
+    public IYwCompanyActivity comapnyActivity() {
         return ywCompanyActivity;
     }
 

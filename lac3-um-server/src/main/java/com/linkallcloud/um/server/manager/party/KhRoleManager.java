@@ -2,27 +2,29 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 
-import com.linkallcloud.um.service.party.IKhCompanyService;
-import com.linkallcloud.um.service.party.IKhRoleService;
-import com.linkallcloud.um.service.sys.IApplicationService;
-import com.linkallcloud.um.service.sys.IMenuService;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import org.apache.dubbo.config.annotation.Service;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
+import com.linkallcloud.um.service.party.IKhCompanyService;
+import com.linkallcloud.um.service.party.IKhRoleService;
+import com.linkallcloud.um.service.sys.IApplicationService;
+import com.linkallcloud.um.service.sys.IMenuService;
 
 @Service(interfaceClass = IKhRoleManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "客户角色")
-public class KhRoleManager extends RoleManager<KhRole, KhUser, IKhRoleService> implements IKhRoleManager {
+public class KhRoleManager extends RoleManager<KhRole, KhUser, IKhRoleService, KhCompany, IKhCompanyService>
+		implements IKhRoleManager {
 
 	@Autowired
 	private IKhRoleService khRoleService;
@@ -39,6 +41,11 @@ public class KhRoleManager extends RoleManager<KhRole, KhUser, IKhRoleService> i
 	@Override
 	protected IKhRoleService service() {
 		return khRoleService;
+	}
+
+	@Override
+	protected IKhCompanyService companyService() {
+		return khCompanyService;
 	}
 
 	@Override

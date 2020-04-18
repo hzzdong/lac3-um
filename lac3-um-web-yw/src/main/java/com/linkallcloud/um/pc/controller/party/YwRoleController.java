@@ -3,6 +3,7 @@ package com.linkallcloud.um.pc.controller.party;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -22,6 +21,7 @@ import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
+import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
@@ -33,8 +33,7 @@ import com.linkallcloud.um.iapi.party.IYwRoleManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
-import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/YwRole", method = RequestMethod.POST)
@@ -115,7 +114,7 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 	public String permSetup(@RequestParam(value = "roleId", required = false) Long roleId,
 			@RequestParam(value = "roleUuid", required = false) String roleUuid, Trace t, ModelMap modelMap,
 			AppVisitor av) {
-		YwSystemConfig sc = getYwSystemConfig(t, Long.parseLong(av.getCompanyId()));
+		YwSystemConfig sc = getYwSystemConfig(t, av.companyId());
 		modelMap.put("sc", sc);
 
 		if (roleId != null && roleUuid != null) {
@@ -123,8 +122,7 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 			modelMap.put("roleName", role.getName());
 		}
 
-		ISessionUser su = Controllers.getSessionUser();
-		List<YwRole> roles = ywRoleManager.findCompanyRoles(t, Long.parseLong(su.getCompanyId()), Domains.ROLE_NORMAL);
+		List<YwRole> roles = ywRoleManager.findCompanyRoles(t, av.companyId(), Domains.ROLE_NORMAL);
 		modelMap.put("roles", roles);
 
 		modelMap.put("roleId", roleId);
@@ -163,9 +161,8 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 	@RequestMapping(value = "/getPermedOrgTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> getPermedOrgTree(@RequestParam(value = "roleId") Long roleId,
 			@RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
-			@RequestParam(value = "appUuid") String appUuid, Trace t) throws IllegalParameterException {
-		ISessionUser su = Controllers.getSessionUser();
-		List<Tree> items = manager().findPermedOrgs(t, Long.parseLong(su.getCompanyId()), roleId, appId);
+			@RequestParam(value = "appUuid") String appUuid, Trace t,SessionUser su) throws IllegalParameterException {
+		List<Tree> items = manager().findPermedOrgs(t, su.companyId(), roleId, appId);
 		return new Result<>(items);
 	}
 
@@ -182,10 +179,9 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 	public @ResponseBody Result<PermedAreaVo> getPermedAreaTree(@RequestParam(value = "roleId") Long roleId,
 			@RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
 			@RequestParam(value = "appUuid") String appUuid,
-			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t)
+			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t,SessionUser su)
 			throws IllegalParameterException {
-		ISessionUser su = Controllers.getSessionUser();
-		PermedAreaVo ret = manager().findPermedRoleAppAreas(t, parentAreaId, Long.parseLong(su.getCompanyId()), roleId,
+		PermedAreaVo ret = manager().findPermedRoleAppAreas(t, parentAreaId, su.companyId(), roleId,
 				appId);
 		return new Result<PermedAreaVo>(ret);
 	}

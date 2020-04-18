@@ -20,7 +20,6 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.exception.IllegalParameterException;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
@@ -28,6 +27,7 @@ import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.sys.IDictTypeManager;
 import com.linkallcloud.um.kh.controller.party.CompanyTreeController;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 @Controller
@@ -101,10 +101,10 @@ public class SelfKhCompanyController
 		} else {
 			entity = new KhCompany();
 
-			ISessionUser su = Controllers.getSessionUser();
-			entity.setParentId(Long.valueOf(su.getCompanyId()));
+			SessionUser su = Controllers.getSessionUser();
+			entity.setParentId(su.companyId());
 			entity.setParentClass(getCompanyClass().getSimpleName());
-			KhCompany company = getComapnyManager().fetchById(t, Long.valueOf(su.getCompanyId()));
+			KhCompany company = getComapnyManager().fetchById(t, su.companyId());
 			if (company != null) {
 				entity.setOrgName(company.getName());
 				entity.setKhTypeCode(company.getKhTypeCode());
@@ -145,7 +145,7 @@ public class SelfKhCompanyController
 	public @ResponseBody Result<Object> getPermedCompanyAppMenuTree(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid, @RequestParam(value = "appId") Long appId,
 			@RequestParam(value = "appUuid") String appUuid, Trace t, AppVisitor av) throws IllegalParameterException {
-		List<Tree> items = getComapnyManager().findPermedCompanyAppMenus(t, Long.parseLong(av.getCompanyId()), id,
+		List<Tree> items = getComapnyManager().findPermedCompanyAppMenus(t, av.companyId(), id,
 				appId);
 		return new Result<Object>(items);
 	}
@@ -165,7 +165,7 @@ public class SelfKhCompanyController
 			@RequestParam(value = "appUuid") String appUuid,
 			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t, AppVisitor av)
 			throws IllegalParameterException {
-		PermedAreaVo vo = getComapnyManager().findPermedCompanyAppAreas(t, Long.parseLong(av.getCompanyId()), id,
+		PermedAreaVo vo = getComapnyManager().findPermedCompanyAppAreas(t, av.companyId(), id,
 				parentAreaId, appId);
 		return new Result<Object>(vo);
 	}

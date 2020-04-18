@@ -18,6 +18,7 @@ import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.core.www.UrlPattern;
 import com.linkallcloud.um.exception.AuthException;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 @Controller
@@ -25,7 +26,7 @@ public class IndexController {
 
 	@Value("${lac.lf.appcode}")
 	private String myAppCode;
-	
+
 	@Value("${lac.lf.h5.home}")
 	private String h5Home;
 
@@ -43,10 +44,10 @@ public class IndexController {
 
 	@RequestMapping(value = "/ssoauth", method = RequestMethod.GET)
 	public String vueAuthProxy(Trace t, HttpServletRequest request, ModelMap modelMap) {
-		ISessionUser user = Controllers.getSessionUser(myAppCode, request);
+		SessionUser user = Controllers.getSessionUser(myAppCode, request);
 		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken("KhUser", user.getLoginName(), user.getName(),
-				Long.parseLong(user.getId()), Long.parseLong(user.getCompanyId()), user.getCompanyName(), 20);
+		String token = Controllers.createToken("KhUser", user.getLoginName(), user.name(), user.id(), user.companyId(),
+				user.companyName(), 20);
 
 		try {
 			UrlPattern up = new UrlPattern(h5Home).append("token", token);

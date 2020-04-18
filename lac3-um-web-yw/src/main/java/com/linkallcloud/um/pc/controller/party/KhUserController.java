@@ -3,6 +3,7 @@ package com.linkallcloud.um.pc.controller.party;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.controller.BaseLController4ParentTree;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -23,6 +21,7 @@ import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
@@ -30,8 +29,8 @@ import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
-import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.web.controller.BaseLController4ParentTree;
+import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/KhUser", method = RequestMethod.POST)
@@ -79,16 +78,16 @@ public class KhUserController extends BaseLController4ParentTree<KhUser, IKhUser
 	@Override
 	protected Page<KhUser> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
 		Page<KhUser> page = webPage.toPage();
-		page.addRule(new Equal("ywUserId", Long.parseLong(av.getId())));
-		page.addRule(new Equal("appId", Long.parseLong(av.getAppId())));
+		page.addRule(new Equal("ywUserId", av.id()));
+		page.addRule(new Equal("appId", av.appId()));
 		return manager().findPage(t, page);
 	}
 
 	@Override
 	protected Page<KhUser> doPage4Select(WebPage webPage, Trace t, AppVisitor av) {
 		Page<KhUser> page = webPage.toPage();
-		page.addRule(new Equal("ywUserId", Long.parseLong(av.getId())));
-		page.addRule(new Equal("appId", Long.parseLong(av.getAppId())));
+		page.addRule(new Equal("ywUserId", av.id()));
+		page.addRule(new Equal("appId", av.appId()));
 		return manager().findPage4Select(t, page);
 	}
 
@@ -115,14 +114,14 @@ public class KhUserController extends BaseLController4ParentTree<KhUser, IKhUser
 	// list4SysRole
 	@RequestMapping(value = "/list4SysRole", method = RequestMethod.GET)
 	public String list4SysRole(@RequestParam(value = "roleId", required = false) Long roleId,
-			@RequestParam(value = "roleUuid", required = false) String roleUuid, Trace t, ModelMap modelMap) {
+			@RequestParam(value = "roleUuid", required = false) String roleUuid, Trace t, ModelMap modelMap,
+			SessionUser su) {
 		if (roleId != null && roleUuid != null) {
 			KhRole role = khRoleManager.fetchByIdUuid(t, roleId, roleUuid);
 			modelMap.put("roleName", role.getName());
 		}
 
-		ISessionUser su = Controllers.getSessionUser();
-		List<KhRole> roles = khRoleManager.findCompanyRoles(t, Long.parseLong(su.getCompanyId()), Domains.ROLE_SYSTEM);
+		List<KhRole> roles = khRoleManager.findCompanyRoles(t, su.companyId(), Domains.ROLE_SYSTEM);
 		modelMap.put("roles", roles);
 
 		modelMap.put("roleId", roleId);

@@ -65,28 +65,28 @@ public class AreaController extends BaseTreeLContorller<Area, IAreaManager> {
 	@RequestMapping(value = "/loadTree4App", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> loadTree4MyCompany(@RequestParam(value = "appId", required = false) Long appId,
 			@RequestParam(value = "appUuid", required = false) String appUuid, Trace t, AppVisitor av) {
-		List<Tree> result = khCompanyManager.getDefinedCompanyAreas(t, Long.parseLong(av.getCompanyId()),
-				(appId == null) ? Long.parseLong(av.getAppId()) : appId);
+		List<Tree> result = khCompanyManager.getDefinedCompanyAreas(t, av.companyId(),
+				(appId == null) ? av.appId() : appId);
 		return new Result<Object>(result);
 	}
 
-	@Override
-	protected List<Tree> doLoadTree(Trace t, AppVisitor av) {
-		KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, Long.parseLong(av.getCompanyId()));
-		Long areaRootId = 0L;
-		if (sc != null && sc.getRootAreaId() != null) {
-			areaRootId = sc.getRootAreaId();
-		}
-		List<Tree> result = manager().findChildrenTreeNodes(t, areaRootId, new Equal("status", 0));
-		if (result != null && !result.isEmpty()) {
-			for (Tree node : result) {
-				if (node.getId().equals(areaRootId.toString())) {
-					node.setOpen(true);
-				}
-			}
-		}
-		return result;
-	}
+//	@Override
+//	protected List<Tree> doLoadTree(Trace t, AppVisitor av) {
+//		KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, av.companyId());
+//		Long areaRootId = 0L;
+//		if (sc != null && sc.getRootAreaId() != null) {
+//			areaRootId = sc.getRootAreaId();
+//		}
+//		List<Tree> result = manager().findChildrenTreeNodes(t, areaRootId, new Equal("status", 0));
+//		if (result != null && !result.isEmpty()) {
+//			for (Tree node : result) {
+//				if (node.getId().equals(areaRootId.toString())) {
+//					node.setOpen(true);
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 	@RequestMapping(value = "/loadTree4MyCompany", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> loadTree4MyCompany(Trace t, AppVisitor av) {

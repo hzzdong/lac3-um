@@ -2,26 +2,30 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 
+import org.apache.dubbo.config.annotation.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.um.domain.party.*;
+import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.um.domain.party.Company;
+import com.linkallcloud.um.domain.party.YwCompany;
+import com.linkallcloud.um.domain.party.YwDepartment;
+import com.linkallcloud.um.domain.party.YwRole;
+import com.linkallcloud.um.domain.party.YwUser;
+import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.exception.ArgException;
+import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.service.party.IYwCompanyService;
 import com.linkallcloud.um.service.party.IYwDepartmentService;
 import com.linkallcloud.um.service.party.IYwRoleService;
 import com.linkallcloud.um.service.party.IYwUserService;
 import com.linkallcloud.um.service.sys.IAreaService;
 import com.linkallcloud.web.session.SessionUser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import org.apache.dubbo.config.annotation.Service;
-import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.pagination.Page;
-import com.linkallcloud.um.domain.sys.Application;
-import com.linkallcloud.um.iapi.party.IYwUserManager;
 
 @Service(interfaceClass = IYwUserManager.class, version = "${dubbo.service.version}")
 @Component
@@ -102,23 +106,23 @@ public class YwUserManager
 					orgName = parent.getFullName();
 				}
 			}
-			SessionUser su = new SessionUser(String.valueOf(dbUser.getId()), dbUser.getUuid(), dbUser.getAccount(),
-					dbUser.getName(), dbUser.getUserType(), dbUser.getCompanyId().toString(), dbCompany.getName(),
-					dbUser.getParentId() != null ? dbUser.getParentId().toString() : dbUser.getCompanyId().toString(),
-					orgName, dbUser.getClass().getSimpleName().substring(0, 2));
+			SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
+					dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(),
+					dbUser.getParentId() != null ? dbUser.getParentId() : dbUser.getCompanyId(), orgName,
+					dbUser.getClass().getSimpleName().substring(0, 2));
 			su.setAdmin(dbUser.isAdmin());
 
 			if (dbCompany.getAreaId() != null) {
 				Area area = areaService.fetchById(t, dbCompany.getAreaId());
 				if (area != null) {
-					su.setAreaInfo(area.getId(), area.getLevel(), area.getName());
+					su.setAreaInfo(area.getId(), area.getUuid(), area.getCode(), area.getName(), area.getLevel());
 				}
 			}
 
 			Application app = applicationService.fetchByCode(t, appCode);
-			String[] perms = this.getUserAppPermissions4Menu(t, Long.valueOf(su.getId()), app.getId());
+			String[] perms = this.getUserAppPermissions4Menu(t, su.id(), app.getId());
 			su.setPermissions(perms, null, null);
-			su.setAppInfo(app.getId().toString(), app.getUuid(), app.getName());
+			su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
 			return su;
 		}
 		throw new ArgException("Arg", "Account或AppCode参数错误");

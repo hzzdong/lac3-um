@@ -36,6 +36,10 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhRoleManager khRoleManager;
 
+	public KhUserFace() {
+		super();
+	}
+
 	@Override
 	protected IKhUserManager manager() {
 		return khUserManager;
@@ -50,7 +54,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 	@Override
 	protected Page<KhUser> doPage(Trace t, Page<KhUser> page, SessionUser su) {
 		if (!page.hasRule4Field("companyId")) {
-			page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+			page.addRule(new Equal("companyId", su.companyId()));
 		}
 
 		if (page.hasRule4Field("parentId")) {// 查部门下的人
@@ -59,8 +63,8 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 			if (su.isAdmin()) {
 				page = manager().findSelfUserPage(t, page);
 			} else {
-				page.addRule(new Equal("appId", Long.parseLong(su.getAppId())));
-				page.addRule(new Equal("userId", Long.valueOf(su.getId())));
+				page.addRule(new Equal("appId", su.appId()));
+				page.addRule(new Equal("userId", su.id()));
 				page = manager().findPermedSelfUserPage(t, page);
 			}
 		}
@@ -87,7 +91,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 				&& entity.getParentClass().endsWith("Company")) {
 			entity.setCompanyId(entity.getParentId());
 		} else {
-			entity.setCompanyId(Long.valueOf(su.getCompanyId()));
+			entity.setCompanyId(su.companyId());
 		}
 		super.doSave(t, entity, su);
 	}
@@ -101,7 +105,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
 
-		Long companyId = Long.parseLong(su.getCompanyId());
+		Long companyId = su.companyId();
 		Equal r = (Equal) page.getRule4Field("companyId");
 		if (r != null) {
 			r.setValue(companyId);
@@ -130,9 +134,9 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 		Equal r = (Equal) page.getRule4Field("companyId");
 		if (r != null) {
-			r.setValue(Long.valueOf(su.getCompanyId()));
+			r.setValue(su.companyId());
 		} else {
-			page.addRule(new Equal("companyId", Long.valueOf(su.getCompanyId())));
+			page.addRule(new Equal("companyId", su.companyId()));
 		}
 		page = manager().findPage4Select(t, page);
 

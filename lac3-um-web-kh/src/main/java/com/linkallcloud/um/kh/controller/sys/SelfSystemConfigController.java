@@ -28,36 +28,36 @@ public class SelfSystemConfigController {
     @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IAreaManager areaManager;
 
-    @RequestMapping(value = "/config", method = RequestMethod.GET)
-    public String configArea(Trace t, ModelMap modelMap, AppVisitor av) {
-        KhSystemConfig sc = getKhSystemConfig(t, Long.parseLong(av.getCompanyId()));
-        modelMap.put("sc", sc);
-        return "page/config/main";
-    }
-
-    private KhSystemConfig getKhSystemConfig(Trace t, Long companyId) {
-        KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, companyId);
-        if (sc == null) {
-            sc = new KhSystemConfig();
-        }
-
-        String areaName = "";
-        if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
-            Area area = areaManager.fetchById(t, sc.getRootAreaId());
-            areaName = area.getName();
-        } else {
-            areaName = "中华人民共和国";
-        }
-        sc.setRootAreaName(areaName);
-        return sc;
-    }
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    @WebLog(db = true)
-    public @ResponseBody Object save(@RequestBody KhSystemConfig sc, Trace t, AppVisitor av) {
-        sc.setCompanyId(Long.parseLong(av.getCompanyId()));
-        khSystemConfigManager.save(t, sc);
-        return true;
-    }
+//    @RequestMapping(value = "/config", method = RequestMethod.GET)
+//    public String configArea(Trace t, ModelMap modelMap, AppVisitor av) {
+//        KhSystemConfig sc = getKhSystemConfig(t, av.companyId());
+//        modelMap.put("sc", sc);
+//        return "page/config/main";
+//    }
+//
+//    private KhSystemConfig getKhSystemConfig(Trace t, Long companyId) {
+//        KhSystemConfig sc = khSystemConfigManager.fetchByCompanyId(t, companyId);
+//        if (sc == null) {
+//            sc = new KhSystemConfig();
+//        }
+//
+//        String areaName = "";
+//        if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
+//            Area area = areaManager.fetchById(t, sc.getRootAreaId());
+//            areaName = area.getName();
+//        } else {
+//            areaName = "中华人民共和国";
+//        }
+//        sc.setRootAreaName(areaName);
+//        return sc;
+//    }
+//
+//    @RequestMapping(value = "/save", method = RequestMethod.POST)
+//    @WebLog(db = true)
+//    public @ResponseBody Object save(@RequestBody KhSystemConfig sc, Trace t, AppVisitor av) {
+//        sc.setCompanyId(av.companyId());
+//        khSystemConfigManager.save(t, sc);
+//        return true;
+//    }
 
 }

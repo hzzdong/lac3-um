@@ -30,10 +30,10 @@ public class YwCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywCompanyManager.fetchById(t, Long.parseLong(faceReq.getId()));
+		return ywCompanyManager.fetchById(t, faceReq.getId());
 	}
 
 	@Face(login = false)
@@ -63,10 +63,10 @@ public class YwCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findSubCompanies", method = RequestMethod.POST)
 	public @ResponseBody Object findSubCompanies(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (Strings.isBlank(faceReq.getId())) {
+		if (faceReq.getId()!=null) {
 			return null;
 		}
-		return ywCompanyManager.findSubCompanies(t, Long.parseLong(faceReq.getId()));
+		return ywCompanyManager.findSubCompanies(t, faceReq.getId());
 	}
 
 	@Face(login = false)
@@ -75,7 +75,7 @@ public class YwCompanyFace {
 		if (faceReq.getId() == null) {
 			return null;
 		}
-		return ywCompanyManager.getCompanyFullOrgTreeList(t, Long.parseLong(faceReq.getId()));
+		return ywCompanyManager.getCompanyFullOrgTreeList(t, faceReq.getId());
 	}
 
 	@Face(login = false)
