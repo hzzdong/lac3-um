@@ -241,7 +241,29 @@
 		    </choose>
 			<if test="page.cnds!=null and page.cnds.khCompanyId != null"> AND rel.companyId = #{page.cnds.khCompanyId} </if>
 			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND c.parentId = #{page.cnds.parentCompanyId} </if>
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		order by rel.companyId
+	</select>
+	
+	<select id="findPage4SelfKhCompany4Select" resultType="com.linkallcloud.um.domain.sys.Application">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_application u 
+			left join um_kh_rel_company_app rel on u.id=rel.appId
+		WHERE
+			u.status=0 
+			AND rel.companyId = #{page.cnds.parentCompanyId}
+			AND u.id not in ( SELECT rel2.appId FROM um_kh_rel_company_app rel2 WHERE rel2.companyId = #{page.cnds.khCompanyId} ) 
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 	</select>
 	
 	<select id="find4YwUser" resultType="com.linkallcloud.um.domain.sys.Application">

@@ -15,3 +15,19 @@ export function findAppPage4UnKhRole(data) {
     data
   })
 }
+
+export function findAppPage4Company(data) {
+  return request({
+    url: '/umkh/face/Application/page4KhCompany',
+    method: 'post',
+    data
+  })
+}
+
+export function findAppPage4UnCompany(data) {
+  return request({
+    url: '/umkh/face/Application/page4KhCompany4Select',
+    method: 'post',
+    data
+  })
+}

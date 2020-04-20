@@ -103,3 +103,19 @@ export function getConfigCompanyAreaRootIds(data) {
     data
   })
 }
+
+export function addCompanyApps(data) {
+  return request({
+    url: '/umkh/face/KhCompany/addApps',
+    method: 'post',
+    data
+  })
+}
+
+export function removeCompanyApps(data) {
+  return request({
+    url: '/umkh/face/KhCompany/removeApp',
+    method: 'post',
+    data
+  })
+}

@@ -40,22 +40,22 @@ const mutations = {
     state.menuPermissions = menuPermissions
   },
   SET_USER: (state, user) => {
-    state.name = user.name
+    state.name = user.sid.name
     state.avatar = user.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
     state.introduction = user.remark
-    state.loginName = user.loginName
+    state.loginName = user.sid.code
     state.userType = user.userType
-    state.appId = user.appId
-    state.appCode = user.appCode
-    state.appName = user.appName
-    state.areaId = user.areaId
+    state.appId = user.app.id
+    state.appCode = user.app.code
+    state.appName = user.app.name
+    state.areaId = user.area.id
     state.areaLevel = user.areaLevel
-    state.areaName = user.areaName
-    state.companyId = user.companyId
-    state.companyName = user.companyName
-    state.orgId = user.orgId
-    state.orgName = user.orgName
-    state.orgType = user.orgType
+    state.areaName = user.area.name
+    state.companyId = user.company.id
+    state.companyName = user.company.name
+    state.orgId = user.org.id
+    state.orgName = user.org.name
+    state.orgType = user.userType
     // state.menuPermissions = user.menuPermissions || []
   }
 }

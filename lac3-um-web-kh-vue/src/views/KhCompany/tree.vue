@@ -1,74 +1,87 @@
 <template>
   <div class="app-container">
-    <zk-table
+    <el-table
       ref="table"
-      sum-text="sum"
-      index-text="#"
       :data="data"
-      :columns="columns"
-      :stripe="props.stripe"
-      :border="props.border"
-      :show-header="props.showHeader"
-      :show-summary="props.showSummary"
-      :show-row-hover="props.showRowHover"
-      :show-index="props.showIndex"
-      :tree-type="props.treeType"
-      :is-fold="props.isFold"
-      :expand-type="props.expandType"
-      :selection-type="props.selectionType"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-      <template slot="typeTemplate" slot-scope="{row}">
-        <el-tag :effect="row.attributes.alias==='Company' ? 'dark' : 'plain'">{{ row.attributes.alias | typeFilter }}<span v-if="row.type === '1'">(管)</span></el-tag>
-      </template>
-      <template slot="statusTemplate" slot-scope="{row}">
-        <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
-      </template>
-      <template slot="operations" slot-scope="{row}">
-        <el-button
-          v-if="row.attributes.alias === 'Company' && row.pId"
-          type="primary"
-          size="mini"
-          icon="el-icon-menu"
-          title="应用开通"
-          @click="handleCompanyApps(row)"
-        />
-        <el-button
-          v-if="row.attributes.alias !== 'Company' || !row.pId"
-          type="primary"
-          size="mini"
-          icon="el-icon-plus"
-          title="新增部门"
-          @click="handleAddDepartment(row)"
-        />
-        <el-button
-          v-if="row.pId"
-          type="primary"
-          size="mini"
-          icon="el-icon-edit"
-          title="编辑"
-          @click="handleEdit(row)"
-        />
-        <el-button v-if="row.pId" type="danger" size="mini" icon="el-icon-delete" title="删除" @click="handleDelete(row)" />
-        <el-button
-          v-if="row.attributes.alias === 'Company' && !row.pId"
-          type="primary"
-          size="mini"
-          icon="el-icon-circle-plus-outline"
-          title="新增子单位"
-          @click="handleAddCompany(row)"
-        />
-        <router-link v-if="row.attributes.alias === 'Company' && !row.pId" :to="'/Org/tree-view'" class="link-type" style="margin-left: 10px;">
+      <el-table-column prop="name" label="名称" width="250">
+        <template slot-scope="{row}">
+          <span v-if="row.attributes.alias !== 'Company'">{{ row.name }}</span>
+          <router-link v-if="row.attributes.alias === 'Company'" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type">
+            <span>{{ row.name }}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="govCode" label="编号" width="150" />
+      <el-table-column label="联系人" width="120">
+        <template slot-scope="{row}">
+          <span>{{ row.attributes.linkUserName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="联系方式" width="110">
+        <template slot-scope="{row}">
+          <span>{{ row.attributes.linkUserPhone }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="type" label="类型" width="80">
+        <template slot-scope="{row}">
+          <el-tag :effect="row.attributes.alias==='Company' ? 'dark' : 'plain'">{{ row.attributes.alias | typeFilter }}<span v-if="row.type === '1'">(管)</span></el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="sort" label="排序" width="60" />
+      <el-table-column label="" class-name="status-col" width="40" prop="status">
+        <template slot-scope="{row}">
+          <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="remark" label="备注说明" min-width="100" />
+      <el-table-column label="操作" width="150">
+        <template slot-scope="{row}">
+          <router-link v-if="row.attributes.alias === 'Company' && !row.pId" :to="'/Org/tree-view'" class="link-type" style="margin-right: 10px;">
+            <el-button type="primary" size="mini" title="组织树预览"> <svg-icon icon-class="tree" /> </el-button>
+          </router-link>
           <el-button
+            v-if="row.attributes.alias === 'Company' && row.pId"
             type="primary"
             size="mini"
-            title="组织树预览"
-            @click="handleShowOrgTree(row)"
-          >
-            <svg-icon icon-class="tree" />
-          </el-button>
-        </router-link>
-      </template>
-    </zk-table>
+            icon="el-icon-menu"
+            title="应用开通"
+            @click="handleCompanyApps(row)"
+          />
+          <el-button
+            v-if="row.attributes.alias !== 'Company' || !row.pId"
+            type="primary"
+            size="mini"
+            icon="el-icon-plus"
+            title="新增部门"
+            @click="handleAddDepartment(row)"
+          />
+          <el-button
+            v-if="row.pId"
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            title="编辑"
+            @click="handleEdit(row)"
+          />
+          <el-button v-if="row.pId" type="danger" size="mini" icon="el-icon-delete" title="删除" @click="handleDelete(row)" />
+          <el-button
+            v-if="row.attributes.alias === 'Company' && !row.pId"
+            type="primary"
+            size="mini"
+            icon="el-icon-circle-plus-outline"
+            title="新增子单位"
+            @click="handleAddCompany(row)"
+          />
+
+        </template>
+      </el-table-column>
+    </el-table>
 
     <el-dialog :title="department.dialogHeaderMap[department.dialogStatus]" :visible.sync="department.dialogVisible" width="60%">
       <el-form ref="depForm" :rules="department.rules" :model="department.entity" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">
@@ -340,9 +353,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import ZkTable from 'vue-table-with-tree-grid'
-Vue.use(ZkTable)
 import { getOrgTree, fetchKhDepartment, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
 // import { loadAreaTree } from '@/api/area'
 import { loadCachedMyCompanyAreaTree, loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
@@ -382,58 +392,8 @@ export default {
   },
   data() {
     return {
-      props: {
-        stripe: true,
-        border: true,
-        showHeader: true,
-        showSummary: false,
-        showRowHover: true,
-        showIndex: false,
-        treeType: true,
-        isFold: false,
-        expandType: false,
-        selectionType: false
-      },
       currentNode: undefined,
       data: [],
-      columns: [
-        {
-          label: '名称',
-          prop: 'name',
-          minWidth: '250px'
-        },
-        {
-          label: '编号',
-          prop: 'govCode',
-          minWidth: '150px'
-        },
-        {
-          label: '类型',
-          prop: 'typeTemplate',
-          width: '90px',
-          type: 'template',
-          template: 'typeTemplate'
-        },
-        {
-          label: '排序号',
-          prop: 'sort',
-          width: '90px'
-        },
-        {
-          label: '状态',
-          prop: 'statusTemplate',
-          width: '50px',
-          type: 'template',
-          template: 'statusTemplate'
-        },
-        {
-          label: '操作',
-          prop: 'operations',
-          width: '150px',
-          type: 'template',
-          template: 'operations'
-        }
-      ],
       statusOptions,
       commonData: {
         certificateTypeOptions: [],

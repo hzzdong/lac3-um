@@ -87,17 +87,20 @@ public class KhUserManager
 		KhUser dbUser = this.fecthByAccount(t, loginName);
 		if (dbUser != null) {
 			Company dbCompany = companyService().fetchById(t, dbUser.getCompanyId());
+			Long parentId = dbCompany.getId();
+			String parentUuid = dbCompany.getUuid();
 			String orgName = dbCompany.getName();
 			if (KhDepartment.class.getSimpleName().equals(dbUser.getParentClass())) {
 				KhDepartment parent = khDepartmentService.fetchById(t, dbUser.getParentId());
 				if (parent != null) {
+					parentId = parent.getId();
+					parentUuid = parent.getUuid();
 					orgName = parent.getFullName();
 				}
 			}
 			SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
-					dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(),
-					dbUser.getParentId() != null ? dbUser.getParentId() : dbUser.getCompanyId(), orgName,
-					dbUser.getClass().getSimpleName().substring(0, 2));
+					dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(), parentId,
+					parentUuid, orgName);
 			su.setAdmin(dbUser.isAdmin());
 
 			if (dbCompany.getAreaId() != null) {

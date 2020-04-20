@@ -120,6 +120,13 @@ export const asyncRoutes = [
         name: 'KhCompanyTreeView',
         meta: { title: '组织机构树预览', noCache: true, activeMenu: '/Org/index', requires: ['selfkh_org_user-org_view'] },
         hidden: true
+      },
+      {
+        path: 'company-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/KhCompany/company-view'),
+        name: 'CompanyView',
+        meta: { title: '单位预览', noCache: true, activeMenu: '/Org/index', requires: ['selfkh_org_user-org'] },
+        hidden: true
       }
     ]
   },

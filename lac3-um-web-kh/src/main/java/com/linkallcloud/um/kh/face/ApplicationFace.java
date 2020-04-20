@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
@@ -18,7 +19,6 @@ import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
-import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.util.Domains;
@@ -54,6 +54,41 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 	@Override
 	protected IApplicationManager manager() {
 		return applicationManager;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/page4KhCompany", method = RequestMethod.POST)
+	public @ResponseBody Object page4KhCompany(PageFaceRequest fr, Trace t, SessionUser su) {
+		Page<Application> page = new Page<>(fr);
+		if (!page.hasRule4Field("khCompanyId")) {
+			page.addRule(new Equal("khCompanyId", su.companyId()));
+			page.addRule(new Equal("khCompanyUuid", su.companyUuid()));
+		}
+		page = manager().findPage4SelfKhCompany(t, page);
+		convert(t, "page4KhCompany", fr, page);
+		return page;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/page4KhCompany4Select", method = RequestMethod.POST)
+	public @ResponseBody Object page4KhCompany4Select(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<Application> page = new Page<>(faceReq);
+		if (!page.hasRule4Field("khCompanyId") || !page.hasRule4Field("khCompanyUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId,khCompanyUuid参数错误。");
+		} else {
+			Equal idRule = (Equal) page.getRule4Field("khCompanyId");
+			Long khCompanyId = Castors.me().castTo(idRule.getValue(), Long.class);
+			if (khCompanyId.equals(su.companyId())) {//不能给自己公司许可应用
+				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId参数错误。");
+			}
+		}
+		
+		// 应用选择范围限制在登录用户所在公司有权限的应用
+		page.addRule(new Equal("parentCompanyId", su.companyId()));
+		
+		page = manager().findPage4SelfKhCompany4Select(t, page);
+		convert(t, "page4KhCompany4Select", faceReq, page);
+		return page;
 	}
 
 	@Face(simple = true)

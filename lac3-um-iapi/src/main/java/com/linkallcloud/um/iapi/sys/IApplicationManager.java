@@ -20,6 +20,8 @@ public interface IApplicationManager extends IManager<Application> {
     Page<Application> findPage4KhRole(Trace t, Page<Application> page);
 
     Page<Application> findPage4KhCompany(Trace t, Page<Application> page);
+    Page<Application> findPage4SelfKhCompany(Trace t, Page<Application> page);
+    Page<Application> findPage4SelfKhCompany4Select(Trace t, Page<Application> page);
 
     List<Application> find4YwUser(Trace t, Long ywUserId);
 

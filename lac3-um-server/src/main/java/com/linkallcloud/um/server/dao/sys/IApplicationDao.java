@@ -18,6 +18,7 @@ public interface IApplicationDao extends IDao<Application> {
 	List<Application> findPage4KhRole(@Param("t") Trace t, @Param("page") Page<Application> page);
 
 	List<Application> findPage4KhCompany(@Param("t") Trace t, @Param("page") Page<Application> page);
+	List<Application> findPage4SelfKhCompany4Select(@Param("t") Trace t, @Param("page") Page<Application> page);
 
 	List<Application> find4YwUser(@Param("t") Trace t, @Param("ywUserId") Long ywUserId);
 

@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.domain.Domain;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -163,8 +165,8 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public Tree getCompanyFullOrgTree(Trace t, Long companyId) {
-		T company = dao().fetchById(t, companyId);
+	public Tree getCompanyFullOrgTree(Trace t, Sid companyId) {
+		T company = dao().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}
@@ -249,7 +251,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
 		if (allCompanies != null && !allCompanies.isEmpty()) {
 			for (T node : allCompanies) {
-				if (node.getStatus() == 0) {
+				if (node.getStatus() != Domain.STATUS_DELETE) {
 					companyIdsMap.put(node.getId(), node);
 					if (node.isTopParent()) {
 						Tree item = node.toTreeNode();

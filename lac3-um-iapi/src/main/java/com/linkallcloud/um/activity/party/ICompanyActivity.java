@@ -51,7 +51,7 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 * @param companyId
 	 * @return
 	 */
-	Tree getCompanyFullOrgTree(Trace t, Long companyId);
+	Tree getCompanyFullOrgTree(Trace t, Sid companyId);
 
 	/**
 	 * 根据父公司的ID，查找直接子公司列表

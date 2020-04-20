@@ -212,7 +212,7 @@
 
 <script>
 import { getPage, createUser } from '@/api/user'
-import { findCompanyRoles, findUserRoleIds } from '@/api/khrole'
+import { findCompanyRoles } from '@/api/khrole'
 import { getOrgTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import { validateMobile } from '@/utils/validate'
