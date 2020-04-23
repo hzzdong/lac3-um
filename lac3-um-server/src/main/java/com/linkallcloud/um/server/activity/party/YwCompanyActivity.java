@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -221,6 +222,12 @@ public class YwCompanyActivity extends CompanyActivity<YwCompany, IYwCompanyDao,
 
 	@Override
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

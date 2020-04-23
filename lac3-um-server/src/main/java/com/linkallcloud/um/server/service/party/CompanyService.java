@@ -3,10 +3,12 @@ package com.linkallcloud.um.server.service.party;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -154,11 +156,6 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 		return activity().getCompanyOrgTreeList(t, companyId);
 	}
 
-	@Override
-	public Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId) {
-		return activity().findPermedCompanyAppMenus(t, companyId, appId);
-	}
-
 	@Transactional(readOnly = false)
 	@Override
 	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
@@ -166,9 +163,20 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 		return activity().saveCompanyAppMenuPerm(t, id, uuid, appId, appUuid, menuUuidIds);
 	}
 
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds) {
+		return activity().saveAppMenuPerm(t, companyId, appId, menuUuidIds);
+	}
+
 	@Override
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
 		return activity().getConfigCompanyAreaRootIds(t, companyId);
+	}
+
+	@Override
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
+		return activity().getConfigCompanyAreaRoots(t, companyId);
 	}
 
 	@Override
@@ -216,6 +224,46 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 			return root;
 		} else {
 			return areaActivity.getTree(t, true);
+		}
+	}
+
+	@Override
+	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
+		return activity().findCompanyValidMenus(t, companyId, appId);
+	}
+
+	@Override
+	public Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId) {
+		return activity().findPermedCompanyAppMenus(t, companyId, appId);
+	}
+
+	@Override
+	public Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId) {
+		List<Tree> items = activity().findCompanyValidMenus(t, myCompanyId.getId(), appId.getId());
+		Long[] permedMenuIds = activity().findPermedCompanyAppMenus(t, forCompanyId.getId(), appId.getId());
+		if (items != null && permedMenuIds != null && permedMenuIds.length > 0) {
+			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
+			checkMenus(t, items, pmids);
+		}
+		Tree root = Trees.assembleTree(items);
+//		Tree vroot = Trees.vroot("菜单树");
+//		Trees.assembleTree(vroot, items);
+		root.sort();
+		return root;
+	}
+
+	private void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {
+		if (items == null || items.isEmpty() || permedMenuIds == null || permedMenuIds.isEmpty()) {
+			return;
+		}
+		for (Tree item : items) {
+			for (Long pid : permedMenuIds) {
+				if (pid.toString().equals(item.getId())) {
+					item.setChecked(true);
+					permedMenuIds.remove(pid);
+					break;
+				}
+			}
 		}
 	}
 

@@ -61,16 +61,10 @@
 			<if test="page.cnds!=null and page.cnds.browser != null"> AND u.browser = #{page.cnds.browser}</if>
 			<if test="page.cnds!=null and page.cnds.ip != null"> AND u.ip = #{page.cnds.ip}</if>
 			<if test="page.cnds!=null and page.cnds.mobileBrand != null"> AND u.mobileBrand like #{page.cnds.mobileBrand}</if>
-			<if test="page.cnds!=null and page.cnds.operateTime != null"> AND u.operateTime &gt;= #{page.cnds.operateTime}</if>
-			<if test="page.cnds!=null and page.cnds.operateTime2 != null"> AND u.operateTime &lt;= #{page.cnds.operateTime2}</if>
-		<choose>
-			<when test="page.orders != null and page.orders.length > 0">
-				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
-			</when>
-			<otherwise>
-				order by u.id
-			</otherwise>
-		</choose>
+			<if test="page.cnds!=null and page.cnds.operateTime != null"> AND u.operateTime &gt;= #{page.cnds.operateTime.start} AND u.operateTime &lt;= #{page.cnds.operateTime.end}</if>
+			<if test="page.cnds!=null and page.cnds.orgId != null"> AND u.orgId = #{page.cnds.orgId}</if>
+			<if test="page.cnds!=null and page.cnds.orgType != null"> AND u.orgType = #{page.cnds.orgType}</if>
+		order by u.id desc
 	</select>
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.UmWebLog" useGeneratedKeys="true" keyProperty="entity.id">

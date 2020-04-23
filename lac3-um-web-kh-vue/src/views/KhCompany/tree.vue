@@ -42,17 +42,12 @@
       <el-table-column prop="remark" label="备注说明" min-width="100" />
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
-          <router-link v-if="row.attributes.alias === 'Company' && !row.pId" :to="'/Org/tree-view'" class="link-type" style="margin-right: 10px;">
+          <router-link v-if="row.attributes.alias === 'Company' && !row.pId" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type" style="margin-right: 10px;">
             <el-button type="primary" size="mini" title="组织树预览"> <svg-icon icon-class="tree" /> </el-button>
           </router-link>
-          <el-button
-            v-if="row.attributes.alias === 'Company' && row.pId"
-            type="primary"
-            size="mini"
-            icon="el-icon-menu"
-            title="应用开通"
-            @click="handleCompanyApps(row)"
-          />
+          <router-link v-if="row.attributes.alias === 'Company' && row.pId" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type" style="margin-right: 10px;">
+            <el-button type="primary" size="mini" icon="el-icon-menu" title="应用开通" />
+          </router-link>
           <el-button
             v-if="row.attributes.alias !== 'Company' || !row.pId"
             type="primary"

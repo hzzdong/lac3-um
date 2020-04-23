@@ -47,11 +47,11 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
 
-		<comm-base.version>0.3.9</comm-base.version>
-		<comm-core.version>0.3.9</comm-core.version>
-		<comm-cache.version>0.3.9</comm-cache.version>
-		<comm-handshake.version>0.3.9</comm-handshake.version>
-		<comm-web.version>0.3.9</comm-web.version>
+		<comm-base.version>0.3.11</comm-base.version>
+		<comm-core.version>0.3.11</comm-core.version>
+		<comm-cache.version>0.3.11</comm-cache.version>
+		<comm-handshake.version>0.3.11</comm-handshake.version>
+		<comm-web.version>0.3.11</comm-web.version>
 
 		<lac3-sso-client.version>0.1.2</lac3-sso-client.version>
 
@@ -99,6 +99,14 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>${java.version}</version>
+			<scope>system</scope>
+			<systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 

@@ -182,6 +182,19 @@ export const asyncRoutes = [
   },
 
   {
+    path: '/log',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/KhLog/logs'),
+        name: 'KhLog',
+        meta: { title: '日志查看', icon: 'excel', requires: ['selfkh_syslog'] }
+      }
+    ]
+  },
+
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

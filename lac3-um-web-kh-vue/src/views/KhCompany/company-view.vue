@@ -195,43 +195,104 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="单位许可应用" name="tabCompanyApps">
-        <div class="filter-container">
-          <el-button v-if="isMyCompany === false" class="filter-item" style="float: right;" type="primary" icon="el-icon-plus" @click="toSelectApps()">
-            添加许可
-          </el-button>
-        </div>
-        <el-table
-          :key="companyApps.tableKey"
-          ref="companyAppTable"
-          v-loading="companyApps.listLoading"
-          :data="companyApps.list"
-          tooltip-effect="dark"
-          style="width: 100%"
-          border
-          fit
-        >
-          <el-table-column prop="status" label="" class-name="status-col" width="40">
-            <template slot-scope="{row}">
-              <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
-            </template>
-          </el-table-column>
-          <el-table-column label="应用名称" width="250px" prop="name">
-            <template slot-scope="{row}">
-              <span>{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="code" label="编号" width="200px" />
-          <el-table-column prop="remark" label="备注说明" min-width="150px" />
-          <el-table-column v-if="isMyCompany === false" label="操作" align="center" width="50" class-name="small-padding">
-            <template slot-scope="{row}">
-              <el-button type="danger" size="mini" icon="el-icon-close" title="移除" @click="onCompanyAppDelete(row)" />
-            </template>
-          </el-table-column>
-        </el-table>
-        <pagination v-show="companyApps.total>0" :total="companyApps.total" :page.sync="companyApps.listQuery.page" :limit.sync="companyApps.listQuery.limit" @pagination="getCompanyApps" />
+        <aside>
+          <i class="el-icon-info" /> 单位[ <span>{{ company.name }}</span> ]已许可应用列表。您可以在此查看或给子单位许可应用，配置应用权限。
+        </aside>
+        <el-row>
+          <el-col :span="12">
+            <div v-if="isMyCompany === false" class="filter-container">
+              <el-button class="filter-item" type="primary" icon="el-icon-plus" @click="toSelectApps()">
+                添加许可
+              </el-button>
+            </div>
+            <el-table
+              :key="companyApps.tableKey"
+              ref="companyAppTable"
+              v-loading="companyApps.listLoading"
+              :data="companyApps.list"
+              tooltip-effect="dark"
+              style="width: 100%"
+              border
+              fit
+              highlight-current-row
+              @current-change="handleAppSelectedChange"
+            >
+              <el-table-column prop="status" label="" class-name="status-col" width="40">
+                <template slot-scope="{row}">
+                  <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
+                </template>
+              </el-table-column>
+              <el-table-column label="应用名称" min-width="150px" prop="name">
+                <template slot-scope="{row}">
+                  <span>{{ row.name }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="code" label="编号" width="200px" />
+              <el-table-column v-if="isMyCompany === false" label="操作" align="center" width="50" class-name="small-padding">
+                <template slot-scope="{row}">
+                  <el-button type="danger" size="mini" icon="el-icon-close" title="移除" @click="onCompanyAppDelete(row)" />
+                </template>
+              </el-table-column>
+            </el-table>
+            <pagination v-show="companyApps.total>0" :total="companyApps.total" :page.sync="companyApps.listQuery.page" :limit.sync="companyApps.listQuery.limit" @pagination="getCompanyApps" />
+          </el-col>
+          <el-col :span="12" style="padding-left: 10px;">
+            <div v-if="isMyCompany === false" class="filter-container">
+              <el-button class="filter-item" type="primary" icon="el-icon-circle-check" @click="onSaveCompanyAppPermission()">
+                保存应用权限配置
+              </el-button>
+            </div>
+            <el-tabs type="border-card">
+              <el-tab-pane label="菜单权限">
+                <el-tree
+                  ref="tree_menu"
+                  node-key="id"
+                  show-checkbox
+                  :data="menuTree.data"
+                  :props="menuTree.defaultProps"
+                  :default-expand-all="true"
+                  :expand-on-click-node="false"
+                  :check-on-click-node="true"
+                  :check-strictly="true"
+                />
+              </el-tab-pane>
+            </el-tabs>
+            <div v-if="isMyCompany === false" class="tabs-toolbar" title="切换全选状态">
+              <el-checkbox v-model="checkAll" @change="triggerMenuTreeCheck" /> 全选
+            </div>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane label="单位根区域" name="tabCompanyAreaRoots">
-        AREA
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>单位[ <span>{{ company.name }}</span> ]根区域</span>
+            <el-button v-if="isMyCompany === false" style="float: right; padding: 3px 0" type="text" @click="onCompanyAreasSetup()">设置</el-button>
+          </div>
+          <div class="text item">
+            <el-table
+              :key="companyAreas.tableKey"
+              ref="companyAreaTable"
+              v-loading="companyAreas.listLoading"
+              :data="companyAreas.list"
+              tooltip-effect="dark"
+              style="width: 100%"
+              border
+              fit
+            >
+              <el-table-column label="区域名称" width="300px">
+                <template slot-scope="{row}">
+                  <span>{{ row.value }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="区域编号" width="300px">
+                <template slot-scope="{row}">
+                  <span>{{ row.key }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-card>
       </el-tab-pane>
     </el-tabs>
 
@@ -274,16 +335,34 @@
         </el-table-column>
         <el-table-column prop="remark" label="备注说明" min-width="100px" />
       </el-table>
-      <pagination v-show="apps.total>0" :total="apps.total" :page.sync="apps.listQuery.page" :limit.sync="apps.listQuery.limit" @pagination="findUnRoleApps" />
+      <pagination v-show="apps.total>0" :total="apps.total" :page.sync="apps.listQuery.page" :limit.sync="apps.listQuery.limit" @pagination="findUnCompanyApps" />
+    </el-dialog>
+
+    <el-dialog title="单位根区域设置" :visible.sync="areaTree.dialogFormVisible">
+      <el-tree
+        ref="tree_area"
+        :data="areaTree.data"
+        :props="areaTree.defaultProps"
+        node-key="id"
+        :expand-on-click-node="false"
+        :check-on-click-node="true"
+        show-checkbox
+        :check-strictly="true"
+      />
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="areaTree.dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="onSaveAreas()">保存</el-button>
+      </div>
     </el-dialog>
 
   </div>
 </template>
 
 <script>
-import { fetchKhCompany, getFullOrgTree, addCompanyApps, removeCompanyApps } from '@/api/organization'
+import { fetchKhCompany, getFullOrgTree, addCompanyApps, removeCompanyApps, loadCompanyAreaTree, getConfigCompanyAreaRoots, getComapnyPermedMenuTree, saveCompanyAppMenuPerm } from '@/api/organization'
 import { findAppPage4Company, findAppPage4UnCompany } from '@/api/application'
-import { sheetClose, sheetRefresh } from '@/utils'
+import { saveCompanyConfig } from '@/api/config'
+import { sheetClose, sheetRefresh, parseTreeNodeChecked, parseCheckedTreeIds, checkTree, unCheckTree } from '@/utils'
 import { loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -421,8 +500,34 @@ export default {
         statusOptions,
         appTypeOptions,
         dialogFormVisible: false
+      },
+      /* 根区域 */
+      companyAreas: {
+        tableKey: 0,
+        list: null,
+        total: 0,
+        listLoading: true
+      },
+      areaTree: {
+        dialogFormVisible: false,
+        data: [],
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        }
+      },
+      /* 应用授权 */
+      currentApp: null,
+      checkAll: false,
+      menuTree: {
+        loaded: false,
+        data: [],
+        defaultProps: {
+          children: 'children',
+          label: 'name'
+        }
       }
-      /*  */
+
     }
   },
   computed: {
@@ -452,9 +557,13 @@ export default {
           this.getCompanyTree()
         }
       } else if (tab.name === 'tabCompanyApps') {
-        this.getCompanyApps()
+        if (!this.companyApps.list) {
+          this.getCompanyApps()
+        }
       } else if (tab.name === 'tabCompanyAreaRoots') {
-        // TODO
+        if (!this.companyAreas.list) {
+          this.findConfigCompanyAreaRoots()
+        }
       }
     },
     loadCommonData() {
@@ -510,6 +619,13 @@ export default {
         this.companyApps.list = response.data.data
         this.companyApps.total = response.data.recordsTotal
         this.companyApps.listLoading = false
+        this.$nextTick(() => {
+          if (this.companyApps.list && this.companyApps.list.length > 0) {
+            this.currentApp = this.companyApps.list[0]
+            this.$refs.companyAppTable.setCurrentRow(this.currentApp)
+            // 加载权限
+          }
+        })
       }).catch(err => console.log(err))
     },
     setTagsViewTitle() {
@@ -585,6 +701,94 @@ export default {
         })
       }).catch(() => {
       })
+    },
+    /* 单位根区域设置 */
+    findConfigCompanyAreaRoots() {
+      debugger
+      this.companyAreas.listLoading = true
+      const req = { id: this.company.id, uuid: this.company.uuid }
+      getConfigCompanyAreaRoots(req).then((response) => {
+        this.companyAreas.list = response.data
+        this.companyAreas.listLoading = false
+      }).catch(() => {
+      })
+    },
+    onCompanyAreasSetup() {
+      loadCompanyAreaTree().then((response) => {
+        this.areaTree.data = response.data
+        this.areaTree.dialogFormVisible = true
+        this.$nextTick(() => {
+          debugger
+          const checkedIds = []
+          if (this.companyAreas.list && this.companyAreas.list.length > 0) {
+            for (const checkedArea of this.companyAreas.list) {
+              parseTreeNodeChecked(checkedIds, checkedArea.key, this.areaTree.data)
+            }
+          }
+          if (checkedIds.length > 0) {
+            this.$refs.tree_area.setCheckedKeys(checkedIds)
+          }
+        })
+      }).catch(() => {
+      })
+    },
+    onSaveAreas() {
+      const items = this.$refs.tree_area.getCheckedNodes()
+      const areas = []
+      if (items && items.length > 0) {
+        for (const item of items) {
+          areas.push({ key: item.id, value: item.name })
+        }
+      }
+      // console.log(JSON.stringify(areas))
+      const req = { orgId: this.company.id, orgUuid: this.company.uuid, key: 'area_roots', value: areas }
+      saveCompanyConfig(req).then(() => {
+        this.companyAreas.list = []
+        if (areas && areas.length > 0) {
+          for (let i = 0; i < areas.length; i++) {
+            this.companyAreas.list.push(Object.assign({ }, areas[i]))
+          }
+        }
+        this.areaTree.dialogFormVisible = false
+        this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
+      }).catch(() => {
+      })
+    },
+    /* 应用授权*/
+    handleAppSelectedChange(val) {
+      this.currentApp = val
+      this.loadMenuTree(this.company.id, this.company.uuid, this.currentApp.id, this.currentApp.uuid)
+      this.menuTree.loaded = true
+    },
+    loadMenuTree(companyId, companyUuid, appId, appUuid) {
+      const req = { parentId: companyId, parentUuid: companyUuid, id: appId, uuid: appUuid }
+      getComapnyPermedMenuTree(req).then(response => {
+        debugger
+        this.menuTree.data = response.data
+        const checkedIds = []
+        parseCheckedTreeIds(checkedIds, this.menuTree.data)
+        this.$refs.tree_menu.setCheckedKeys(checkedIds)
+      })
+    },
+    onSaveCompanyAppPermission() {
+      const items = this.$refs.tree_menu.getCheckedNodes(false, true)
+      console.log(items)
+      const req = { parentId: this.company.id, parentUuid: this.company.uuid, id: this.currentApp.id, uuid: this.currentApp.uuid, uuidIds: {}}
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        req.uuidIds[item.uuid] = item.id
+      }
+      saveCompanyAppMenuPerm(req).then(() => {
+        this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+      }).catch(() => {
+      })
+    },
+    triggerMenuTreeCheck() {
+      if (this.checkAll) {
+        checkTree(this.$refs.tree_menu, this.menuTree.data)
+      } else {
+        unCheckTree(this.$refs.tree_menu)
+      }
     }
 
   }
@@ -612,5 +816,11 @@ export default {
         padding: 0 15px;
         display: inline-block;
         border-bottom:1px solid #DCDFE6;
+    }
+    .tabs-toolbar {
+      position: absolute;right:10px;top:65px;
+      /* color: #e6a23c;
+      font-weight: 600; */
+      font-size: 14px;
     }
 </style>

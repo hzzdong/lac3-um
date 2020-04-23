@@ -3,6 +3,7 @@ package com.linkallcloud.um.iapi.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -112,6 +113,7 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
+	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
 
 	/**
 	 * 公司全局根区域的ids。由公司管理员在系统设置中设定。若未设定，默认同父公司。顶层公司未设定为系统全区域。
@@ -139,5 +141,18 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Tree loadCompanyAreaTree(Trace t, Sid companyId);
+	
+	/**
+	 * 得到某应用的菜单，并根据某公司是否有权限打上标记
+	 * 
+	 * @param t
+	 * @param myCompanyId
+	 * @param forCompanyId
+	 * @param appId
+	 * @return
+	 */
+	Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId);
+	
+	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
 
 }

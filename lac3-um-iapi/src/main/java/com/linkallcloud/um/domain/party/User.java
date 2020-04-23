@@ -168,7 +168,7 @@ public abstract class User extends Party {
 	}
 
 	public String getUserType() {
-		return this.getClass().getSimpleName();// .substring(0, 2);
+		return this.getClass().getSimpleName().substring(0, 2);
 	}
 
 	public boolean isAdmin() {

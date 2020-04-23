@@ -46,7 +46,7 @@ public class IndexController {
 	public String vueAuthProxy(Trace t, HttpServletRequest request, ModelMap modelMap) {
 		SessionUser user = Controllers.getSessionUser(myAppCode, request);
 		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken("KhUser", user.getLoginName(), user.name(), user.id(), user.companyId(),
+		String token = Controllers.createToken(user.getUserType(), user.getLoginName(), user.name(), user.id(), user.companyId(),
 				user.companyName(), 20);
 
 		try {

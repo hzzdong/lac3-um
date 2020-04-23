@@ -1,5 +1,6 @@
 package com.linkallcloud.um.service.party;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -113,6 +114,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
+	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
 
 	/**
 	 * 公司全局根区域的ids。由公司管理员在系统设置中设定。若未设定，默认同父公司。顶层公司未设定为系统全区域。
@@ -140,4 +142,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Tree loadCompanyAreaTree(Trace t, Sid companyId);
+	
+	Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId);
+	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
 }

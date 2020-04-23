@@ -6,6 +6,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.BaseManager;
 import com.linkallcloud.um.domain.party.KhCompany;
@@ -48,7 +49,7 @@ public class KhSystemConfigManager extends BaseManager<KhSystemConfig, IKhSystem
 	}
 
 	@Override
-	public Boolean change(Trace t, Long companyId, String configItemCode, String value) {
+	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
 		return service().change(t, companyId, configItemCode, value);
 	}
 

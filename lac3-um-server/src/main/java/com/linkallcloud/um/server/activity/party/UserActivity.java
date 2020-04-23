@@ -282,9 +282,9 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			return menu2RescodeArray(menus);
 		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode()))
 			List<Menu> menus = null;
-			if (user.getUserType().equals(KhUser.class.getSimpleName())) {
+			if (user.getUserType().equals(KhUser.class.getSimpleName().substring(0, 2))) {
 				menus = menuDao.findKhCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);
-			} else if (user.getUserType().equals(YwUser.class.getSimpleName())) {
+			} else if (user.getUserType().equals(YwUser.class.getSimpleName().substring(0, 2))) {
 				if ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode())) {
 					menus = menuDao.findYwCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);
 				} else {

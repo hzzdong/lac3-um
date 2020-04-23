@@ -1,7 +1,5 @@
 package com.linkallcloud.um.server.service.party;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,11 +63,6 @@ public class YwCompanyService extends
 	@Override
 	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
 		return activity().findCompanyValidMenuTree(t, companyId, appId);
-	}
-
-	@Override
-	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidMenus(t, companyId, appId);
 	}
 
 	@Override

@@ -104,6 +104,14 @@ export function getConfigCompanyAreaRootIds(data) {
   })
 }
 
+export function getConfigCompanyAreaRoots(data) {
+  return request({
+    url: '/umkh/face/KhCompany/getConfigCompanyAreaRoots',
+    method: 'post',
+    data
+  })
+}
+
 export function addCompanyApps(data) {
   return request({
     url: '/umkh/face/KhCompany/addApps',
@@ -115,6 +123,22 @@ export function addCompanyApps(data) {
 export function removeCompanyApps(data) {
   return request({
     url: '/umkh/face/KhCompany/removeApp',
+    method: 'post',
+    data
+  })
+}
+
+export function getComapnyPermedMenuTree(data) {
+  return request({
+    url: '/umkh/face/KhCompany/getPermedAppMenuTree',
+    method: 'post',
+    data
+  })
+}
+
+export function saveCompanyAppMenuPerm(data) {
+  return request({
+    url: '/umkh/face/KhCompany/saveAppMenuPerm',
     method: 'post',
     data
   })

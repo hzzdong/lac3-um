@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -146,6 +147,16 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
+	public Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId) {
+		return service().findPermedAppMenusTree(t, myCompanyId, forCompanyId, appId);
+	}
+
+	@Override
+	public Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds) {
+		return service().saveAppMenuPerm(t, companyId, appId, menuUuidIds);
+	}
+
+	@Override
 	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
 			Map<String, Long> menuUuidIds) {
 		return service().saveCompanyAppMenuPerm(t, id, uuid, appId, appUuid, menuUuidIds);
@@ -205,6 +216,12 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
 		return service().getConfigCompanyAreaRootIds(t, companyId);
 	}
+
+	@Override
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
+		return service().getConfigCompanyAreaRoots(t, companyId);
+	}
+
 
 	@Override
 	public Long[] getCompanyAreaRootIds(Trace t, Sid companyId) {

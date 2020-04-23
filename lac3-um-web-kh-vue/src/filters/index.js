@@ -66,3 +66,25 @@ export function toThousandFilter(num) {
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+export function operateResult(ors) {
+  const operateResultKeyValue = {
+    0: '成功',
+    1: '失败'
+  }
+  return operateResultKeyValue[ors]
+}
+
+export function statusFilter(status) {
+  const statusKeyValue = { 0: '正常', 1: '禁用' }
+  return statusKeyValue[status]
+}
+
+export function statusTypeFilter(status) {
+  const statusMap = {
+    0: 'success',
+    1: 'warning',
+    9: 'danger'
+  }
+  return statusMap[status]
+}

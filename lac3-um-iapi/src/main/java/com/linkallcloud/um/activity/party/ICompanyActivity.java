@@ -3,6 +3,7 @@ package com.linkallcloud.um.activity.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -88,6 +89,7 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 
 	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
 			Map<String, Long> menuUuidIds);
+	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
 
 	/**
 	 * 公司某应用的根区域ids
@@ -107,5 +109,6 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 * @return
 	 */
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
+	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
 
 }

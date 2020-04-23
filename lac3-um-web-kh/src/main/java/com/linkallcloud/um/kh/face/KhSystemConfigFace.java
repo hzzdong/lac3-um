@@ -10,15 +10,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.dto.NameValue;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
-import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
+import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
 import com.linkallcloud.um.constant.Consts;
+import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
+import com.linkallcloud.um.dto.base.ConfigFaceRequest;
+import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.iapi.sys.IKhSystemConfigManager;
 import com.linkallcloud.web.face.annotation.Face;
@@ -35,6 +39,9 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IAreaManager areaManager;
+
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhCompanyManager khCompanyManager;
 
 	@Override
 	protected IKhSystemConfigManager manager() {
@@ -83,12 +90,19 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 
 	@Face(simple = true)
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public @ResponseBody Object changeStatus(ObjectFaceRequest<NameValue> sfr, Trace t, SessionUser su) {
+	public @ResponseBody Object changeStatus(ConfigFaceRequest fr, Trace t, SessionUser su) {
 		if (!checkReferer(true)) {
 			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
 		}
-		NameValue nv = sfr.getData();
-		return manager().change(t, su.companyId(), nv.getKey(), nv.getValue());
+		Sid companyId = su.getCompany();
+		if (fr.getOrgId() != null && !su.companyId().equals(fr.getOrgId()) && !Strings.isBlank(fr.getOrgUuid())) {
+			KhCompany company = khCompanyManager.fetchByIdUuid(t, fr.getOrgId(), fr.getOrgUuid());
+			if (company == null || !su.companyId().equals(company.getParentId())) {
+				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
+			}
+			companyId = new Sid(fr.getOrgId(), fr.getOrgUuid());
+		}
+		return manager().change(t, companyId, fr.getKey(), fr.getValue());
 	}
 
 }

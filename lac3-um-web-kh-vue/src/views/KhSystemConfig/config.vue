@@ -27,7 +27,24 @@
             inactive-text="禁用"
             @change="haddleChangeAreaPermission($event, row)"
           />
-          <span v-if="row.key === 'area_roots'"><el-button type="primary" icon="el-icon-edit" circle @click="toSelectAreas" /> {{ row.value }} </span>
+          <span v-if="row.key === 'area_roots'">
+            <el-table
+              ref="companyAreaTable"
+              v-loading="listLoading"
+              :data="entity.companyAreas"
+              tooltip-effect="dark"
+              style="width: 100%"
+              border
+              fit
+            >
+              <el-table-column label="区域名称" min-width="100px">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.value }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button type="primary" icon="el-icon-edit" circle @click="toSelectAreas" />
+          </span>
           <span v-if="row.key === 'logo'"><el-button type="primary" icon="el-icon-upload" circle /> {{ row.value }}</span>
         </template>
       </el-table-column>
@@ -70,7 +87,8 @@ export default {
       entity: {
         enable_org_permission: false,
         enable_area_permission: false,
-        area_roots: [],
+        // area_roots: [],
+        companyAreas: [],
         logo: ''
       },
       areaTree: {
@@ -101,7 +119,8 @@ export default {
             } else if (item.key === 'enable_area_permission') {
               this.entity.enable_area_permission = item.value === 'yes'
             } else if (item.key === 'area_roots') {
-              this.entity.area_roots = item.value
+              // this.entity.area_roots = item.value
+              this.entity.companyAreas = JSON.parse(item.value)
             } else if (item.key === 'logo') {
               this.entity.logo = item.value
             }
@@ -167,11 +186,15 @@ export default {
         }
       }
       // console.log(JSON.stringify(areas))
-      const req = { dataType: 'Object', key: 'area_roots', value: areas }
+      const req = { key: 'area_roots', value: areas }
       saveCompanyConfig(req).then(() => {
         for (const config of this.list) {
           if (config.key === 'area_roots') {
-            config.value = JSON.stringify(areas)
+            // config.value = JSON.stringify(areas)
+            this.entity.companyAreas = []
+            for (const area of areas) {
+              this.entity.companyAreas.push(area)
+            }
           }
         }
         this.areaTree.dialogFormVisible = false

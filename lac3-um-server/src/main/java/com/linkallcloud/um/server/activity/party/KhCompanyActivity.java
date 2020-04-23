@@ -321,16 +321,23 @@ public class KhCompanyActivity
 
 	@Override
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+		List<NameValue> areas = getConfigCompanyAreaRoots(t, companyId);
+		if (areas != null && areas.size() > 0) {
+			Long[] areaRootIds = new Long[areas.size()];
+			for (int i = 0; i < areas.size(); i++) {
+				areaRootIds[i] = Long.parseLong(areas.get(i).getKey());
+			}
+			return areaRootIds;
+		}
+		return null;
+	}
+
+	@Override
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
 		KhSystemConfig config = khSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_KH_AREAS);
 		if (config != null && !Strings.isBlank(config.getValue())) {
 			List<NameValue> areas = config.parse();
-			if (areas != null && areas.size() > 0) {
-				Long[] areaRootIds = new Long[areas.size()];
-				for (int i = 0; i < areas.size(); i++) {
-					areaRootIds[i] = Long.parseLong(areas.get(i).getKey());
-				}
-				return areaRootIds;
-			}
+			return areas;
 		}
 		return null;
 	}

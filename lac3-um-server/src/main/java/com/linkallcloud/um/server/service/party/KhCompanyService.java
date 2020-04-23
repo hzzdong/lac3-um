@@ -74,10 +74,6 @@ public class KhCompanyService extends
 		return activity().findCompanyValidMenuTree(t, companyId, appId);
 	}
 
-	@Override
-	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidMenus(t, companyId, appId);
-	}
 
 	@Override
 	public PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId) {

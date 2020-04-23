@@ -333,6 +333,21 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		return false;
 	}
 
+	@Override
+	public Boolean saveAppMenuPerm(Trace t, Sid com, Sid app, Map<String, Long> menuUuidIds) {
+		T company = fetchByIdUuid(t, com.getId(), com.getUuid());
+		Application application = applicationDao.fetchByIdUuid(t, app.getId(), app.getUuid());
+		if (company != null && application != null) {
+			dao().clearCompanyAppMenuPerms(t, com.getId(), app.getId());
+			if (menuUuidIds != null && !menuUuidIds.isEmpty()) {
+				List<Long> menuIds = Domains.parseIds(menuUuidIds);
+				dao().saveCompanyAppMenuPerms(t, com.getId(), app.getId(), menuIds);
+			}
+			return true;
+		}
+		return false;
+	}
+
 	// @Override
 	// public Tree getCompanyOrgTree(Trace t, Long companyId) {
 	// T company = dao().fetchById(t, companyId);

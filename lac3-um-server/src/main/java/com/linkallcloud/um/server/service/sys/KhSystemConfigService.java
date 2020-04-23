@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query;
@@ -43,14 +44,14 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 
 	@Transactional(readOnly = false)
 	@Override
-	public Boolean change(Trace t, Long companyId, String configItemCode, String value) {
-		KhSystemConfig dbEntity = fetch(t, companyId, configItemCode);
+	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
+		KhSystemConfig dbEntity = fetch(t, companyId.getId(), configItemCode);
 		if (dbEntity != null) {
 			dbEntity.setValue(value);
 			return activity().update(t, dbEntity);
 		} else {
 			KhSystemConfig entity = defaultConfig(t, configItemCode);
-			entity.setCompanyId(companyId);
+			entity.setCompanyId(companyId.getId());
 			entity.setValue(value);
 			Long id = activity().insert(t, entity);
 			entity.setId(id);

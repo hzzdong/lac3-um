@@ -407,6 +407,27 @@ export function parseCheckedTreeIds(ids, treeItems) {
   }
 }
 
+export function parseTreeIds(ids, treeItems) {
+  if (treeItems && treeItems.length > 0) {
+    for (const item of treeItems) {
+      ids.push(item.id)
+      if (item.children && item.children.length > 0) {
+        parseTreeIds(ids, item.children)
+      }
+    }
+  }
+}
+
+export function checkTree(tree, treeItems) {
+  const ids = []
+  parseTreeIds(ids, treeItems)
+  tree.setCheckedKeys(ids)
+}
+
+export function unCheckTree(tree) {
+  tree.setCheckedNodes([])
+}
+
 export function sheetClose(me) {
   me.$store.dispatch('tagsView/delView', me.$route)
   me.$router.go(-1)
