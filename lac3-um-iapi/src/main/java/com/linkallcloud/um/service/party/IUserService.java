@@ -1,13 +1,13 @@
 package com.linkallcloud.um.service.party;
 
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.exception.IllegalParameterException;
-import com.linkallcloud.core.pagination.Page;
-import com.linkallcloud.um.domain.party.User;
-
 import java.util.List;
 import java.util.Map;
+
+import com.linkallcloud.core.dto.Sid;
+import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BaseRuntimeException;
+import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.um.domain.party.User;
 
 public abstract interface IUserService<T extends User> extends IPartyService<T> {
 
@@ -212,5 +212,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	 * @return
 	 */
 	boolean updateStatusByDepartment(Trace t, int status, Long departmentId);
+	
+	T fetchCompanyAdmin(Trace t, Sid companyId);
 
 }

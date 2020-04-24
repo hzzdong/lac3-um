@@ -1,14 +1,24 @@
 package com.linkallcloud.um.server.manager.party;
 
-import com.alibaba.fastjson.JSON;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.exception.IllegalParameterException;
-import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
-import com.linkallcloud.um.domain.party.*;
+import com.linkallcloud.um.domain.party.Company;
+import com.linkallcloud.um.domain.party.KhUser;
+import com.linkallcloud.um.domain.party.Role;
+import com.linkallcloud.um.domain.party.User;
+import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Menu;
 import com.linkallcloud.um.iapi.party.IUserManager;
@@ -17,13 +27,6 @@ import com.linkallcloud.um.service.party.IRoleService;
 import com.linkallcloud.um.service.party.IUserService;
 import com.linkallcloud.um.service.sys.IApplicationService;
 import com.linkallcloud.um.service.sys.IMenuService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class UserManager<T extends User, S extends IUserService<T>, R extends Role, RS extends IRoleService<R, T>, C extends Company, CS extends ICompanyService<C>>
 		extends PartyManager<T, S> implements IUserManager<T> {
@@ -288,6 +291,11 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 //			}
 //		}
 		return super.updateStatus(t, status, id, uuid);
+	}
+
+	@Override
+	public T fetchCompanyAdmin(Trace t, Sid companyId) {
+		return service().fetchCompanyAdmin(t, companyId);
 	}
 
 }

@@ -47,6 +47,15 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Tree getCompanyFullOrgTree(Trace t, Sid companyId);
+	
+	/**
+	 * 得到companyId及其以下的Company树节点，包括所有子公司节点。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree getFullTreeOfCompany(Trace t, Sid companyId);
 
 	/**
 	 * 得到公司被通过授权等定义后授权应用区域权限的根节点

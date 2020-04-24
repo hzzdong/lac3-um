@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
@@ -280,7 +281,8 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (user.getAccount().equals("superadmin")) {
 			List<Menu> menus = menuDao.findAppMenusWithButton(t, appId, true);
 			return menu2RescodeArray(menus);
-		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode()))
+		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) ||
+									// "lac_app_um_kh".equals(app.getCode()))
 			List<Menu> menus = null;
 			if (user.getUserType().equals(KhUser.class.getSimpleName().substring(0, 2))) {
 				menus = menuDao.findKhCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);
@@ -575,5 +577,14 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	 * @return
 	 */
 	protected abstract String departmentAdminRoleCode();
+
+	@Override
+	public T fetchCompanyAdmin(Trace t, Sid companyId) {
+		List<T> users = dao().findCompanyAdmin(t, companyId);
+		if (users != null && users.size() > 0) {
+			return users.get(0);
+		}
+		return null;
+	}
 
 }

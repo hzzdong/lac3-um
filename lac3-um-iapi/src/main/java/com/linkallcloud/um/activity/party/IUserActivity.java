@@ -3,6 +3,7 @@ package com.linkallcloud.um.activity.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.User;
@@ -217,5 +218,7 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	 * @return
 	 */
 	boolean isUserDepartmentAdmin(Trace t, Long userId);
+	
+	T fetchCompanyAdmin(Trace t, Sid companyId);
 
 }

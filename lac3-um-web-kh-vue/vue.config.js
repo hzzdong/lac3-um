@@ -51,7 +51,7 @@ module.exports = {
       '/umkh': {
         target: 'http://localhost:8013/',
         pathRewrite: {
-          ['^/umkh']: '/umkh'
+          '^/umkh': '/umkh'
         }
       }
     },

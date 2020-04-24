@@ -93,7 +93,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
+        meta: { title: '个人设置', icon: 'user', noCache: true }
       }
     ]
   }
@@ -113,13 +113,6 @@ export const asyncRoutes = [
         component: () => import('@/views/KhCompany/tree'),
         name: 'KhCompany',
         meta: { title: '组织机构', icon: 'tree-table', requires: ['selfkh_org_user-org'] }
-      },
-      {
-        path: 'tree-view',
-        component: () => import('@/views/KhCompany/tree-view'),
-        name: 'KhCompanyTreeView',
-        meta: { title: '组织机构树预览', noCache: true, activeMenu: '/Org/index', requires: ['selfkh_org_user-org_view'] },
-        hidden: true
       },
       {
         path: 'company-view/:id(\\d+)/:uuid',
@@ -190,6 +183,20 @@ export const asyncRoutes = [
         component: () => import('@/views/KhLog/logs'),
         name: 'KhLog',
         meta: { title: '日志查看', icon: 'excel', requires: ['selfkh_syslog'] }
+      }
+    ]
+  },
+  {
+    path: '/dw',
+    component: Layout,
+    redirect: '/dw/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/dw/index'),
+        name: 'DW',
+        meta: { title: '系统代维', icon: 'user', noCache: true }
       }
     ]
   },

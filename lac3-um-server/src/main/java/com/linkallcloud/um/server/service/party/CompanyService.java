@@ -95,6 +95,11 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
+	public Tree getFullTreeOfCompany(Trace t, Sid companyId) {
+		return activity().getFullTreeOfCompany(t, companyId);
+	}
+
+	@Override
 	public List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId) {
 		return activity().getCompanyFullOrgTreeList(t, companyId);
 	}

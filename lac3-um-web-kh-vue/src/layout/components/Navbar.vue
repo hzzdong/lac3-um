@@ -6,13 +6,20 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <search id="header-search" class="right-menu-item" />
-
         <error-log class="errLog-container right-menu-item hover-effect" />
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <span class="right-menu-item hover-effect" style="font-size: 14px;">
+          欢迎
+          <i v-if="loginMode === 0" class="el-icon-user-solid" title="正常登录模式" />
+          <i v-if="loginMode === 1" class="el-icon-user" title="代维模式" />
+          {{ name }}
+        </span>
 
-        <el-tooltip content="Global Size" effect="dark" placement="bottom">
+        <el-tooltip content="全屏" effect="dark" placement="bottom">
+          <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        </el-tooltip>
+
+        <el-tooltip content="字体尺寸" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
 
@@ -20,24 +27,24 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="logoSrc" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <router-link to="/profile/index">
-            <el-dropdown-item>Profile</el-dropdown-item>
-          </router-link>
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+          <router-link to="/profile/index">
+            <el-dropdown-item>个人设置</el-dropdown-item>
+          </router-link>
+          <router-link v-if="loginMode === 0" to="/dw/index">
+            <el-dropdown-item>代维</el-dropdown-item>
+          </router-link>
+          <el-dropdown-item v-if="loginMode === 1" @click.native="logoutDw">
+            <span style="display:block;">退出代维模式</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -52,7 +59,8 @@ import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
-import Search from '@/components/HeaderSearch'
+// import Search from '@/components/HeaderSearch'
+import logoSrc from '@/assets/logo.png'
 
 export default {
   components: {
@@ -60,13 +68,19 @@ export default {
     Hamburger,
     ErrorLog,
     Screenfull,
-    SizeSelect,
-    Search
+    SizeSelect
+  },
+  data() {
+    return {
+      logoSrc: logoSrc
+    }
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'avatar',
+      'loginMode',
+      'name',
       'device'
     ])
   },
@@ -76,7 +90,20 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      window.location = `/umkh/logout`
+    },
+    logoutDw() {
+      this.$confirm('您确定要退出代维模式吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('user/logout').then(() => {
+          // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+          window.location = `/umkh/dwLogout`
+        }).catch(err => console.log(err))
+      }).catch(err => console.log(err))
     }
   }
 }

@@ -1,12 +1,16 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  loginMode: 0,
   name: '',
+  mobile: '',
+  nickName: '',
+  govCode: '',
   avatar: '',
-  introduction: '',
+  remark: '',
   loginName: '',
   userType: '',
   appId: '',
@@ -40,9 +44,13 @@ const mutations = {
     state.menuPermissions = menuPermissions
   },
   SET_USER: (state, user) => {
+    state.loginMode = user.loginMode || 0
     state.name = user.sid.name
+    state.mobile = user.mobiel
+    state.nickName = user.nickName
+    state.govCode = user.govCode
+    state.remark = user.remark
     state.avatar = user.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
-    state.introduction = user.remark
     state.loginName = user.sid.code
     state.userType = user.userType
     state.appId = user.app.id
@@ -57,6 +65,15 @@ const mutations = {
     state.orgName = user.org.name
     state.orgType = user.userType
     // state.menuPermissions = user.menuPermissions || []
+  },
+  RESET_USER: (state, user) => {
+    state.loginMode = user.loginMode || 0
+    state.name = user.name
+    state.mobile = user.mobiel
+    state.nickName = user.nickName
+    state.govCode = user.govCode
+    state.remark = user.remark
+    state.avatar = user.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
   }
 }
 
@@ -109,23 +126,41 @@ const actions = {
     })
   },
 
+  refreshUserInfo({ commit }, user) {
+    return new Promise((resolve, reject) => {
+      commit('RESET_USER', user)
+      resolve()
+    })
+  },
+
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_PERMISSIONS', [])
-        removeToken()
-        resetRouter()
+      // logout(state.token).then(() => {
+      //   commit('SET_TOKEN', '')
+      //   commit('SET_PERMISSIONS', [])
+      //   removeToken()
+      //   resetRouter()
 
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-        dispatch('tagsView/delAllViews', null, { root: true })
+      //   // reset visited views and cached views
+      //   // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+      //   dispatch('tagsView/delAllViews', null, { root: true })
 
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      //   resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
+
+      commit('SET_TOKEN', '')
+      commit('SET_PERMISSIONS', [])
+      removeToken()
+      resetRouter()
+
+      // reset visited views and cached views
+      // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+      dispatch('tagsView/delAllViews', null, { root: true })
+
+      resolve()
     })
   },
 

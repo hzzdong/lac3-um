@@ -2,6 +2,7 @@ package com.linkallcloud.um.server.service.party;
 
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.ServLog;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.pagination.Page;
@@ -233,5 +234,10 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
     public boolean updateStatusByDepartment(Trace t, int status, Long departmentId) {
         return activity().updateStatusByDepartment(t, status, departmentId);
     }
+
+	@Override
+	public T fetchCompanyAdmin(Trace t, Sid companyId) {
+		return activity().fetchCompanyAdmin(t, companyId);
+	}
 
 }

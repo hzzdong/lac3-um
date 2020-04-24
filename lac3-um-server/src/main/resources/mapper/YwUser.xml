@@ -15,6 +15,12 @@
 		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName
 	</sql>
 	
+	<sql id="Column_with_dep_com_Name">
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,
+		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+	</sql>
+	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.YwUser">
 		select
 			<include refid="Base_Column_List" />
@@ -620,6 +626,17 @@
 			um_yw_perm_area p JOIN um_yw_rel_role_user r ON p.roleId=r.roleId
 	  WHERE
 		  r.userId=#{userId}  AND p.appId=#{appId}
+	</select>
+	
+	<select id="findCompanyAdmin" resultType="com.linkallcloud.um.domain.party.YwUser">
+		select
+			<include refid="Column_with_dep_com_Name" />
+		from 
+			um_yw_user u 
+			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
+			left join um_yw_company c on u.companyId=c.id 
+		where 
+			u.status &lt;&gt; 9 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
 	</select>
 	
 </mapper>

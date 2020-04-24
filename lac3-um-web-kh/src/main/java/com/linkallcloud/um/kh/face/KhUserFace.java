@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
+import com.linkallcloud.core.face.message.request.PasswordFaceRequest;
+import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
@@ -47,8 +50,37 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Face(simple = true)
 	@RequestMapping(value = "/fetchLoginUser", method = RequestMethod.POST)
-	public @ResponseBody Object fetchLoginUser(ObjectFaceRequest<Object> fr, SessionUser suser) {
+	public @ResponseBody Object fetchLoginUser(ObjectFaceRequest<Object> fr, Trace t, SessionUser suser) {
 		return suser;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/getLoginUser", method = RequestMethod.POST)
+	public @ResponseBody Object getLoginUser(ObjectFaceRequest<Object> fr, Trace t, SessionUser suser) {
+		return manager().fetchById(t, suser.id());
+	}
+
+	@WebLog(db = true)
+	@Face(simple = true)
+	@RequestMapping(value = "/updateMe", method = RequestMethod.POST)
+	public @ResponseBody Object updateMe(ObjectFaceRequest<KhUser> fr, Trace t, SessionUser su) {
+		if (!checkReferer(true)) {
+			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+		}
+		KhUser entity = fr.getData();
+		entity.setId(su.id());
+		entity.setUuid(su.uuid());
+		return manager().update(t, entity);
+	}
+
+	@WebLog(db = true)
+	@Face(simple = true)
+	@RequestMapping(value = "/updatePass", method = RequestMethod.POST)
+	public @ResponseBody Object updatePass(PasswordFaceRequest fr, Trace t, SessionUser su) {
+		if (!checkReferer(true)) {
+			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+		}
+		return manager().updatePassword(t, su.id(), su.uuid(), fr.getOldpass(), fr.getPassword());
 	}
 
 	@Override

@@ -16,6 +16,14 @@ export function getFullOrgTree(data) {
   })
 }
 
+export function getFullTreeOfCompany(data) {
+  return request({
+    url: '/umkh/face/KhCompany/loadTreeOfCompany',
+    method: 'post',
+    data
+  })
+}
+
 export function fetchKhDepartment(data) {
   return request({
     url: '/umkh/face/KhDepartment/fetch',

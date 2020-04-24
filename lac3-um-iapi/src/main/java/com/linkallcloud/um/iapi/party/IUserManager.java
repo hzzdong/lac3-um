@@ -3,6 +3,7 @@ package com.linkallcloud.um.iapi.party;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
@@ -191,5 +192,7 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	boolean updateDduid(Trace t, Long umUserId, String dduid, int ddStatus);
 
 	SessionUser assembleSessionUser(Trace t, String loginName, String appCode);
+	
+	T fetchCompanyAdmin(Trace t, Sid companyId);
 
 }

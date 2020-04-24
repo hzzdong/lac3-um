@@ -583,4 +583,15 @@
 		  r.userId=#{userId}  AND p.appId=#{appId}
 	</select>
 	
+	<select id="findCompanyAdmin" resultType="com.linkallcloud.um.domain.party.KhUser">
+		select
+			<include refid="Column_with_dep_com_Name" />
+		from 
+			um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
+		where 
+			u.status &lt;&gt; 9 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
+	</select>
+	
 </mapper>

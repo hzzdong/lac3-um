@@ -165,6 +165,24 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
+	public Tree getFullTreeOfCompany(Trace t, Sid companyId) {
+		T company = dao().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
+		if (company == null) {
+			throw new ArgException("companyId参数错误");
+		}
+
+		Tree root = company.toTreeNode();
+		root.setpId(null);
+		root.setOpen(true);
+
+		List<Tree> children = getChildrenFullTreeNodesOfCompany(t, company);
+		Trees.assembleTree(root, children);
+		root.sort();
+
+		return root;
+	}
+
+	@Override
 	public Tree getCompanyFullOrgTree(Trace t, Sid companyId) {
 		T company = dao().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
 		if (company == null) {
@@ -176,7 +194,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		root.setpId(null);
 		root.setOpen(true);
 
-		List<Tree> children = getCompanyChildrenFullTreeNodes(t, company);
+		List<Tree> children = getChildrenFullTreeNodes(t, company);
 		Trees.assembleTree(root, children);
 		root.sort();
 
@@ -195,7 +213,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		root.setpId(null);
 		root.setOpen(true);
 
-		List<Tree> items = getCompanyChildrenFullTreeNodes(t, company);
+		List<Tree> items = getChildrenFullTreeNodes(t, company);
 		items.add(root);
 
 		items = Trees.filterTreeNode(items);
@@ -240,7 +258,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		return nodes;
 	}
 
-	private List<Tree> getCompanyChildrenFullTreeNodes(Trace t, T company) {
+	private List<Tree> getChildrenFullTreeNodes(Trace t, T company) {
 		String rootId = "-" + company.getId();
 		List<Tree> nodes = new ArrayList<Tree>();
 
@@ -282,6 +300,33 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 						tnode.setpId("-" + enode.getCompanyId());
 					}
 					nodes.add(tnode);
+				}
+			}
+		}
+
+		return nodes;
+	}
+	
+	private List<Tree> getChildrenFullTreeNodesOfCompany(Trace t, T company) {
+		String rootId = company.getId().toString();
+		List<Tree> nodes = new ArrayList<Tree>();
+		
+		/* 所有子公司 */
+		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
+		if (allCompanies != null && !allCompanies.isEmpty()) {
+			for (T node : allCompanies) {
+				if (node.getStatus() != Domain.STATUS_DELETE) {
+					if (node.isTopParent()) {
+						Tree item = node.toTreeNode();
+						item.setId(item.getId());
+						item.setpId(rootId);
+						nodes.add(item);
+					} else {
+						Tree item = node.toTreeNode();
+						item.setId(item.getId());
+						item.setpId(item.getpId());
+						nodes.add(item);
+					}
 				}
 			}
 		}

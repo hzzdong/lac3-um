@@ -31,7 +31,6 @@
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
       <el-table-column prop="module" label="模块" width="90px" />
       <el-table-column label="内容描述" min-width="250px">
@@ -47,7 +46,7 @@
       </el-table-column>
       <el-table-column prop="costTime" label="耗时" width="70px" />
       <el-table-column prop="ip" label="IP" width="130px" />
-      <el-table-column label="操作者" width="120px">
+      <el-table-column label="操作者" width="130px">
         <template slot-scope="scope">
           <span>{{ scope.row.operatorAccount }}</span>
         </template>

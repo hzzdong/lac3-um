@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.um.activity.party.IKhDepartmentActivity;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
@@ -47,7 +48,8 @@ public class KhDepartmentActivity
 
 	@Override
 	protected void dealFullName(Trace t, boolean isNew, KhDepartment entity) {
-		if (entity.getParentId() != null && entity.getParentClass().equals(KhDepartment.class.getSimpleName())) {
+		if (entity.getParentId() != null && !Strings.isBlank(entity.getParentClass())
+				&& entity.getParentClass().equals(KhDepartment.class.getSimpleName())) {
 			KhDepartment parent = khDepartmentDao.fetchById(t, entity.getParentId());
 			if (parent != null) {
 				entity.setFullName(parent.getFullName() + "," + entity.getName());

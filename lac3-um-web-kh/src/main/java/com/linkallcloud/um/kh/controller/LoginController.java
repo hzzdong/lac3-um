@@ -185,7 +185,7 @@ public class LoginController {
 		buffer.append(request.isSecure() ? "https://" : "http://");
 		buffer.append(appServerName);
 		buffer.append(request.getContextPath());
-		buffer.append("/index");
+		buffer.append("/ssoauth");
 		String service = buffer.toString();
 		try {
 			service = URLEncoder.encode(service, "UTF-8");

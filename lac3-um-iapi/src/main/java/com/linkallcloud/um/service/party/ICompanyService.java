@@ -45,6 +45,15 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Tree getCompanyFullOrgTree(Trace t, Sid companyId);
+	
+	/**
+	 * 得到companyId及其以下的Company树节点，包括所有子公司节点。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree getFullTreeOfCompany(Trace t, Sid companyId);
 
 	/**
 	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。

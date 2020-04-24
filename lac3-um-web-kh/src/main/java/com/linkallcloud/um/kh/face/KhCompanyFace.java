@@ -67,6 +67,17 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		Tree root = khCompanyManager.getCompanyFullOrgTree(t, company);
 		return root.getChildren();
 	}
+	
+	@Face(simple = true)
+	@RequestMapping(value = "/loadTreeOfCompany", method = RequestMethod.POST)
+	public @ResponseBody Object loadTreeOfCompany(IdFaceRequest fr, Trace t, SessionUser su) {
+		Sid company = su.getCompany();
+		if (fr.getId() != null && !Strings.isBlank(fr.getUuid())) {
+			company = new Sid(fr.getId(), fr.getUuid());
+		}
+		Tree root = khCompanyManager.getFullTreeOfCompany(t, company);
+		return root.getChildren();
+	}
 
 	@Override
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {

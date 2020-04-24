@@ -1,17 +1,5 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
-      <el-select v-model="listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-      </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" />
-      <el-button class="filter-item" style="margin-left: 10px; float: right;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        添加
-      </el-button>
-    </div>
-
     <el-row>
       <el-col :span="6">
         <el-card class="box-card" shadow="never" style="margin-right:10px;">
@@ -36,6 +24,17 @@
         </el-card>
       </el-col>
       <el-col :span="18">
+        <div class="filter-container">
+          <el-input v-model="listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
+          <el-select v-model="listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" />
+          <el-button class="filter-item" style="margin-left: 10px; float: right;" type="primary" icon="el-icon-edit" @click="handleCreate">
+            添加
+          </el-button>
+        </div>
         <el-table
           :key="tableKey"
           v-loading="listLoading"

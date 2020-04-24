@@ -36,7 +36,6 @@ router.beforeEach(async(to, from, next) => {
           // note: menuPermissions must be a object array!
           const { menuPermissions } = await store.dispatch('user/getInfo')
 
-          debugger
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', menuPermissions)
 
@@ -51,7 +50,7 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
           // next(`/login?redirect=${to.path}`)
-          window.location = `http://localhost:8013/umkh/ssoauth`
+          window.location = `http://localhost:8013/umkh/ssoauth?redirect=${to.path}`
           NProgress.done()
         }
       }
@@ -65,7 +64,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // other pages that do not have permission to access are redirected to the login page.
       // next(`/login?redirect=${to.path}`)
-      window.location = `http://localhost:8013/umkh/ssoauth`
+      window.location = `http://localhost:8013/umkh/ssoauth?redirect=${to.path}`
       NProgress.done()
     }
   }

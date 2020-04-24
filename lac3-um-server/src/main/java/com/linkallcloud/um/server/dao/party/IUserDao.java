@@ -1,11 +1,13 @@
 package com.linkallcloud.um.server.dao.party;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.User;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 public interface IUserDao<T extends User> extends IPartyDao<T> {
 
@@ -224,5 +226,7 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
      */
     int updateStatusByDepartment(@Param("t") Trace t, @Param("status") int status,
                                  @Param("departmentId") Long departmentId);
+
+	List<T> findCompanyAdmin(@Param("t") Trace t, @Param("company") Sid company);
 
 }
