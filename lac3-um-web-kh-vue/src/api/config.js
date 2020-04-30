@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function findCompanyConfigs(data) {
   return request({
-    url: '/umkh/face/KhSystemConfig/find',
+    url: '/api4umkh/face/KhSystemConfig/find',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function findCompanyConfigs(data) {
 
 export function saveCompanyConfig(data) {
   return request({
-    url: '/umkh/face/KhSystemConfig/change',
+    url: '/api4umkh/face/KhSystemConfig/change',
     method: 'post',
     data
   })

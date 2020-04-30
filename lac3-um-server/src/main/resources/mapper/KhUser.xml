@@ -157,6 +157,7 @@
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account like #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -183,6 +184,7 @@
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account like #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -206,10 +208,10 @@
 							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
-							LEFT JOIN um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
-							LEFT JOIN um_kh_company c on u.companyId=c.id 
+							LEFT JOIN um_kh_department d on ku.parentId=d.id AND ku.parentClass='KhDepartment' 
+							LEFT JOIN um_kh_company c on ku.companyId=c.id 
 						WHERE
-							ku.status &lt;&gt; 9 AND ku.account &lt;&gt; 'superadmin' 
+							ku.status &lt;&gt; 9 AND ku.status &lt;&gt; 8 AND ku.account &lt;&gt; 'superadmin' 
 							AND ku.companyId = #{page.cnds.companyId}
 				) u
 				JOIN um_kh_perm_org p ON u.parentId=p.orgId
@@ -241,7 +243,7 @@
 				left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 				left join um_kh_company c on u.companyId=c.id 
 		WHERE
-			u.status &lt;&gt; 9 AND u.account &lt;&gt; 'superadmin' 
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND u.account &lt;&gt; 'superadmin' 
 			<choose>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
@@ -292,10 +294,10 @@
 							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
-								LEFT JOIN um_kh_department d on ku.parentId=d.id AND u.parentClass='KhDepartment' 
-								LEFT JOIN um_kh_company c on u.companyId=c.id 
+								LEFT JOIN um_kh_department d on ku.parentId=d.id AND ku.parentClass='KhDepartment' 
+								LEFT JOIN um_kh_company c on ku.companyId=c.id 
 						WHERE
-							ku.status &lt;&gt; 9 AND ku.account &lt;&gt; 'superadmin' 
+							ku.status &lt;&gt; 9 AND ku.status &lt;&gt; 8 AND ku.account &lt;&gt; 'superadmin' 
 							AND ku.companyId = #{page.cnds.companyId}
 				) u
 				JOIN um_kh_perm_org p ON u.parentId=p.orgId
@@ -338,7 +340,7 @@
 			left join um_kh_company c on u.companyId=c.id 
 			join um_kh_rel_role_user rel on u.id=rel.userId
 		WHERE
-			rel.roleId = #{page.cnds.roleId}
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.roleId = #{page.cnds.roleId}
 			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
 				AND u.companyId = #{page.cnds.companyId}
 			</if>
@@ -377,6 +379,7 @@
 			<if test="query!=null and query.cnds!=null and query.cnds.account != null"> AND u.account like #{query.cnds.account}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.mobile != null"> AND u.mobile like #{query.cnds.mobile}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.statusNe != null"> AND u.status &lt;&gt; #{query.cnds.statusNe}</if>
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
@@ -395,7 +398,7 @@
 		FROM
 			um_kh_user u join rel_zf_org_leader rel on u.id=rel.userId 
 		WHERE
-			u.status &lt;&gt; 9 AND rel.orgId=#{cnds.orgId} 
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.orgId=#{cnds.orgId} 
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{cnds.mobile}</if>
@@ -418,7 +421,7 @@
 		FROM
 			um_kh_user u join rel_zf_org_leader rel on u.id=rel.userId 
 		WHERE
-			u.status &lt;&gt; 9 AND rel.orgId=#{orgId} 
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.orgId=#{orgId} 
 	</select>
 
 	<select id="findOrgUsers" resultType="com.linkallcloud.um.domain.party.KhUser">
@@ -429,7 +432,7 @@
 		FROM
 			um_kh_user u join sys_zf_perm_grid g on u.id=g.userId 
 		WHERE
-			u.status &lt;&gt; 9 AND g.gridId=#{gridId} 
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND g.gridId=#{gridId} 
 	</select>
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.KhUser" useGeneratedKeys="true" keyProperty="entity.id">
@@ -591,7 +594,7 @@
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
 		where 
-			u.status &lt;&gt; 9 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
+			u.status &lt;&gt; 9 and u.status &lt;&gt; 8 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
 	</select>
 	
 </mapper>

@@ -121,7 +121,7 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public List<Tree> getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
+	public Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
 		return service().getPermedCompanyOrgs(t, appId, userId);
 	}
 

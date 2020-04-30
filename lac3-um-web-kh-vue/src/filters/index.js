@@ -75,16 +75,83 @@ export function operateResult(ors) {
   return operateResultKeyValue[ors]
 }
 
+export function statusOptions() {
+  return [
+    { key: 0, display_name: '正常' },
+    { key: 1, display_name: '禁用' },
+    { key: 8, display_name: '注销' }
+  ]
+}
+
 export function statusFilter(status) {
-  const statusKeyValue = { 0: '正常', 1: '禁用' }
+  const statusKeyValue = statusOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return statusKeyValue[status]
+}
+
+export function userStatusOptions() {
+  return [
+    { key: 0, display_name: '正常' },
+    { key: 1, display_name: '禁用' },
+    // { key: 7, display_name: '兼职' },
+    { key: 8, display_name: '离职' }
+  ]
+}
+
+export function userStatusFilter(status) {
+  const statusKeyValue = userStatusOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
   return statusKeyValue[status]
 }
 
 export function statusTypeFilter(status) {
   const statusMap = {
     0: 'success',
-    1: 'warning',
-    9: 'danger'
+    1: 'danger',
+    7: '',
+    8: 'warning'
   }
   return statusMap[status]
+}
+
+export function userTypeOptions() {
+  return [
+    { key: 1, display_name: '普通用户' },
+    { key: 9, display_name: '管理员' }
+  ]
+}
+
+export function userTypeFilter(type) {
+  const typeKeyValue = userTypeOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return typeKeyValue[type]
+}
+
+export function orgTypeFilter(type) {
+  const typeMap = {
+    'Company': '单位',
+    'Department': '部门'
+  }
+  return typeMap[type]
+}
+
+export function appTypeOptions() {
+  return [
+    { key: 0, display_name: '内部' },
+    { key: 1, display_name: '外部' }
+  ]
+}
+
+export function appTypeFilter(type) {
+  const typeKeyValue = appTypeOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return typeKeyValue[type]
 }

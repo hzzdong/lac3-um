@@ -26,7 +26,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @param userId
 	 * @return
 	 */
-	List<Tree> getPermedCompanyOrgs(Trace t, Long appId, Long userId);
+	Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId);
 
 	/**
 	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点。

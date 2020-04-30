@@ -85,7 +85,7 @@ export default {
       }).then(() => {
         this.$store.dispatch('user/logout').then(() => {
           // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-          window.location = `/umkh/dwLogin?id=${row.id}&uuid=${row.uuid}`
+          window.location = `/api4umkh/dwLogin?id=${row.id}&uuid=${row.uuid}`
         }).catch(err => console.log(err))
       }).catch(err => console.log(err))
     }

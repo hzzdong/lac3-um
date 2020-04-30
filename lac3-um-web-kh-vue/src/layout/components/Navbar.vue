@@ -91,7 +91,7 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-      window.location = `/umkh/logout`
+      window.location = `/api4umkh/logout`
     },
     logoutDw() {
       this.$confirm('您确定要退出代维模式吗?', '警告', {
@@ -101,7 +101,7 @@ export default {
       }).then(() => {
         this.$store.dispatch('user/logout').then(() => {
           // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-          window.location = `/umkh/dwLogout`
+          window.location = `/api4umkh/dwLogout`
         }).catch(err => console.log(err))
       }).catch(err => console.log(err))
     }

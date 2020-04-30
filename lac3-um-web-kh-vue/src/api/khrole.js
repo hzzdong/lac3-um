@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function findCompanyRolePage(data) {
   return request({
-    url: '/umkh/face/KhRole/findCompanyRolePage',
+    url: '/api4umkh/face/KhRole/findCompanyRolePage',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function findCompanyRolePage(data) {
 
 export function findCompanyAllRolePage(data) {
   return request({
-    url: '/umkh/face/KhRole/findCompanyAllRolePage',
+    url: '/api4umkh/face/KhRole/findCompanyAllRolePage',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function findCompanyAllRolePage(data) {
 
 export function findCompanyRoles(data) {
   return request({
-    url: '/umkh/face/KhRole/findCompanyRoles',
+    url: '/api4umkh/face/KhRole/findCompanyRoles',
     method: 'post',
     data
   })
@@ -26,7 +26,7 @@ export function findCompanyRoles(data) {
 
 export function findUserRoleIds(data) {
   return request({
-    url: '/umkh/face/KhRole/findUserRoleIds',
+    url: '/api4umkh/face/KhRole/findUserRoleIds',
     method: 'post',
     data
   })
@@ -34,7 +34,7 @@ export function findUserRoleIds(data) {
 
 export function findUserRoles(data) {
   return request({
-    url: '/umkh/face/KhRole/findUserRoles',
+    url: '/api4umkh/face/KhRole/findUserRoles',
     method: 'post',
     data
   })
@@ -42,7 +42,7 @@ export function findUserRoles(data) {
 
 export function fetchById(data) {
   return request({
-    url: '/umkh/face/KhRole/fetch',
+    url: '/api4umkh/face/KhRole/fetch',
     method: 'post',
     data
   })
@@ -50,7 +50,7 @@ export function fetchById(data) {
 
 export function createKhRole(data) {
   return request({
-    url: '/umkh/face/KhRole/save',
+    url: '/api4umkh/face/KhRole/save',
     method: 'post',
     data
   })
@@ -58,7 +58,7 @@ export function createKhRole(data) {
 
 export function updateKhRole(data) {
   return request({
-    url: '/umkh/face/KhRole/save',
+    url: '/api4umkh/face/KhRole/save',
     method: 'post',
     data
   })
@@ -66,7 +66,7 @@ export function updateKhRole(data) {
 
 export function deleteKhRole(data) {
   return request({
-    url: '/umkh/face/KhRole/delete',
+    url: '/api4umkh/face/KhRole/delete',
     method: 'post',
     data
   })
@@ -74,7 +74,7 @@ export function deleteKhRole(data) {
 
 export function addRoleUsers(data) {
   return request({
-    url: '/umkh/face/KhRole/addUsers',
+    url: '/api4umkh/face/KhRole/addUsers',
     method: 'post',
     data
   })
@@ -82,7 +82,7 @@ export function addRoleUsers(data) {
 
 export function removeRoleUser(data) {
   return request({
-    url: '/umkh/face/KhRole/removeUser',
+    url: '/api4umkh/face/KhRole/removeUser',
     method: 'post',
     data
   })
@@ -90,7 +90,7 @@ export function removeRoleUser(data) {
 
 export function addRoleApps(data) {
   return request({
-    url: '/umkh/face/KhRole/addApps',
+    url: '/api4umkh/face/KhRole/addApps',
     method: 'post',
     data
   })
@@ -98,7 +98,7 @@ export function addRoleApps(data) {
 
 export function removeRoleApp(data) {
   return request({
-    url: '/umkh/face/KhRole/removeApp',
+    url: '/api4umkh/face/KhRole/removeApp',
     method: 'post',
     data
   })
@@ -106,7 +106,7 @@ export function removeRoleApp(data) {
 
 export function getPermedMenuTree(data) {
   return request({
-    url: '/umkh/face/KhRole/getPermedMenuTree',
+    url: '/api4umkh/face/KhRole/getPermedMenuTree',
     method: 'post',
     data
   })
@@ -114,7 +114,7 @@ export function getPermedMenuTree(data) {
 
 export function saveRoleAppMenuPerm(data) {
   return request({
-    url: '/umkh/face/KhRole/saveRoleAppMenuPerm',
+    url: '/api4umkh/face/KhRole/saveRoleAppMenuPerm',
     method: 'post',
     data
   })
@@ -122,7 +122,7 @@ export function saveRoleAppMenuPerm(data) {
 
 export function getPermedOrgTree(data) {
   return request({
-    url: '/umkh/face/KhRole/getPermedOrgTree',
+    url: '/api4umkh/face/KhRole/getPermedOrgTree',
     method: 'post',
     data
   })
@@ -130,7 +130,7 @@ export function getPermedOrgTree(data) {
 
 export function saveRoleAppOrgPerm(data) {
   return request({
-    url: '/umkh/face/KhRole/saveRoleAppOrgPerm',
+    url: '/api4umkh/face/KhRole/saveRoleAppOrgPerm',
     method: 'post',
     data
   })
@@ -138,7 +138,7 @@ export function saveRoleAppOrgPerm(data) {
 
 export function getPermedAreaTree(data) {
   return request({
-    url: '/umkh/face/KhRole/getPermedAreaTree',
+    url: '/api4umkh/face/KhRole/getPermedAreaTree',
     method: 'post',
     data
   })
@@ -146,7 +146,7 @@ export function getPermedAreaTree(data) {
 
 export function saveRoleAppAreaPerm(data) {
   return request({
-    url: '/umkh/face/KhRole/saveRoleAppAreaPerm',
+    url: '/api4umkh/face/KhRole/saveRoleAppAreaPerm',
     method: 'post',
     data
   })

@@ -93,8 +93,8 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
 		SessionUser su = Controllers.getSessionUser();
 		Application app = applicationManager.fetchByCode(t, "lac_app_um_kh");
-		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, app.getId(), su.id());
-		return new Result<>(nodeList);
+		Tree root = getComapnyManager().getPermedCompanyOrgs(t, app.getId(), su.id());
+		return new Result<>(root.getChildren());
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)

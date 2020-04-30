@@ -3,13 +3,13 @@ import store from '@/store'
 export default {
   inserted(el, binding, vnode) {
     const { value } = binding
-    const roles = store.getters && store.getters.roles
+    const resources = store.getters && store.getters.resources
 
     if (value && value instanceof Array && value.length > 0) {
-      const permissionRoles = value
+      const permissionResources = value
 
-      const hasPermission = roles.some(role => {
-        return permissionRoles.includes(role)
+      const hasPermission = resources.some(res => {
+        return permissionResources.includes(res)
       })
 
       if (!hasPermission) {

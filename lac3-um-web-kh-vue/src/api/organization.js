@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getOrgTree(data) {
   return request({
-    url: '/umkh/face/KhCompany/loadTree',
+    url: '/api4umkh/face/KhCompany/loadTree',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function getOrgTree(data) {
 
 export function getFullOrgTree(data) {
   return request({
-    url: '/umkh/face/KhCompany/loadFullTree',
+    url: '/api4umkh/face/KhCompany/loadFullTree',
     method: 'post',
     data
   })
@@ -18,7 +18,7 @@ export function getFullOrgTree(data) {
 
 export function getFullTreeOfCompany(data) {
   return request({
-    url: '/umkh/face/KhCompany/loadTreeOfCompany',
+    url: '/api4umkh/face/KhCompany/loadTreeOfCompany',
     method: 'post',
     data
   })
@@ -26,7 +26,15 @@ export function getFullTreeOfCompany(data) {
 
 export function fetchKhDepartment(data) {
   return request({
-    url: '/umkh/face/KhDepartment/fetch',
+    url: '/api4umkh/face/KhDepartment/fetch',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchParentKhDepartmentAsTreeNode(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/fetchParentTreeNode',
     method: 'post',
     data
   })
@@ -34,7 +42,7 @@ export function fetchKhDepartment(data) {
 
 export function createKhDepartment(data) {
   return request({
-    url: '/umkh/face/KhDepartment/save',
+    url: '/api4umkh/face/KhDepartment/save',
     method: 'post',
     data
   })
@@ -42,7 +50,7 @@ export function createKhDepartment(data) {
 
 export function updateKhDepartment(data) {
   return request({
-    url: '/umkh/face/KhDepartment/save',
+    url: '/api4umkh/face/KhDepartment/save',
     method: 'post',
     data
   })
@@ -50,7 +58,7 @@ export function updateKhDepartment(data) {
 
 export function deleteKhDepartment(data) {
   return request({
-    url: '/umkh/face/KhDepartment/delete',
+    url: '/api4umkh/face/KhDepartment/delete',
     method: 'post',
     data
   })
@@ -58,7 +66,15 @@ export function deleteKhDepartment(data) {
 
 export function fetchKhCompany(data) {
   return request({
-    url: '/umkh/face/KhCompany/fetch',
+    url: '/api4umkh/face/KhCompany/fetch',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchParentKhCompanyAsTreeNode(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/fetchParentTreeNode',
     method: 'post',
     data
   })
@@ -66,7 +82,7 @@ export function fetchKhCompany(data) {
 
 export function createKhCompany(data) {
   return request({
-    url: '/umkh/face/KhCompany/save',
+    url: '/api4umkh/face/KhCompany/save',
     method: 'post',
     data
   })
@@ -74,7 +90,7 @@ export function createKhCompany(data) {
 
 export function updateKhCompany(data) {
   return request({
-    url: '/umkh/face/KhCompany/save',
+    url: '/api4umkh/face/KhCompany/save',
     method: 'post',
     data
   })
@@ -82,7 +98,7 @@ export function updateKhCompany(data) {
 
 export function deleteKhCompany(data) {
   return request({
-    url: '/umkh/face/KhCompany/delete',
+    url: '/api4umkh/face/KhCompany/delete',
     method: 'post',
     data
   })
@@ -90,7 +106,7 @@ export function deleteKhCompany(data) {
 
 export function loadCompanyAreaFullTree(data) {
   return request({
-    url: '/umkh/face/KhCompany/loadCompanyAreaFullTree',
+    url: '/api4umkh/face/KhCompany/loadCompanyAreaFullTree',
     method: 'post',
     data
   })
@@ -98,7 +114,7 @@ export function loadCompanyAreaFullTree(data) {
 
 export function loadCompanyAreaTree(data) {
   return request({
-    url: '/umkh/face/KhCompany/loadCompanyAreaTree',
+    url: '/api4umkh/face/KhCompany/loadCompanyAreaTree',
     method: 'post',
     data
   })
@@ -106,7 +122,7 @@ export function loadCompanyAreaTree(data) {
 
 export function getConfigCompanyAreaRootIds(data) {
   return request({
-    url: '/umkh/face/KhCompany/getConfigCompanyAreaRootIds',
+    url: '/api4umkh/face/KhCompany/getConfigCompanyAreaRootIds',
     method: 'post',
     data
   })
@@ -114,7 +130,7 @@ export function getConfigCompanyAreaRootIds(data) {
 
 export function getConfigCompanyAreaRoots(data) {
   return request({
-    url: '/umkh/face/KhCompany/getConfigCompanyAreaRoots',
+    url: '/api4umkh/face/KhCompany/getConfigCompanyAreaRoots',
     method: 'post',
     data
   })
@@ -122,7 +138,7 @@ export function getConfigCompanyAreaRoots(data) {
 
 export function addCompanyApps(data) {
   return request({
-    url: '/umkh/face/KhCompany/addApps',
+    url: '/api4umkh/face/KhCompany/addApps',
     method: 'post',
     data
   })
@@ -130,7 +146,7 @@ export function addCompanyApps(data) {
 
 export function removeCompanyApps(data) {
   return request({
-    url: '/umkh/face/KhCompany/removeApp',
+    url: '/api4umkh/face/KhCompany/removeApp',
     method: 'post',
     data
   })
@@ -138,7 +154,7 @@ export function removeCompanyApps(data) {
 
 export function getComapnyPermedMenuTree(data) {
   return request({
-    url: '/umkh/face/KhCompany/getPermedAppMenuTree',
+    url: '/api4umkh/face/KhCompany/getPermedAppMenuTree',
     method: 'post',
     data
   })
@@ -146,7 +162,15 @@ export function getComapnyPermedMenuTree(data) {
 
 export function saveCompanyAppMenuPerm(data) {
   return request({
-    url: '/umkh/face/KhCompany/saveAppMenuPerm',
+    url: '/api4umkh/face/KhCompany/saveAppMenuPerm',
+    method: 'post',
+    data
+  })
+}
+
+export function changeCompanyStatus(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/changeStatus',
     method: 'post',
     data
   })

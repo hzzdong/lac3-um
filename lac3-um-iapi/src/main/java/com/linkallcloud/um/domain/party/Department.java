@@ -2,6 +2,7 @@ package com.linkallcloud.um.domain.party;
 
 import com.linkallcloud.core.domain.annotation.ShowName;
 import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.lang.Strings;
 
 @ShowName("部门")
 public abstract class Department extends Org {
@@ -53,10 +54,19 @@ public abstract class Department extends Org {
 	public void setLinkUserPhone(String linkUserPhone) {
 		this.linkUserPhone = linkUserPhone;
 	}
-	
+
 	@Override
 	protected String getAlias() {
 		return "Department";
+	}
+
+	@Override
+	public String getOrgFullName() {
+		String fn = super.getFullName();
+		if (Strings.isBlank(fn)) {
+			return this.getName();
+		}
+		return fn;
 	}
 
 	@Override

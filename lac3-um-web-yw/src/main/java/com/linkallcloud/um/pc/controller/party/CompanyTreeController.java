@@ -96,13 +96,9 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	}
 
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
-	public @ResponseBody Result<List<Tree>> loadTree(Trace t, AppVisitor av) {
-		List<Tree> nodeList = getComapnyManager().getPermedCompanyOrgs(t, av.appId(),av.id());
-		if (nodeList == null || nodeList.isEmpty()) {
-			nodeList = new ArrayList<Tree>();
-			nodeList.add(new Tree("0", "", "无数据"));
-		}
-		return new Result<List<Tree>>(nodeList);
+	public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
+		Tree root = getComapnyManager().getPermedCompanyOrgs(t, av.appId(),av.id());
+		return new Result<>(root.getChildren());
 	}
 
 	@RequestMapping(value = "/treeView", method = RequestMethod.GET)

@@ -407,6 +407,12 @@ export function parseCheckedTreeIds(ids, treeItems) {
   }
 }
 
+/**
+ * 把treeItems中所有item的id返回一个ids数组
+ *
+ * @param {Array} ids
+ * @param {Array of Tree} treeItems
+ */
 export function parseTreeIds(ids, treeItems) {
   if (treeItems && treeItems.length > 0) {
     for (const item of treeItems) {
@@ -418,14 +424,71 @@ export function parseTreeIds(ids, treeItems) {
   }
 }
 
+/**
+ * tree全选中
+ *
+ * @param {el-tree} tree
+ * @param {Array of Tree} treeItems
+ */
 export function checkTree(tree, treeItems) {
   const ids = []
   parseTreeIds(ids, treeItems)
   tree.setCheckedKeys(ids)
 }
 
+/**
+ * tree全不选中
+ *
+ * @param {el-tree} tree
+ */
 export function unCheckTree(tree) {
   tree.setCheckedNodes([])
+}
+
+/**
+ * 从items中找出item.id=id的节点
+ *
+ * @param {Array of Tree} items
+ * @param {Array} id
+ */
+export function pickTreeNode(items, id) {
+  let find
+  for (const item of items) {
+    if (item.id === id) {
+      return item
+    }
+    if (item.children && item.children.length > 0) {
+      find = pickTreeNode(item.children, id)
+      if (find) {
+        return find
+      }
+    }
+  }
+  return find
+}
+
+/**
+ * 从items中找出child的父节点
+ *
+ * @param {Array of Tree} items
+ * @param {Array} id
+ */
+export function pickParentTreeNode(items, child) {
+  if (child && child.pId && items) {
+    for (const item of items) {
+      if (item.id === child.pId) {
+        return item
+      }
+      let find = null
+      if (item.children && item.children.length > 0) {
+        find = pickParentTreeNode(item.children, child)
+        if (find) {
+          return find
+        }
+      }
+    }
+  }
+  return null
 }
 
 export function sheetClose(me) {

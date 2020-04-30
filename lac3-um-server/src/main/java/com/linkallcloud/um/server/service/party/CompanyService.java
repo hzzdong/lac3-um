@@ -26,6 +26,7 @@ import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
+import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.service.party.ICompanyService;
 
 @Transactional(readOnly = true)
@@ -105,55 +106,55 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
-	public List<Tree> getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
+	public Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
 		U user = getUserActivity().fetchById(t, userId);
 		if (user == null) {
 			throw new BaseRuntimeException("100001", "userId参数错误:" + userId);
 		}
 
 		if (user.getAccount().equals("superadmin") || user.isAdmin()) {
-			Tree root = activity().getCompanyOrgTrees(t, user.getCompanyId());
-			return new ArrayList<Tree>() {
-				private static final long serialVersionUID = 6141538954506052171L;
-				{
-					add(root);
-				}
-			};
+			return activity().getCompanyOrgTrees(t, user.getCompanyId());
 		} else {
+			Tree root = getCompanyVirtulTreeNode(t, user.getCompanyId());
 			boolean depAdmin = getUserActivity().isUserDepartmentAdmin(t, userId);
 			if (depAdmin) {
 				if ("YwDepartment".equals(user.getParentClass()) || "KhDepartment".equals(user.getParentClass())) {
 					Tree node = getDepartmentActivity().fetchById(t, user.getParentId()).toTreeNode();
-					return new ArrayList<Tree>() {
-						private static final long serialVersionUID = 6409480226620214803L;
-						{
-							add(node);
-						}
-					};
+					root.addChild(node);
 				}
-				return null;
 			} else {
 				List<Long> permedOrgIds = getUserActivity().findUserAppPermedOrgs(t, userId, appId);
-				if (permedOrgIds == null || permedOrgIds.isEmpty()) {
-					return null;
-				}
-
-				List<Tree> orgs = activity().getCompanyOrgTreeList(t, user.getCompanyId());
-				List<Tree> items = new ArrayList<Tree>();
-				for (Tree node : orgs) {
-					for (Long orgId : permedOrgIds) {
-						if (node.getId().equals(orgId.toString())) {
-							items.add(node);
+				if (permedOrgIds != null && !permedOrgIds.isEmpty()) {
+					List<Tree> orgs = activity().getCompanyOrgTreeList(t, user.getCompanyId());
+					List<Tree> items = new ArrayList<Tree>();
+					for (Tree node : orgs) {
+						for (Long orgId : permedOrgIds) {
+							if (node.getId().equals(orgId.toString())) {
+								items.add(node);
+							}
 						}
 					}
-				}
 
-				Tree vroot = new Tree("0", null, "虚拟根节点");
-				Trees.assembleTree(vroot, items);
-				vroot.sort();
-				return vroot.getChildren();
+					Trees.assembleTree(root, items);
+					root.sort();
+				}
 			}
+			return root;
 		}
+	}
+
+	private Tree getCompanyVirtulTreeNode(Trace t, Long companyId) {
+		C company = activity().fetchById(t, companyId);
+		if (company == null) {
+			throw new ArgException("companyId参数错误");
+		}
+
+		Tree root = company.toTreeNode();
+		root.setType("v-root");
+		root.setId("-" + companyId);
+		root.setpId(null);
+		root.setOpen(true);
+		return root;
 	}
 
 	@Override

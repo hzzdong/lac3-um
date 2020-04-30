@@ -9,18 +9,20 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.FaceRequest;
+import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
+import com.linkallcloud.um.domain.party.Org;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
-import com.linkallcloud.web.face.base.BaseFace;
+import com.linkallcloud.web.face.base.BaseTreeFace;
 import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/face/KhDepartment", method = RequestMethod.POST)
 @Module(name = "客户部门")
-public class KhDepartmentFace extends BaseFace<KhDepartment, IKhDepartmentManager> {
+public class KhDepartmentFace extends BaseTreeFace<KhDepartment, IKhDepartmentManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhDepartmentManager khDepartmentManager;
@@ -59,6 +61,32 @@ public class KhDepartmentFace extends BaseFace<KhDepartment, IKhDepartmentManage
 			return node;
 		}
 		return entity;
+	}
+
+	@Override
+	public Object fetchParent(IdFaceRequest faceReq, Trace t, SessionUser su) {
+		return fetchParentOrg(faceReq, t, su);
+	}
+
+	private Org fetchParentOrg(IdFaceRequest faceReq, Trace t, SessionUser su) {
+		KhDepartment child = this.doFetch(t, faceReq.getId(), faceReq.getUuid(), su);
+		if (child != null) {
+			if (child.isTopParent()) {
+				return khCompanyManager.fetchById(t, child.getCompanyId());
+			} else {
+				return manager().fetchById(t, child.getParentId());
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Object fetchParentTreeNode(IdFaceRequest faceReq, Trace t, SessionUser su) {
+		Org parent = fetchParentOrg(faceReq, t, su);
+		if (parent != null) {
+			return parent.toTreeNode();
+		}
+		return null;
 	}
 
 }

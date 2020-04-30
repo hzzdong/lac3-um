@@ -79,7 +79,7 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 
 	List<T> findDirectCompaniesByParentId(Trace t, Long parentCompanyId);
 
-	List<Tree> getPermedCompanyOrgs(Trace t, Long appId, Long userId);
+	Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId);
 
 	/**
 	 * 得到某应用的菜单，并根据某公司是否有权限打上标记

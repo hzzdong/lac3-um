@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
+import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
+import com.linkallcloud.core.face.message.request.ParentIdFaceRequest;
 import com.linkallcloud.core.face.message.request.PasswordFaceRequest;
 import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
@@ -22,8 +25,10 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
+import com.linkallcloud.um.domain.ptj.KhPartTimeJob;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
+import com.linkallcloud.um.iapi.ptj.IKhPartTimeJobManager;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseFace;
 import com.linkallcloud.web.session.SessionUser;
@@ -38,6 +43,9 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhRoleManager khRoleManager;
+
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhPartTimeJobManager khPartTimeJobManager;
 
 	public KhUserFace() {
 		super();
@@ -173,6 +181,41 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 		page = manager().findPage4Select(t, page);
 
 		desensitization(page.getData());
+		return page;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/page4PartTimeJob", method = RequestMethod.POST)
+	public @ResponseBody Object page4PartTimeJob(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<KhPartTimeJob> page = new Page<>(faceReq);
+		if (!page.hasRule4Field("destOrgId") || !page.hasRule4Field("destOrgClass")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "destOrgId,destOrgClass参数错误。");
+		}
+		page = khPartTimeJobManager.findPage(t, page);
+		return page;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/addPartTimeJob", method = RequestMethod.POST)
+	public @ResponseBody Object addPartTimeJob(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
+		return khPartTimeJobManager.add(t, new Sid(fr.getId(), fr.getUuid()),
+				new Sid(fr.getParentId(), fr.getParentUuid(), fr.getParentClass(), ""), fr.getRemark());
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/removePartTimeJob", method = RequestMethod.POST)
+	public @ResponseBody Object removePartTimeJob(IdFaceRequest fr, Trace t, SessionUser suser) {
+		return khPartTimeJobManager.delete(t, fr.getId(), fr.getUuid());
+	}
+	
+	@Face(simple = true)
+	@RequestMapping(value = "/page4PartTimeJobOfUser", method = RequestMethod.POST)
+	public @ResponseBody Object page4PartTimeJobOfUser(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<KhPartTimeJob> page = new Page<>(faceReq);
+		if (!page.hasRule4Field("userId") || !page.hasRule4Field("userUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "userId,userUuid参数错误。");
+		}
+		page = khPartTimeJobManager.findPage(t, page);
 		return page;
 	}
 
