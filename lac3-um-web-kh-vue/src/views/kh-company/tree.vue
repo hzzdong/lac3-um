@@ -11,9 +11,12 @@
     >
       <el-table-column prop="name" label="名称" width="250">
         <template slot-scope="{row}">
-          <span v-if="row.attributes.alias !== 'Company'">{{ row.name }}</span>
           <span v-if="row.attributes.alias === 'Company' && checkPermission(['selfkh_org_view']) === false">{{ row.name }}</span>
-          <router-link v-if="row.attributes.alias === 'Company' && checkPermission(['selfkh_org_view']) === true" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type">
+          <router-link v-if="row.attributes.alias === 'Company' && checkPermission(['selfkh_org_view']) === true" :to="'/org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type">
+            <span>{{ row.name }}</span>
+          </router-link>
+          <span v-if="row.attributes.alias !== 'Company' && checkPermission(['selfkh_dep_view']) === false">{{ row.name }}</span>
+          <router-link v-if="row.attributes.alias !== 'Company' && checkPermission(['selfkh_dep_view']) === true" :to="'/org/dep-view/'+row.id+'/'+row.uuid" class="link-type">
             <span>{{ row.name }}</span>
           </router-link>
         </template>
@@ -43,12 +46,6 @@
       <el-table-column prop="remark" label="备注说明" min-width="100" />
       <el-table-column label="操作" width="150">
         <template slot-scope="{row}">
-          <router-link v-if="row.attributes.alias === 'Company' && !row.pId && checkPermission(['selfkh_org_view'])" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type" style="margin-right: 10px;">
-            <el-button type="primary" size="mini" title="单位预览"> <svg-icon icon-class="tree" /> </el-button>
-          </router-link>
-          <router-link v-if="row.attributes.alias === 'Company' && row.pId && checkPermission(['selfkh_org_view'])" :to="'/Org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type" style="margin-right: 10px;">
-            <el-button type="primary" size="mini" icon="el-icon-menu" title="单位预览应用开通授权" />
-          </router-link>
           <el-button
             v-if="(row.attributes.alias !== 'Company' || !row.pId) && checkPermission(['selfkh_org_add_department'])"
             type="primary"

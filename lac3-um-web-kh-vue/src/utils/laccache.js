@@ -87,3 +87,25 @@ export function loadOrgType() {
     })
   }
 }
+
+export function loadCompanyPositions() {
+  const ocdata = store.getters.companyPositions
+  if (ocdata && ocdata instanceof Array && ocdata.length > 0) {
+    return new Promise((resolve, reject) => {
+      console.log('Load CompanyPositions from CACHE', ocdata)
+      resolve(ocdata)
+    })
+  } else {
+    return new Promise((resolve, reject) => {
+      store
+        .dispatch('laccache/loadCompanyPositions')
+        .then(data => {
+          console.log('Load CompanyPositions from SERVER', data)
+          resolve(data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  }
+}

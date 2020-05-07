@@ -21,7 +21,7 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 
     boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
 
-    List<T> findLeaderPageByOrgId(@Param("t") Trace t, @Param("page") Page<T> page);
+    List<T> leaderPage(@Param("t") Trace t, @Param("page") Page<T> page);
 
     List<T> findOrgLeaders(@Param("t") Trace t, @Param("orgId") Long orgId, @Param("orgUuid") String orgUuid);
 

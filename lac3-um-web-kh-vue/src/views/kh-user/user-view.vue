@@ -302,12 +302,23 @@
       </div>
     </el-dialog>
 
-    <el-dialog id="dlg-user-select" title="用户选择" :visible.sync="us.dialogFormVisible" width="80%">
-      <lac-user-single-select :full-orgs="us.fullOrgs" @onUserSingleSelected="onUserSelected" />
+    <el-dialog id="dlg-user-select4user-view" title="用户选择" :visible.sync="us.dialogFormVisible" width="80%">
+      <lac-user-single-select
+        :tree-type="us.treeType"
+        :company-id="us.companyId"
+        :company-uuid="us.companyUuid"
+        :can-select-jz="us.canSelectJz"
+        @onUserSingleSelected="onUserSelected"
+      />
     </el-dialog>
 
-    <el-dialog id="dlg-org-select" title="机构选择" :visible.sync="os.dialogFormVisible" width="40%">
-      <lac-org-single-select :full-orgs="os.fullOrgs" @onOrgSingleSelected="onOrgSelected" />
+    <el-dialog id="dlg-org-select4user-view" title="机构选择" :visible.sync="os.dialogFormVisible" width="40%">
+      <lac-org-single-select
+        :tree-type="os.treeType"
+        :company-id="os.companyId"
+        :company-uuid="os.companyUuid"
+        @onOrgSingleSelected="onOrgSelected"
+      />
     </el-dialog>
 
   </div>
@@ -456,11 +467,16 @@ export default {
       },
       us: {
         dialogFormVisible: false,
-        fullOrgs: true
+        treeType: 'FullTree',
+        companyId: 0,
+        companyUuid: '',
+        canSelectJz: false
       },
       os: {
         dialogFormVisible: false,
-        fullOrgs: true
+        treeType: 'FullTree',
+        companyId: 0,
+        companyUuid: ''
       }
     }
   },
@@ -726,10 +742,10 @@ export default {
     padding: 0px 0px;
 }
 */
-#dlg-user-select >>> .el-dialog__body {
+#dlg-user-select4user-view >>> .el-dialog__body {
     padding: 0px 0px;
 }
-#dlg-org-select >>> .el-dialog__body {
+#dlg-org-select4user-view >>> .el-dialog__body {
     padding: 0px 20px;
 }
 .el-card__header {

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -21,11 +23,16 @@ import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.face.message.request.ParentIdFaceRequest;
 import com.linkallcloud.core.face.message.request.RelFaceRequest;
 import com.linkallcloud.core.face.message.request.RelParentIdFaceRequest;
 import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.KhCompany;
+import com.linkallcloud.um.domain.party.KhUser;
+import com.linkallcloud.um.domain.party.Rel4OrgLeader;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.web.face.annotation.Face;
@@ -43,6 +50,9 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
 
+//	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+//	private IKhUserManager khUserManager;
+
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
@@ -51,11 +61,43 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		return khCompanyManager;
 	}
 
+	/**
+	 * 加载单位组织树，含单位和部门节点。 参见：com.linkallcloud.um.constant.Consts
+	 * （1）若type='SelfTree'，则组织树中紧包含本单位的部门节点；
+	 * （2）若type='CompanyTree'，则组织树中包含本单位的部门节点及包含子单位的根节点；
+	 * （3）若type='FullTree'，则组织树中包含本单位的部门节点及包含子单位的所有节点；
+	 * （4）若type="FullTreeCompany"，则组织树中包含所有子单位节点，不含部门节点
+	 * 
+	 * @param fr
+	 * @param t
+	 * @param su
+	 * @return
+	 */
+	@Face(simple = true)
+	@RequestMapping(value = "/loadCompanyTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadCompanyTree(IdFaceRequest fr, Trace t, SessionUser su) {
+		Sid company = su.getCompany();
+		if (fr.getId() != null && !Strings.isBlank(fr.getUuid())) {
+			company = new Sid(fr.getId(), fr.getUuid());
+		}
+		Tree root = khCompanyManager.getCompanyTree(t, fr.getType(), company);
+		List<Tree> items = Arrays.asList(root);
+		return items;
+	}
+
+	/**
+	 * 加载当前登录用户有权限的组织树（子单位紧紧包含子单位的根节点）。
+	 * 
+	 * @param fr
+	 * @param t
+	 * @param su
+	 * @return
+	 */
 	@Face(simple = true)
 	@RequestMapping(value = "/loadTree", method = RequestMethod.POST)
 	public @ResponseBody Object loadKhCompanyTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
 		// Application app = applicationManager.fetchByCode(t, myAppCode);
-		Tree root = khCompanyManager.getPermedCompanyOrgs(t, su.appId(), su.id());
+		Tree root = khCompanyManager.getPermedCompanyTree(t, su.appId(), su.id());
 		if (root != null && "v-root".equals(root.getId())) {
 			return root.getChildren();
 		} else {
@@ -64,6 +106,14 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		}
 	}
 
+	/**
+	 * 加载单位完整的组织树，含单位和部门节点
+	 * 
+	 * @param fr
+	 * @param t
+	 * @param su
+	 * @return
+	 */
 	@Face(simple = true)
 	@RequestMapping(value = "/loadFullTree", method = RequestMethod.POST)
 	public @ResponseBody Object loadKhCompanyFullTree(IdFaceRequest fr, Trace t, SessionUser su) {
@@ -71,11 +121,19 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		if (fr.getId() != null && !Strings.isBlank(fr.getUuid())) {
 			company = new Sid(fr.getId(), fr.getUuid());
 		}
-		Tree root = khCompanyManager.getCompanyFullOrgTree(t, company);
+		Tree root = khCompanyManager.getCompanyTree(t, Consts.ORG_TREE_TYPE_FULL, company);
 		List<Tree> items = Arrays.asList(root);
 		return items;
 	}
 
+	/**
+	 * 加载单位完整的组织树，含单位节点，不含部门节点
+	 * 
+	 * @param fr
+	 * @param t
+	 * @param su
+	 * @return
+	 */
 	@Face(simple = true)
 	@RequestMapping(value = "/loadTreeOfCompany", method = RequestMethod.POST)
 	public @ResponseBody Object loadTreeOfCompany(IdFaceRequest fr, Trace t, SessionUser su) {
@@ -83,7 +141,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		if (fr.getId() != null && !Strings.isBlank(fr.getUuid())) {
 			company = new Sid(fr.getId(), fr.getUuid());
 		}
-		Tree root = khCompanyManager.getFullTreeOfCompany(t, company);
+		Tree root = khCompanyManager.getCompanyTree(t, Consts.ORG_TREE_TYPE_FULL_COMPANY, company);
 		return root.getChildren();
 	}
 
@@ -174,6 +232,29 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		Sid companyId = new Sid(fr.getParentId(), fr.getParentUuid());
 		Sid appId = new Sid(fr.getId(), fr.getUuid());
 		return manager().saveAppMenuPerm(t, companyId, appId, fr.getUuidIds());
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/leaderPage", method = RequestMethod.POST)
+	public @ResponseBody Object page(PageFaceRequest pfr, Trace t, AppVisitor av) {
+		Page<KhUser> page = new Page<KhUser>(pfr);
+		return manager().leaderPage(t, page);
+	}
+
+	@Face(simple = true)
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@RequestMapping(value = "/addLeader", method = RequestMethod.POST)
+	public @ResponseBody Object addLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
+		Rel4OrgLeader leader = fr.getData();
+		return manager().addLeader(t, leader);
+	}
+
+	@Face(simple = true)
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]的机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@RequestMapping(value = "/deleteLeader", method = RequestMethod.POST)
+	public @ResponseBody Object deleteLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
+		Rel4OrgLeader leader = fr.getData();
+		return manager().deleteLeader(t, leader);
 	}
 
 }

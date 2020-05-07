@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
@@ -585,6 +586,26 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			return users.get(0);
 		}
 		return null;
+	}
+	
+	@Override
+	public Page<T> leaderPage(Trace t, Page<T> page) {
+		if (!page.hasRule4Field("orgId")) {
+			throw new BaseRuntimeException(Exceptions.CODE_ERROR_PARAMETER, "orgId参数错误。");
+		}
+
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<T> list = dao().leaderPage(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
 	}
 
 }

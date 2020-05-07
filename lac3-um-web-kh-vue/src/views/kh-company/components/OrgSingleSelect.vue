@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getOrgTree, getFullOrgTree } from '@/api/organization'
+import { getCompanyTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import { userStatusOptions, userTypeOptions } from '@/filters'
 
@@ -32,9 +32,17 @@ export default {
   name: 'LacOrgSelect',
   directives: { waves },
   props: {
-    fullOrgs: {
-      type: Boolean,
-      default: false
+    treeType: {
+      type: String,
+      default: 'SelfTree'
+    },
+    companyId: {
+      type: Number,
+      default: -1
+    },
+    companyUuid: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -56,23 +64,14 @@ export default {
   },
   methods: {
     getTree() {
-      if (this.fullOrgs === true) {
-        getFullOrgTree().then(response => {
-          this.tree.data = response.data
-          if (this.tree.data[0]) {
-            this.tree.checkedNode = this.tree.data[0]
-            this.$refs.tree.setCheckedKeys([this.tree.checkedNode.id])
-          }
-        })
-      } else {
-        getOrgTree().then(response => {
-          this.tree.data = response.data
-          if (this.tree.data[0]) {
-            this.tree.checkedNode = this.tree.data[0]
-            this.$refs.tree.setCheckedKeys([this.tree.checkedNode.id])
-          }
-        })
-      }
+      const req = { id: this.companyId, uuid: this.companyUuid, type: this.treeType }
+      getCompanyTree(req).then(response => {
+        this.tree.data = response.data
+        if (this.tree.data[0]) {
+          this.tree.checkedNode = this.tree.data[0]
+          this.$refs.tree.setCheckedKeys([this.tree.checkedNode.id])
+        }
+      })
     },
     handleNodeClick(data, checked, node) {
       this.tree.checkedNode = data

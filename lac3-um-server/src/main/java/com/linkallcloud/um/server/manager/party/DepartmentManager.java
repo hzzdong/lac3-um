@@ -2,9 +2,6 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 
-import com.linkallcloud.um.service.party.IDepartmentService;
-import com.linkallcloud.um.service.party.IUserService;
-import com.linkallcloud.um.service.party.IYwCompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +11,18 @@ import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.iapi.party.IDepartmentManager;
+import com.linkallcloud.um.service.party.IDepartmentService;
+import com.linkallcloud.um.service.party.IUserService;
+import com.linkallcloud.um.service.party.IYwCompanyService;
 
 public abstract class DepartmentManager<T extends Department, S extends IDepartmentService<T>, U extends User, US extends IUserService<U>>
-		extends OrgManager<T, S> implements IDepartmentManager<T> {
+		extends OrgManager<T, S, U, US> implements IDepartmentManager<T, U> {
 
 	protected abstract US userService();
 
-    @Autowired
-    private IYwCompanyService ywCompanyService;
-    
+	@Autowired
+	private IYwCompanyService ywCompanyService;
+
 	@Override
 	public List<T> findCompanyDepartments(Trace t, Long companyId) {
 		return service().findCompanyDepartments(t, companyId);
@@ -34,7 +34,7 @@ public abstract class DepartmentManager<T extends Department, S extends IDepartm
 		T virtualDep = service().fetchByGovCode(t, virtualDepGovCode);
 		if (virtualDep != null) {
 			return service().findDepartmentsByParentDepartmentCode(t, virtualDep.getCode());
-		} else {//20190713新增逻辑，区县下没有部门虚拟节点，直接查询子部门
+		} else {// 20190713新增逻辑，区县下没有部门虚拟节点，直接查询子部门
 			YwCompany ywCompany = ywCompanyService.fetchByGovCode(t, companyGoveCode);
 			return service().findCompanyDepartments(t, ywCompany.getId());
 		}
@@ -46,7 +46,7 @@ public abstract class DepartmentManager<T extends Department, S extends IDepartm
 		T virtualDep = service().fetchByGovCode(t, virtualDepGovCode);
 		if (virtualDep != null) {
 			return service().findDirectDepartmentsByParentDepartmentId(t, virtualDep.getId());
-		} else {//20190713新增逻辑，区县下没有部门虚拟节点，直接查询子部门
+		} else {// 20190713新增逻辑，区县下没有部门虚拟节点，直接查询子部门
 			YwCompany ywCompany = ywCompanyService.fetchByGovCode(t, companyGoveCode);
 			return service().findCompanyDirectDepartments(t, ywCompany.getId());
 		}

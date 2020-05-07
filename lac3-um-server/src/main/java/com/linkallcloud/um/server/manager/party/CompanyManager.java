@@ -28,7 +28,7 @@ import com.linkallcloud.um.service.sys.IAreaService;
 import com.linkallcloud.um.service.sys.IMenuService;
 
 public abstract class CompanyManager<T extends Company, S extends ICompanyService<T>, D extends Department, DS extends IDepartmentService<D>, U extends User, US extends IUserService<U>, R extends Role, RS extends IRoleService<R, U>>
-		extends OrgManager<T, S> implements ICompanyManager<T> {
+		extends OrgManager<T, S, U, US> implements ICompanyManager<T, U> {
 
 	@Autowired
 	protected IAreaService areaService;
@@ -45,30 +45,6 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	@Override
 	public List<T> findSubCompanies(Trace t, Long companyId) {
 		return service().findSubCompanies(t, companyId);
-	}
-
-	@Override
-	public List<Tree> getCompanyFullOrgTreeByGovCode(Trace t, String companyGovCode) {
-		T company = service().fetchByGovCode(t, companyGovCode);
-		if (company != null) {
-			return service().getCompanyFullOrgTreeList(t, company.getId());
-		}
-		return null;
-	}
-
-	@Override
-	public Tree getCompanyFullOrgTree(Trace t, Sid companyId) {
-		return service().getCompanyFullOrgTree(t, companyId);
-	}
-
-	@Override
-	public Tree getFullTreeOfCompany(Trace t, Sid companyId) {
-		return service().getFullTreeOfCompany(t, companyId);
-	}
-
-	@Override
-	public List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId) {
-		return service().getCompanyFullOrgTreeList(t, companyId);
 	}
 
 	@Override
@@ -118,11 +94,6 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	@Override
 	public List<T> findDirectCompaniesByParentId(Trace t, Long parentCompanyId) {
 		return service().findDirectCompaniesByParentId(t, parentCompanyId);
-	}
-
-	@Override
-	public Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
-		return service().getPermedCompanyOrgs(t, appId, userId);
 	}
 
 	protected void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {
@@ -227,7 +198,6 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 		return service().getConfigCompanyAreaRoots(t, companyId);
 	}
 
-
 	@Override
 	public Long[] getCompanyAreaRootIds(Trace t, Sid companyId) {
 		return service().getCompanyAreaRootIds(t, companyId);
@@ -241,6 +211,16 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	@Override
 	public Tree loadCompanyAreaTree(Trace t, Sid companyId) {
 		return service().loadCompanyAreaTree(t, companyId);
+	}
+
+	@Override
+	public Tree getPermedCompanyTree(Trace t, Long appId, Long userId) {
+		return service().getPermedCompanyTree(t, appId, userId);
+	}
+
+	@Override
+	public Tree getCompanyTree(Trace t, String treeType, Sid companyId) {
+		return service().getCompanyTree(t, treeType, companyId);
 	}
 
 }

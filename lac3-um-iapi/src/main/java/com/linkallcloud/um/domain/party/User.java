@@ -37,7 +37,7 @@ public abstract class User extends Party {
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date lastLoginTime;
 
-	private String post;// 岗位
+	private String jobPosition;// 岗位
 	private String job;// 职务
 	private int sms;// 短信提醒，1：需要提醒，0：不需要提醒
 
@@ -50,7 +50,7 @@ public abstract class User extends Party {
 	 */
 	private String companyName;
 	private List<Long> roleIds;// 新增和编辑界面上选中中角色
-	private boolean roleEnabled;//编辑时否维护用户的角色
+	private boolean roleEnabled;// 编辑时否维护用户的角色
 
 	/** 原密码 */
 	@JSONField(serialize = false)
@@ -68,7 +68,7 @@ public abstract class User extends Party {
 		this.setMobile(mobile);
 		this.setPassword(password);
 	}
-	
+
 	public void desensitization() {
 		this.password = null;
 		this.salt = null;
@@ -199,12 +199,12 @@ public abstract class User extends Party {
 		this.ddStatus = ddStatus;
 	}
 
-	public String getPost() {
-		return post;
+	public String getJobPosition() {
+		return jobPosition;
 	}
 
-	public void setPost(String post) {
-		this.post = post;
+	public void setJobPosition(String jobPosition) {
+		this.jobPosition = jobPosition;
 	}
 
 	public String getJob() {

@@ -23,3 +23,11 @@ export function loadOrgTypes() {
     data: { data: 'org_type' }
   })
 }
+
+export function loadCompanyPositions() {
+  return request({
+    url: '/api4umkh/face/Dict/loadDicts',
+    method: 'post',
+    data: { data: 'company_position' }
+  })
+}

@@ -2,14 +2,16 @@ import { loadAreaTree } from '@/api/area'
 import {
   loadCertificateType4Org,
   loadCertificateType4Person,
-  loadOrgTypes
+  loadOrgTypes,
+  loadCompanyPositions
 } from '@/api/dict'
 
 const state = {
   myCompanyAreaTree: [],
   orgCertificateType: [],
   personCertificateType: [],
-  orgType: []
+  orgType: [],
+  companyPositions: []
 }
 
 const mutations = {
@@ -24,6 +26,9 @@ const mutations = {
   },
   SET_ORG_TYPE: (state, data) => {
     state.orgType = data
+  },
+  SET_COMPANY_POSTIONS: (state, data) => {
+    state.companyPositions = data
   }
 }
 
@@ -80,6 +85,21 @@ const actions = {
         .then(response => {
           const { data } = response
           commit('SET_ORG_TYPE', data)
+          resolve(data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+
+  // 加载公司职位
+  loadCompanyPositions({ commit }) {
+    return new Promise((resolve, reject) => {
+      loadCompanyPositions()
+        .then(response => {
+          const { data } = response
+          commit('SET_COMPANY_POSTIONS', data)
           resolve(data)
         })
         .catch(error => {

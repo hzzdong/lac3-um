@@ -30,8 +30,6 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 
 	boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
 
-	// Page findLeaderPage(Trace t, Page page);
-
 	/**
 	 * 返回某用户某角色具有权限的菜单资源的resCode数组
 	 * 
@@ -192,7 +190,7 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	boolean updateDduid(Trace t, Long umUserId, String dduid, int ddStatus);
 
 	SessionUser assembleSessionUser(Trace t, String loginName, String appCode);
-	
+
 	T fetchCompanyAdmin(Trace t, Sid companyId);
 
 }

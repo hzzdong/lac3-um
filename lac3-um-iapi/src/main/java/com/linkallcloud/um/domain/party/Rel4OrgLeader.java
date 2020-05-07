@@ -1,20 +1,18 @@
 package com.linkallcloud.um.domain.party;
 
 import com.linkallcloud.core.domain.Domain;
+import com.linkallcloud.core.domain.annotation.ShowName;
 
+@ShowName("机构领导")
 public class Rel4OrgLeader extends Domain {
 	private static final long serialVersionUID = -7896035517824623445L;
 
-	/*-
-	 * Domains:
-	 * public static final int ORG_DEPARTMENT = 1;// 部门
-	 * public static final int ORG_COMPANY = 2;// 公司
-	 */
-	private int orgType;
-
+	private String orgType;// Company:公司，Department:部门
 	private Long orgId;
-
 	private Long userId;
+
+	private String jobPosition;// 职位，参见UM-yw中数据字典设置
+	private int sort;// 排序
 
 	public Rel4OrgLeader() {
 		super();
@@ -26,11 +24,11 @@ public class Rel4OrgLeader extends Domain {
 		this.userId = userId;
 	}
 
-	public int getOrgType() {
+	public String getOrgType() {
 		return orgType;
 	}
 
-	public void setOrgType(int orgType) {
+	public void setOrgType(String orgType) {
 		this.orgType = orgType;
 	}
 
@@ -48,6 +46,22 @@ public class Rel4OrgLeader extends Domain {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getJobPosition() {
+		return jobPosition;
+	}
+
+	public void setJobPosition(String jobPosition) {
+		this.jobPosition = jobPosition;
+	}
+
+	public int getSort() {
+		return sort;
+	}
+
+	public void setSort(int sort) {
+		this.sort = sort;
 	}
 
 }

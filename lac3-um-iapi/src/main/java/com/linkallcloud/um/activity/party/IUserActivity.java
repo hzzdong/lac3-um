@@ -26,8 +26,6 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 
 	boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
 
-	// Page findLeaderPage(Trace t, Page page);
-
 	/**
 	 * 查询某角色已分配的用户
 	 *
@@ -220,5 +218,7 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	boolean isUserDepartmentAdmin(Trace t, Long userId);
 	
 	T fetchCompanyAdmin(Trace t, Sid companyId);
+	
+	Page<T> leaderPage(Trace t, Page<T> page);
 
 }

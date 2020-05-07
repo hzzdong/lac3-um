@@ -120,6 +120,13 @@ export const asyncRoutes = [
         name: 'CompanyView',
         meta: { title: '单位预览', noCache: true, activeMenu: '/org/index', requires: ['selfkh_org_view'] },
         hidden: true
+      },
+      {
+        path: 'dep-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/kh-company/dep-view'),
+        name: 'DepView',
+        meta: { title: '部门预览', noCache: true, activeMenu: '/org/index', requires: ['selfkh_dep_view'] },
+        hidden: true
       }
     ]
   },

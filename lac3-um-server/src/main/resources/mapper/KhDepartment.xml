@@ -179,4 +179,18 @@
 		order by u.sort asc
 	</select>
 	
+	<insert id="saveRel4OrgLeader" parameterType="com.linkallcloud.um.domain.party.Rel4OrgLeader" useGeneratedKeys="true" keyProperty="leader.id">
+        insert into 
+        	um_kh_rel_org_leader (uuid, status,createTime,updateTime,orgType,orgId,userId,jobPosition,sort)
+        values 
+	        (#{leader.uuid},#{leader.status},now(),now(),#{leader.orgType},#{leader.orgId},#{leader.userId},#{leader.jobPosition},#{leader.sort})
+    </insert>
+    
+    <delete id="deleteRel4OrgLeader">
+		delete from 
+			um_kh_rel_org_leader 
+		where 
+			orgType=#{leader.orgType} and orgId=#{leader.orgId} and userId=#{leader.userId}
+	</delete>
+	
 </mapper>

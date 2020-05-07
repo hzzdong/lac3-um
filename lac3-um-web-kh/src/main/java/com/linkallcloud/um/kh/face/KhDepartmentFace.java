@@ -4,18 +4,27 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
+import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.party.Org;
+import com.linkallcloud.um.domain.party.Rel4OrgLeader;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
+import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseTreeFace;
 import com.linkallcloud.web.session.SessionUser;
 
@@ -88,5 +97,30 @@ public class KhDepartmentFace extends BaseTreeFace<KhDepartment, IKhDepartmentMa
 		}
 		return null;
 	}
+	
+
+	@Face(simple = true)
+	@RequestMapping(value = "/leaderPage", method = RequestMethod.POST)
+	public @ResponseBody Object page(PageFaceRequest pfr, Trace t, AppVisitor av) {
+		Page<KhUser> page = new Page<KhUser>(pfr);
+		return manager().leaderPage(t, page);
+	}
+
+	@Face(simple = true)
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@RequestMapping(value = "/addLeader", method = RequestMethod.POST)
+	public @ResponseBody Object addLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
+		Rel4OrgLeader leader = fr.getData();
+		return manager().addLeader(t, leader);
+	}
+
+	@Face(simple = true)
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]的机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@RequestMapping(value = "/deleteLeader", method = RequestMethod.POST)
+	public @ResponseBody Object deleteLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
+		Rel4OrgLeader leader = fr.getData();
+		return manager().deleteLeader(t, leader);
+	}
+
 
 }

@@ -8,6 +8,14 @@ export function getOrgTree(data) {
   })
 }
 
+export function getCompanyTree(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/loadCompanyTree',
+    method: 'post',
+    data
+  })
+}
+
 export function getFullOrgTree(data) {
   return request({
     url: '/api4umkh/face/KhCompany/loadFullTree',
@@ -19,46 +27,6 @@ export function getFullOrgTree(data) {
 export function getFullTreeOfCompany(data) {
   return request({
     url: '/api4umkh/face/KhCompany/loadTreeOfCompany',
-    method: 'post',
-    data
-  })
-}
-
-export function fetchKhDepartment(data) {
-  return request({
-    url: '/api4umkh/face/KhDepartment/fetch',
-    method: 'post',
-    data
-  })
-}
-
-export function fetchParentKhDepartmentAsTreeNode(data) {
-  return request({
-    url: '/api4umkh/face/KhDepartment/fetchParentTreeNode',
-    method: 'post',
-    data
-  })
-}
-
-export function createKhDepartment(data) {
-  return request({
-    url: '/api4umkh/face/KhDepartment/save',
-    method: 'post',
-    data
-  })
-}
-
-export function updateKhDepartment(data) {
-  return request({
-    url: '/api4umkh/face/KhDepartment/save',
-    method: 'post',
-    data
-  })
-}
-
-export function deleteKhDepartment(data) {
-  return request({
-    url: '/api4umkh/face/KhDepartment/delete',
     method: 'post',
     data
   })
@@ -171,6 +139,102 @@ export function saveCompanyAppMenuPerm(data) {
 export function changeCompanyStatus(data) {
   return request({
     url: '/api4umkh/face/KhCompany/changeStatus',
+    method: 'post',
+    data
+  })
+}
+
+export function findCompanyLeaders(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/leaderPage',
+    method: 'post',
+    data
+  })
+}
+
+export function addCompanyLeader(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/addLeader',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteCompanyLeader(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/deleteLeader',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchKhDepartment(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/fetch',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchParentKhDepartmentAsTreeNode(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/fetchParentTreeNode',
+    method: 'post',
+    data
+  })
+}
+
+export function createKhDepartment(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/save',
+    method: 'post',
+    data
+  })
+}
+
+export function updateKhDepartment(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/save',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteKhDepartment(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/delete',
+    method: 'post',
+    data
+  })
+}
+
+export function changeDepartmentStatus(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/changeStatus',
+    method: 'post',
+    data
+  })
+}
+
+export function findDepartmentLeaders(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/leaderPage',
+    method: 'post',
+    data
+  })
+}
+
+export function addDepartmentLeader(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/addLeader',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteDepartmentLeader(data) {
+  return request({
+    url: '/api4umkh/face/KhDepartment/deleteLeader',
     method: 'post',
     data
   })

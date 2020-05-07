@@ -19,49 +19,24 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
 
 	/**
-	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点Tree
+	 * 根据treeType得到company的机构树
 	 * 
 	 * @param t
-	 * @param companyId
+	 * @param treeType
+	 * @param company
 	 * @return
 	 */
-	Tree getCompanyOrgTrees(Trace t, Long companyId);
+	Tree getCompanyTree(Trace t, String treeType, Sid company);
 
 	/**
-	 * 得到companyId及其以下的机构树节点，包括直接子公司节点，所有部门节点Tree平行列表
+	 * 根据treeType得到company的机构树列表
 	 *
 	 * @param t
+	 * @param treeType
 	 * @param companyId
 	 * @return
 	 */
-	List<Tree> getCompanyOrgTreeList(Trace t, Long companyId);
-
-	/**
-	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-	 *
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId);
-
-	/**
-	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	Tree getCompanyFullOrgTree(Trace t, Sid companyId);
-	
-	/**
-	 * 得到companyId及其以下的Company树节点，包括所有子公司节点。
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	Tree getFullTreeOfCompany(Trace t, Sid companyId);
+	List<Tree> getCompanyTreeList(Trace t, String treeType, Sid companyId);
 
 	/**
 	 * 根据父公司的ID，查找直接子公司列表

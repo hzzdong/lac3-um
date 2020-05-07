@@ -97,7 +97,7 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
-		Tree root = getComapnyManager().getPermedCompanyOrgs(t, av.appId(),av.id());
+		Tree root = getComapnyManager().getPermedCompanyTree(t, av.appId(),av.id());
 		return new Result<>(root.getChildren());
 	}
 

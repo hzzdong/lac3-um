@@ -169,6 +169,68 @@
           </el-card>
         </el-form>
       </el-tab-pane>
+      <el-tab-pane label="单位领导" name="tabCompanyLeaders">
+        <aside>
+          <i class="el-icon-info" /> 单位[ <span>{{ company.name }}</span> ]领导列表。您可以在此维护单位领导信息。
+        </aside>
+        <div class="filter-container">
+          <el-input v-model="leaders.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryLeaders" />
+          <el-input v-model="leaders.listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
+          <el-select v-model="leaders.listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
+            <el-option v-for="item in leaders.statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryLeaders" />
+          <el-button
+            v-permission="['selfkh_org_edit']"
+            class="filter-item"
+            style="float: right;"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleComapnyLeaderAdd"
+          >
+            添加
+          </el-button>
+        </div>
+        <el-table
+          ref="leadersTable"
+          :data="leaders.list"
+          tooltip-effect="dark"
+          border
+          style="width: 100%"
+        >
+          <el-table-column label="" class-name="status-col" width="40" prop="status">
+            <template slot-scope="{row}">
+              <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
+            </template>
+          </el-table-column>
+          <el-table-column label="姓名" width="200px" prop="name">
+            <template slot-scope="{row}">
+              <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.name }}</span>
+              <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
+                <span>{{ row.name }}</span>
+              </router-link>
+              <el-tag v-if="row.type == 9">管</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="职位" width="200px" prop="jobPosition">
+            <template slot-scope="scope">
+              <el-tag size="small">{{ scope.row.jobPosition | positionFilter }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="排序号" width="120px" prop="sort">
+            <template slot-scope="scope">
+              <span>{{ scope.row.sort }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注说明" min-width="100px" />
+          <el-table-column v-if="checkPermission(['selfkh_org_edit'])" label="操作" align="center" width="60" class-name="small-padding">
+            <template slot-scope="{row}">
+              <el-button type="danger" size="mini" icon="el-icon-close" title="移除" @click="onLeaderDelete(row)" />
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination v-show="leaders.total>0" :total="leaders.total" :page.sync="leaders.listQuery.page" :limit.sync="leaders.listQuery.limit" @pagination="getCompanyLeaders" />
+      </el-tab-pane>
       <el-tab-pane label="单位机构树预览" name="tabCompanyTreeView">
         <el-table
           ref="companyTreeViewTable"
@@ -371,30 +433,75 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="单位领导设置" :visible.sync="leaders.dialogFormVisible" width="50%">
+      <el-form ref="leaderForm" :rules="leaders.rules" :inline="false" :model="leaders.leader" size="small" status-icon label-post="right" label-width="80px" style="width: 98%; margin-left:10px;">
+        <el-form-item label="用户" prop="userName">
+          <el-input v-model="leaders.leader.userName" :disabled="true">
+            <el-button slot="append" icon="el-icon-search" @click="toSelectUser()" />
+          </el-input>
+        </el-form-item>
+        <el-form-item label="职位" prop="jobPosition">
+          <el-select v-model="leaders.leader.jobPosition" placeholder="请选择职位" clearable style="width:100%;">
+            <el-option v-for="item in leaders.positions" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="排序号" prop="sort">
+          <el-input v-model="leaders.leader.sort" placeholder="请输入排序号" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="leaders.dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="addCompanyLeader()">保存</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog id="dlg-user-select4company-view" title="用户选择" :visible.sync="us.dialogFormVisible" width="80%">
+      <lac-user-single-select
+        :tree-type="us.treeType"
+        :company-id="us.companyId"
+        :company-uuid="us.companyUuid"
+        @onUserSingleSelected="onUserSelected"
+      />
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { fetchKhCompany, getFullOrgTree, addCompanyApps, removeCompanyApps, loadCompanyAreaTree, getConfigCompanyAreaRoots, getComapnyPermedMenuTree, saveCompanyAppMenuPerm, changeCompanyStatus } from '@/api/organization'
+import { fetchKhCompany,
+  getFullOrgTree,
+  addCompanyApps,
+  removeCompanyApps,
+  loadCompanyAreaTree,
+  getConfigCompanyAreaRoots,
+  getComapnyPermedMenuTree,
+  saveCompanyAppMenuPerm,
+  changeCompanyStatus,
+  findCompanyLeaders,
+  addCompanyLeader,
+  deleteCompanyLeader
+} from '@/api/organization'
 import { findAppPage4Company, findAppPage4UnCompany } from '@/api/application'
 import { saveCompanyConfig } from '@/api/config'
 import { sheetClose, sheetRefresh, parseTreeNodeChecked, parseCheckedTreeIds, checkTree, unCheckTree } from '@/utils'
-import { loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
+import { loadOrgCertificateType, loadPersonCertificateType, loadOrgType, loadCompanyPositions } from '@/utils/laccache'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { statusOptions, userTypeOptions, appTypeOptions } from '@/filters'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
+import LacUserSingleSelect from '@/views/kh-user/components/UserSingleSelect'
 
 const commonData = {
   certificateTypeOptions: [],
   personCertificateTypeOptions: [],
-  orgTypeOptions: []
+  orgTypeOptions: [],
+  companyPositions: []
 }
 
 export default {
   name: 'CompanyView',
-  components: { Pagination },
+  components: { Pagination, LacUserSingleSelect },
   directives: { waves, permission },
   filters: {
     certificateTypeFilter(type) {
@@ -416,6 +523,16 @@ export default {
         }
       }
       return ''
+    },
+    positionFilter(type) {
+      if (commonData.companyPositions && commonData.companyPositions.length > 0) {
+        for (const ct of commonData.companyPositions) {
+          if (ct.key === type) {
+            return ct.display_name
+          }
+        }
+      }
+      return ''
     }
   },
   data() {
@@ -428,6 +545,52 @@ export default {
       typeOptions: userTypeOptions(),
       company: {},
       companyTree: [],
+      /* 单位领导 */
+      leaders: {
+        loaded: false,
+        tableKey: 0,
+        list: null,
+        total: 0,
+        listLoading: true,
+        listQuery: {
+          page: 1,
+          limit: 20,
+          rules: {
+            orgId: { fv: undefined, oper: 'eq', stype: 'L' },
+            orgType: { fv: 'Company', oper: 'eq', stype: 'S' },
+            name: { fv: undefined, oper: 'cn', stype: 'S' },
+            mobile: { fv: undefined, oper: 'cn', stype: 'S' },
+            status: { fv: undefined, oper: 'eq', stype: 'I' }
+          },
+          orderby: { orderby: 'id', order: 'desc' }
+        },
+        leader: {
+          dataType: 'Object',
+          userId: '',
+          userName: '',
+          orgId: '',
+          orgType: 'Company',
+          orgName: '',
+          jobPosition: '',
+          sort: ''
+        },
+        user: {},
+        rules: {
+          userName: [{ required: true, message: '请选择用户', trigger: 'blur' }],
+          jobPosition: [{ required: true, message: '请选择职位', trigger: 'blur' }],
+          sort: [{ required: true, message: '请输入排序号', trigger: 'blur' }]
+        },
+        statusOptions: statusOptions(),
+        typeOptions: userTypeOptions(),
+        positions: [],
+        dialogFormVisible: false
+      },
+      us: {
+        dialogFormVisible: false,
+        treeType: 'SelfTree',
+        companyId: 0,
+        companyUuid: ''
+      },
       /* 应用许可 */
       companyApps: {
         loaded: false,
@@ -518,13 +681,21 @@ export default {
     // https://github.com/PanJiaChen/vue-element-admin/issues/1221
     this.tempRoute = Object.assign({}, this.$route)
 
+    this.us.companyId = id
+    this.us.companyUuid = uuid
+
     this.loadCommonData()
     this.fetchCompany(id, uuid)
   },
   methods: {
     checkPermission,
     handleTabClick(tab, event) {
-      if (tab.name === 'tabCompanyTreeView') {
+      if (tab.name === 'tabCompanyLeaders') {
+        this.leaders.positions = commonData.companyPositions
+        if (!this.leaders.list) {
+          this.getCompanyLeaders()
+        }
+      } else if (tab.name === 'tabCompanyTreeView') {
         if (!this.companyTree || this.companyTree.length === 0) {
           this.getCompanyTree()
         }
@@ -546,8 +717,7 @@ export default {
             commonData.certificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
           }
         }
-      }).catch(() => {
-      })
+      }).catch(err => console.log(err))
 
       loadPersonCertificateType().then(ct => {
         commonData.personCertificateTypeOptions = []
@@ -556,8 +726,7 @@ export default {
             commonData.personCertificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
           }
         }
-      }).catch(() => {
-      })
+      }).catch(err => console.log(err))
 
       loadOrgType().then(ct => {
         commonData.orgTypeOptions = []
@@ -566,16 +735,21 @@ export default {
             commonData.orgTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
           }
         }
-      }).catch(() => {
-      })
+      }).catch(err => console.log(err))
+
+      loadCompanyPositions().then(ct => {
+        debugger
+        commonData.companyPositions = []
+        if (ct && ct.length > 0) {
+          for (let i = 0; i < ct.length; i++) {
+            commonData.companyPositions.push({ key: ct[i].govCode, display_name: ct[i].name })
+          }
+        }
+      }).catch(err => console.log(err))
     },
     fetchCompany(id, uuid) {
       fetchKhCompany({ id, uuid }).then(response => {
         this.company = response.data
-        this.companyApps.listQuery.rules.khCompanyId.fv = this.company.id
-        this.companyApps.listQuery.rules.khCompanyUuid.fv = this.company.uuid
-        this.apps.listQuery.rules.khCompanyId.fv = this.company.id
-        this.apps.listQuery.rules.khCompanyUuid.fv = this.company.uuid
         this.setTagsViewTitle()
         this.setPageTitle()
       }).catch(err => console.log(err))
@@ -586,6 +760,9 @@ export default {
       })
     },
     getCompanyApps() {
+      this.companyApps.listQuery.rules.khCompanyId.fv = this.company.id
+      this.companyApps.listQuery.rules.khCompanyUuid.fv = this.company.uuid
+
       this.companyApps.listLoading = true
       findAppPage4Company(this.companyApps.listQuery).then(response => {
         this.companyApps.list = response.data.data
@@ -623,6 +800,9 @@ export default {
       this.$refs.unCompanyAppTable.toggleRowSelection(row)
     },
     findUnCompanyApps() {
+      this.apps.listQuery.rules.khCompanyId.fv = this.company.id
+      this.apps.listQuery.rules.khCompanyUuid.fv = this.company.uuid
+
       this.apps.listLoading = true
       findAppPage4UnCompany(this.apps.listQuery).then(response => {
         this.apps.list = response.data.data
@@ -771,6 +951,78 @@ export default {
           this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
         }).catch((e) => console.log(e))
       }).catch((e) => console.log(e))
+    },
+    /*  单位领导 */
+    getCompanyLeaders() {
+      this.leaders.listQuery.rules.orgId.fv = this.company.id
+      this.leaders.listQuery.rules.orgType.fv = 'Company'
+      this.leaders.listLoading = true
+      findCompanyLeaders(this.leaders.listQuery).then(response => {
+        this.leaders.list = response.data.data
+        this.leaders.total = response.data.recordsTotal
+        this.leaders.listLoading = false
+      }).catch((e) => console.log(e))
+    },
+    queryLeaders() {
+      this.leaders.listQuery.page = 1
+      this.getCompanyLeaders()
+    },
+    handleComapnyLeaderAdd() {
+      this.leaders.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['leaderForm'].clearValidate()
+      })
+    },
+    toSelectUser() {
+      this.us.dialogFormVisible = true
+    },
+    onUserSelected(user) {
+      this.leaders.user = user
+      this.leaders.leader.userId = user.id
+      this.leaders.leader.userName = user.name
+      this.us.dialogFormVisible = false
+    },
+    addCompanyLeader() {
+      this.$refs['leaderForm'].validate((valid) => {
+        if (valid) {
+          this.leaders.leader.orgId = this.company.id
+          this.leaders.leader.orgType = 'Company'
+          const leaderUser = Object.assign({ dataType: 'Object' }, this.leaders.leader)
+          addCompanyLeader(leaderUser).then((response) => {
+            const tempData = Object.assign({}, this.leaders.user)
+            tempData.jobPosition = this.leaders.leader.jobPosition
+            tempData.sort = this.leaders.leader.sort
+            this.leaders.list.unshift(tempData)
+            this.leaders.dialogFormVisible = false
+            this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+          }).catch(err => {
+            console.log(err)
+          })
+        }
+      })
+    },
+    onLeaderDelete(row) {
+      this.$confirm('您确定要执行此操作吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const leaderUser = {
+          dataType: 'Object',
+          userId: row.id,
+          orgId: this.company.id,
+          orgType: 'Company'
+        }
+        deleteCompanyLeader(leaderUser).then((response) => {
+          const index = this.leaders.list.indexOf(row)
+          this.leaders.list.splice(index, 1)
+          this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+        }).catch(err => {
+          console.log(err)
+        })
+      }).catch(err => {
+        console.log(err)
+      })
     }
 
   }

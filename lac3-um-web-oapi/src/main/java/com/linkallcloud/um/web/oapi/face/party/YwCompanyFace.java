@@ -1,13 +1,13 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.face.annotation.Face;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ListFaceRequest;
@@ -18,6 +18,7 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
+import com.linkallcloud.web.face.annotation.Face;
 
 @Controller
 @RequestMapping(value = "/face/YwCompany", method = RequestMethod.POST)
@@ -30,7 +31,7 @@ public class YwCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		return ywCompanyManager.fetchById(t, faceReq.getId());
@@ -63,29 +64,20 @@ public class YwCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findSubCompanies", method = RequestMethod.POST)
 	public @ResponseBody Object findSubCompanies(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		return ywCompanyManager.findSubCompanies(t, faceReq.getId());
 	}
 
 	@Face(login = false)
-	@RequestMapping(value = "/getCompanyFullOrgTreeList", method = RequestMethod.POST)
-	public @ResponseBody Object getCompanyFullOrgTreeList(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId() == null) {
+	@RequestMapping(value = "/getCompanyTree", method = RequestMethod.POST)
+	public @ResponseBody Object getCompanyTree(IdFaceRequest fr, Trace t) throws Exception {
+		if (fr.getId() == null || Strings.isBlank(fr.getUuid())) {
 			return null;
 		}
-		return ywCompanyManager.getCompanyFullOrgTreeList(t, faceReq.getId());
-	}
-
-	@Face(login = false)
-	@RequestMapping(value = "/getCompanyFullOrgTreeByGovCode", method = RequestMethod.POST)
-	public @ResponseBody Object getCompanyFullOrgTreeByGovCode(ObjectFaceRequest<String> faceReq, Trace t)
-			throws Exception {
-		if (Strings.isBlank(faceReq.getData())) {
-			return null;
-		}
-		return ywCompanyManager.getCompanyFullOrgTreeByGovCode(t, faceReq.getData());
+		Sid company = new Sid(fr.getId(), fr.getUuid());
+		return ywCompanyManager.getCompanyTree(t, fr.getType(), company);
 	}
 
 }

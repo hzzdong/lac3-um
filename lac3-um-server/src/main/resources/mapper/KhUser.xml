@@ -6,13 +6,13 @@
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid
 	</sql>
 
 	<sql id="Column_with_dep_com_Name">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 	</sql>
 	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.KhUser">
@@ -59,7 +59,7 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.post,u.job,u.sms,u.zwuid,u.dduid,c.name as orgName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,c.name as orgName
 		FROM
 		<choose>
 			<when test="parentClass != null and parentClass == 'KhCompany' ">
@@ -390,36 +390,29 @@
 		</choose>
 	</select>
 	
-	<select id="findLeaderPageByOrgId" resultType="com.linkallcloud.um.dto.party.UserDto">
+	<select id="leaderPage" resultType="com.linkallcloud.um.dto.party.UserDto">
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.parentId,u.parentClass,u.account,u.salt,
 			u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode
+			u.email,u.type,u.ico,u.code,u.govCode,rel.jobPosition,rel.sort
 		FROM
-			um_kh_user u join rel_zf_org_leader rel on u.id=rel.userId 
+			um_kh_user u join um_kh_rel_org_leader rel on u.id=rel.userId 
 		WHERE
-			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.orgId=#{cnds.orgId} 
-			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{cnds.name}</if>
-			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{cnds.sex}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{cnds.mobile}</if>
-			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{cnds.status}</if>
-		<choose>
-			<when test="cnds != null and cnds.orders != null and cnds.orders.length > 0">
-				order by <foreach item="ord" index="index" collection="cnds.orders" separator=","> u.${ord} </foreach>
-			</when>
-			<otherwise>
-				order by u.id
-			</otherwise>
-		</choose>
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.orgId=#{page.cnds.orgId} 
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+		order by rel.sort
 	</select>
 	
 	<select id="findOrgLeaders" resultType="com.linkallcloud.um.dto.party.UserDto">
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.parentId,u.parentClass,u.account,u.salt,
 			u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode
+			u.email,u.type,u.ico,u.code,u.govCode,rel.position,rel.sort
 		FROM
-			um_kh_user u join rel_zf_org_leader rel on u.id=rel.userId 
+			um_kh_user u join um_kh_rel_org_leader rel on u.id=rel.userId 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.orgId=#{orgId} 
 	</select>
@@ -437,10 +430,10 @@
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.KhUser" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_kh_user
-			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,post,job,sms,zwuid,dduid)
+			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid)
 		values(#{entity.uuid},0,now(),now(),#{entity.companyId},#{entity.parentId},#{entity.parentClass},#{entity.account},#{entity.password},#{entity.salt},#{entity.name},#{entity.nickName},
 			#{entity.mobile},#{entity.idCard},#{entity.sex},#{entity.birthday},#{entity.remark},
-			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.post},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid})
+			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid})
 	</insert>
 	
 	<insert id="addUserRoles">
@@ -473,7 +466,7 @@
 		update 
 			um_kh_user 
 		set 
-			name=#{entity.name},nickName=#{entity.nickName},mobile=#{entity.mobile},sex=#{entity.sex},idCard=#{entity.idCard},birthday=#{entity.birthday},post=#{entity.post},job=#{entity.job},sms=#{entity.sms}
+			name=#{entity.name},nickName=#{entity.nickName},mobile=#{entity.mobile},sex=#{entity.sex},idCard=#{entity.idCard},birthday=#{entity.birthday},jobPosition=#{entity.jobPosition},job=#{entity.job},sms=#{entity.sms}
 			<if test="entity.companyId != null"> ,companyId=#{entity.companyId}</if>
 			<if test="entity.parentId != null and entity.parentId != ''"> ,parentId=#{entity.parentId},parentClass=#{entity.parentClass} </if>
 			<if test="entity.password != null and entity.salt != null"> ,password=#{entity.password},salt=#{entity.salt} </if>

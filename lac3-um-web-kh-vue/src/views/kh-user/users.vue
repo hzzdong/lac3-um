@@ -91,7 +91,7 @@
           </el-tab-pane>
           <el-tab-pane label="兼职管理" name="tabJzUser">
             <div class="filter-container">
-              <el-input v-model="jz.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+              <el-input v-model="jz.listQuery.rules.userName.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
               <el-input v-model="jz.listQuery.rules.srcOrgName.fv" placeholder="归属机构 模糊匹配" style="width: 150px;" class="filter-item" />
               <el-input v-model="jz.listQuery.rules.destOrgName.fv" placeholder="兼职机构 模糊匹配" style="width: 150px;" class="filter-item" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleJzFilter" />
@@ -354,11 +354,22 @@
     </el-dialog>
 
     <el-dialog id="dlg-user-select" title="用户选择" :visible.sync="us.dialogFormVisible" width="80%">
-      <lac-user-single-select :full-orgs="us.fullOrgs" @onUserSingleSelected="onUserSelected" />
+      <lac-user-single-select
+        :tree-type="us.treeType"
+        :company-id="us.companyId"
+        :company-uuid="us.companyUuid"
+        :can-select-jz="us.canSelectJz"
+        @onUserSingleSelected="onUserSelected"
+      />
     </el-dialog>
 
     <el-dialog id="dlg-org-select" title="机构选择" :visible.sync="os.dialogFormVisible" width="40%">
-      <lac-org-single-select :full-orgs="os.fullOrgs" @onOrgSingleSelected="onOrgSelected" />
+      <lac-org-single-select
+        :tree-type="os.treeType"
+        :company-id="os.companyId"
+        :company-uuid="os.companyUuid"
+        @onOrgSingleSelected="onOrgSelected"
+      />
     </el-dialog>
 
   </div>
@@ -508,7 +519,7 @@ export default {
             destOrgId: { fv: undefined, oper: 'eq', stype: 'L' },
             destOrgClass: { fv: undefined, oper: 'eq', stype: 'S' },
             userStatusNe: { fv: 8, oper: 'eq', stype: 'I' },
-            name: { fv: undefined, oper: 'cn', stype: 'S' },
+            userName: { fv: undefined, oper: 'cn', stype: 'S' },
             srcOrgName: { fv: undefined, oper: 'cn', stype: 'S' },
             destOrgName: { fv: undefined, oper: 'cn', stype: 'S' }
           },
@@ -528,15 +539,19 @@ export default {
           name: [{ required: true, message: '请选择用户', trigger: 'blur' }],
           parentName: [{ required: true, message: '请选择兼职机构', trigger: 'blur' }]
         }
-
       },
       us: {
         dialogFormVisible: false,
-        fullOrgs: true
+        treeType: 'FullTree',
+        companyId: 0,
+        companyUuid: '',
+        canSelectJz: false
       },
       os: {
         dialogFormVisible: false,
-        fullOrgs: true
+        treeType: 'FullTree',
+        companyId: 0,
+        companyUuid: ''
       },
       lz: {
         dialogFormVisible: false,

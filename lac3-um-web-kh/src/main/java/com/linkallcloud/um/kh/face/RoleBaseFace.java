@@ -31,7 +31,7 @@ import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseFace;
 import com.linkallcloud.web.session.SessionUser;
 
-public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRoleManager<R, U>, US extends IUserManager<U>, C extends Company, CS extends ICompanyManager<C>, D extends Department, DS extends IDepartmentManager<D>>
+public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRoleManager<R, U>, US extends IUserManager<U>, C extends Company, CS extends ICompanyManager<C, U>, D extends Department, DS extends IDepartmentManager<D, U>>
 		extends BaseFace<R, S> {
 
 	public RoleBaseFace() {

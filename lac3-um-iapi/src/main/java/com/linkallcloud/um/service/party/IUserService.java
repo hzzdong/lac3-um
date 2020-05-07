@@ -28,8 +28,6 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
 
-	// Page findLeaderPage(Trace t, Page page);
-
 	/**
 	 * 查询某角色已分配的用户
 	 *
@@ -214,5 +212,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	boolean updateStatusByDepartment(Trace t, int status, Long departmentId);
 	
 	T fetchCompanyAdmin(Trace t, Sid companyId);
+	
+	Page<T> leaderPage(Trace t, Page<T> page);
 
 }

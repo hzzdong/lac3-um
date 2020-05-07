@@ -235,23 +235,18 @@
 			id=#{id} and uuid=#{uuid}
 	</delete>
 	
-	<insert id="saveRel4OrgLeader" parameterType="java.util.List" >
+	<insert id="saveRel4OrgLeader" parameterType="com.linkallcloud.um.domain.party.Rel4OrgLeader" useGeneratedKeys="true" keyProperty="leader.id">
         insert into 
-        	yw_rel_org_leader (uuid, status,createTime,updateTime,orgType,orgId,userId)
+        	um_kh_rel_org_leader (uuid, status,createTime,updateTime,orgType,orgId,userId,jobPosition,sort)
         values 
-	        <foreach collection="rels" item="rel" index="index" separator=",">
-	        (#{rel.uuid},#{rel.status},now(),now(),#{rel.orgType},#{rel.orgId},#{rel.userId})
-	        </foreach>
+	        (#{leader.uuid},#{leader.status},now(),now(),#{leader.orgType},#{leader.orgId},#{leader.userId},#{leader.jobPosition},#{leader.sort})
     </insert>
     
     <delete id="deleteRel4OrgLeader">
 		delete from 
-			yw_rel_org_leader 
+			um_kh_rel_org_leader 
 		where 
-			orgType=#{orgType} and orgId=#{orgId} and userId in 
-			<foreach item="userId" index="index" collection="userIds" open="(" separator="," close=")">
-				#{userId}
-			</foreach>
+			orgType=#{leader.orgType} and orgId=#{leader.orgId} and userId=#{leader.userId}
 	</delete>
 	
 	<insert id="addApps">

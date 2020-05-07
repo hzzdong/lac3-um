@@ -159,7 +159,6 @@ export default {
     },
     toSelectAreas() {
       this.getCompanyAreaFullTreeAndChecded().then(response => {
-        debugger
         this.areaTree.data = response[0].data
         this.areaTree.dialogFormVisible = true
         const companyAreaIds = response[1].data

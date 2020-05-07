@@ -19,6 +19,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.security.Securities;
 import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
+import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
@@ -142,18 +143,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		return result;
 	}
 
-	// @Override
-	// public PermedAreaVo findValidAreaResourceByParent(Trace t, Long parentAreaId)
-	// {
-	// List<Area> areas = areaDao.findByParent(t, parentAreaId);
-	// return assemblePermedAreaVo(t, parentAreaId, areas);
-	// }
-
-	@Override
-	public List<Tree> findCompanyValidOrgResource(Trace t, Long companyId) {
-		return getCompanyOrgTreeList(t, companyId);
-	}
-
 	@Override
 	public List<T> findDirectCompaniesByParentId(Trace t, Long parentId) {
 		return dao().findByParent(t, parentId);
@@ -165,26 +154,42 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public Tree getFullTreeOfCompany(Trace t, Sid companyId) {
-		T company = dao().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
+	public List<Tree> findCompanyValidOrgResource(Trace t, Long companyId) {
+		T company = dao().fetchById(t, companyId);
+		return getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
+	}
+
+	@Override
+	public Tree getCompanyTree(Trace t, String treeType, Sid comId) {
+		T company = dao().fetchByIdUuid(t, comId.getId(), comId.getUuid());
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}
 
 		Tree root = company.toTreeNode();
+		root.setId("-" + company.getId());
 		root.setpId(null);
 		root.setOpen(true);
 
-		List<Tree> children = getChildrenFullTreeNodesOfCompany(t, company);
+		List<Tree> children = null;
+		if (Consts.ORG_TREE_TYPE_SELF.equals(treeType)) {
+			children = getDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_COMPANY.equals(treeType)) {
+			children = getDirectSubCompanyAndDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_FULL.equals(treeType)) {
+			children = getSubCompanyAndDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_FULL_COMPANY.equals(treeType)) {
+			children = getSubCompanyChildren(t, company);
+		}
+
 		Trees.assembleTree(root, children);
 		root.sort();
-
 		return root;
 	}
 
 	@Override
-	public Tree getCompanyFullOrgTree(Trace t, Sid companyId) {
-		T company = dao().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
+	public List<Tree> getCompanyTreeList(Trace t, String treeType, Sid comId) {
+		T company = dao().fetchByIdUuid(t, comId.getId(), comId.getUuid());
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}
@@ -194,71 +199,68 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		root.setpId(null);
 		root.setOpen(true);
 
-		List<Tree> children = getChildrenFullTreeNodes(t, company);
-		Trees.assembleTree(root, children);
-		root.sort();
-
-		return root;
-	}
-
-	@Override
-	public List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId) {
-		T company = dao().fetchById(t, companyId);
-		if (company == null) {
-			throw new ArgException("companyId参数错误");
+		List<Tree> children = null;
+		if (Consts.ORG_TREE_TYPE_SELF.equals(treeType)) {
+			children = getDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_COMPANY.equals(treeType)) {
+			children = getDirectSubCompanyAndDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_FULL.equals(treeType)) {
+			children = getSubCompanyAndDepartmentChildren(t, company);
+		} else if (Consts.ORG_TREE_TYPE_FULL_COMPANY.equals(treeType)) {
+			children = getSubCompanyChildren(t, company);
 		}
 
-		Tree root = company.toTreeNode();
-		root.setId("-" + company.getId());
-		root.setpId(null);
-		root.setOpen(true);
-
-		List<Tree> items = getChildrenFullTreeNodes(t, company);
-		items.add(root);
-
-		items = Trees.filterTreeNode(items);
-		return items;
-	}
-
-	private Tree getCompanyTreeNode(Trace t, Long companyId) {
-		T company = dao().fetchById(t, companyId);
-		if (company == null) {
-			throw new ArgException("companyId参数错误");
+		List<Tree> result = new ArrayList<Tree>();
+		result.add(root);
+		if (children != null && !children.isEmpty()) {
+			result.addAll(children);
 		}
-
-		Tree root = company.toTreeNode();
-		root.setId("-" + company.getId());
-		root.setpId(null);
-		root.setOpen(true);
-		return root;
+		return result;
 	}
 
-	private List<Tree> getCompanyChildrenTreeNodes(Trace t, Long companyId) {
-		String rootId = "-" + companyId;
+	private List<Tree> getDepartmentChildren(Trace t, T company) {
+		String rootId = "-" + company.getId();
 		List<Tree> nodes = new ArrayList<Tree>();
-
-		/* 直接子公司 */
-		List<T> directCompanies = findDirectCompaniesByParentId(t, companyId);
-		if (directCompanies != null && !directCompanies.isEmpty()) {
-			List<Tree> dcTreeNodeList = Trees.assembleDirectTreeNodeList(rootId, directCompanies, "-");
-			if (dcTreeNodeList != null && !dcTreeNodeList.isEmpty()) {
-				nodes.addAll(dcTreeNodeList);
-			}
-		}
-
 		/* 部门树 */
-		List<D> depts = getDepartmentDao().findCompanyDepartments(t, companyId);
+		List<D> depts = getDepartmentDao().findCompanyDepartments(t, company.getId());
 		if (depts != null && !depts.isEmpty()) {
 			List<Tree> depTreeNodeList = Trees.assembleTreeList(rootId, depts);
 			if (depTreeNodeList != null && !depTreeNodeList.isEmpty()) {
 				nodes.addAll(depTreeNodeList);
 			}
 		}
-
 		return nodes;
 	}
 
-	private List<Tree> getChildrenFullTreeNodes(Trace t, T company) {
+	private List<Tree> getDirectSubCompanyChildren(Trace t, T company) {
+		String rootId = "-" + company.getId();
+		List<Tree> nodes = new ArrayList<Tree>();
+		/* 直接子公司 */
+		List<T> directCompanies = findDirectCompaniesByParentId(t, company.getId());
+		if (directCompanies != null && !directCompanies.isEmpty()) {
+			List<Tree> dcTreeNodeList = Trees.assembleDirectTreeNodeList(rootId, directCompanies, "-");
+			if (dcTreeNodeList != null && !dcTreeNodeList.isEmpty()) {
+				nodes.addAll(dcTreeNodeList);
+			}
+		}
+		return nodes;
+	}
+
+	private List<Tree> getDirectSubCompanyAndDepartmentChildren(Trace t, T company) {
+		List<Tree> result = new ArrayList<Tree>();
+		List<Tree> cnodes = getDirectSubCompanyChildren(t, company);
+		if (cnodes != null && !cnodes.isEmpty()) {
+			result.addAll(cnodes);
+		}
+
+		List<Tree> dnodes = getDepartmentChildren(t, company);
+		if (dnodes != null && !dnodes.isEmpty()) {
+			result.addAll(dnodes);
+		}
+		return result;
+	}
+
+	private List<Tree> getSubCompanyAndDepartmentChildren(Trace t, T company) {
 		String rootId = "-" + company.getId();
 		List<Tree> nodes = new ArrayList<Tree>();
 
@@ -286,7 +288,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 			}
 		}
 
-		/* 部门树 */
+		/* 含子公司的所有部门树 */
 		List<D> depts = getDepartmentDao().findAllDepartments(t, new ArrayList<>(companyIdsMap.keySet()));
 		if (depts != null && !depts.isEmpty()) {
 			for (D enode : depts) {
@@ -306,11 +308,11 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 
 		return nodes;
 	}
-	
-	private List<Tree> getChildrenFullTreeNodesOfCompany(Trace t, T company) {
+
+	private List<Tree> getSubCompanyChildren(Trace t, T company) {
 		String rootId = company.getId().toString();
 		List<Tree> nodes = new ArrayList<Tree>();
-		
+
 		/* 所有子公司 */
 		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
 		if (allCompanies != null && !allCompanies.isEmpty()) {
@@ -332,28 +334,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		}
 
 		return nodes;
-	}
-
-	@Override
-	public Tree getCompanyOrgTrees(Trace t, Long companyId) {
-		Tree root = getCompanyTreeNode(t, companyId);
-		List<Tree> children = getCompanyChildrenTreeNodes(t, companyId);
-		Trees.assembleTree(root, children);
-		root.sort();
-		return root;
-	}
-
-	@Override
-	public List<Tree> getCompanyOrgTreeList(Trace t, Long companyId) {
-		Tree root = getCompanyTreeNode(t, companyId);
-		List<Tree> children = getCompanyChildrenTreeNodes(t, companyId);
-		return new ArrayList<Tree>() {
-			private static final long serialVersionUID = 6141538954506052171L;
-			{
-				add(root);
-				addAll(children);
-			}
-		};
 	}
 
 	@Override

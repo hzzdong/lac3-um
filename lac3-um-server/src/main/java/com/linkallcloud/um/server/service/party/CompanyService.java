@@ -23,6 +23,7 @@ import com.linkallcloud.um.activity.party.IUserActivity;
 import com.linkallcloud.um.activity.sys.IAccountActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.activity.sys.IAreaActivity;
+import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
@@ -91,31 +92,22 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
-	public Tree getCompanyFullOrgTree(Trace t, Sid companyId) {
-		return activity().getCompanyFullOrgTree(t, companyId);
+	public Tree getCompanyTree(Trace t, String treeType, Sid companyId) {
+		return activity().getCompanyTree(t, treeType, companyId);
 	}
 
 	@Override
-	public Tree getFullTreeOfCompany(Trace t, Sid companyId) {
-		return activity().getFullTreeOfCompany(t, companyId);
-	}
-
-	@Override
-	public List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId) {
-		return activity().getCompanyFullOrgTreeList(t, companyId);
-	}
-
-	@Override
-	public Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId) {
+	public Tree getPermedCompanyTree(Trace t, Long appId, Long userId) {
 		U user = getUserActivity().fetchById(t, userId);
 		if (user == null) {
 			throw new BaseRuntimeException("100001", "userId参数错误:" + userId);
 		}
 
+		C company = activity().fetchById(t, user.getCompanyId());
 		if (user.getAccount().equals("superadmin") || user.isAdmin()) {
-			return activity().getCompanyOrgTrees(t, user.getCompanyId());
+			return activity().getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
 		} else {
-			Tree root = getCompanyVirtulTreeNode(t, user.getCompanyId());
+			Tree root = getCompanyVirtulTreeNode(t, company);
 			boolean depAdmin = getUserActivity().isUserDepartmentAdmin(t, userId);
 			if (depAdmin) {
 				if ("YwDepartment".equals(user.getParentClass()) || "KhDepartment".equals(user.getParentClass())) {
@@ -125,7 +117,7 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 			} else {
 				List<Long> permedOrgIds = getUserActivity().findUserAppPermedOrgs(t, userId, appId);
 				if (permedOrgIds != null && !permedOrgIds.isEmpty()) {
-					List<Tree> orgs = activity().getCompanyOrgTreeList(t, user.getCompanyId());
+					List<Tree> orgs = activity().getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
 					List<Tree> items = new ArrayList<Tree>();
 					for (Tree node : orgs) {
 						for (Long orgId : permedOrgIds) {
@@ -143,23 +135,17 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 		}
 	}
 
-	private Tree getCompanyVirtulTreeNode(Trace t, Long companyId) {
-		C company = activity().fetchById(t, companyId);
+	private Tree getCompanyVirtulTreeNode(Trace t, C company) {
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}
 
 		Tree root = company.toTreeNode();
 		root.setType("v-root");
-		root.setId("-" + companyId);
+		root.setId("-" + company.getId());
 		root.setpId(null);
 		root.setOpen(true);
 		return root;
-	}
-
-	@Override
-	public List<Tree> getCompanyOrgTreeList(Trace t, Long companyId) {
-		return activity().getCompanyOrgTreeList(t, companyId);
 	}
 
 	@Transactional(readOnly = false)

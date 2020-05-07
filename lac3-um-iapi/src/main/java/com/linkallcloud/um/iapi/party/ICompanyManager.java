@@ -8,9 +8,10 @@ import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
+import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.dto.base.PermedAreaVo;
 
-public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
+public interface ICompanyManager<T extends Company, U extends User> extends IOrgManager<T, U> {
 
 	/**
 	 * 获取直接子公司列表
@@ -20,42 +21,6 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	List<T> findSubCompanies(Trace t, Long companyId);
-
-	/**
-	 * 得到companyGovCode及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-	 * 
-	 * @param t
-	 * @param companyGovCode
-	 * @return
-	 */
-	List<Tree> getCompanyFullOrgTreeByGovCode(Trace t, String companyGovCode);
-
-	/**
-	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	List<Tree> getCompanyFullOrgTreeList(Trace t, Long companyId);
-
-	/**
-	 * 得到companyId及其以下的机构树节点，包括所有子公司节点，所有部门节点。
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	Tree getCompanyFullOrgTree(Trace t, Sid companyId);
-	
-	/**
-	 * 得到companyId及其以下的Company树节点，包括所有子公司节点。
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	Tree getFullTreeOfCompany(Trace t, Sid companyId);
 
 	/**
 	 * 得到公司被通过授权等定义后授权应用区域权限的根节点
@@ -78,8 +43,6 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	List<Tree> getDefinedCompanyAreas(Trace t, Long companyId, Long appId);
 
 	List<T> findDirectCompaniesByParentId(Trace t, Long parentCompanyId);
-
-	Tree getPermedCompanyOrgs(Trace t, Long appId, Long userId);
 
 	/**
 	 * 得到某应用的菜单，并根据某公司是否有权限打上标记
@@ -113,7 +76,7 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId);
-	
+
 	/**
 	 * 得到公司管理员在系统设置中设定的根区域ids。若未设定，返回null。
 	 * 
@@ -122,6 +85,7 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
+
 	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
 
 	/**
@@ -150,7 +114,7 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Tree loadCompanyAreaTree(Trace t, Sid companyId);
-	
+
 	/**
 	 * 得到某应用的菜单，并根据某公司是否有权限打上标记
 	 * 
@@ -161,7 +125,27 @@ public interface ICompanyManager<T extends Company> extends IOrgManager<T> {
 	 * @return
 	 */
 	Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId);
-	
+
 	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
+
+	/**
+	 * 根据权限得到userId所在公司appId应用的机构权限树
+	 * 
+	 * @param t
+	 * @param appId
+	 * @param userId
+	 * @return
+	 */
+	Tree getPermedCompanyTree(Trace t, Long appId, Long userId);
+
+	/**
+	 * 根据treeType得到companyId的机构树
+	 * 
+	 * @param t
+	 * @param treeType,参见com.linkallcloud.um.constant.Consts
+	 * @param companyId
+	 * @return
+	 */
+	Tree getCompanyTree(Trace t, String treeType, Sid companyId);
 
 }
