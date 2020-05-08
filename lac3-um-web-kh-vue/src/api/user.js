@@ -76,6 +76,14 @@ export function updateMe(data) {
   })
 }
 
+export function updateHeaderImage(data) {
+  return request({
+    url: '/api4umkh/face/KhUser/updateHeaderImage',
+    method: 'post',
+    data
+  })
+}
+
 export function updatePass(data) {
   return request({
     url: '/api4umkh/face/KhUser/updatePass',

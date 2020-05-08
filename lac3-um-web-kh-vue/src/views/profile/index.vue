@@ -17,6 +17,7 @@
 import Activity from './components/Activity'
 import Account from './components/Account'
 import { getLoginUser } from '@/api/user'
+import logoSrc from '@/assets/logo.png'
 
 export default {
   name: 'Profile',
@@ -34,6 +35,11 @@ export default {
     getUser() {
       getLoginUser().then(response => {
         this.user = response.data
+        if (!this.user.ico) {
+          this.user.ico = logoSrc
+        } else {
+          this.user.ico = this.$store.state.settings.fssBaseUrl + this.user.ico
+        }
       }).catch(err => {
         console.log(err)
       })

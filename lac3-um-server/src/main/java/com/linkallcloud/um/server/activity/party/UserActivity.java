@@ -344,6 +344,12 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	}
 
 	@Override
+	public Boolean updateHeaderImage(Trace t, Sid user, String ico) {
+		int rows =  dao().updateHeaderImage(t, user, ico);
+		return retBool(rows);
+	}
+
+	@Override
 	public boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd) {
 		T user = this.fetchByIdUuid(t, userId, userUuid);
 		Account account = accountDao.fecthByAccount(t, user.getAccount());

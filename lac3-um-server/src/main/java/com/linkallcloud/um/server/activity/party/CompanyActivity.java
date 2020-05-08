@@ -310,9 +310,9 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	private List<Tree> getSubCompanyChildren(Trace t, T company) {
-		String rootId = company.getId().toString();
+		String rootId = "-" + company.getId();
 		List<Tree> nodes = new ArrayList<Tree>();
-
+		
 		/* 所有子公司 */
 		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
 		if (allCompanies != null && !allCompanies.isEmpty()) {
@@ -320,19 +320,18 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 				if (node.getStatus() != Domain.STATUS_DELETE) {
 					if (node.isTopParent()) {
 						Tree item = node.toTreeNode();
-						item.setId(item.getId());
+						item.setId("-" + item.getId());
 						item.setpId(rootId);
 						nodes.add(item);
 					} else {
 						Tree item = node.toTreeNode();
-						item.setId(item.getId());
-						item.setpId(item.getpId());
+						item.setId("-" + item.getId());
+						item.setpId("-" + item.getpId());
 						nodes.add(item);
 					}
 				}
 			}
 		}
-
 		return nodes;
 	}
 

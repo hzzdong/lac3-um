@@ -1,6 +1,9 @@
 import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import defaultSettings from '@/settings'
+
+const { fssBaseUrl, defaultIco } = defaultSettings
 
 const state = {
   token: getToken(),
@@ -9,7 +12,7 @@ const state = {
   mobile: '',
   nickName: '',
   govCode: '',
-  avatar: '',
+  ico: '',
   remark: '',
   loginName: '',
   userType: '',
@@ -31,14 +34,15 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
-  },
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_AVATAR: (state, ico) => {
+    if (ico) {
+      state.ico = fssBaseUrl + ico
+    } else {
+      state.ico = defaultIco
+    }
   },
   SET_PERMISSIONS: (state, menuPermissions) => {
     state.menuPermissions = menuPermissions
@@ -50,7 +54,12 @@ const mutations = {
     state.nickName = user.nickName
     state.govCode = user.govCode
     state.remark = user.remark
-    state.avatar = user.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+    // state.ico = user.ico // || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+    if (user.ico) {
+      state.ico = fssBaseUrl + user.ico
+    } else {
+      state.ico = defaultIco
+    }
     state.loginName = user.sid.code
     state.userType = user.userType
     state.appId = user.app.id
@@ -73,7 +82,6 @@ const mutations = {
     state.nickName = user.nickName
     state.govCode = user.govCode
     state.remark = user.remark
-    state.avatar = user.avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
   }
 }
 
@@ -129,6 +137,13 @@ const actions = {
   refreshUserInfo({ commit }, user) {
     return new Promise((resolve, reject) => {
       commit('RESET_USER', user)
+      resolve()
+    })
+  },
+
+  updateHeaderImage({ commit }, ico) {
+    return new Promise((resolve, reject) => {
+      commit('SET_AVATAR', ico)
       resolve()
     })
   },

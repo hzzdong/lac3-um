@@ -21,6 +21,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 
 	T loginValidate(Trace t, String accountOrMobile, String password) throws BaseRuntimeException;
 
+	Boolean updateHeaderImage(Trace t, Sid user, String ico);
 	boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd)
 			throws BaseRuntimeException;
 

@@ -34,6 +34,7 @@ import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.party.Rel4OrgLeader;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
+import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseTreeFace;
@@ -50,8 +51,8 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
 
-//	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-//	private IKhUserManager khUserManager;
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhUserManager khUserManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
@@ -149,6 +150,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {
 		entity.setParentId(su.companyId());
 		entity.setParentClass(KhCompany.class.getSimpleName());
+		entity.setIco(null);
 		super.doSave(t, entity, su);
 	}
 
@@ -197,6 +199,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		return manager().getConfigCompanyAreaRootIds(t, companyId);
 	}
 
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
 	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser su) {
@@ -206,6 +209,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		return manager().addApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
 	}
 
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除了 [(${domainShowName})]应用许可([(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
 	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -226,6 +230,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		return tree.getChildren();
 	}
 
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]应用菜单权限([(${fr.parentId})], [(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveAppMenuPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveAppMenuPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -255,6 +260,18 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	public @ResponseBody Object deleteLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
 		Rel4OrgLeader leader = fr.getData();
 		return manager().deleteLeader(t, leader);
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/fetchMyCompany", method = RequestMethod.POST)
+	public @ResponseBody Object fetchMyCompany(ObjectFaceRequest<String> faceReq, Trace t, SessionUser su) {
+		Long myCompanyId = su.companyId();
+		if (myCompanyId == null) {
+			KhUser user = khUserManager.fetchById(t, su.id());
+			myCompanyId = user.getCompanyId();
+		}
+		KhCompany entity = manager().fetchById(t, myCompanyId);
+		return entity;
 	}
 
 }

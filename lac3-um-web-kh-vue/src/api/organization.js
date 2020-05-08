@@ -40,6 +40,14 @@ export function fetchKhCompany(data) {
   })
 }
 
+export function fetchMyCompany(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/fetchMyCompany',
+    method: 'post',
+    data
+  })
+}
+
 export function fetchParentKhCompanyAsTreeNode(data) {
   return request({
     url: '/api4umkh/face/KhCompany/fetchParentTreeNode',
@@ -163,6 +171,14 @@ export function addCompanyLeader(data) {
 export function deleteCompanyLeader(data) {
   return request({
     url: '/api4umkh/face/KhCompany/deleteLeader',
+    method: 'post',
+    data
+  })
+}
+
+export function updateCompanyLogo(data) {
+  return request({
+    url: '/api4umkh/face/KhCompany/updateCompanyLogo',
     method: 'post',
     data
   })

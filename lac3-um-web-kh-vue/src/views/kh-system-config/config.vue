@@ -45,7 +45,23 @@
             </el-table>
             <el-button type="primary" icon="el-icon-edit" circle @click="toSelectAreas" />
           </span>
-          <span v-if="row.key === 'logo'"><el-button type="primary" icon="el-icon-upload" circle /> {{ row.value }}</span>
+          <span v-if="row.key === 'logo'">
+            <my-upload
+              v-model="show"
+              field="file"
+              :width="300"
+              :height="300"
+              url="/fss/pub/Archive/upload"
+              :params="params"
+              :headers="headers"
+              img-format="png"
+              @crop-success="cropSuccess"
+              @crop-upload-success="cropUploadSuccess"
+              @crop-upload-fail="cropUploadFail"
+            />
+            <el-avatar :size="100" :src="entity.logo" />
+            <el-button type="primary" icon="el-icon-upload" circle title="公司LOGO上传" @click="toggleShow()" />
+          </span>
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注说明" min-width="100px" />
@@ -72,13 +88,15 @@
 
 <script>
 import { findCompanyConfigs, saveCompanyConfig } from '@/api/config'
-import { loadCompanyAreaFullTree, getConfigCompanyAreaRootIds } from '@/api/organization'
+import { loadCompanyAreaFullTree, getConfigCompanyAreaRootIds, fetchMyCompany } from '@/api/organization'
 import { parseTreeNodeChecked } from '@/utils'
 import waves from '@/directive/waves' // waves directive
+import myUpload from 'vue-image-crop-upload'
 
 export default {
   name: 'KhSystemConfig',
   directives: { waves },
+  components: { 'my-upload': myUpload },
   data() {
     return {
       tableKey: 0,
@@ -98,19 +116,32 @@ export default {
           children: 'children',
           label: 'name'
         }
+      },
+      /* LOGO */
+      company: {},
+      show: false,
+      params: {
+        appId: '16',
+        appName: '用户中心',
+        objectId: '',
+        objectType: '10002'
+      },
+      headers: {
+        smail: '*_~'
       }
 
     }
   },
   created() {
     this.getList()
+    this.getMyKhCompany()
   },
   methods: {
     getList() {
       this.listLoading = true
       findCompanyConfigs().then(response => {
         this.list = response.data
-        // console.log(this.list)
+        console.log(this.list)
         this.listLoading = false
         if (this.list && this.list.length > 0) {
           for (const item of this.list) {
@@ -120,12 +151,24 @@ export default {
               this.entity.enable_area_permission = item.value === 'yes'
             } else if (item.key === 'area_roots') {
               // this.entity.area_roots = item.value
-              this.entity.companyAreas = JSON.parse(item.value)
+              if (item.value && item.value.length > 0) {
+                this.entity.companyAreas = JSON.parse(item.value)
+              }
             } else if (item.key === 'logo') {
-              this.entity.logo = item.value
+              if (item.value && item.value.length > 0) {
+                this.entity.logo = this.$store.state.settings.fssBaseUrl + item.value
+              }
             }
           }
         }
+      })
+    },
+    getMyKhCompany() {
+      fetchMyCompany().then((response) => {
+        this.company = response.data
+        this.params.objectId = this.company.uuid
+      }).catch((err) => {
+        console.log(err)
       })
     },
     handleFilter() {
@@ -201,6 +244,51 @@ export default {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch(() => {
       })
+    },
+    /* LOGO */
+    toggleShow() {
+      this.show = true
+    },
+    /**
+			 * crop success
+			 *
+			 * [param] imgDataUrl
+			 * [param] field
+			 */
+    cropSuccess(imgDataUrl, field) {
+      console.log('-------- crop success --------')
+      this.entity.logo = imgDataUrl
+    },
+    /**
+			 * upload success
+			 *
+			 * [param] jsonData   服务器返回数据，已进行json转码
+			 * [param] field
+			 */
+    cropUploadSuccess(jsonData, field) {
+      const that = this
+      console.log('-------- upload success --------')
+      console.log(jsonData)
+      console.log('field: ' + field)
+      if (jsonData && jsonData.code === '0') {
+        const req = { key: 'logo', value: jsonData.data.path }
+        saveCompanyConfig(req).then(() => {
+          that.show = false
+          that.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
+        }).catch(() => {
+        })
+      }
+    },
+    /**
+			 * upload fail
+			 *
+			 * [param] status    server api return error status, like 500
+			 * [param] field
+			 */
+    cropUploadFail(status, field) {
+      console.log('-------- upload fail --------')
+      console.log(status)
+      console.log('field: ' + field)
     }
 
   }

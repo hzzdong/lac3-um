@@ -27,7 +27,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="logoSrc" class="user-avatar">
+          <img :src="ico" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -60,7 +60,6 @@ import ErrorLog from '@/components/ErrorLog'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 // import Search from '@/components/HeaderSearch'
-import logoSrc from '@/assets/logo.png'
 
 export default {
   components: {
@@ -70,15 +69,10 @@ export default {
     Screenfull,
     SizeSelect
   },
-  data() {
-    return {
-      logoSrc: logoSrc
-    }
-  },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
+      'ico',
       'loginMode',
       'name',
       'device'

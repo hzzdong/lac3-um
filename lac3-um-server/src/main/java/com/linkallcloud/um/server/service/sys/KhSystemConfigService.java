@@ -12,6 +12,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.service.BaseService;
+import com.linkallcloud.um.activity.party.IKhCompanyActivity;
 import com.linkallcloud.um.activity.sys.IKhSystemConfigActivity;
 import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
@@ -24,6 +25,9 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 
 	@Autowired
 	private IKhSystemConfigActivity khSystemConfigActivity;
+	
+	@Autowired
+	private IKhCompanyActivity khCompanyActivity;
 
 	@Override
 	public IKhSystemConfigActivity activity() {
@@ -45,18 +49,19 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 	@Transactional(readOnly = false)
 	@Override
 	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
+		boolean result = true;
 		KhSystemConfig dbEntity = fetch(t, companyId.getId(), configItemCode);
 		if (dbEntity != null) {
 			dbEntity.setValue(value);
-			return activity().update(t, dbEntity);
+			result = activity().update(t, dbEntity);
 		} else {
 			KhSystemConfig entity = defaultConfig(t, configItemCode);
 			entity.setCompanyId(companyId.getId());
 			entity.setValue(value);
-			Long id = activity().insert(t, entity);
-			entity.setId(id);
-			return true;
+			activity().insert(t, entity);
 		}
+		khCompanyActivity.updateCompanyLogo(t, companyId, value);
+		return result;
 	}
 
 	private KhSystemConfig defaultConfig(Trace t, String key) {

@@ -193,14 +193,24 @@
 		update 
 			um_kh_company 
 		set 
-			sort=#{entity.sort},url=#{entity.url},type=#{entity.type},ico=#{entity.ico},remark=#{entity.remark},businessStart=#{entity.businessStart},
+			sort=#{entity.sort},url=#{entity.url},type=#{entity.type},remark=#{entity.remark},businessStart=#{entity.businessStart},
 			name=#{entity.name},scale=#{entity.scale},areaId=#{entity.areaId},address=#{entity.address},phone=#{entity.phone},fax=#{entity.fax},
 			certificateType=#{entity.certificateType},certificateNo=#{entity.certificateNo},business=#{entity.business},credentials=#{entity.credentials},
 			juridical=#{entity.juridical},jphone=#{entity.jphone},jType=#{entity.jType},jNo=#{entity.jNo},updateTime=now()
+			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateCompanyLogo">
+		update 
+			um_kh_company 
+		set 
+			ico=#{logo},updateTime=now()
+		where 
+			id=#{id}
 	</update>
 	
 	<update id="updateStatus">

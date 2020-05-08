@@ -211,6 +211,13 @@ public class KhCompanyActivity
 		return false;
 	}
 
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean updateCompanyLogo(Trace t, Sid companyId, String logo) {
+		int rows = dao().updateCompanyLogo(t, companyId.getId(), logo);
+		return retBool(rows);
+	}
+
 	public List<Application> findAppsByUuidIds(Trace t, Map<String, Long> appUuidIds) {
 		List<Long> ids = Domains.parseIds(appUuidIds);
 		if (ids != null && ids.size() > 0) {

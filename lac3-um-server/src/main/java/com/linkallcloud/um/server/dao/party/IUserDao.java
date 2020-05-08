@@ -229,4 +229,6 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 
 	List<T> findCompanyAdmin(@Param("t") Trace t, @Param("company") Sid company);
 
+	int updateHeaderImage(@Param("t") Trace t, @Param("user") Sid user, @Param("ico") String ico);
+
 }

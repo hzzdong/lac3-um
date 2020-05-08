@@ -58,9 +58,7 @@ public class IndexController {
 	public String vueAuthProxy(@RequestParam(value = "redirect", required = false) String redirect, Trace t,
 			HttpServletRequest request, ModelMap modelMap) {
 		SessionUser user = Controllers.getSessionUser(myAppCode, request);
-		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken(user.getUserType(), user.getLoginName(), user.name(), user.id(),
-				user.companyId(), user.companyName(), 20);
+		String token = Controllers.createToken(user, 0);
 
 		try {
 			String h5Url = h5Home;
@@ -102,8 +100,7 @@ public class IndexController {
 		Controllers.login(myAppCode, proxySu);
 
 		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken(proxySu.getUserType(), proxySu.getLoginName(), proxySu.name(),
-				proxySu.id(), proxySu.companyId(), proxySu.companyName(), 20);
+		String token = Controllers.createToken(proxySu, 0);
 
 		try {
 			UrlPattern up = new UrlPattern(h5Home).append("token", token);
@@ -128,9 +125,7 @@ public class IndexController {
 		}
 		Controllers.login(myAppCode, srcUser);
 
-		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken(srcUser.getUserType(), srcUser.getLoginName(), srcUser.name(),
-				srcUser.id(), srcUser.companyId(), srcUser.companyName(), 20);
+		String token = Controllers.createToken(srcUser, 0);
 
 		try {
 			UrlPattern up = new UrlPattern(h5Home).append("token", token);

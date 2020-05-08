@@ -85,7 +85,7 @@
             </el-table>
             <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
           </el-tab-pane>
-          <el-tab-pane label="兼职管理" name="tabJzUser" :disabled="!canSelectJz">
+          <el-tab-pane label="兼职列表" name="tabJzUser" :disabled="!canSelectJz">
             <div class="filter-container">
               <el-input v-model="jz.listQuery.rules.userName.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
               <el-input v-model="jz.listQuery.rules.srcOrgName.fv" placeholder="归属机构 模糊匹配" style="width: 150px;" class="filter-item" />

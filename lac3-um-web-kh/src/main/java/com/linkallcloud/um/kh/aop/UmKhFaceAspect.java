@@ -28,6 +28,7 @@ public class UmKhFaceAspect extends FaceAspect {
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
+
 	@Pointcut("execution(public * com.linkallcloud.um.kh.face..*.*(..))")
 	public void oapiface() {
 	}

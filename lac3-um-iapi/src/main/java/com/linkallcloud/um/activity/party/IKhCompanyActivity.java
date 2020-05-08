@@ -1,5 +1,6 @@
 package com.linkallcloud.um.activity.party;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.domain.party.KhCompany;
 
@@ -16,5 +17,7 @@ public interface IKhCompanyActivity extends ICompanyActivity<KhCompany> {
     Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 
     Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
+
+	Boolean updateCompanyLogo(Trace t, Sid companyId, String logo);
 
 }

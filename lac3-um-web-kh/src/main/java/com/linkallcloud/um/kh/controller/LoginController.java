@@ -23,12 +23,7 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Lang;
 import com.linkallcloud.core.vo.LoginVo;
-import com.linkallcloud.um.domain.party.Company;
-import com.linkallcloud.um.domain.party.KhDepartment;
-import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Account;
-import com.linkallcloud.um.domain.sys.Application;
-import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
@@ -92,13 +87,9 @@ public class LoginController {
 
 		Account account = accountManager.loginValidate(t, lvo.getLoginName(), Lang.md5(lvo.getPassword()));
 		if (account != null) {
-			SessionUser su = assembleSessionUser(t, account);
+			SessionUser su = khUserManager.assembleSessionUser(t, lvo.getLoginName(), myAppCode);
 			Controllers.login(myAppCode, su);
-
-//			// userType, loginName, userName, userId, companyId, companyName, validPeriod
-			String token = Controllers.createToken("KhUser", lvo.getLoginName(), su.name(), su.id(), su.companyId(),
-					su.companyName(), 60 * 10);
-
+			String token = Controllers.createToken(su, 0);
 			try {
 				token = URLEncoder.encode(token, "UTF8");
 			} catch (UnsupportedEncodingException e) {
@@ -112,36 +103,6 @@ public class LoginController {
 		}
 
 		throw new LoginException("10002005", "账号或者密码错误，请重试！");
-	}
-
-	private SessionUser assembleSessionUser(Trace t, Account account) {
-		User dbUser = khUserManager.fecthByAccount(t, account.getLoginname());
-		Company dbCompany = khCompanyManager.fetchById(t, dbUser.getCompanyId());
-		String orgName = dbCompany.getName();
-		if (KhDepartment.class.getSimpleName().equals(dbUser.getParentClass())) {
-			KhDepartment parent = khDepartmentManager.fetchById(t, dbUser.getParentId());
-			if (parent != null) {
-				orgName = parent.getName();
-			}
-		}
-		SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
-				dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(),
-				dbUser.getParentId() != null ? dbUser.getParentId() : dbUser.getCompanyId(), orgName,
-				dbUser.getClass().getSimpleName().substring(0, 2));
-		su.setAdmin(dbUser.isAdmin());
-
-		if (dbCompany.getAreaId() != null) {
-			Area area = areaManager.fetchById(t, dbCompany.getAreaId());
-			if (area != null) {
-				su.setAreaInfo(area.getId(), area.getUuid(), area.getCode(), area.getName(), area.getLevel());
-			}
-		}
-
-		Application app = applicationManager.fetchByCode(t, "lac_app_um_kh");
-		String[] perms = khUserManager.getUserAppPermissions4Menu(t, su.id(), app.getId());
-		su.setPermissions(perms, null, null);
-		su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
-		return su;
 	}
 
 	private String getIndexUrl() {

@@ -476,10 +476,19 @@
 			<if test="entity.type != null and entity.type > 0"> ,type=#{entity.type}</if>
 			<if test="entity.zwuid != null"> ,zwuid=#{entity.zwuid}</if>
 			<if test="entity.dduid != null"> ,dduid=#{entity.dduid}</if>
-			,remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},ico=#{entity.ico}
-			,updateTime=now()
+			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
+			,remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},updateTime=now()
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateHeaderImage">
+		update 
+			um_kh_user 
+		set 
+			ico=#{ico},updateTime=now()
+		where 
+			id=#{user.id} and uuid=#{user.uuid}
 	</update>
 	
 	<update id="updateStatus">

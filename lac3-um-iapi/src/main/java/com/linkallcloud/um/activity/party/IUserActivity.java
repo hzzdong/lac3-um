@@ -20,6 +20,7 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 
 	T loginValidate(Trace t, String accountOrMobile, String password);
 
+	Boolean updateHeaderImage(Trace t, Sid user, String ico);
 	boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd);
 
 	boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);

@@ -1,3 +1,5 @@
+import logoSrc from '@/assets/logo.png'
+
 module.exports = {
   title: '用户中心',
 
@@ -31,5 +33,13 @@ module.exports = {
    * The default is only used in the production env
    * If you want to also use it in dev, you can pass ['production', 'development']
    */
-  errorLog: 'production'
+  errorLog: 'production',
+  /**
+   * 文件服务器前缀url
+   */
+  fssBaseUrl: 'http://edu.mzlink.net/sfiles/',
+  /**
+   * more头像
+   */
+  defaultIco: logoSrc
 }

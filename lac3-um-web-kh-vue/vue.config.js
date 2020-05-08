@@ -53,9 +53,17 @@ module.exports = {
         pathRewrite: {
           '^/api4umkh': '/api4umkh'
         }
+      },
+      // 47.96.234.18/fss
+      '/fss': {
+        target: 'http://47.96.234.18/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/fss': '/fss'
+        }
       }
-    },
-    before: require('./mock/mock-server.js')
+    }
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

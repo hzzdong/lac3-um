@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
@@ -63,19 +64,23 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 		}
 
 		List<KhSystemConfig> entities = super.doFind(t, wq, su);
-		if (entities != null && entities.size() > 0 && entities.size() < 4) {
-			List<KhSystemConfig> defs = defaultConfigs(t);
-			for (KhSystemConfig def : defs) {
-				for (KhSystemConfig entity : entities) {
-					if (def.getKey().equals(entity.getKey())) {
-						def.setValue(entity.getValue());
-						break;
+		if (entities == null || entities.size() <= 0) {
+			return defaultConfigs(t);
+		} else {
+			if (entities.size() >= 4) {
+				return entities;
+			} else {
+				List<KhSystemConfig> defs = defaultConfigs(t);
+				for (KhSystemConfig def : defs) {
+					for (KhSystemConfig entity : entities) {
+						if (def.getKey().equals(entity.getKey())) {
+							def.setValue(entity.getValue());
+							break;
+						}
 					}
 				}
+				return defs;
 			}
-			return defs;
-		} else {
-			return defaultConfigs(t);
 		}
 	}
 
@@ -88,6 +93,7 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 		return entities;
 	}
 
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
 	public @ResponseBody Object changeStatus(ConfigFaceRequest fr, Trace t, SessionUser su) {

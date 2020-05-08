@@ -107,14 +107,17 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 		if (user.getAccount().equals("superadmin") || user.isAdmin()) {
 			return activity().getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
 		} else {
-			Tree root = getCompanyVirtulTreeNode(t, company);
 			boolean depAdmin = getUserActivity().isUserDepartmentAdmin(t, userId);
 			if (depAdmin) {
+				Tree vroot = getCompanyVirtulTreeNode(t, company);
 				if ("YwDepartment".equals(user.getParentClass()) || "KhDepartment".equals(user.getParentClass())) {
 					Tree node = getDepartmentActivity().fetchById(t, user.getParentId()).toTreeNode();
-					root.addChild(node);
+					vroot.addChild(node);
 				}
+				return vroot;
 			} else {
+				Tree root = null;
+				String rootId = "-" + company.getId();
 				List<Long> permedOrgIds = getUserActivity().findUserAppPermedOrgs(t, userId, appId);
 				if (permedOrgIds != null && !permedOrgIds.isEmpty()) {
 					List<Tree> orgs = activity().getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
@@ -122,16 +125,25 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 					for (Tree node : orgs) {
 						for (Long orgId : permedOrgIds) {
 							if (node.getId().equals(orgId.toString())) {
-								items.add(node);
+								if (node.getId().equals(rootId)) {
+									root = node;
+								} else {
+									items.add(node);
+								}
+								break;
 							}
 						}
 					}
 
+					if (root == null) {
+						root = getCompanyVirtulTreeNode(t, company);
+					}
 					Trees.assembleTree(root, items);
 					root.sort();
 				}
+				return root;
 			}
-			return root;
+
 		}
 	}
 

@@ -22,4 +22,6 @@ public interface IKhCompanyDao extends ICompanyDao<KhCompany> {
 
     Boolean removeApps(@Param("t") Trace t, @Param("id") Long id, @Param("appIds") List<Long> appIds);
 
+	int updateCompanyLogo(@Param("t") Trace t, @Param("id") Long id, @Param("logo") String logo);
+
 }

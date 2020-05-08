@@ -67,6 +67,11 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	}
 
 	@Override
+	public Boolean updateHeaderImage(Trace t, Sid user, String ico) {
+		return service().updateHeaderImage(t, user, ico);
+	}
+
+	@Override
 	public boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd)
 			throws BaseRuntimeException {
 		return service().updatePassword(t, userId, userUuid, oldPwd, newPwd);

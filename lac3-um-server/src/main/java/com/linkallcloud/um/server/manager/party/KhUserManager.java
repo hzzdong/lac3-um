@@ -101,6 +101,7 @@ public class KhUserManager
 			SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
 					dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(), parentId,
 					parentUuid, orgName);
+			su.setIco(dbUser.getIco());
 			su.setAdmin(dbUser.isAdmin());
 
 			if (dbCompany.getAreaId() != null) {
