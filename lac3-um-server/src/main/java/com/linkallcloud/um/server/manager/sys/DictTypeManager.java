@@ -40,7 +40,7 @@ public class DictTypeManager extends BaseTreeManager<DictType, IDictTypeService>
 	public boolean update(Trace t, DictType entity) throws BaseRuntimeException {
 		boolean result = super.update(t, entity);
 		if (result) {
-			cleanDictOrTypeCache(t, entity);
+			//cleanDictOrTypeCache(t, entity);
 		}
 		return result;
 	}
@@ -51,7 +51,7 @@ public class DictTypeManager extends BaseTreeManager<DictType, IDictTypeService>
 		if (result) {
 			DictType entity = service().fetchByIdUuid(t, id, uuid);
 			if (entity != null) {
-				cleanDictOrTypeCache(t, entity);
+				//cleanDictOrTypeCache(t, entity);
 			}
 		}
 		return result;
@@ -61,7 +61,7 @@ public class DictTypeManager extends BaseTreeManager<DictType, IDictTypeService>
 	public boolean delete(Trace t, Long id, String uuid) throws BaseRuntimeException {
 		DictType entity = service().fetchByIdUuid(t, id, uuid);
 		if (entity != null) {
-			cleanDictOrTypeCache(t, entity);
+			//cleanDictOrTypeCache(t, entity);
 		}
 		return super.delete(t, id, uuid);
 	}

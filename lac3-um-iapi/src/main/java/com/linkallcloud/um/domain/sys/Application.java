@@ -14,7 +14,8 @@ public class Application extends Domain {
 
 	private String url;
 	private int sort;
-	private int type;
+	private int type;//应用类型，参考：com.linkallcloud.um.enums.ApplicationType
+	private int clazz;//应用类别，参考：com.linkallcloud.um.enums.ApplicationClazz
 	private String ico;
 
 	private int screenType;// 适合屏幕尺寸：参考：com.linkallcloud.um.enums.ScreenType
@@ -27,7 +28,7 @@ public class Application extends Domain {
 	private String messageEncAlg;// 消息加解密算法，暂时支持AES。
 	private String messageEncKey;// 加密的秘钥
 	// private String signatureIdentity;// 签名者ID(appKey)//用code替代
-	private String signatureAlg;// 签名算法(SHA1/MD5)
+	private String signatureAlg;// 签名算法(SHA1/MD5),参考：com.linkallcloud.um.enums.SignAlg
 	private String signatureKey;// 签名密钥
 	/* end 接口安全设置 */
 
@@ -40,8 +41,8 @@ public class Application extends Domain {
 	 * （1）成功：{code:"0",message:"成功"} （2）失败：{code:"XXX",message:"失败原因"}
 	 */
 	private String authAddr;// 认证接口地址
-	private Integer authPassMode;// 密码模式，参考：com.linkallcloud.core.enums.EnumBase.PasswordMode
-	private Integer authSignAlg;// 签名算法,参考：com.linkallcloud.core.enums.EnumBase.SignAlg
+	private String authPassMode;// 密码模式，参考：com.linkallcloud.um.enums.SignAlg
+	private String authSignAlg;// 签名算法,参考：com.linkallcloud.um.enums.SignAlg
 	private String authSignKey;// 签名密钥
 	/* end 账号映射模式认证接口设置 */
 
@@ -126,6 +127,14 @@ public class Application extends Domain {
 		this.type = type;
 	}
 
+	public int getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(int clazz) {
+		this.clazz = clazz;
+	}
+
 	public String getIco() {
 		return ico;
 	}
@@ -167,7 +176,7 @@ public class Application extends Domain {
 
 	public Tree toMenuRoot() {
 		Tree root = this.toTreeNode();
-		root.setId("APP-" + this.getId());
+		root.setId("0");
 		root.setType("v-root");
 		root.setpId(null);
 		root.setOpen(true);
@@ -266,19 +275,19 @@ public class Application extends Domain {
 		this.authAddr = authAddr;
 	}
 
-	public Integer getAuthPassMode() {
+	public String getAuthPassMode() {
 		return authPassMode;
 	}
 
-	public void setAuthPassMode(Integer authPassMode) {
+	public void setAuthPassMode(String authPassMode) {
 		this.authPassMode = authPassMode;
 	}
 
-	public Integer getAuthSignAlg() {
+	public String getAuthSignAlg() {
 		return authSignAlg;
 	}
 
-	public void setAuthSignAlg(Integer authSignAlg) {
+	public void setAuthSignAlg(String authSignAlg) {
 		this.authSignAlg = authSignAlg;
 	}
 

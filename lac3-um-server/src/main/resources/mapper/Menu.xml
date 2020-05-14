@@ -149,6 +149,15 @@
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>
 	
+	<update id="updateStatus">
+		update 
+			um_app_menu 
+		set 
+			status=#{status},updateTime=now()
+		where 
+			id=#{id} and uuid=#{uuid}
+	</update>
+	
 	<delete id="delete">
 		update 
 			um_app_menu 

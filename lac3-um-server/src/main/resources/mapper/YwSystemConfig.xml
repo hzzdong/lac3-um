@@ -3,28 +3,47 @@
 <mapper namespace="com.linkallcloud.um.server.dao.sys.IYwSystemConfigDao">
 
 	<sql id="Base_Column_List">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.rootAreaId,u.enableOrgPerm,u.enableAreaPerm,u.enableZf,u.enableZzd,u.logo
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.key,u.name,u.value,u.remark
 	</sql>
 
-	<select id="fetchByCompanyId" resultType="com.linkallcloud.um.domain.sys.YwSystemConfig" >
+	<select id="fetch" resultType="com.linkallcloud.um.domain.sys.YwSystemConfig" >
 		select
 			<include refid="Base_Column_List" />
 		from 
 			um_yw_config u 
 		where 
-			u.companyId=#{companyId}
+			u.companyId=#{companyId} and u.key=#{configItemCode}
+	</select>
+	
+	<select id="find" resultType="com.linkallcloud.um.domain.sys.YwSystemConfig">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_yw_config u
+		WHERE
+			u.status &lt;&gt; 9 
+			<if test="query!=null and query.cnds!=null and query.cnds.companyId != null"> AND u.companyId = #{query.cnds.companyId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
+		<choose>
+			<when test="query != null and query.orders != null and query.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.id
+			</otherwise>
+		</choose>
 	</select>
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.YwSystemConfig" useGeneratedKeys="true" keyProperty="entity.id">
-		insert into um_yw_config (uuid, status,createTime,updateTime,companyId,rootAreaId,enableOrgPerm,enableAreaPerm,enableZf,enableZzd,logo)
-		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.rootAreaId},#{entity.enableOrgPerm},#{entity.enableAreaPerm},#{entity.enableZf},#{entity.enableZzd},#{entity.logo})
+		insert into um_yw_config (uuid, status,createTime,updateTime,companyId,`key`,name,value,remark)
+		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.key},#{entity.name},#{entity.value},#{entity.remark})
 	</insert>
 	
 	<update id="update">
 		update 
 			um_yw_config 
 		set 
-			rootAreaId=#{entity.rootAreaId},enableOrgPerm=#{entity.enableOrgPerm},enableAreaPerm=#{entity.enableAreaPerm},enableZf=#{entity.enableZf},enableZzd=#{entity.enableZzd},logo=#{entity.logo},updateTime=now()
+			value=#{entity.value},updateTime=now()
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>

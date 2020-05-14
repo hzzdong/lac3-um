@@ -71,8 +71,8 @@ public class YwCompanyController extends
 
 	@Override
 	protected String toTree(Trace t, ModelMap modelMap, AppVisitor av) {
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
-		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
+//		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
+//		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 		return super.toTree(t, modelMap, av);
 	}
 

@@ -4,12 +4,12 @@
 
 	<!-- 通用查询结果列 -->
 	<sql id="Base_Column_List">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,u.screenType,
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.clazz,u.ico,u.remark,u.screenType,
 		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,u.authAddr,u.authPassMode,u.authSignAlg,u.authSignKey
 	</sql>
 	
 	<sql id="Column_with_owner">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.ico,u.remark,u.screenType,
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.code,u.name,u.sort,u.url,u.type,u.clazz,u.ico,u.remark,u.screenType,
 		u.host,u.messageEncAlg,u.messageEncKey,u.signatureAlg,u.signatureKey,u.timeout,u.mappingType,u.logout,u.authAddr,u.authPassMode,u.authSignAlg,u.authSignKey,
 		c.id AS ownerId,c.uuid AS ownerUuid, c.name AS ownerName
 	</sql>
@@ -60,6 +60,7 @@
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -104,6 +105,7 @@
 			</if>
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -126,6 +128,7 @@
 		WHERE
 			u.status &lt;&gt; 9 
 			<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.clazz != null"> AND u.clazz = #{query.cnds.clazz}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.screenType != null"> AND u.screenType = #{query.cnds.screenType}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.mappingType != null"> AND u.mappingType = #{query.cnds.mappingType}</if>
 		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
@@ -141,8 +144,8 @@
 	</select>
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.Application" useGeneratedKeys="true" keyProperty="entity.id">
-		insert into um_application (uuid, status,createTime,updateTime,code,name,sort,url,type,ico,remark,mappingType,logout,screenType)
-		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.code},#{entity.name},#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.mappingType},#{entity.logout},#{entity.screenType})
+		insert into um_application (uuid, status,createTime,updateTime,code,name,sort,url,type,clazz,ico,remark,mappingType,logout,screenType)
+		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.code},#{entity.name},#{entity.sort},#{entity.url},#{entity.type},#{entity.clazz},#{entity.ico},#{entity.remark},#{entity.mappingType},#{entity.logout},#{entity.screenType})
 	</insert>
 	
 	<update id="updateInterfaceInfo">
@@ -174,6 +177,24 @@
 			,updateTime=now()
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateStatus">
+		update 
+			um_application 
+		set 
+			status=#{status},updateTime=now()
+		where 
+			id=#{id} and uuid=#{uuid}
+	</update>
+	
+	<update id="updateAppLogo">
+		update 
+			um_application 
+		set 
+			ico=#{ico},updateTime=now()
+		where 
+			id=#{app.id} and uuid=#{app.uuid}
 	</update>
 	
 	<delete id="delete">
@@ -244,6 +265,7 @@
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		order by rel.companyId
@@ -262,6 +284,7 @@
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 	</select>

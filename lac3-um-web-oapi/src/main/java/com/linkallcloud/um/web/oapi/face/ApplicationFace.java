@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -111,11 +112,10 @@ public class ApplicationFace {
 		return result;
 	}
 
-	@Face(login = false)
+	@Face(simple = true)
 	@RequestMapping(value = "/getAppMenuTree", method = RequestMethod.POST)
-	public @ResponseBody Object getAppMenuTree(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
-		String appCode = faceReq.getData();
-		return menuManager.getMenuTree(t, appCode);
+	public @ResponseBody Object getAppMenuTree(IdFaceRequest fr, Trace t) throws Exception {
+		return menuManager.getMenuTree(t, new Sid(fr.getId(), fr.getUuid()), true);
 	}
 
 	@Face(login = false)

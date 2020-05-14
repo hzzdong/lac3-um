@@ -29,7 +29,6 @@ import com.linkallcloud.sso.client.validation.ServiceTicketValidator;
 import com.linkallcloud.sso.client.web.filter.AuthenticationFilter;
 import com.linkallcloud.sso.client.web.filter.TicketValidationFilter;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
-import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.kh.aop.LacPermissionInterceptor;
 import com.linkallcloud.um.kh.aop.LoginFilter;
 import com.linkallcloud.web.interceptors.LacEnvInterceptor;
@@ -60,9 +59,6 @@ public class UmKhApplication implements WebMvcConfigurer {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
-
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IApplicationManager applicationManager;
 
 	@Bean
 	public LacEnvInterceptor getLacEnvInterceptor() {
@@ -123,8 +119,8 @@ public class UmKhApplication implements WebMvcConfigurer {
 		envpi.order(4);
 
 		InterceptorRegistration pi = registry.addInterceptor(getLacPermissionInterceptor());
-		pi.excludePathPatterns("/index","/js/**", "/css/**", "/images/**", "/img/**", "/static/**", "/login/**", "/verifyCode",
-				"/imageValidate", "/exit", "/unsupport", "/error", "/pub/**", "/nnl/**", "/face/**");
+		pi.excludePathPatterns("/index", "/js/**", "/css/**", "/images/**", "/img/**", "/static/**", "/login/**",
+				"/verifyCode", "/imageValidate", "/exit", "/unsupport", "/error", "/pub/**", "/nnl/**", "/face/**");
 		pi.addPathPatterns("/face/**");
 		pi.order(5);
 

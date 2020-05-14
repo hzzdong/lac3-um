@@ -3,10 +3,10 @@ package com.linkallcloud.um.iapi.sys;
 import java.util.List;
 
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.manager.IManager;
+import com.linkallcloud.core.manager.ITreeManager;
 import com.linkallcloud.um.domain.sys.Dict;
 
-public interface IDictManager extends IManager<Dict> {
+public interface IDictManager extends ITreeManager<Dict> {
 
 	/**
 	 * 根据dictTypeId，得到其下直接的字典数据

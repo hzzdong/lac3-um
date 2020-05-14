@@ -52,8 +52,9 @@ public class MenuController {
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> loadTree(Trace t, @RequestParam(value = "appId") Long appId,
 			@RequestParam(value = "appUuid") String appUuid, AppVisitor av) throws IllegalParameterException {
-		List<Tree> items = menuManager.getMenus(t, appId);
-		return new Result<>(items);
+//		List<Tree> items = menuManager.getMenus(t, appId);
+//		return new Result<>(items);
+		return null;
 	}
 
 	@RequirePermissions({})
@@ -137,7 +138,7 @@ public class MenuController {
 
 	@RequestMapping(value = "/getUmMenuTree", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> getUmTree(Trace t) throws IllegalParameterException {
-		Tree root = menuManager.getMenuTree(t, "lac_app_um");
+		Tree root = null;//menuManager.getMenuTree(t, "lac_app_um");
 		return new Result<>(root == null ? null : root.getChildren());
 	}
 

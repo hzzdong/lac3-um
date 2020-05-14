@@ -20,7 +20,6 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Lang;
 import com.linkallcloud.core.vo.LoginVo;
 import com.linkallcloud.um.domain.sys.Account;
@@ -67,15 +66,6 @@ public class LoginController {
 	@Value("${lac.lf.ssoServer:http://localhost/sso}")
 	private String ssoServer;
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String localLogin(HttpSession session, HttpServletRequest request, ModelMap modelMap) {
-		SessionUser obj = (SessionUser) Controllers.getSessionUser(myAppCode);
-		if (obj == null) {
-			return "page/login";
-		}
-		return Controllers.redirect(getIndexUrl());
-	}
-
 	@WebLog(db = true, desc = "用户([(${lvo.loginName})])登录系统,TID:[(${tid})].")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody Object postLcLogin(@RequestBody LoginVo lvo, HttpServletRequest request,
@@ -93,38 +83,18 @@ public class LoginController {
 			try {
 				token = URLEncoder.encode(token, "UTF8");
 			} catch (UnsupportedEncodingException e) {
-				return Exceptions.makeErrorResult(e);
 			}
-
 			return new Result<Object>(token);
-
 			// setClientInfo2Cache(lvo.getLoginName(), lvo.getClient());
 			// return WebUtils.makeSuccessResult(request.getContextPath() + getIndexUrl());
 		}
-
 		throw new LoginException("10002005", "账号或者密码错误，请重试！");
-	}
-
-	private String getIndexUrl() {
-		return "/index";
 	}
 
 	@RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
 	public void getVerify(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 		SessionValidateCode svc = new SessionValidateCode(true);
 		svc.generate(request, response);
-	}
-
-	/**
-	 * 退出本地登陆
-	 */
-	@RequestMapping(value = "/exit")
-	public String exit(ModelMap modelMap, HttpSession session, HttpServletRequest request) {
-		try {
-			session.invalidate();
-		} catch (Exception e) {
-		}
-		return localLogin(session, request, modelMap);
 	}
 
 	/**

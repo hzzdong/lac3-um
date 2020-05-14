@@ -133,20 +133,21 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 
 	private YwSystemConfig getYwSystemConfig(Trace t, Long companyId) {
 		YwCompany company = ywCompanyManager.fetchById(t, companyId);
-		YwSystemConfig sc = ywSystemConfigManager.fetchByCompanyId(t, company.rootCompanyId());
-		if (sc == null) {
-			sc = new YwSystemConfig();
-		}
-
-		String areaName = "";
-		if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
-			Area area = areaManager.fetchById(t, sc.getRootAreaId());
-			areaName = area.getName();
-		} else {
-			areaName = "中华人民共和国";
-		}
-		sc.setRootAreaName(areaName);
-		return sc;
+//		YwSystemConfig sc = ywSystemConfigManager.fetchByCompanyId(t, company.rootCompanyId());
+//		if (sc == null) {
+//			sc = new YwSystemConfig();
+//		}
+//
+//		String areaName = "";
+//		if (sc != null && sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
+//			Area area = areaManager.fetchById(t, sc.getRootAreaId());
+//			areaName = area.getName();
+//		} else {
+//			areaName = "中华人民共和国";
+//		}
+//		sc.setRootAreaName(areaName);
+//		return sc;
+		return null;
 	}
 
 	@RequestMapping(value = "/saveRoleAppMenuPerm", method = RequestMethod.GET)

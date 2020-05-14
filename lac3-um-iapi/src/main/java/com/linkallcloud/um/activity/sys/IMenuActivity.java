@@ -1,6 +1,7 @@
 package com.linkallcloud.um.activity.sys;
 
 import com.linkallcloud.core.activity.ITreeActivity;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.sys.Menu;
@@ -21,21 +22,22 @@ public interface IMenuActivity extends ITreeActivity<Menu> {
 
     /**
      * 获取应用的菜单树
-     *
-     * @param t
-     * @param appCode
-     * @return
-     */
-    Tree getMenuTree(Trace t, String appCode);
-
-    /**
-     * 获取应用的菜单
-     *
+     * 
      * @param t
      * @param appId
+     * @param status
      * @return
      */
-    List<Tree> getMenus(Trace t, Long appId);
+    Tree getMenuTree(Trace t, Sid appId, Boolean status);
+
+    /**
+     *  获取应用的菜单
+     * @param t
+     * @param appId
+     * @param status
+     * @return
+     */
+    List<Tree> getMenus(Trace t, Sid appId, Boolean status);
 
     /**
      * 获取应用有效状态的菜单

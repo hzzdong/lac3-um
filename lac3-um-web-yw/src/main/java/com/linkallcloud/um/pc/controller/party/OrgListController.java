@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.WebLog;
-import com.linkallcloud.web.controller.BaseLController;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.domain.party.Org;
+import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.iapi.party.IOrgManager;
+import com.linkallcloud.web.controller.BaseLController;
 
-public abstract class OrgListController<T extends Org, S extends IOrgManager<T>> extends BaseLController<T, S> {
+public abstract class OrgListController<T extends Org, U extends User, S extends IOrgManager<T,U>> extends BaseLController<T, S> {
 
 	@Override
 	protected String getMainPage() {

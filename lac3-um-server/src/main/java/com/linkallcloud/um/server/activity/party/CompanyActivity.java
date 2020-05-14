@@ -54,6 +54,15 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	protected abstract DD getDepartmentDao();
+	
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean updateCompanyLogo(Trace t, Sid companyId, String logo) {
+		int rows = dao().updateCompanyLogo(t, companyId.getId(), logo);
+		return retBool(rows);
+	}
+
 
 	@Override
 	public List<T> findSubCompanies(Trace t, Long companyId) {

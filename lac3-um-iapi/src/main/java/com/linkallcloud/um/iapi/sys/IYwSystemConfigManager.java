@@ -1,13 +1,18 @@
 package com.linkallcloud.um.iapi.sys;
 
+import java.util.List;
+
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.IManager;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
 
 public interface IYwSystemConfigManager extends IManager<YwSystemConfig> {
 
-    YwSystemConfig fetchByCompanyId(Trace t, Long companyId);
+	YwSystemConfig fetch(Trace t, Long companyId, String configItemCode);
 
-    //Long save(Trace t, YwSystemConfig entity);
+	List<YwSystemConfig> find(Trace t, Long companyId);
+
+	Boolean change(Trace t, Sid companyId, String configItemCode, String value);
 
 }

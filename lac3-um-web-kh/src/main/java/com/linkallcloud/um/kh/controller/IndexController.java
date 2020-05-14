@@ -44,7 +44,7 @@ public class IndexController {
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String list(Trace t, HttpServletRequest request, ModelMap modelMap) {
-		return "page/home";
+		return "index";
 	}
 
 	@RequestMapping(value = "/fetchLoginUser", method = RequestMethod.GET)

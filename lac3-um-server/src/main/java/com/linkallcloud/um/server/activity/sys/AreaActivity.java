@@ -125,7 +125,6 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	public Tree getTree(Trace t, boolean valid) {
 		Tree tree = super.getTree(t, valid);
 		tree.setOpen(true);
-		tree.setId("AREA_ROOT");
 		tree.setName("中华人民共和国");
 		return tree;
 	}

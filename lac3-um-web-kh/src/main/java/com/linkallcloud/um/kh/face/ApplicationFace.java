@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.castor.Castors;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
@@ -78,14 +79,14 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		} else {
 			Equal idRule = (Equal) page.getRule4Field("khCompanyId");
 			Long khCompanyId = Castors.me().castTo(idRule.getValue(), Long.class);
-			if (khCompanyId.equals(su.companyId())) {//不能给自己公司许可应用
+			if (khCompanyId.equals(su.companyId())) {// 不能给自己公司许可应用
 				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId参数错误。");
 			}
 		}
-		
+
 		// 应用选择范围限制在登录用户所在公司有权限的应用
 		page.addRule(new Equal("parentCompanyId", su.companyId()));
-		
+
 		page = manager().findPage4SelfKhCompany4Select(t, page);
 		convert(t, "page4KhCompany4Select", faceReq, page);
 		return page;
@@ -203,9 +204,8 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getAppMenuTree", method = RequestMethod.POST)
-	public @ResponseBody Object getAppMenuTree(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
-		String appCode = faceReq.getData();
-		return menuManager.getMenuTree(t, appCode);
+	public @ResponseBody Object getAppMenuTree(IdFaceRequest fr, Trace t) throws Exception {
+		return menuManager.getMenuTree(t, new Sid(fr.getId(), fr.getUuid()), false);
 	}
 
 	@Face(simple = true)

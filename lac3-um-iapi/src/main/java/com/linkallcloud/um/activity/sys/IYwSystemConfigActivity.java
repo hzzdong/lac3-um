@@ -6,6 +6,6 @@ import com.linkallcloud.um.domain.sys.YwSystemConfig;
 
 public interface IYwSystemConfigActivity extends IActivity<YwSystemConfig> {
 
-    YwSystemConfig fetchByCompanyId(Trace t, Long companyId);
+	YwSystemConfig fetch(Trace t, Long companyId, String configItemCode);
 
 }

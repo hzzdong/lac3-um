@@ -86,17 +86,32 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 		return items;
 	}
 
+//	/**
+//	 * 加载当前登录用户有权限的组织树（子单位紧紧包含子单位的根节点）。
+//	 * 
+//	 * @param fr
+//	 * @param t
+//	 * @param su
+//	 * @return
+//	 */
+//	@Face(simple = true)
+//	@RequestMapping(value = "/loadTree", method = RequestMethod.POST)
+//	public @ResponseBody Object loadKhCompanyTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+//		// Application app = applicationManager.fetchByCode(t, myAppCode);
+//		Tree root = khCompanyManager.getPermedCompanyTree(t, su.appId(), su.id());
+//		if (root != null && "v-root".equals(root.getId())) {
+//			return root.getChildren();
+//		} else {
+//			List<Tree> items = Arrays.asList(root);
+//			return items;
+//		}
+//	}
+
 	/**
 	 * 加载当前登录用户有权限的组织树（子单位紧紧包含子单位的根节点）。
-	 * 
-	 * @param fr
-	 * @param t
-	 * @param su
-	 * @return
 	 */
-	@Face(simple = true)
-	@RequestMapping(value = "/loadTree", method = RequestMethod.POST)
-	public @ResponseBody Object loadKhCompanyTree(ObjectFaceRequest<Object> fr, Trace t, SessionUser su) {
+	@Override
+	public List<Tree> doLoadTree(Trace t, IdFaceRequest fr, SessionUser su) {
 		// Application app = applicationManager.fetchByCode(t, myAppCode);
 		Tree root = khCompanyManager.getPermedCompanyTree(t, su.appId(), su.id());
 		if (root != null && "v-root".equals(root.getId())) {

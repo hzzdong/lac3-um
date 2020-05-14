@@ -65,8 +65,8 @@ public class YwDepartmentController {
 		Tree zfOrgDictTree = dictTypeManager.getDictTypeTreeWithDictsByLeafCode(t, "org_type");
 		modelMap.put("zfOrgDicts", zfOrgDictTree != null ? zfOrgDictTree.getChildren() : new ArrayList<Tree>());
 
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
-		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
+//		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
+//		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 
 		return edit(parentId, parentClass, null, null, t, modelMap, su);
 	}
@@ -86,8 +86,8 @@ public class YwDepartmentController {
 		Tree zfOrgDictTree = dictTypeManager.getDictTypeTreeWithDictsByLeafCode(t, "org_type");
 		modelMap.put("zfOrgDicts", zfOrgDictTree != null ? zfOrgDictTree.getChildren() : new ArrayList<Tree>());
 
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
-		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
+//		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, su.companyId());
+//		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 
 		return "page/party/YwDepartment/YwDepartmentEdit";
 	}

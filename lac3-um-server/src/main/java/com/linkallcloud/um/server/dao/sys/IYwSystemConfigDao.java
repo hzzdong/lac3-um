@@ -8,6 +8,7 @@ import com.linkallcloud.um.domain.sys.YwSystemConfig;
 
 public interface IYwSystemConfigDao extends IDao<YwSystemConfig> {
 
-    YwSystemConfig fetchByCompanyId(@Param("t") Trace t, @Param("companyId") Long companyId);
+	YwSystemConfig fetch(@Param("t") Trace t, @Param("companyId") Long companyId,
+			@Param("configItemCode") String configItemCode);
 
 }

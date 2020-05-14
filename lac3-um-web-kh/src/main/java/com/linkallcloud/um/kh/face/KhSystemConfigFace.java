@@ -86,10 +86,10 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 
 	private List<KhSystemConfig> defaultConfigs(Trace t) {
 		List<KhSystemConfig> entities = new ArrayList<KhSystemConfig>();
-		entities.add(new KhSystemConfig(Consts.CONFIG_KH_PERMISSION_ORG, "启用机构权限", "no", "是否启用机构权限功能"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_KH_PERMISSION_AREA, "启用区域权限", "no", "是否启用区域权限功能"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_KH_AREAS, "根区域", "", "可设置多个区域节点作为根区域"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_KH_LOGO, "LOGO", "", "设置公司LOGO"));
+		entities.add(new KhSystemConfig(Consts.CONFIG_PERMISSION_ORG, "启用机构权限", "no", "是否启用机构权限功能"));
+		entities.add(new KhSystemConfig(Consts.CONFIG_PERMISSION_AREA, "启用区域权限", "no", "是否启用区域权限功能"));
+		entities.add(new KhSystemConfig(Consts.CONFIG_AREAS, "根区域", "", "可设置多个区域节点作为根区域"));
+		entities.add(new KhSystemConfig(Consts.CONFIG_LOGO, "LOGO", "", "设置公司LOGO"));
 		return entities;
 	}
 

@@ -211,13 +211,6 @@ public class KhCompanyActivity
 		return false;
 	}
 
-	@Transactional(readOnly = false)
-	@Override
-	public Boolean updateCompanyLogo(Trace t, Sid companyId, String logo) {
-		int rows = dao().updateCompanyLogo(t, companyId.getId(), logo);
-		return retBool(rows);
-	}
-
 	public List<Application> findAppsByUuidIds(Trace t, Map<String, Long> appUuidIds) {
 		List<Long> ids = Domains.parseIds(appUuidIds);
 		if (ids != null && ids.size() > 0) {
@@ -341,7 +334,7 @@ public class KhCompanyActivity
 
 	@Override
 	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
-		KhSystemConfig config = khSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_KH_AREAS);
+		KhSystemConfig config = khSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_AREAS);
 		if (config != null && !Strings.isBlank(config.getValue())) {
 			List<NameValue> areas = config.parse();
 			return areas;

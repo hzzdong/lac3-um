@@ -94,5 +94,6 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 */
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
 	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
+	Boolean updateCompanyLogo(Trace t, Sid companyId, String logo);
 
 }

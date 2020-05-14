@@ -1,7 +1,12 @@
 package com.linkallcloud.um.domain.sys;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.domain.annotation.ShowName;
+import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.lang.Strings;
 
 @ShowName(value = "系统配置", logFields = "id")
@@ -10,23 +15,21 @@ public class YwSystemConfig extends Domain {
 
 	private Long companyId;
 
-	private Long rootAreaId;
-
-	private String enableOrgPerm;// on:启用;off:禁用
-	private String enableAreaPerm;// on:启用;off:禁用
-
-	private String enableZf;// 政府管理模式， on:启用;off:禁用
-	private String enableZzd;// 浙政钉集成， on:启用;off:禁用
-
-	private String logo;
-
-	/*
-	 * 以下非数据库字段
-	 */
-	private String rootAreaName;
+	private String key;// 见com.linkallcloud.um.constant.Consts
+	private String name;
+	private String value;
+	private String remark;
 
 	public YwSystemConfig() {
 		super();
+	}
+
+	public YwSystemConfig(String key, String name, String value, String remark) {
+		super();
+		this.key = key;
+		this.name = name;
+		this.value = value;
+		this.remark = remark;
 	}
 
 	public Long getCompanyId() {
@@ -37,59 +40,43 @@ public class YwSystemConfig extends Domain {
 		this.companyId = companyId;
 	}
 
-	public Long getRootAreaId() {
-		return rootAreaId;
+	public String getKey() {
+		return key;
 	}
 
-	public void setRootAreaId(Long rootAreaId) {
-		this.rootAreaId = rootAreaId;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public String getEnableOrgPerm() {
-		return Strings.isBlank(enableOrgPerm) ? "off" : enableOrgPerm;
+	public String getName() {
+		return name;
 	}
 
-	public void setEnableOrgPerm(String enableOrgPerm) {
-		this.enableOrgPerm = enableOrgPerm;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getEnableAreaPerm() {
-		return Strings.isBlank(enableAreaPerm) ? "off" : enableAreaPerm;
+	public String getValue() {
+		return value;
 	}
 
-	public void setEnableAreaPerm(String enableAreaPerm) {
-		this.enableAreaPerm = enableAreaPerm;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
-	public String getLogo() {
-		return logo;
+	public String getRemark() {
+		return remark;
 	}
 
-	public void setLogo(String logo) {
-		this.logo = logo;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
-	public String getRootAreaName() {
-		return rootAreaName;
-	}
-
-	public void setRootAreaName(String rootAreaName) {
-		this.rootAreaName = rootAreaName;
-	}
-
-	public String getEnableZf() {
-		return Strings.isBlank(enableZf) ? "off" : enableZf;
-	}
-
-	public void setEnableZf(String enableZf) {
-		this.enableZf = enableZf;
-	}
-
-	public String getEnableZzd() {
-		return Strings.isBlank(enableZzd) ? "off" : enableZzd;
-	}
-
-	public void setEnableZzd(String enableZzd) {
-		this.enableZzd = enableZzd;
+	public List<NameValue> parse() {
+		if (!Strings.isBlank(this.getValue())) {
+			return JSON.parseObject(this.getValue(), new TypeReference<List<NameValue>>() {
+			});
+		}
+		return null;
 	}
 }

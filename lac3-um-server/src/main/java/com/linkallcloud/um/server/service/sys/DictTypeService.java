@@ -42,7 +42,8 @@ public class DictTypeService extends BaseTreeService<DictType, IDictTypeActivity
     public Tree getTree(Trace t, boolean valid) {
         Tree tree = super.getTree(t, valid);
         tree.setOpen(true);
-        tree.setId("DICT_TYPE_ROOT");
+        tree.setId("0");
+        tree.setGovCode("-");
         tree.setName("所有数据字典分类");
         return tree;
     }

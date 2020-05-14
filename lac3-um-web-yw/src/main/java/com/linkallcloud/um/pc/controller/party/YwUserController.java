@@ -44,7 +44,7 @@ import com.linkallcloud.web.utils.Controllers;
 @RequestMapping(value = "/YwUser", method = RequestMethod.POST)
 @Module(name = "用户")
 public class YwUserController
-		extends UserController<YwUser, IYwUserManager, YwRole, IYwRoleManager, Org, IOrgManager<Org>> {
+		extends UserController<YwUser, IYwUserManager, YwRole, IYwRoleManager, Org, IOrgManager<Org,YwUser>> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
@@ -87,8 +87,8 @@ public class YwUserController
 	@Override
 	protected String doMain4Parent(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
 			AppVisitor av) {
-		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
-		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
+//		YwSystemConfig cfg = ywSystemConfigManager.fetchByCompanyId(t, av.companyId());
+//		modelMap.put("cfg", cfg == null ? new YwSystemConfig() : cfg);
 
 		return super.doMain4Parent(prepare, parentId, parentClass, t, modelMap, av);
 	}

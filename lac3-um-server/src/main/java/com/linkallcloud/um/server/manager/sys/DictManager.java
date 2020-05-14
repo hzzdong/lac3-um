@@ -2,22 +2,22 @@ package com.linkallcloud.um.server.manager.sys;
 
 import java.util.List;
 
-import com.linkallcloud.um.service.sys.IDictService;
-import com.linkallcloud.um.service.sys.IDictTypeService;
+import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.apache.dubbo.config.annotation.Service;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.manager.BaseManager;
+import com.linkallcloud.core.manager.BaseTreeManager;
 import com.linkallcloud.um.domain.sys.Dict;
 import com.linkallcloud.um.domain.sys.DictType;
 import com.linkallcloud.um.iapi.sys.IDictManager;
+import com.linkallcloud.um.service.sys.IDictService;
+import com.linkallcloud.um.service.sys.IDictTypeService;
 
 @Service(interfaceClass = IDictManager.class, version = "${dubbo.service.version}")
 @Module(name = "数据字典")
-public class DictManager extends BaseManager<Dict, IDictService> implements IDictManager {
+public class DictManager extends BaseTreeManager<Dict, IDictService> implements IDictManager {
 
 	@Autowired
 	private IDictService dictService;

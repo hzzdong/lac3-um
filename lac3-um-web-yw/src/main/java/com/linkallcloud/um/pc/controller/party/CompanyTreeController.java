@@ -31,7 +31,7 @@ import com.linkallcloud.um.iapi.party.IDepartmentManager;
 import com.linkallcloud.um.iapi.party.IUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 
-public abstract class CompanyTreeController<C extends Company, CS extends ICompanyManager<C>, U extends User, US extends IUserManager<U>, D extends Department, DS extends IDepartmentManager<D>> {
+public abstract class CompanyTreeController<C extends Company, CS extends ICompanyManager<C, U>, U extends User, US extends IUserManager<U>, D extends Department, DS extends IDepartmentManager<D, U>> {
 
 	protected Log log = Logs.get();
 
@@ -97,7 +97,7 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 
 	@RequestMapping(value = "/loadTree", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
-		Tree root = getComapnyManager().getPermedCompanyTree(t, av.appId(),av.id());
+		Tree root = getComapnyManager().getPermedCompanyTree(t, av.appId(), av.id());
 		return new Result<>(root.getChildren());
 	}
 
@@ -111,17 +111,18 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	@RequestMapping(value = "/loadFullTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> loadFullTree(
 			@RequestParam(value = "companyId", required = false) Long companyId, Trace t, AppVisitor av) {
-		Long myCompanyId = av.companyId();
-		if (companyId != null && companyId < myCompanyId) {
-			myCompanyId = companyId;
-		}
-		List<Tree> nodes = getComapnyManager().getCompanyFullOrgTreeList(t, myCompanyId);
-
-		if (nodes == null || nodes.isEmpty()) {
-			nodes = new ArrayList<Tree>();
-			nodes.add(new Tree("0", "", "无数据"));
-		}
-		return new Result<List<Tree>>(nodes);
+//		Long myCompanyId = av.companyId();
+//		if (companyId != null && companyId < myCompanyId) {
+//			myCompanyId = companyId;
+//		}
+//		List<Tree> nodes = getComapnyManager().getCompanyFullOrgTreeList(t, myCompanyId);
+//
+//		if (nodes == null || nodes.isEmpty()) {
+//			nodes = new ArrayList<Tree>();
+//			nodes.add(new Tree("0", "", "无数据"));
+//		}
+//		return new Result<List<Tree>>(nodes);
+		return null;
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
@@ -246,24 +247,26 @@ public abstract class CompanyTreeController<C extends Company, CS extends ICompa
 	@RequestMapping(value = "/addLeaders", method = RequestMethod.POST)
 	public @ResponseBody Result<Object> addLeaders(@RequestParam(value = "orgId") Long orgId,
 			@RequestParam(value = "orgUuid") String orgUuid, @RequestBody Map<String, Long> userUuidIds, Trace t) {
-		try {
-			Boolean ret = getComapnyManager().addLeaders(t, orgId, orgUuid, userUuidIds);
-			return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
-		} catch (Throwable e) {
-			return Exceptions.makeErrorResult(e);
-		}
+//		try {
+//			Boolean ret = getComapnyManager().addLeaders(t, orgId, orgUuid, userUuidIds);
+//			return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
+//		} catch (Throwable e) {
+//			return Exceptions.makeErrorResult(e);
+//		}
+		return null;
 	}
 
 	@WebLog(db = true, desc = "用户([(${visitor.name})])删除 [(${domainShowName})]的领导班子成员([(${userUuidIds})]), TID:[(${tid})]")
 	@RequestMapping(value = "/deleteLeaders", method = RequestMethod.POST)
 	public @ResponseBody Result<Object> deleteLeaders(@RequestParam(value = "orgId") Long orgId,
 			@RequestParam(value = "orgUuid") String orgUuid, @RequestBody Map<String, Long> userUuidIds, Trace t) {
-		try {
-			Boolean ret = getComapnyManager().deleteLeaders(t, orgId, orgUuid, userUuidIds);
-			return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
-		} catch (Throwable e) {
-			return Exceptions.makeErrorResult(e);
-		}
+//		try {
+//			Boolean ret = getComapnyManager().deleteLeaders(t, orgId, orgUuid, userUuidIds);
+//			return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
+//		} catch (Throwable e) {
+//			return Exceptions.makeErrorResult(e);
+//		}
+		return null;
 	}
 
 }

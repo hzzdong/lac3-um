@@ -131,14 +131,24 @@
 		update 
 			um_yw_company 
 		set 
-			sort=#{entity.sort},url=#{entity.url},type=#{entity.type},ico=#{entity.ico},remark=#{entity.remark},
+			sort=#{entity.sort},url=#{entity.url},type=#{entity.type},remark=#{entity.remark},
 			name=#{entity.name},areaId=#{entity.areaId},level=#{entity.level},address=#{entity.address},phone=#{entity.phone},fax=#{entity.fax},
 			juridical=#{entity.juridical},jphone=#{entity.jphone},jType=#{entity.jType},jNo=#{entity.jNo},updateTime=now()
+			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.fullName != null"> ,fullName=#{entity.fullName}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateCompanyLogo">
+		update 
+			um_yw_company 
+		set 
+			ico=#{logo},updateTime=now()
+		where 
+			id=#{id}
 	</update>
 	
 	<update id="updateCode">

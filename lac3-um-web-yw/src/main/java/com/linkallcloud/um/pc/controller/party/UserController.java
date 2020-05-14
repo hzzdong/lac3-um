@@ -19,7 +19,6 @@ import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.MockUser;
@@ -35,7 +34,7 @@ import com.linkallcloud.web.controller.BaseLController4ParentTree;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
-public abstract class UserController<T extends User, S extends IUserManager<T>, R extends Role, RS extends IRoleManager<R, T>, P extends Org, PS extends IOrgManager<P>>
+public abstract class UserController<T extends User, S extends IUserManager<T>, R extends Role, RS extends IRoleManager<R, T>, P extends Org, PS extends IOrgManager<P, T>>
 		extends BaseLController4ParentTree<T, S, P, PS> {
 	protected Log logger = Logs.get();
 
@@ -59,9 +58,9 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 
 	// protected abstract S getUserManager();
 
-	protected abstract <CPS extends ICompanyManager<Company>> CPS getCompanyManager();
+	protected abstract <CPS extends ICompanyManager<Company,User>> CPS getCompanyManager();
 
-	protected abstract <DPS extends IDepartmentManager<Department>> DPS getDepartmentManager();
+	protected abstract <DPS extends IDepartmentManager<Department,User>> DPS getDepartmentManager();
 
 	protected abstract RS getRoleManager();
 
@@ -273,7 +272,7 @@ public abstract class UserController<T extends User, S extends IUserManager<T>, 
 		dbUser.setPassword(null);
 		dbUser.setName(user.getName());
 		dbUser.setMobile(user.getMobile());
-		dbUser.setPost(user.getPost());
+		dbUser.setJobPosition(user.getJobPosition());
 		dbUser.setJob(user.getJob());
 		dbUser.setSms(user.getSms());
 		if (!Strings.isBlank(user.getPassword())) {

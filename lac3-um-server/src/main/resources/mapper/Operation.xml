@@ -43,6 +43,7 @@
 		WHERE
 			u.status &lt;&gt; 9 
 		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
+		    <if test="query!=null and query.cnds!=null and query.cnds.uri != null"> AND u.uri like #{query.cnds.uri}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.menuGovCode != null"> AND u.menuGovCode = #{query.cnds.menuGovCode}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.menuId != null"> AND u.menuId = #{query.cnds.menuId}</if>
@@ -52,7 +53,7 @@
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
 			</when>
 			<otherwise>
-				order by u.parentId,u.sort
+				order by u.id
 			</otherwise>
 		</choose>
 	</select>
@@ -65,6 +66,7 @@
 		WHERE
 			u.status &lt;&gt; 9 
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+		    <if test="page.cnds!=null and page.cnds.uri != null"> AND u.uri like #{page.cnds.uri}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.menuGovCode != null"> AND u.menuGovCode = #{page.cnds.menuGovCode}</if>
 			<if test="page.cnds!=null and page.cnds.menuId != null"> AND u.menuId = #{page.cnds.menuId}</if>
@@ -74,7 +76,7 @@
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
 			</when>
 			<otherwise>
-				order by u.parentId,u.sort
+				order by u.id
 			</otherwise>
 		</choose>
 	</select>
