@@ -1,7 +1,9 @@
 package com.linkallcloud.um.pc.face;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,11 +18,14 @@ import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.exception.BizException;
+import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.face.message.request.ParentIdFaceRequest;
+import com.linkallcloud.core.face.message.request.RelFaceRequest;
 import com.linkallcloud.core.face.message.request.RelParentIdFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
@@ -28,9 +33,11 @@ import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.Rel4OrgLeader;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwUser;
+import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
+import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseTreeFace;
 import com.linkallcloud.web.session.SessionUser;
@@ -51,6 +58,9 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
+
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IYwSystemConfigManager ywSystemConfigManager;
 
 	@Override
 	protected IYwCompanyManager manager() {
@@ -137,8 +147,8 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 
 	@Override
 	protected void doSave(Trace t, YwCompany entity, SessionUser su) {
-		entity.setParentId(su.companyId());
-		entity.setParentClass(YwCompany.class.getSimpleName());
+		// entity.setParentId(su.companyId());
+		// entity.setParentClass(YwCompany.class.getSimpleName());
 		entity.setIco(null);
 		super.doSave(t, entity, su);
 	}
@@ -188,27 +198,27 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 		return manager().getConfigCompanyAreaRootIds(t, companyId);
 	}
 
-//	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
-//	@Face(simple = true)
-//	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
-//	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser su) {
-//		if (fr.getId().equals(su.companyId())) {// 不能给自己公司许可应用
-//			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
-//		}
-//		return manager().addApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
-//	}
-//
-//	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除了 [(${domainShowName})]应用许可([(${fr.id})]), TID:[(${tid})]")
-//	@Face(simple = true)
-//	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
-//	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-//		if (fr.getParentId().equals(suser.companyId())) {// 不能给自己公司许可应用
-//			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
-//		}
-//		Map<String, Long> appUuidIds = new HashMap<String, Long>();
-//		appUuidIds.put(fr.getUuid(), fr.getId());
-//		return manager().removeApps(t, fr.getParentId(), fr.getParentUuid(), appUuidIds);
-//	}
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
+	@Face(simple = true)
+	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
+	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser su) {
+		if (fr.getId().equals(su.companyId())) {// 不能给自己公司许可应用
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
+		}
+		return manager().addApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
+	}
+
+	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除了 [(${domainShowName})]应用许可([(${fr.id})]), TID:[(${tid})]")
+	@Face(simple = true)
+	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
+	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
+		if (fr.getParentId().equals(suser.companyId())) {// 不能给自己公司许可应用
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
+		}
+		Map<String, Long> appUuidIds = new HashMap<String, Long>();
+		appUuidIds.put(fr.getUuid(), fr.getId());
+		return manager().removeApps(t, fr.getParentId(), fr.getParentUuid(), appUuidIds);
+	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getPermedAppMenuTree", method = RequestMethod.POST)
@@ -262,5 +272,23 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 		YwCompany entity = manager().fetchById(t, myCompanyId);
 		return entity;
 	}
+
+//	@Face(simple = true)
+//	@RequestMapping(value = "/fetchTypedCompany", method = RequestMethod.POST)
+//	public @ResponseBody Object fetchTypedCompany(IdFaceRequest faceReq, Trace t, SessionUser su) {
+//		if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
+//			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
+//		}
+//		YwCompany entity = doFetch(t, faceReq.getId(), faceReq.getUuid(), su);
+//
+//		String typeCode = "kh_xx";
+//		YwSystemConfig config = ywSystemConfigManager.fetch(t, faceReq.getId(), Consts.CONFIG_COMPANY_CLASS);
+//		if (config != null && !Strings.isBlank(config.getValue())) {
+//			typeCode = config.getValue();
+//		}
+//		entity.setTypeCode(typeCode);
+//
+//		return convert(t, "fetchTypedCompany", faceReq, entity);
+//	}
 
 }

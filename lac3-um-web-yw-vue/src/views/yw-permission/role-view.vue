@@ -5,8 +5,10 @@
         <div class="filter-container tool-bar">
           <el-button type="primary" icon="el-icon-close" circle plain @click="onClose()" />
           <el-button type="primary" icon="el-icon-refresh" circle plain @click="onRefresh()" />
-          <el-button v-permission="['selfkh_perm_role']" type="success" icon="el-icon-edit" circle @click="toRoleUpdate()" />
-          <el-button v-permission="['selfkh_perm_role']" type="danger" icon="el-icon-delete" circle @click="onRoleDelete()" />
+          <el-button v-permission="['yw_perm_role']" type="success" icon="el-icon-edit" circle @click="toRoleUpdate()" />
+          <el-button v-if="role.status === 0 && checkPermission(['yw_perm_role'])" type="warning" icon="el-icon-lock" title="禁用" circle @click="toChangeRoleStatus(1)" />
+          <el-button v-if="role.status === 1 && checkPermission(['yw_perm_role'])" type="warning" icon="el-icon-unlock" title="启用" circle @click="toChangeRoleStatus(0)" />
+          <el-button v-permission="['yw_perm_role']" type="danger" icon="el-icon-delete" circle @click="onRoleDelete()" />
         </div>
         <aside style="margin-top:15px;">
           <i class="el-icon-info" /> 角色视图。您可以通过选择本视图右侧的页签查看和编辑相关功能信息。
@@ -21,11 +23,20 @@
           <el-form-item label="状态:" prop="status">
             <span class="el-span_view">{{ role.status | statusFilter }}</span>
           </el-form-item>
+          <el-form-item label="等级:" prop="level">
+            <span class="el-span_view">{{ role.level | levelFilter }}</span>
+          </el-form-item>
+          <el-form-item label="类型:" prop="type">
+            <span class="el-span_view">{{ role.type | sysFilter }}</span>
+          </el-form-item>
           <el-form-item label="排序号:" prop="sort">
             <span class="el-span_view">{{ role.sort }}</span>
           </el-form-item>
           <el-form-item label="创建时间:" prop="createTime">
             <span class="el-span_view">{{ role.createTime }}</span>
+          </el-form-item>
+          <el-form-item label="最后更新时间:" prop="createTime">
+            <span class="el-span_view">{{ role.updateTime }}</span>
           </el-form-item>
           <el-form-item label="备注:">
             <el-input v-model="role.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" class="el-textarea_view" />
@@ -44,7 +55,7 @@
           </el-select>
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryRoleUsers" />
           <el-button
-            v-permission="['selfkh_perm_role_users']"
+            v-permission="['yw_perm_role_users']"
             class="filter-item"
             style="float: right;"
             type="primary"
@@ -68,8 +79,8 @@
           </el-table-column>
           <el-table-column label="姓名" width="180px" prop="name" sortable>
             <template slot-scope="{row}">
-              <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.name }}</span>
-              <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
+              <span v-if="checkPermission(['yw_user_view']) === false">{{ row.name }}</span>
+              <router-link v-if="checkPermission(['yw_user_view']) === true" :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
                 <span>{{ row.name }}</span>
               </router-link>
               <el-tag v-if="row.type == 9">管</el-tag>
@@ -91,7 +102,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="remark" label="备注说明" min-width="100px" />
-          <el-table-column v-if="checkPermission(['selfkh_perm_role_users'])" label="操作" align="center" width="60" class-name="small-padding">
+          <el-table-column v-if="checkPermission(['yw_perm_role_users'])" label="操作" align="center" width="60" class-name="small-padding">
             <template slot-scope="{row}">
               <el-button type="danger" size="mini" icon="el-icon-close" title="移除" @click="onRoleUserDelete(row)" />
             </template>
@@ -109,7 +120,7 @@
               <el-input v-model="roleApps.listQuery.rules.name.fv" placeholder="名称 模糊匹配" style="width: 300px;" class="filter-item" @keyup.enter.native="queryRoleUsers" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryRoleApps" />
               <el-button
-                v-permission="['selfkh_perm_role_apps']"
+                v-permission="['yw_perm_role_apps']"
                 class="filter-item"
                 style="float: right;"
                 type="primary"
@@ -154,7 +165,7 @@
           <el-col :span="12">
             <div class="filter-container">
               <el-button
-                v-permission="['selfkh_perm_role_app_perm']"
+                v-permission="['yw_perm_role_app_perm']"
                 class="filter-item"
                 style="margin-left: 10px;"
                 type="primary"
@@ -179,7 +190,7 @@
                     :check-strictly="true"
                   />
                 </el-tab-pane>
-                <el-tab-pane name="tabPermOrg" label="机构权限">
+                <el-tab-pane v-if="role.type !== 9" name="tabPermOrg" label="机构权限">
                   <el-tree
                     ref="tree_org"
                     node-key="id"
@@ -192,7 +203,7 @@
                     :check-strictly="true"
                   />
                 </el-tab-pane>
-                <el-tab-pane name="tabPermArea" label="区域权限">
+                <el-tab-pane v-if="role.type !== 9" name="tabPermArea" label="区域权限">
                   <el-tree
                     ref="tree_area"
                     node-key="id"
@@ -212,23 +223,32 @@
     </el-tabs>
 
     <el-dialog title="角色编辑" :visible.sync="dialogFormVisible">
-      <el-form ref="roleForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">
-        <el-form-item label="角色名称" prop="name">
+      <el-form ref="roleForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="100px" style="width: 90%; margin-left:30px;">
+        <el-form-item label="角色名称：" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="角色编号" prop="govCode">
+        <el-form-item label="角色编号：" prop="govCode">
           <el-input v-model="temp.govCode" :disabled="true" />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="状态：" prop="status">
           <el-radio-group v-model="temp.status" size="small">
-            <el-radio-button label="0">正常</el-radio-button>
-            <el-radio-button label="1">禁用</el-radio-button>
+            <el-radio-button v-for="item in statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="排序号" prop="sort">
+        <el-form-item label="等级：" prop="level">
+          <el-radio-group v-model="temp.level" size="small">
+            <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="类型：" prop="type">
+          <el-radio-group v-model="temp.type" size="small" disabled="true">
+            <el-radio-button v-for="item in sysOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="排序号：" prop="sort">
           <el-input v-model="temp.sort" />
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="备注：">
           <el-input v-model="temp.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
         </el-form-item>
       </el-form>
@@ -271,7 +291,7 @@
         </el-table-column>
         <el-table-column label="姓名" width="180px" prop="name" sortable>
           <template slot-scope="{row}">
-            <router-link :to="'/KhCompany/user-view/'+row.id+'/'+row.uuid" class="link-type">
+            <router-link :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
               <span>{{ row.name }}</span>
             </router-link>
             <el-tag v-if="row.type == 9">管</el-tag>
@@ -351,15 +371,15 @@
 </template>
 
 <script>
-import { fetchById, updateKhRole, deleteKhRole, addRoleUsers, removeRoleUser, addRoleApps, removeRoleApp, getPermedMenuTree, getPermedOrgTree, getPermedAreaTree, saveRoleAppMenuPerm, saveRoleAppOrgPerm, saveRoleAppAreaPerm } from '@/api/khrole'
+import { fetchById, updateYwRole, deleteYwRole, changeRoleStatus, addRoleUsers, removeRoleUser, addRoleApps, removeRoleApp, getPermedMenuTree, getPermedOrgTree, getPermedAreaTree, saveRoleAppMenuPerm, saveRoleAppOrgPerm, saveRoleAppAreaPerm } from '@/api/ywrole'
 import { findRoleUsers, findUnRoleUsers } from '@/api/user'
-import { findAppPage4KhRole, findAppPage4UnKhRole } from '@/api/application'
+import { findAppPage4YwRole, findAppPage4UnYwRole } from '@/api/application'
 import { sheetClose, sheetRefresh, parseCheckedTreeIds } from '@/utils'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { statusOptions, userStatusOptions, userTypeOptions, appTypeOptions } from '@/filters'
+import { statusOptions, userStatusOptions, userTypeOptions, appTypeOptions, levelOptions, sysOptions } from '@/filters'
 
 export default {
   name: 'RoleDetail',
@@ -384,6 +404,9 @@ export default {
       },
       dialogFormVisible: false,
       temp: {},
+      statusOptions: statusOptions(),
+      levelOptions: levelOptions(),
+      sysOptions: sysOptions(),
       loading: false,
       /* 角色分配 */
       roleUsers: {
@@ -443,7 +466,7 @@ export default {
           rules: {
             roleId: { fv: undefined, oper: 'eq', stype: 'L' },
             roleUuid: { fv: undefined, oper: 'eq', stype: 'S' },
-            roleType: { fv: 'KhRole', oper: 'eq', stype: 'S' },
+            roleType: { fv: 'YwRole', oper: 'eq', stype: 'S' },
             name: { fv: undefined, oper: 'cn', stype: 'S' },
             code: { fv: undefined, oper: 'eq', stype: 'S' },
             type: { fv: undefined, oper: 'eq', stype: 'I' },
@@ -467,7 +490,7 @@ export default {
           rules: {
             roleId: { fv: undefined, oper: 'eq', stype: 'L' },
             roleUuid: { fv: undefined, oper: 'eq', stype: 'S' },
-            roleType: { fv: 'KhRole', oper: 'eq', stype: 'S' },
+            roleType: { fv: 'YwRole', oper: 'eq', stype: 'S' },
             name: { fv: undefined, oper: 'cn', stype: 'S' },
             code: { fv: undefined, oper: 'eq', stype: 'S' },
             type: { fv: undefined, oper: 'eq', stype: 'I' },
@@ -570,13 +593,26 @@ export default {
       this.$refs['roleForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({ dataType: 'Object' }, this.temp)
-          updateKhRole(tempData).then(() => {
+          updateYwRole(tempData).then(() => {
             this.role = Object.assign({}, this.temp)
             this.dialogFormVisible = false
             this.$notify({ title: '提示', message: '保存成功', type: 'success', duration: 2000 })
           })
         }
       })
+    },
+    toChangeRoleStatus(status) {
+      this.$confirm('您确定要执行此操作吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const req = { id: this.role.id, uuid: this.role.uuid, status: status }
+        changeRoleStatus(req).then(() => {
+          this.role.status = status
+          this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+        }).catch((e) => console.log(e))
+      }).catch((e) => console.log(e))
     },
     onRoleDelete() {
       this.$confirm('您确定要删除吗?', '警告', {
@@ -585,7 +621,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const { id, uuid } = this.role
-        deleteKhRole({ id, uuid }).then(() => {
+        deleteYwRole({ id, uuid }).then(() => {
           this.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
           this.onClose()
         }).catch(() => {
@@ -674,7 +710,7 @@ export default {
     // 以下是角色应用许可授权
     findRoleApps() {
       this.roleApps.listLoading = true
-      findAppPage4KhRole(this.roleApps.listQuery).then(response => {
+      findAppPage4YwRole(this.roleApps.listQuery).then(response => {
         this.roleApps.list = response.data.data
         this.roleApps.total = response.data.recordsTotal
         this.roleApps.listLoading = false
@@ -689,7 +725,7 @@ export default {
     },
     findUnRoleApps() {
       this.apps.listLoading = true
-      findAppPage4UnKhRole(this.apps.listQuery).then(response => {
+      findAppPage4UnYwRole(this.apps.listQuery).then(response => {
         this.apps.list = response.data.data
         this.apps.total = response.data.recordsTotal
         this.apps.listLoading = false

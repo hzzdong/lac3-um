@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
@@ -61,16 +60,6 @@ public class KhUserManager
 	@Override
 	protected IKhCompanyService companyService() {
 		return khCompanyService;
-	}
-
-	@Override
-	public Page<KhUser> findSelfUserPage(Trace t, Page<KhUser> page) {
-		return service().findSelfUserPage(t, page);
-	}
-
-	@Override
-	public Page<KhUser> findPermedSelfUserPage(Trace t, Page<KhUser> page) {
-		return service().findPermedSelfUserPage(t, page);
 	}
 
 	@Override

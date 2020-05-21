@@ -80,19 +80,16 @@
 			<include refid="Base_Column_List" />
 		FROM
 			um_application u
-			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId != null">
-				 JOIN um_kh_rel_company_app rcp ON u.id=rcp.appId 
-			</if>
-			<if test="page.cnds!=null and page.cnds.rootKhCompanyId != null">
+			<if test="(page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId != null) or (page.cnds!=null and page.cnds.rootKhCompanyId != null)">
 				 JOIN um_kh_rel_company_app rcp ON u.id=rcp.appId 
 			</if>
 		WHERE
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='YwRole'">
-				 AND u.id not in ( SELECT rel.appId FROM um_yw_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+				 AND u.clazz=0 AND u.id not in ( SELECT rel.appId FROM um_yw_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
 			</if>
 			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId == null">
-				 AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+				 AND u.clazz=1 AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
 			</if>
 			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId != null">
 				 AND rcp.companyId=#{page.cnds.khCompanyId} AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
@@ -171,8 +168,9 @@
 		update 
 			um_application 
 		set 
-			name=#{entity.name},sort=#{entity.sort},url=#{entity.url},ico=#{entity.ico},logout=#{entity.logout},remark=#{entity.remark},screenType=#{entity.screenType}
+			name=#{entity.name},sort=#{entity.sort},url=#{entity.url},logout=#{entity.logout},remark=#{entity.remark},screenType=#{entity.screenType}
 			<if test="entity.mappingType != null"> ,mappingType=#{entity.mappingType}</if>
+			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			,updateTime=now()
 		where 
@@ -188,7 +186,7 @@
 			id=#{id} and uuid=#{uuid}
 	</update>
 	
-	<update id="updateAppLogo">
+	<update id="updateIco">
 		update 
 			um_application 
 		set 
@@ -213,7 +211,38 @@
 		FROM
 			um_application u join um_yw_rel_role_app rel on u.id=rel.appId
 		WHERE
-			u.status=0 AND rel.roleId = #{page.cnds.roleId}
+			u.status=0 And u.clazz=0  AND rel.roleId = #{page.cnds.roleId}
+		<choose>
+			<when test="page.orders != null and page.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findPage4YwRole4Select" resultType="com.linkallcloud.um.domain.sys.Application">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM um_application u 
+			<if test="page.cnds!=null and page.cnds.companyId != null">
+				 JOIN um_yw_rel_company_app rcp ON u.id=rcp.appId 
+			</if>
+		WHERE
+			u.status &lt;&gt; 9 
+			AND u.clazz=0 
+			<if test="page.cnds!=null and page.cnds.companyId != null">
+				 AND rcp.companyId=#{page.cnds.companyId}
+			</if>
+			AND u.id not in ( SELECT rel.appId FROM um_yw_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
+		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -230,7 +259,38 @@
 		FROM
 			um_application u join um_kh_rel_role_app rel on u.id=rel.appId
 		WHERE
-			u.status=0 AND rel.roleId = #{page.cnds.roleId}
+			u.status=0 And u.clazz=1  AND rel.roleId = #{page.cnds.roleId}
+		<choose>
+			<when test="page.orders != null and page.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findPage4KhRole4Select" resultType="com.linkallcloud.um.domain.sys.Application">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM um_application u 
+			<if test="page.cnds!=null and page.cnds.companyId != null">
+				 JOIN um_kh_rel_company_app rcp ON u.id=rcp.appId 
+			</if>
+		WHERE
+			u.status &lt;&gt; 9 
+			AND u.clazz=1 
+			<if test="page.cnds!=null and page.cnds.companyId != null">
+				 AND rcp.companyId=#{page.cnds.companyId}
+			</if>
+			AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
+		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -249,7 +309,7 @@
 			join um_kh_rel_company_app rel on u.id=rel.appId
 			join um_kh_company c on rel.companyId=c.id 
 		WHERE
-			u.status=0 
+			u.status=0 And u.clazz=1 
 			<choose>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
@@ -274,13 +334,66 @@
 	<select id="findPage4SelfKhCompany4Select" resultType="com.linkallcloud.um.domain.sys.Application">
 		SELECT
 			<include refid="Base_Column_List" />
+		FROM um_application u 
+			<if test="page.cnds!=null and page.cnds.parentCompanyId != null">
+				left join um_kh_rel_company_app rel on u.id=rel.appId
+			</if>
+		WHERE
+			u.status=0 And u.clazz=1 
+			<if test="page.cnds!=null and page.cnds.parentCompanyId != null">
+				AND rel.companyId = #{page.cnds.parentCompanyId}
+			</if>
+			AND u.id not in ( SELECT rel2.appId FROM um_kh_rel_company_app rel2 WHERE rel2.companyId = #{page.cnds.khCompanyId} ) 
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
+	</select>
+	
+	<select id="findPage4SelfYwCompany" resultType="com.linkallcloud.um.domain.sys.Application">
+		SELECT
+			<include refid="Column_with_owner" />
 		FROM
 			um_application u 
-			left join um_kh_rel_company_app rel on u.id=rel.appId
+			join um_yw_rel_company_app rel on u.id=rel.appId
+			join um_yw_company c on rel.companyId=c.id 
 		WHERE
-			u.status=0 
-			AND rel.companyId = #{page.cnds.parentCompanyId}
-			AND u.id not in ( SELECT rel2.appId FROM um_kh_rel_company_app rel2 WHERE rel2.companyId = #{page.cnds.khCompanyId} ) 
+			u.status=0 And u.clazz=0 
+			<choose>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
+		    </choose>
+			<if test="page.cnds!=null and page.cnds.ywCompanyId != null"> AND rel.companyId = #{page.cnds.ywCompanyId} </if>
+			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND c.parentId = #{page.cnds.parentCompanyId} </if>
+			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
+			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
+		order by rel.companyId
+	</select>
+	
+	<select id="findPage4SelfYwCompany4Select" resultType="com.linkallcloud.um.domain.sys.Application">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_application u 
+			<if test="page.cnds!=null and page.cnds.parentCompanyId != null">
+			left join um_yw_rel_company_app rel on u.id=rel.appId
+			</if>
+		WHERE
+			u.status=0 And u.clazz=0 
+			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND rel.companyId = #{page.cnds.parentCompanyId} </if>
+			AND u.id not in ( SELECT rel2.appId FROM um_yw_rel_company_app rel2 WHERE rel2.companyId = #{page.cnds.ywCompanyId} ) 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
@@ -297,7 +410,7 @@
 			join um_yw_rel_role_app relapp on u.id=relapp.appId 
 			join um_yw_rel_role_user reluser on reluser.roleId=relapp.roleId 
 		WHERE
-			u.status=0 AND reluser.userId = #{ywUserId}
+			u.status=0 And u.clazz=0  AND reluser.userId = #{ywUserId}
 	</select>
 	
 	<select id="find4KhUser" resultType="com.linkallcloud.um.domain.sys.Application">
@@ -308,7 +421,7 @@
 			join um_kh_rel_role_app relapp on u.id=relapp.appId 
 			join um_kh_rel_role_user reluser on reluser.roleId=relapp.roleId 
 		WHERE
-			u.status=0 AND reluser.userId = #{khUserId}
+			u.status=0 And u.clazz=1  AND reluser.userId = #{khUserId}
 	</select>
 	
 </mapper>

@@ -10,7 +10,6 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
@@ -62,11 +61,6 @@ public class YwUserManager
 	@Override
 	protected IYwCompanyService companyService() {
 		return ywCompanyService;
-	}
-
-	@Override
-	public Page<YwUser> findPermedUserPage(Trace t, Page<YwUser> page) {
-		return service().findPermedUserPage(t, page);
 	}
 
 	@Override

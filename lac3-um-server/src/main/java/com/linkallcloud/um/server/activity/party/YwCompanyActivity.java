@@ -12,26 +12,23 @@ import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.security.Securities;
 import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.activity.party.IYwCompanyActivity;
+import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Account;
 import com.linkallcloud.um.domain.sys.Application;
-import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.domain.sys.Menu;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
+import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.exception.AccountException;
 import com.linkallcloud.um.exception.ArgException;
-import com.linkallcloud.um.exception.AuthException;
 import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
-import com.linkallcloud.um.server.dao.sys.IAreaDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
 import com.linkallcloud.um.server.dao.sys.IYwSystemConfigDao;
 
@@ -48,13 +45,7 @@ public class YwCompanyActivity
 
 	@Autowired
 	private IYwDepartmentDao ywDepartmentDao;
-
-//    @Autowired
-//    private IYwRoleDao ywRoleDao;
-
-	@Autowired
-	private IAreaDao areaDao;
-
+	
 	@Autowired
 	private IApplicationDao applicationDao;
 
@@ -99,16 +90,6 @@ public class YwCompanyActivity
 			}
 		}
 		return false;
-	}
-
-	@Override
-	protected void treeBefore(Trace t, boolean isNew, YwCompany entity) {
-		Area area = areaDao.fetchById(t, entity.getAreaId());
-		if (area != null) {
-			entity.setLevel(area.getLevel());
-		}
-
-		super.treeBefore(t, isNew, entity);
 	}
 
 	@Override
@@ -178,57 +159,25 @@ public class YwCompanyActivity
 	}
 
 	@Override
-	public PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId) {
-		YwCompany company = dao().fetchById(t, companyId);
-		Application app = applicationDao.fetchById(t, appId);
-		if (company.isTopParent()) {
-			Long parentAreaId = getCompanyAreaRootIdBySystemConfig(t, companyId);
-			List<Area> areas = areaDao.findByParent(t, parentAreaId, new Equal("status", 0));
-			return assemblePermedAreaVo(t, parentAreaId, areas);
-		} else if (!app.getCode().equals("lac_app_um") && !app.getCode().equals("lac_app_um_kh")) {
-			Long parentAreaId = company.getAreaId();
-			if (parentAreaId != null) {
-				List<Area> areas = areaDao.findByParent(t, parentAreaId, new Equal("status", 0));
-				return assemblePermedAreaVo(t, parentAreaId, areas);
-			}
-			return null;
-		} else {
-			List<Area> areas = areaDao.findPermedYwCompanyAppAreas(t, companyId, appId);
-			if (areas != null && !areas.isEmpty()) {
-				Long parentAreaId = areas.get(0).getParentId();
-				return assemblePermedAreaVo(t, parentAreaId, areas);
-			} else {
-				throw new AuthException("100001", "请先给单位区域授权后再进行此操作");
-			}
-		}
-	}
-
-	@Override
-	public Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId) {
-//        YwSystemConfig sc = ywSystemConfigDao.fetchByCompanyId(t, companyId);
-//        if (sc != null) {
-//            if (sc.getRootAreaId() != null && sc.getRootAreaId().longValue() > 0) {
-//                return sc.getRootAreaId();
-//            } else {// 中华人民共和国
-//                return 0L;
-//            }
-//        } else {
-//            log.error("您所在公司的区域未设置，请联系管理员设置后再进场查询。companyId:" + companyId);
-//            throw new ArgException(Exceptions.CODE_ERROR_PARAMETER,
-//                    "您所在公司的区域未设置，请联系管理员设置后再进场查询。");
-//        }
-		return 0L;
-	}
-
-	@Override
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
-		// TODO Auto-generated method stub
+		List<NameValue> areas = getConfigCompanyAreaRoots(t, companyId);
+		if (areas != null && areas.size() > 0) {
+			Long[] areaRootIds = new Long[areas.size()];
+			for (int i = 0; i < areas.size(); i++) {
+				areaRootIds[i] = Long.parseLong(areas.get(i).getKey());
+			}
+			return areaRootIds;
+		}
 		return null;
 	}
 
 	@Override
 	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
-		// TODO Auto-generated method stub
+		YwSystemConfig config = ywSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_AREAS);
+		if (config != null && !Strings.isBlank(config.getValue())) {
+			List<NameValue> areas = config.parse();
+			return areas;
+		}
 		return null;
 	}
 

@@ -160,10 +160,17 @@ export const asyncRoutes = [
         meta: { title: '权限管理', icon: 'skill', requires: ['yw_perm'] }
       },
       {
-        path: 'role-view/:id(\\d+)/:uuid',
+        path: 'yw-role-view/:id(\\d+)/:uuid',
         component: () => import('@/views/yw-permission/role-view'),
-        name: 'RoleView',
+        name: 'YwRoleView',
         meta: { title: '角色预览', noCache: true, activeMenu: '/role/index', requires: ['yw_perm_role'] },
+        hidden: true
+      },
+      {
+        path: 'sys-kh-role-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/kh-permission/sys-kh-role-view'),
+        name: 'KhRoleView',
+        meta: { title: '角色预览', noCache: true, activeMenu: '/sysrole/syskhrole', requires: ['kh_sys_role'] },
         hidden: true
       }
     ]
@@ -227,21 +234,21 @@ export const asyncRoutes = [
   {
     path: '/sysrole',
     component: Layout,
-    redirect: '/sysrole/ywsysrole',
+    redirect: '/sysrole/sysywrole',
     name: 'SysRole',
     meta: {
       title: '系统角色', icon: 'lock', requires: ['yw_sys_role', 'kh_sys_role']
     },
     children: [
       {
-        path: 'ywsysrole',
-        component: () => import('@/views/sys-role/yw-sys-role'),
+        path: 'sysywrole',
+        component: () => import('@/views/yw-permission/sys-yw-roles'),
         name: 'YwSysRole',
         meta: { title: '运维系统角色', requires: ['yw_sys_role_m'] }
       },
       {
-        path: 'khsysrole',
-        component: () => import('@/views/sys-role/kh-sys-role'),
+        path: 'syskhrole',
+        component: () => import('@/views/kh-permission/sys-kh-roles'),
         name: 'KhSysRole',
         meta: { title: '客户系统角色', requires: ['kh_sys_role_m'] }
       }

@@ -105,7 +105,7 @@ public class KhCompanyController extends BaseLController<KhCompany, IKhCompanyMa
 			entity = manager().fetchByIdUuid(t, id, uuid);
 		} else {
 			entity = mirror.born();
-			entity.setKhTypeCode("kh_xx");
+			entity.setTypeCode("kh_xx");
 		}
 		return entity;
 	}

@@ -613,5 +613,43 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			PageHelper.clearPage();
 		}
 	}
+	
+
+    @Override
+    public Page<T> findUserPage4Org(Trace t, Page<T> page) {
+        page.checkPageParameters();
+        try {
+            PageHelper.startPage(page.getPageNum(), page.getLength());
+            List<T> list = dao().findUserPage4Org(t, page);
+            if (list instanceof com.github.pagehelper.Page) {
+                page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+                page.checkPageParameters();
+                page.setRecordsFiltered(page.getRecordsTotal());
+                page.addDataAll(list);
+            }
+            return page;
+        } finally {
+            PageHelper.clearPage();
+        }
+    }
+
+    @Override
+    public Page<T> findPermedUserPage(Trace t, Page<T> page) {
+        page.checkPageParameters();
+        try {
+            PageHelper.startPage(page.getPageNum(), page.getLength());
+            List<T> list = dao().findPermedUserPage(t, page);
+            if (list instanceof com.github.pagehelper.Page) {
+                page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+                page.checkPageParameters();
+                page.setRecordsFiltered(page.getRecordsTotal());
+                page.addDataAll(list);
+            }
+            return page;
+        } finally {
+            PageHelper.clearPage();
+        }
+    }
+
 
 }

@@ -24,6 +24,7 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	T loginValidate(Trace t, String accountOrMobile, String password) throws BaseRuntimeException;
 
 	Boolean updateHeaderImage(Trace t, Sid user, String ico);
+
 	boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd)
 			throws BaseRuntimeException;
 
@@ -193,5 +194,23 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	SessionUser assembleSessionUser(Trace t, String loginName, String appCode);
 
 	T fetchCompanyAdmin(Trace t, Sid companyId);
+
+	/**
+	 * 单位操作员，查公司或者部门下人员分页列表
+	 * 
+	 * @param t
+	 * @param page
+	 * @return
+	 */
+	Page<T> findUserPage4Org(Trace t, Page<T> page);
+
+	/**
+	 * 单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+	 * 
+	 * @param t
+	 * @param page
+	 * @return
+	 */
+	Page<T> findPermedUserPage(Trace t, Page<T> page);
 
 }

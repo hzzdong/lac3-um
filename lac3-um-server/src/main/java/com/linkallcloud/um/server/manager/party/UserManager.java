@@ -302,5 +302,17 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	public T fetchCompanyAdmin(Trace t, Sid companyId) {
 		return service().fetchCompanyAdmin(t, companyId);
 	}
+	
+
+	@Override
+	public Page<T> findUserPage4Org(Trace t, Page<T> page) {
+		return service().findUserPage4Org(t, page);
+	}
+
+	@Override
+	public Page<T> findPermedUserPage(Trace t, Page<T> page) {
+		return service().findPermedUserPage(t, page);
+	}
+
 
 }

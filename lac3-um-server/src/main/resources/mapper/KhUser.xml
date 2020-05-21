@@ -168,7 +168,7 @@
 		</choose>
 	</select>
 	
-	<select id="findSelfUserPage" resultType="com.linkallcloud.um.domain.party.KhUser">
+	<select id="findUserPage4Org" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
 			<include refid="Column_with_dep_com_Name" />
 		FROM
@@ -195,7 +195,7 @@
 		</choose>
 	</select>
 	
-	<select id="findPermedSelfUserPage" resultType="com.linkallcloud.um.domain.party.KhUser">
+	<select id="findPermedUserPage" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
 				u.*
 		FROM (
@@ -237,11 +237,10 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
-		FROM
-			um_kh_user u 
-				left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
-				left join um_kh_company c on u.companyId=c.id 
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		FROM um_kh_user u 
+			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
+			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND u.account &lt;&gt; 'superadmin' 
 			<choose>
@@ -466,7 +465,8 @@
 		update 
 			um_kh_user 
 		set 
-			name=#{entity.name},nickName=#{entity.nickName},mobile=#{entity.mobile},sex=#{entity.sex},idCard=#{entity.idCard},birthday=#{entity.birthday},jobPosition=#{entity.jobPosition},job=#{entity.job},sms=#{entity.sms}
+			name=#{entity.name},nickName=#{entity.nickName},mobile=#{entity.mobile},sex=#{entity.sex},idCard=#{entity.idCard},birthday=#{entity.birthday},
+			jobPosition=#{entity.jobPosition},job=#{entity.job},sms=#{entity.sms}
 			<if test="entity.companyId != null"> ,companyId=#{entity.companyId}</if>
 			<if test="entity.parentId != null and entity.parentId != ''"> ,parentId=#{entity.parentId},parentClass=#{entity.parentClass} </if>
 			<if test="entity.password != null and entity.salt != null"> ,password=#{entity.password},salt=#{entity.salt} </if>

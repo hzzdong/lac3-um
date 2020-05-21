@@ -12,7 +12,6 @@ import com.linkallcloud.um.activity.party.IYwUserActivity;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.service.party.IYwCompanyService;
 
 @Service
@@ -29,21 +28,6 @@ public class YwCompanyService extends
 
 	@Autowired
 	private IYwDepartmentActivity ywDepartmentActivity;
-
-//    @Autowired
-//    private IYwRoleActivity ywRoleActivity;
-//
-//    @Autowired
-//    private IAreaActivity areaActivity;
-//
-//    @Autowired
-//    private IApplicationActivity applicationActivity;
-//
-//    @Autowired
-//    private IMenuActivity menuActivity;
-//
-//    @Autowired
-//    private IYwSystemConfigActivity ywSystemConfigActivity;
 
 	@Override
 	protected IYwUserActivity getUserActivity() {
@@ -63,16 +47,6 @@ public class YwCompanyService extends
 	@Override
 	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
 		return activity().findCompanyValidMenuTree(t, companyId, appId);
-	}
-
-	@Override
-	public PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidAreaResource(t, companyId, appId);
-	}
-
-	@Override
-	public Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId) {
-		return activity().getCompanyAreaRootIdBySystemConfig(t, companyId);
 	}
 
 }

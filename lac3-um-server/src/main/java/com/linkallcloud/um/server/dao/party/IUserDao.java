@@ -230,5 +230,25 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	List<T> findCompanyAdmin(@Param("t") Trace t, @Param("company") Sid company);
 
 	int updateHeaderImage(@Param("t") Trace t, @Param("user") Sid user, @Param("ico") String ico);
+	
+
+    /**
+     * 客户单位操作员，查公司或者部门下人员分页列表
+     * 
+     * @param t
+     * @param page
+     * @return
+     */
+    List<T> findUserPage4Org(@Param("t") Trace t, @Param("page") Page<T> page);
+
+    /**
+     * 客户单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+     * 
+     * @param t
+     * @param page
+     * @return
+     */
+	List<T> findPermedUserPage(@Param("t") Trace t, @Param("page") Page<T> page);
+
 
 }

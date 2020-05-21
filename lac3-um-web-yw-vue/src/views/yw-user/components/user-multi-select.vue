@@ -88,7 +88,7 @@
 
 <script>
 import { getPage } from '@/api/user'
-import { findCompanyRoles } from '@/api/khrole'
+import { findCompanyRoles } from '@/api/ywrole'
 import { getOrgTree, getFullOrgTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination

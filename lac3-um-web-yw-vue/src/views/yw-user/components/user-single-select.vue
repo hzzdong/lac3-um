@@ -142,7 +142,7 @@
 
 <script>
 import { getPage, getJzPage } from '@/api/user'
-import { findCompanyRoles } from '@/api/khrole'
+import { findCompanyRoles } from '@/api/ywrole'
 import { getCompanyTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -151,7 +151,7 @@ import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 
 export default {
-  name: 'LacUserSelect',
+  name: 'LacUserSingleSelect',
   components: { Pagination },
   directives: { waves, permission },
   props: {
@@ -236,6 +236,7 @@ export default {
   },
   methods: {
     loadTab(activityTabName) {
+      debugger
       if (activityTabName === 'tabUser') {
         if (this.loaded === false) {
           this.getList()
@@ -257,7 +258,6 @@ export default {
     },
     getTree() {
       const req = { id: this.companyId, uuid: this.companyUuid, type: this.treeType }
-      debugger
       getCompanyTree(req).then(response => {
         this.tree.data = response.data
         if (this.tree.data[0]) {

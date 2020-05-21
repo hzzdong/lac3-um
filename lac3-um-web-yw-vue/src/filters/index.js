@@ -266,3 +266,33 @@ export function menuTypeFilter(type) {
   }, {})
   return typeKeyValue[type]
 }
+
+export function levelOptions() {
+  return [
+    { key: 1, display_name: '部门级' },
+    { key: 9, display_name: '公司级' }
+  ]
+}
+
+export function levelFilter(status) {
+  const statusKeyValue = levelOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return statusKeyValue[status]
+}
+
+export function sysOptions() {
+  return [
+    { key: 0, display_name: '普通角色' },
+    { key: 9, display_name: '系统角色' }
+  ]
+}
+
+export function sysFilter(status) {
+  const statusKeyValue = sysOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return statusKeyValue[status]
+}

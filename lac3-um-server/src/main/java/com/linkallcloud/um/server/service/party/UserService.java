@@ -230,4 +230,14 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 		return activity().fetchCompanyAdmin(t, companyId);
 	}
 
+	@Override
+	public Page<T> findUserPage4Org(Trace t, Page<T> page) {
+		return activity().findUserPage4Org(t, page);
+	}
+
+	@Override
+	public Page<T> findPermedUserPage(Trace t, Page<T> page) {
+		return activity().findPermedUserPage(t, page);
+	}
+
 }

@@ -44,7 +44,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注说明" min-width="100" />
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="100">
         <template slot-scope="{row}">
           <el-button
             v-if="(row.attributes.alias !== 'Company' || !row.pId) && checkPermission(['yw_org_add_dep'])"
@@ -55,14 +55,14 @@
             @click="handleAddDepartment(row)"
           />
           <el-button
-            v-if="row.pId && checkPermission(['yw_org_edit'])"
+            v-if="(row.attributes.alias === 'Company' && row.pId) && checkPermission(['yw_org_add_dep'])"
             type="primary"
             size="mini"
-            icon="el-icon-edit"
-            title="编辑"
-            @click="handleEdit(row)"
+            icon="el-icon-plus"
+            title="新增部门"
+            disabled
+            @click="handleAddDepartment(row)"
           />
-          <el-button v-if="row.pId && checkPermission(['yw_org_edit'])" type="danger" size="mini" icon="el-icon-delete" title="删除" @click="handleDelete(row)" />
           <el-button
             v-if="row.attributes.alias === 'Company' && !row.pId && checkPermission(['yw_org_add_company'])"
             type="primary"
@@ -71,7 +71,6 @@
             title="新增子单位"
             @click="handleAddCompany(row)"
           />
-
         </template>
       </el-table-column>
     </el-table>
@@ -156,7 +155,9 @@
         <el-card class="box-card" style="margin-top: -20px; margin-bottom: 10px;">
           <div slot="header" class="clearfix">
             <span>单位基本信息</span>
-            <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+            <el-radio-group v-model="company.entity.typeCode" style="float: right;" size="small">
+              <el-radio-button v-for="item in commonData.companyClasses" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+            </el-radio-group>
           </div>
           <div class="text item">
             <el-row>
@@ -248,7 +249,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.entity.typeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="单位规模" prop="scale">
                   <el-input v-model="company.entity.scale" placeholder="请输入人员规模" />
@@ -260,7 +261,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.entity.typeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="证照类型" prop="certificateType">
                   <el-select v-model="company.entity.certificateType" class="filter-item" placeholder="请选择" style="width:100%;">
@@ -274,14 +275,14 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.entity.typeCode === 'kh_qy'">
               <el-col :span="24">
                 <el-form-item label="经营范围" prop="business">
                   <el-input v-model="company.entity.business" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.entity.typeCode === 'kh_qy'">
               <el-col :span="24">
                 <el-form-item label="单位资质" prop="credentials">
                   <el-input v-model="company.entity.credentials" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
@@ -346,12 +347,22 @@
 </template>
 
 <script>
-import { getOrgTree, fetchKhDepartment, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
+import {
+  getOrgTree,
+  fetchDepartment,
+  createDepartment,
+  updateDepartment,
+  deleteDepartment,
+  createCompany,
+  fetchCompany,
+  updateCompany,
+  deleteCompany
+} from '@/api/organization'
 // import { loadTree4MyCompany } from '@/api/area'
 import { loadCachedMyCompanyAreaTree, loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-// import { userStatusOptions, userTypeOptions } from '@/filters'
+import { companyClasses } from '@/filters'
 
 export default {
   name: 'CompanyTree',
@@ -361,6 +372,7 @@ export default {
       currentNode: undefined,
       data: [],
       commonData: {
+        companyClasses: companyClasses(),
         certificateTypeOptions: [],
         personCertificateTypeOptions: [],
         orgTypeOptions: []
@@ -400,14 +412,13 @@ export default {
         }
       },
       company: {
-        khTypeCode: '',
         entity: {
           dataType: 'Object',
           id: undefined,
           uuid: '',
           parentId: undefined,
-          parentClass: 'KhCompany',
-          khTypeCode: '',
+          parentClass: 'YwCompany',
+          typeCode: '',
           orgName: '',
           name: '',
           govCode: '',
@@ -481,35 +492,17 @@ export default {
   methods: {
     checkPermission,
     loadCommonData() {
-      loadOrgCertificateType().then(ct => {
-        this.commonData.certificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.certificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadOrgCertificateType().then(res => {
+        this.commonData.certificateTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
 
-      loadPersonCertificateType().then(ct => {
-        this.commonData.personCertificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.personCertificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadPersonCertificateType().then(res => {
+        this.commonData.personCertificateTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
 
-      loadOrgType().then(ct => {
-        this.commonData.orgTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.orgTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadOrgType().then(res => {
+        this.commonData.orgTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
     },
     handleNodeClick(data, checked, node) {
       this.areaTree.checkedId = data.id
@@ -554,7 +547,7 @@ export default {
         if (items && items.length > 0) {
           this.autoChildren(items)
           this.data = items
-          this.company.khTypeCode = this.data[0].attributes.khTypeCode
+          // this.company.typeCode = this.data[0].attributes.typeCode
         }
       }).catch((err) => console.log(err))
     },
@@ -576,7 +569,7 @@ export default {
         id: (me && me.id) ? me.id : undefined,
         uuid: (me && me.uuid) ? me.uuid : '',
         parentId: me ? me.parentId : (parent ? parent.id : 0),
-        parentClass: (parent && parent.id > 0) ? 'KhDepartment' : 'KhCompany',
+        parentClass: (parent && parent.id > 0) ? 'YwDepartment' : 'YwCompany',
         orgName: parent ? parent.name : '',
         name: (me && me.name) ? me.name : '',
         govCode: (me && me.govCode) ? me.govCode : '',
@@ -593,9 +586,9 @@ export default {
         dataType: 'Object',
         id: (me && me.id) ? me.id : undefined,
         uuid: (me && me.uuid) ? me.uuid : '',
-        khTypeCode: parent ? parent.attributes.khTypeCode : (me ? me.khTypeCode : this.company.khTypeCode),
-        parentId: me ? me.parentId : (parent ? parent.id : 0),
-        parentClass: 'KhCompany',
+        typeCode: parent ? parent.attributes.typeCode : (me ? me.typeCode : 'kh_xx'),
+        parentId: me ? me.parentId : (parent ? parent.id.substring(1) : 0),
+        parentClass: 'YwCompany',
         orgName: parent ? parent.name : '',
         name: (me && me.name) ? me.name : '',
         govCode: (me && me.govCode) ? me.govCode : '',
@@ -632,7 +625,7 @@ export default {
     createDepartment() {
       this.$refs['depForm'].validate((valid) => {
         if (valid) {
-          createKhDepartment(this.department.entity).then((response) => {
+          createDepartment(this.department.entity).then((response) => {
             debugger
             const tempData = Object.assign({ dataType: 'Object', children: [] }, response.data)
             tempData.pId = this.currentNode.id
@@ -651,6 +644,7 @@ export default {
     handleAddCompany(row) {
       this.currentNode = row
       this.resetCompanyEntity(row)
+      debugger
       this.company.dialogStatus = 'create'
       this.company.dialogVisible = true
       this.$nextTick(() => {
@@ -660,8 +654,7 @@ export default {
     createCompany(row) {
       this.$refs['companyForm'].validate((valid) => {
         if (valid) {
-          createKhCompany(this.company.entity).then((response) => {
-            debugger
+          createCompany(this.company.entity).then((response) => {
             const tempData = Object.assign({ dataType: 'Object', children: [] }, response.data)
             if (!this.currentNode.children) {
               this.$set(this.currentNode, 'children', [])
@@ -685,7 +678,7 @@ export default {
     },
     editDepartment(department) {
       const { id, uuid } = department
-      fetchKhDepartment({ id, uuid }).then((response) => {
+      fetchDepartment({ id, uuid }).then((response) => {
         const dep = response.data
         const parentId = this.currentNode.pId
         const parent = this.pickTreeNode(this.data, parentId)
@@ -705,7 +698,7 @@ export default {
           const parent = this.pickTreeNode(this.data, this.currentNode.pId)
           const tempData = Object.assign({ dataType: 'Object' }, this.department.entity)
           // console.log('updateDepartment tempData', tempData)
-          updateKhDepartment(tempData).then((response) => {
+          updateDepartment(tempData).then((response) => {
             const dep = response.data
             dep.pId = parent.id
             dep.children = this.currentNode.children
@@ -723,7 +716,7 @@ export default {
     },
     editCompany(company) {
       const data = { id: company.id.substring(1), uuid: company.uuid }
-      fetchKhCompany(data).then((response) => {
+      fetchCompany(data).then((response) => {
         const com = response.data
         const parentId = '-' + com.parentId
         const parent = this.pickTreeNode(this.data, parentId)
@@ -745,7 +738,7 @@ export default {
           const parent = this.pickTreeNode(this.data, parentId)
           const tempData = Object.assign({ dataType: 'Object' }, this.company.entity)
           console.log('updateCompany tempData', tempData)
-          updateKhCompany(tempData).then((response) => {
+          updateCompany(tempData).then((response) => {
             const com = response.data
             for (let i = 0; i < parent.children.length; i++) {
               if (parent.children[i].id === com.id) {
@@ -782,7 +775,7 @@ export default {
       const parent = this.pickTreeNode(this.data, dep.pId)
       if (parent && parent.children) {
         const { id, uuid } = dep
-        deleteKhDepartment({ id, uuid }).then(() => {
+        deleteDepartment({ id, uuid }).then(() => {
           for (let i = 0; i < parent.children.length; i++) {
             if (parent.children[i].id === dep.id) {
               parent.children.splice(i, 1)
@@ -799,7 +792,7 @@ export default {
       const parent = this.pickTreeNode(this.data, com.pId)
       if (parent && parent.children) {
         const { id, uuid } = com
-        deleteKhCompany({ id: id * -1, uuid }).then(() => {
+        deleteCompany({ id: id * -1, uuid }).then(() => {
           for (let i = 0; i < parent.children.length; i++) {
             if (parent.children[i].id === com.id) {
               parent.children.splice(i, 1)

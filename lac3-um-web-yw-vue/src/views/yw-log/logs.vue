@@ -139,7 +139,7 @@ const orOptions = [
 ]
 
 export default {
-  name: 'KhRole',
+  name: 'YwLog',
   components: { Pagination },
   directives: { waves },
   data() {

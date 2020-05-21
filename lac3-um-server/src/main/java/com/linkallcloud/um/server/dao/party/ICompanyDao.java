@@ -48,5 +48,8 @@ public interface ICompanyDao<T extends Company> extends IOrgDao<T> {
 			@Param("menuIds") List<Long> menuIds);
 	
 	int updateCompanyLogo(@Param("t") Trace t, @Param("id") Long id, @Param("logo") String logo);
+	
+	int addApps(@Param("t") Trace t, @Param("id") Long id, @Param("appIds") List<Long> appIds);
+	int removeApps(@Param("t") Trace t, @Param("id") Long id, @Param("appIds") List<Long> appIds);
 
 }

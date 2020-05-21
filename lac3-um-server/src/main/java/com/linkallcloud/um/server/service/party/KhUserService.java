@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.activity.party.IKhCompanyActivity;
 import com.linkallcloud.um.activity.party.IKhDepartmentActivity;
 import com.linkallcloud.um.activity.party.IKhRoleActivity;
@@ -19,20 +17,20 @@ import com.linkallcloud.um.service.party.IKhUserService;
 @Service
 @Transactional(readOnly = true)
 public class KhUserService extends
-        UserService<KhUser, IKhUserActivity, KhDepartment, IKhDepartmentActivity, KhCompany, IKhCompanyActivity, KhRole, IKhRoleActivity>
-        implements IKhUserService {
+		UserService<KhUser, IKhUserActivity, KhDepartment, IKhDepartmentActivity, KhCompany, IKhCompanyActivity, KhRole, IKhRoleActivity>
+		implements IKhUserService {
 
-    @Autowired
-    private IKhUserActivity khUserActivity;
+	@Autowired
+	private IKhUserActivity khUserActivity;
 
-    @Autowired
-    private IKhDepartmentActivity khDepartmentActivity;
+	@Autowired
+	private IKhDepartmentActivity khDepartmentActivity;
 
-    @Autowired
-    private IKhCompanyActivity khCompanyActivity;
+	@Autowired
+	private IKhCompanyActivity khCompanyActivity;
 
-    @Autowired
-    private IKhRoleActivity khRoleActivity;
+	@Autowired
+	private IKhRoleActivity khRoleActivity;
 
 //    @Autowired
 //    private IYwCompanyActivity ywCompanyActivity;
@@ -43,35 +41,24 @@ public class KhUserService extends
 //    @Autowired
 //    private IAreaActivity areaActivity;
 
-    @Override
-    public IKhUserActivity activity() {
-        return khUserActivity;
-    }
+	@Override
+	public IKhUserActivity activity() {
+		return khUserActivity;
+	}
 
-    @Override
-    protected IKhDepartmentActivity getDepartmentActivity() {
-        return khDepartmentActivity;
-    }
+	@Override
+	protected IKhDepartmentActivity getDepartmentActivity() {
+		return khDepartmentActivity;
+	}
 
-    @Override
-    protected IKhCompanyActivity getCompanyActivity() {
-        return khCompanyActivity;
-    }
+	@Override
+	protected IKhCompanyActivity getCompanyActivity() {
+		return khCompanyActivity;
+	}
 
-    @Override
-    protected IKhRoleActivity getRoleActivity() {
-        return khRoleActivity;
-    }
-
-
-    @Override
-    public Page<KhUser> findSelfUserPage(Trace t, Page<KhUser> page) {
-        return activity().findSelfUserPage(t, page);
-    }
-
-    @Override
-    public Page<KhUser> findPermedSelfUserPage(Trace t, Page<KhUser> page) {
-        return activity().findPermedSelfUserPage(t, page);
-    }
+	@Override
+	protected IKhRoleActivity getRoleActivity() {
+		return khRoleActivity;
+	}
 
 }

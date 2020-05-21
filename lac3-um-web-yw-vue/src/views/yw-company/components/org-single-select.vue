@@ -29,7 +29,7 @@ import waves from '@/directive/waves' // waves directive
 import { userStatusOptions, userTypeOptions } from '@/filters'
 
 export default {
-  name: 'LacOrgSelect',
+  name: 'LacOrgSingleSelect',
   directives: { waves },
   props: {
     treeType: {

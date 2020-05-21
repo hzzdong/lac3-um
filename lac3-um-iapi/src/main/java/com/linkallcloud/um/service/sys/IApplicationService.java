@@ -1,5 +1,6 @@
 package com.linkallcloud.um.service.sys;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.service.IService;
@@ -24,13 +25,19 @@ public interface IApplicationService extends IService<Application> {
      * @return
      */
     Page<Application> findPage4YwRole(Trace t, Page<Application> page);
+    Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page);
 
     Page<Application> findPage4KhRole(Trace t, Page<Application> page);
+    Page<Application> findPage4KhRole4Select(Trace t, Page<Application> page);
 
     Page<Application> findPage4KhCompany(Trace t, Page<Application> page);
     Page<Application> findPage4SelfKhCompany(Trace t, Page<Application> page);
     Page<Application> findPage4SelfKhCompany4Select(Trace t, Page<Application> page);
+    Page<Application> findPage4SelfYwCompany(Trace t, Page<Application> page);
+    Page<Application> findPage4SelfYwCompany4Select(Trace t, Page<Application> page);
     
     List<Application> find4YwUser(Trace t, Long ywUserId);
     List<Application> find4KhUser(Trace t, Long khUserId);
+
+	Boolean updateIco(Trace t, Sid app, String ico);
 }

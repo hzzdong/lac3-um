@@ -111,14 +111,14 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 		}
 
 		if (page.hasRule4Field("parentId")) {// 查部门下的人
-			page = manager().findSelfUserPage(t, page);
+			page = manager().findUserPage4Org(t, page);
 		} else {// 查整个公司的人
 			if (su.isAdmin()) {
-				page = manager().findSelfUserPage(t, page);
+				page = manager().findUserPage4Org(t, page);
 			} else {
 				page.addRule(new Equal("appId", su.appId()));
 				page.addRule(new Equal("userId", su.id()));
-				page = manager().findPermedSelfUserPage(t, page);
+				page = manager().findPermedUserPage(t, page);
 			}
 		}
 		// page = manager().findPage(t, page);

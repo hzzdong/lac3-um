@@ -1,22 +1,22 @@
 import request from '@/utils/request'
 
-export function findAppPage4KhRole(data) {
+export function findAppPage4YwRole(data) {
   return request({
-    url: '/api4umyw/face/Application/page4KhRole',
+    url: '/api4umyw/face/Application/page4YwRole',
     method: 'post',
     data
   })
 }
 
-export function findAppPage4UnKhRole(data) {
+export function findAppPage4UnYwRole(data) {
   return request({
-    url: '/api4umyw/face/Application/page4Select',
+    url: '/api4umyw/face/Application/page4YwRole4Select',
     method: 'post',
     data
   })
 }
 
-export function findAppPage4Company(data) {
+export function findAppPage4YwCompany(data) {
   return request({
     url: '/api4umyw/face/Application/page4YwCompany',
     method: 'post',
@@ -24,7 +24,7 @@ export function findAppPage4Company(data) {
   })
 }
 
-export function findAppPage4UnCompany(data) {
+export function findAppPage4UnYwCompany(data) {
   return request({
     url: '/api4umyw/face/Application/page4YwCompany4Select',
     method: 'post',
@@ -92,6 +92,47 @@ export function deleteApp(data) {
 export function changeAppStatus(data) {
   return request({
     url: '/api4umyw/face/Application/changeStatus',
+    method: 'post',
+    data
+  })
+}
+
+export function saveAppIco(data) {
+  return request({
+    url: '/api4umyw/face/Application/updateIco',
+    method: 'post',
+    data
+  })
+}
+
+/** 以下为 KH */
+export function findAppPage4SysKhRole(data) {
+  return request({
+    url: '/api4umyw/face/Application/page4SysKhRole',
+    method: 'post',
+    data
+  })
+}
+
+export function findAppPage4UnSysKhRole(data) {
+  return request({
+    url: '/api4umyw/face/Application/page4SysKhRole4Select',
+    method: 'post',
+    data
+  })
+}
+
+export function findAppPage4KhCompany(data) {
+  return request({
+    url: '/api4umyw/face/Application/page4KhCompany',
+    method: 'post',
+    data
+  })
+}
+
+export function findAppPage4UnKhCompany(data) {
+  return request({
+    url: '/api4umyw/face/Application/page4KhCompany4Select',
     method: 'post',
     data
   })

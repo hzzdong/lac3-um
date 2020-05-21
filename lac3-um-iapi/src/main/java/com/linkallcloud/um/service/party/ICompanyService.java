@@ -8,15 +8,10 @@ import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 
 public interface ICompanyService<T extends Company> extends IOrgService<T> {
 
 	List<T> findSubCompanies(Trace t, Long companyId);
-
-	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
-
-	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
 
 	/**
 	 * 根据父公司的ID，查找直接子公司列表
@@ -41,8 +36,6 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
 
 	List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
-
-	PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId);
 
 	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
 
@@ -129,5 +122,9 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Tree getCompanyTree(Trace t, String treeType, Sid companyId);
+
+	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
+
+	Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 
 }

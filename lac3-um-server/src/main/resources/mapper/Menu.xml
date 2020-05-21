@@ -102,11 +102,12 @@
 	<select id="findKhCompanyAppMenusWithButton" resultType="com.linkallcloud.um.domain.sys.Menu">
 		SELECT
 			<include refid="Base_Column_List" />
-		FROM
-			um_app_menu u JOIN um_kh_company_perm_menu cpm ON u.id=cpm.menuId
+		FROM um_app_menu u 
+			<if test="khCompanyId != null"> JOIN um_kh_company_perm_menu cpm ON u.id=cpm.menuId </if>
 		WHERE
-			u.status &lt;&gt; 9 AND u.appId = #{appId} AND cpm.companyId = #{khCompanyId} 
-		    <if test="valid==true"> AND u.status=0</if>
+			u.status &lt;&gt; 9 AND u.appId = #{appId} 
+		    <if test="khCompanyId != null"> AND cpm.companyId = #{khCompanyId} </if>
+		    <if test="valid==true"> AND u.status=0 </if>
 	</select>
 	
 	<select id="findYwCompanyAppMenus" resultType="com.linkallcloud.um.domain.sys.Menu">

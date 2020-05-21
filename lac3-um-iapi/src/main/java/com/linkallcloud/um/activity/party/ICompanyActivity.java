@@ -8,15 +8,10 @@ import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 
 public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 
 	List<T> findSubCompanies(Trace t, Long companyId);
-
-	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
-
-	Long getCompanyAreaRootIdBySystemConfig(Trace t, Long companyId);
 
 	/**
 	 * 根据treeType得到company的机构树
@@ -62,8 +57,6 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 
 	List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
 
-	PermedAreaVo findCompanyValidAreaResource(Trace t, Long companyId, Long appId);
-
 	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
 
 	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
@@ -95,5 +88,8 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
 	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
 	Boolean updateCompanyLogo(Trace t, Sid companyId, String logo);
+	
+	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
+	Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 
 }

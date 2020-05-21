@@ -9,8 +9,8 @@
       fit
       style="width: 100%;"
     >
-      <el-table-column prop="key" label="编号" width="200px" />
-      <el-table-column prop="name" label="名称" width="200px" />
+      <el-table-column prop="name" label="名称" width="250px" />
+      <el-table-column prop="key" label="编号" width="250px" />
       <el-table-column prop="value" label="值" width="350px">
         <template slot-scope="{row}">
           <el-switch
@@ -76,6 +76,7 @@
             inactive-text="禁用"
             @change="haddleChangeStatusSwitch($event, row)"
           />
+          <!--
           <el-select
             v-if="row.key === 'company_class'"
             v-model="entity.company_class"
@@ -87,6 +88,7 @@
           >
             <el-option v-for="item in companyClasses" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
+          -->
 
         </template>
       </el-table-column>
@@ -220,12 +222,14 @@ export default {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch((err) => console.log(err))
     },
+    /*
     haddleChangeComanyClass(val) {
       const req = { key: 'company_class', value: val }
       saveCompanyConfig(req).then(() => {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch((err) => console.log(err))
     },
+    */
     getAreaTree() {
       loadCompanyAreaFullTree().then(response => {
         this.areaTree.data = response.data

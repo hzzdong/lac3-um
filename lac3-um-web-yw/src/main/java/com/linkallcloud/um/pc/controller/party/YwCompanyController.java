@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
@@ -24,8 +24,6 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.YwSystemConfig;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
@@ -151,13 +149,14 @@ public class YwCompanyController extends
 	}
 
 	@RequestMapping(value = "/getPermedCompanyAppAreaTree", method = RequestMethod.GET)
-	public @ResponseBody Result<PermedAreaVo> getPermedCompanyAppAreaTree(@RequestParam(value = "id") Long id,
+	public @ResponseBody Result<Object> getPermedCompanyAppAreaTree(@RequestParam(value = "id") Long id,
 			@RequestParam(value = "uuid") String uuid,
 			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t, AppVisitor av)
 			throws IllegalParameterException {
-		PermedAreaVo pavo = getComapnyManager().findPermedCompanyAppAreas(t, av.companyId(), id,
-				parentAreaId, av.appId());
-		return new Result<PermedAreaVo>(pavo);
+//		PermedAreaVo pavo = getComapnyManager().findPermedCompanyAppAreas(t, av.companyId(), id,
+//				parentAreaId, av.appId());
+//		return new Result<PermedAreaVo>(pavo);
+		return null;
 	}
 
 	@RequestMapping(value = "/saveCompanyAppAreaPerm", method = RequestMethod.GET)

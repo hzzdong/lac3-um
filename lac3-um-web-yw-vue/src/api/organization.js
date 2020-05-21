@@ -32,7 +32,7 @@ export function getFullTreeOfCompany(data) {
   })
 }
 
-export function fetchYwCompany(data) {
+export function fetchCompany(data) {
   return request({
     url: '/api4umyw/face/YwCompany/fetch',
     method: 'post',
@@ -48,7 +48,7 @@ export function fetchMyCompany(data) {
   })
 }
 
-export function fetchParentYwCompanyAsTreeNode(data) {
+export function fetchParentCompanyAsTreeNode(data) {
   return request({
     url: '/api4umyw/face/YwCompany/fetchParentTreeNode',
     method: 'post',
@@ -56,7 +56,7 @@ export function fetchParentYwCompanyAsTreeNode(data) {
   })
 }
 
-export function createYwCompany(data) {
+export function createCompany(data) {
   return request({
     url: '/api4umyw/face/YwCompany/save',
     method: 'post',
@@ -64,7 +64,7 @@ export function createYwCompany(data) {
   })
 }
 
-export function updateYwCompany(data) {
+export function updateCompany(data) {
   return request({
     url: '/api4umyw/face/YwCompany/save',
     method: 'post',
@@ -72,7 +72,7 @@ export function updateYwCompany(data) {
   })
 }
 
-export function deleteYwCompany(data) {
+export function deleteCompany(data) {
   return request({
     url: '/api4umyw/face/YwCompany/delete',
     method: 'post',
@@ -184,7 +184,7 @@ export function updateCompanyLogo(data) {
   })
 }
 
-export function fetchYwDepartment(data) {
+export function fetchDepartment(data) {
   return request({
     url: '/api4umyw/face/YwDepartment/fetch',
     method: 'post',
@@ -192,7 +192,7 @@ export function fetchYwDepartment(data) {
   })
 }
 
-export function fetchParentYwDepartmentAsTreeNode(data) {
+export function fetchParentDepartmentAsTreeNode(data) {
   return request({
     url: '/api4umyw/face/YwDepartment/fetchParentTreeNode',
     method: 'post',
@@ -200,7 +200,7 @@ export function fetchParentYwDepartmentAsTreeNode(data) {
   })
 }
 
-export function createYwDepartment(data) {
+export function createDepartment(data) {
   return request({
     url: '/api4umyw/face/YwDepartment/save',
     method: 'post',
@@ -208,7 +208,7 @@ export function createYwDepartment(data) {
   })
 }
 
-export function updateYwDepartment(data) {
+export function updateDepartment(data) {
   return request({
     url: '/api4umyw/face/YwDepartment/save',
     method: 'post',
@@ -216,7 +216,7 @@ export function updateYwDepartment(data) {
   })
 }
 
-export function deleteYwDepartment(data) {
+export function deleteDepartment(data) {
   return request({
     url: '/api4umyw/face/YwDepartment/delete',
     method: 'post',

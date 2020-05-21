@@ -90,39 +90,36 @@ public class AreaController extends BaseTreeLContorller<Area, IAreaManager> {
 	public @ResponseBody Result<List<Tree>> loadTree4MyCompany(
 			@RequestParam(value = "appId", required = false) Long appId,
 			@RequestParam(value = "appUuid", required = false) String appUuid, Trace t, AppVisitor av) {
-		List<Tree> result = ywCompanyManager.getDefinedCompanyAreas(t, av.companyId(),
-				av.appId());//(appId == null) ? av.appId() : appId
-		return new Result<List<Tree>>(result);
+//		List<Tree> result = ywCompanyManager.getDefinedCompanyAreas(t, av.companyId(),
+//				av.appId());//(appId == null) ? av.appId() : appId
+//		return new Result<List<Tree>>(result);
+		return null;
 	}
 
-	@Override
-	protected List<Tree> doLoadTree(Trace t, AppVisitor av) {
-		Long[] areaRootIds = ywCompanyManager.getCompanyAppAreaRootIds(t, av.companyId(),
-				av.appId());
-		List<Tree> result = new ArrayList<>();
-		if (areaRootIds != null && areaRootIds.length > 0) {
-			for (Long areaRootId : areaRootIds) {
-				List<Tree> area1s = manager().findChildrenTreeNodes(t, areaRootId, new NotEqual("status", 9));
-				if (area1s != null && !area1s.isEmpty()) {
-					result.addAll(area1s);
-				}
-			}
-
-		}
-
-//		Long areaRootId = ywCompanyManager.getCompanyAreaRootId(t, av.companyId(),
+//	@Override
+//	protected List<Tree> doLoadTree(Trace t, AppVisitor av) {
+//		Long[] areaRootIds = ywCompanyManager.getCompanyAppAreaRootIds(t, av.companyId(),
 //				av.appId());
-//		List<Tree> result = manager().findChildrenTreeNodes(t, areaRootId, new NotEqual("status", 9));
-
-		if (result != null && !result.isEmpty() && areaRootIds != null && areaRootIds.length == 1) {
-			for (Tree node : result) {
-				if (node.getId().equals(areaRootIds[0].toString())) {
-					node.setOpen(true);
-				}
-			}
-		}
-		return result;
-	}
+//		List<Tree> result = new ArrayList<>();
+//		if (areaRootIds != null && areaRootIds.length > 0) {
+//			for (Long areaRootId : areaRootIds) {
+//				List<Tree> area1s = manager().findChildrenTreeNodes(t, areaRootId, new NotEqual("status", 9));
+//				if (area1s != null && !area1s.isEmpty()) {
+//					result.addAll(area1s);
+//				}
+//			}
+//
+//		}
+//
+//		if (result != null && !result.isEmpty() && areaRootIds != null && areaRootIds.length == 1) {
+//			for (Tree node : result) {
+//				if (node.getId().equals(areaRootIds[0].toString())) {
+//					node.setOpen(true);
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 	@RequestMapping(value = "/loadFullTree", method = RequestMethod.GET)
 	public @ResponseBody Result<List<Tree>> loadFullTree(Trace t, AppVisitor av) {

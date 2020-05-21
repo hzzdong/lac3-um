@@ -19,10 +19,10 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
 import com.linkallcloud.um.constant.YwConfigs;
-import com.linkallcloud.um.domain.party.KhCompany;
+import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.dto.base.ConfigFaceRequest;
-import com.linkallcloud.um.iapi.party.IKhCompanyManager;
+import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.web.face.annotation.Face;
@@ -35,17 +35,17 @@ import com.linkallcloud.web.session.SessionUser;
 public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfigManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IYwSystemConfigManager khSystemConfigManager;
+	private IYwSystemConfigManager ywSystemConfigManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IAreaManager areaManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IKhCompanyManager khCompanyManager;
+	private IYwCompanyManager ywCompanyManager;
 
 	@Override
 	protected IYwSystemConfigManager manager() {
-		return khSystemConfigManager;
+		return ywSystemConfigManager;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfig
 		if (entities == null || entities.size() <= 0) {
 			return YwConfigs.defaultConfigs(t);
 		} else {
-			if (entities.size() >= 7) {
+			if (entities.size() >= 6) {
 				return entities;
 			} else {
 				List<YwSystemConfig> defs = YwConfigs.defaultConfigs(t);
@@ -87,13 +87,13 @@ public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfig
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public @ResponseBody Object changeStatus(ConfigFaceRequest fr, Trace t, SessionUser su) {
+	public @ResponseBody Object change(ConfigFaceRequest fr, Trace t, SessionUser su) {
 		if (!checkReferer(true)) {
 			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
 		}
 		Sid companyId = su.getCompany();
 		if (fr.getOrgId() != null && !su.companyId().equals(fr.getOrgId()) && !Strings.isBlank(fr.getOrgUuid())) {
-			KhCompany company = khCompanyManager.fetchByIdUuid(t, fr.getOrgId(), fr.getOrgUuid());
+			YwCompany company = ywCompanyManager.fetchByIdUuid(t, fr.getOrgId(), fr.getOrgUuid());
 			if (company == null || !su.companyId().equals(company.getParentId())) {
 				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误，或您无权执行此操作！");
 			}

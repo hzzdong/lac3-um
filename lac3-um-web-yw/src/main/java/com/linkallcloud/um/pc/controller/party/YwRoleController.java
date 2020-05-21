@@ -25,9 +25,7 @@ import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwRoleManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
@@ -176,16 +174,16 @@ public class YwRoleController extends RoleController<YwRole, YwUser, IYwRoleMana
 		return new Result<Object>(!ret, Exceptions.CODE_ERROR_UNKNOW, "保存失败");
 	}
 
-	@RequestMapping(value = "/getPermedAreaTree", method = RequestMethod.GET)
-	public @ResponseBody Result<PermedAreaVo> getPermedAreaTree(@RequestParam(value = "roleId") Long roleId,
-			@RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
-			@RequestParam(value = "appUuid") String appUuid,
-			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t,SessionUser su)
-			throws IllegalParameterException {
-		PermedAreaVo ret = manager().findPermedRoleAppAreas(t, parentAreaId, su.companyId(), roleId,
-				appId);
-		return new Result<PermedAreaVo>(ret);
-	}
+//	@RequestMapping(value = "/getPermedAreaTree", method = RequestMethod.GET)
+//	public @ResponseBody Result<PermedAreaVo> getPermedAreaTree(@RequestParam(value = "roleId") Long roleId,
+//			@RequestParam(value = "roleUuid") String roleUuid, @RequestParam(value = "appId") Long appId,
+//			@RequestParam(value = "appUuid") String appUuid,
+//			@RequestParam(value = "parentAreaId", required = false) Long parentAreaId, Trace t,SessionUser su)
+//			throws IllegalParameterException {
+//		PermedAreaVo ret = manager().findPermedRoleAppAreas(t, parentAreaId, su.companyId(), roleId,
+//				appId);
+//		return new Result<PermedAreaVo>(ret);
+//	}
 
 	@RequestMapping(value = "/saveRoleAppAreaPerm", method = RequestMethod.GET)
 	public @ResponseBody Result<Object> saveRoleAppAreaPerm(@RequestParam(value = "roleId") Long roleId,

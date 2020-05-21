@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkallcloud.um.server.dao.ptj.IYwPartTimeJobDao">
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		u.id,u.uuid,u.status,u.createTime,u.updateTime
+		,u.srcCompanyId
+		,u.srcOrgId
+		,u.srcOrgClass
+		,u.srcOrgName
+		,u.userId
+		,u.userUuid
+		,u.userName
+		,u.destCompanyId
+		,u.destOrgId
+		,u.destOrgClass
+		,u.destOrgName
+		,u.remark
+	</sql>
+	
+	<select id="fetchById" resultType="com.linkallcloud.um.domain.ptj.YwPartTimeJob" parameterType="java.lang.Long">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			um_yw_user_jz u 
+		where 
+			u.id=#{id}
+	</select>
+
+	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.ptj.YwPartTimeJob">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_yw_user_jz u
+		WHERE
+			u.id = #{id} and u.uuid=#{uuid} and u.status &lt;&gt; 9
+	</select>
+	
+	<select id="findByIds" resultType="com.linkallcloud.um.domain.ptj.YwPartTimeJob" parameterType="java.lang.Long">
+		select
+			<include refid="Base_Column_List" />
+		from um_yw_user_jz u 
+		where u.status &lt;&gt; 9 and  u.id in
+			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</select>
+	
+	<select id="findPage" resultType="com.linkallcloud.um.domain.ptj.YwPartTimeJob">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_yw_user_jz u 
+			JOIN um_yw_user ku ON u.userId = ku.id AND ku.status &lt;&gt; 9 
+		WHERE
+			u.status &lt;&gt; 9 
+			<if test="page.cnds!=null and page.cnds.userStatus != null"> AND ku.status = #{page.cnds.userStatus}</if>
+			<if test="page.cnds!=null and page.cnds.userStatusNe != null"> AND ku.status &lt;&gt; #{page.cnds.userStatusNe}</if>
+			<if test="page.cnds!=null and page.cnds.srcCompanyId != null"> AND u.srcCompanyId = #{page.cnds.srcCompanyId}</if>
+			<if test="page.cnds!=null and page.cnds.srcOrgId != null"> AND u.srcOrgId = #{page.cnds.srcOrgId}</if>
+			<if test="page.cnds!=null and page.cnds.srcOrgClass != null"> AND u.srcOrgClass = #{page.cnds.srcOrgClass}</if>
+			<if test="page.cnds!=null and page.cnds.srcOrgName != null"> AND u.srcOrgName like #{page.cnds.srcOrgName}</if>
+			<if test="page.cnds!=null and page.cnds.userId != null"> AND u.userId = #{page.cnds.userId}</if>
+			<if test="page.cnds!=null and page.cnds.userName != null"> AND u.userName like #{page.cnds.userName}</if>
+			<if test="page.cnds!=null and page.cnds.destCompanyId != null"> AND u.destCompanyId = #{page.cnds.destCompanyId}</if>
+			<if test="page.cnds!=null and page.cnds.destOrgId != null"> AND u.destOrgId = #{page.cnds.destOrgId}</if>
+			<if test="page.cnds!=null and page.cnds.destOrgClass != null"> AND u.destOrgClass = #{page.cnds.destOrgClass}</if>
+			<if test="page.cnds!=null and page.cnds.destOrgName != null"> AND u.destOrgName like #{page.cnds.destOrgName}</if>
+			<if test="page.cnds!=null and page.cnds.createTime != null"> AND u.createTime &gt;= #{page.cnds.createTime.start} AND u.createTime &lt;= #{page.cnds.createTime.end}</if>
+		<choose>
+			<when test="page.orders != null and page.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.parentId
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="find" resultType="com.linkallcloud.um.domain.ptj.YwPartTimeJob">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_yw_user_jz u
+			JOIN um_yw_user ku ON u.userId = ku.id AND ku.status &lt;&gt; 9 AND ku.status &lt;&gt; 8 
+		WHERE
+			u.status &lt;&gt; 9
+			<if test="query!=null and query.cnds!=null and query.cnds.userStatus != null"> AND ku.status = #{query.cnds.userStatus}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.userStatusNe != null"> AND ku.status &lt;&gt; #{query.cnds.userStatusNe}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.srcCompanyId != null"> AND u.srcCompanyId = #{query.cnds.srcCompanyId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.srcOrgId != null"> AND u.srcOrgId = #{query.cnds.srcOrgId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.srcOrgClass != null"> AND u.srcOrgClass = #{query.cnds.srcOrgClass}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.srcOrgName != null"> AND u.srcOrgName like #{query.cnds.srcOrgName}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.userId != null"> AND u.userId = #{query.cnds.userId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.userName != null"> AND u.userName like #{query.cnds.userName}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.destCompanyId != null"> AND u.destCompanyId = #{query.cnds.destCompanyId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.destOrgId != null"> AND u.destOrgId = #{query.cnds.destOrgId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.destOrgClass != null"> AND u.destOrgClass = #{query.cnds.destOrgClass}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.destOrgName != null"> AND u.destOrgName like #{query.cnds.destOrgName}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.createTime != null"> AND u.createTime &gt;= #{query.cnds.createTime.start} AND u.createTime &lt;= #{query.cnds.createTime.end}</if>
+		<choose>
+			<when test="query != null and query.orders != null and query.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.id
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert" parameterType="com.linkallcloud.um.domain.ptj.YwPartTimeJob" useGeneratedKeys="true" keyProperty="entity.id">
+		insert into um_yw_user_jz
+			(uuid,status,createTime,updateTime
+			,srcCompanyId
+			,srcOrgId
+			,srcOrgClass
+			,srcOrgName
+			,userId
+			,userUuid
+			,userName
+			,destCompanyId
+			,destOrgId
+			,destOrgClass
+			,destOrgName
+			,remark
+			)
+		values
+			(#{entity.uuid},0,now(),now()
+			,#{entity.srcCompanyId}
+			,#{entity.srcOrgId}
+			,#{entity.srcOrgClass}
+			,#{entity.srcOrgName}
+			,#{entity.userId}
+			,#{entity.userUuid}
+			,#{entity.userName}
+			,#{entity.destCompanyId}
+			,#{entity.destOrgId}
+			,#{entity.destOrgClass}
+			,#{entity.destOrgName}
+			,#{entity.remark}
+			)
+	</insert>
+
+	<delete id="delete">
+		update 
+			um_yw_user_jz 
+		set
+			status=9,updateTime=now()
+		where
+			id=#{id} and uuid=#{uuid} and status &lt;&gt; 9
+	</delete>
+	
+	<delete id="deletes">
+		update 
+			um_yw_user_jz 
+		set 
+			status=9,updateTime=now()
+		where 
+			status &lt;&gt; 9 and id in 
+			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</delete>
+
+	
+</mapper>

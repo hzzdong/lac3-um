@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.activity.BaseActivity;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseException;
 import com.linkallcloud.core.exception.Exceptions;
@@ -46,15 +47,28 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
 	@Override
 	public Page<Application> findPage4YwRole(Trace t, Page<Application> page) {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
-
 		page.checkPageParameters();
-
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
 			List<Application> list = dao().findPage4YwRole(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
+
+	@Override
+	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<Application> list = dao().findPage4YwRole4Select(t, page);
 			if (list instanceof com.github.pagehelper.Page) {
 				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
 				page.checkPageParameters();
@@ -83,6 +97,24 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
 			List<Application> list = dao().findPage4KhRole(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
+
+	@Override
+	public Page<Application> findPage4KhRole4Select(Trace t, Page<Application> page) {
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<Application> list = dao().findPage4KhRole4Select(t, page);
 			if (list instanceof com.github.pagehelper.Page) {
 				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
 				page.checkPageParameters();
@@ -166,6 +198,48 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 	}
 
 	@Override
+	public Page<Application> findPage4SelfYwCompany(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "ywCompanyId,ywCompanyUuid参数错误。");
+		}
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<Application> list = dao().findPage4SelfYwCompany(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
+
+	@Override
+	public Page<Application> findPage4SelfYwCompany4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "ywCompanyId,ywCompanyUuid参数错误。");
+		}
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<Application> list = dao().findPage4SelfYwCompany4Select(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<Application>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
+
+	@Override
 	public List<Application> find4YwUser(Trace t, Long ywUserId) {
 		YwUser user = ywUserDao.fetchById(t, ywUserId);
 		if (user != null) {
@@ -195,6 +269,12 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 	@Override
 	public Boolean updateMappingInfo(Trace t, Application app) {
 		int rows = dao().updateMappingInfo(t, app);
+		return rows == 1;
+	}
+
+	@Override
+	public Boolean updateIco(Trace t, Sid app, String ico) {
+		int rows = dao().updateIco(t, app, ico);
 		return rows == 1;
 	}
 

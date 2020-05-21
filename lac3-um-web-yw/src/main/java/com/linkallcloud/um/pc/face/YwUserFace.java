@@ -24,12 +24,12 @@ import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.um.domain.party.KhRole;
+import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.ptj.KhPartTimeJob;
-import com.linkallcloud.um.iapi.party.IKhRoleManager;
+import com.linkallcloud.um.domain.ptj.YwPartTimeJob;
+import com.linkallcloud.um.iapi.party.IYwRoleManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
-import com.linkallcloud.um.iapi.ptj.IKhPartTimeJobManager;
+import com.linkallcloud.um.iapi.ptj.IYwPartTimeJobManager;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseFace;
 import com.linkallcloud.web.session.SessionUser;
@@ -40,13 +40,13 @@ import com.linkallcloud.web.session.SessionUser;
 public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IYwUserManager khUserManager;
+	private IYwUserManager ywUserManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IKhRoleManager khRoleManager;
+	private IYwRoleManager ywRoleManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IKhPartTimeJobManager khPartTimeJobManager;
+	private IYwPartTimeJobManager ywPartTimeJobManager;
 
 	public YwUserFace() {
 		super();
@@ -54,7 +54,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 
 	@Override
 	protected IYwUserManager manager() {
-		return khUserManager;
+		return ywUserManager;
 	}
 
 	@Face(simple = true)
@@ -110,17 +110,17 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 			page.addRule(new Equal("companyId", su.companyId()));
 		}
 
-//		if (page.hasRule4Field("parentId")) {// 查部门下的人
-//			page = manager().findSelfUserPage(t, page);
-//		} else {// 查整个公司的人
-//			if (su.isAdmin()) {
-//				page = manager().findSelfUserPage(t, page);
-//			} else {
-//				page.addRule(new Equal("appId", su.appId()));
-//				page.addRule(new Equal("userId", su.id()));
-//				page = manager().findPermedSelfUserPage(t, page);
-//			}
-//		}
+		if (page.hasRule4Field("parentId")) {// 查部门下的人
+			page = manager().findUserPage4Org(t, page);
+		} else {// 查整个公司的人
+			if (su.isAdmin()) {
+				page = manager().findUserPage4Org(t, page);
+			} else {
+				page.addRule(new Equal("appId", su.appId()));
+				page.addRule(new Equal("userId", su.id()));
+				page = manager().findPermedUserPage(t, page);
+			}
+		}
 		desensitization(page.getData());
 		return page;
 	}
@@ -168,7 +168,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 
 		Equal rr = (Equal) page.getRule4Field("roleId");
 		if (rr != null) {
-			KhRole role = khRoleManager.fetchById(t, (Long) rr.getValue());
+			YwRole role = ywRoleManager.fetchById(t, (Long) rr.getValue());
 			page.addRule(new Equal("type", role.getType()));
 		}
 
@@ -199,11 +199,11 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/page4PartTimeJob", method = RequestMethod.POST)
 	public @ResponseBody Object page4PartTimeJob(PageFaceRequest faceReq, Trace t, SessionUser su) {
-		Page<KhPartTimeJob> page = new Page<>(faceReq);
+		Page<YwPartTimeJob> page = new Page<>(faceReq);
 		if (!page.hasRule4Field("destOrgId") || !page.hasRule4Field("destOrgClass")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "destOrgId,destOrgClass参数错误。");
 		}
-		page = khPartTimeJobManager.findPage(t, page);
+		page = ywPartTimeJobManager.findPage(t, page);
 		return page;
 	}
 
@@ -211,7 +211,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/addPartTimeJob", method = RequestMethod.POST)
 	public @ResponseBody Object addPartTimeJob(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		return khPartTimeJobManager.add(t, new Sid(fr.getId(), fr.getUuid()),
+		return ywPartTimeJobManager.add(t, new Sid(fr.getId(), fr.getUuid()),
 				new Sid(fr.getParentId(), fr.getParentUuid(), fr.getParentClass(), ""), fr.getRemark());
 	}
 
@@ -219,17 +219,17 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/removePartTimeJob", method = RequestMethod.POST)
 	public @ResponseBody Object removePartTimeJob(IdFaceRequest fr, Trace t, SessionUser suser) {
-		return khPartTimeJobManager.delete(t, fr.getId(), fr.getUuid());
+		return ywPartTimeJobManager.delete(t, fr.getId(), fr.getUuid());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/page4PartTimeJobOfUser", method = RequestMethod.POST)
 	public @ResponseBody Object page4PartTimeJobOfUser(PageFaceRequest faceReq, Trace t, SessionUser su) {
-		Page<KhPartTimeJob> page = new Page<>(faceReq);
+		Page<YwPartTimeJob> page = new Page<>(faceReq);
 		if (!page.hasRule4Field("userId") || !page.hasRule4Field("userUuid")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "userId,userUuid参数错误。");
 		}
-		page = khPartTimeJobManager.findPage(t, page);
+		page = ywPartTimeJobManager.findPage(t, page);
 		return page;
 	}
 

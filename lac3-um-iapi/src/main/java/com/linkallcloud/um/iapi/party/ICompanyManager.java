@@ -9,7 +9,6 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 
 public interface ICompanyManager<T extends Company, U extends User> extends IOrgManager<T, U> {
 
@@ -21,26 +20,6 @@ public interface ICompanyManager<T extends Company, U extends User> extends IOrg
 	 * @return
 	 */
 	List<T> findSubCompanies(Trace t, Long companyId);
-
-	/**
-	 * 得到公司被通过授权等定义后授权应用区域权限的根节点
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @param appId
-	 * @return
-	 */
-	Long getCompanyAreaRootId(Trace t, Long companyId, Long appId);
-
-	/**
-	 * 得到公司被通过授权等定义出来的区域（root+其下第一级列表）
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @param appId
-	 * @return
-	 */
-	List<Tree> getDefinedCompanyAreas(Trace t, Long companyId, Long appId);
 
 	List<T> findDirectCompaniesByParentId(Trace t, Long parentCompanyId);
 
@@ -57,8 +36,6 @@ public interface ICompanyManager<T extends Company, U extends User> extends IOrg
 
 	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
 			Map<String, Long> menuUuidIds);
-
-	PermedAreaVo findPermedCompanyAppAreas(Trace t, Long myCompanyId, Long forCompanyId, Long parentAreaId, Long appId);
 
 	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
 			Map<String, Long> uuidIds);
@@ -147,5 +124,9 @@ public interface ICompanyManager<T extends Company, U extends User> extends IOrg
 	 * @return
 	 */
 	Tree getCompanyTree(Trace t, String treeType, Sid companyId);
+
+	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
+
+	Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 
 }

@@ -10,7 +10,6 @@ import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 
 public abstract interface IRoleManager<T extends Role, U extends User> extends IPartyManager<T> {
 
@@ -198,7 +197,7 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	 * @return
 	 */
 	Tree findPermedMenuTree(Trace t, Long companyId, Long roleId, Long appId);
-
+	
 	/**
 	 * 得到某应用的组织权限，并根据某角色是否有权限打上标记
 	 *
@@ -222,18 +221,6 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	Tree findPermedOrgTree(Trace t, Long companyId, Long roleId, Long appId);
 
 	/**
-	 * 得到某应用的区域权限，并根据某角色是否有权限打上标记（适合前台调用）
-	 *
-	 * @param t
-	 * @param parentAreaId
-	 * @param companyId
-	 * @param roleId
-	 * @param appId
-	 * @return
-	 */
-	PermedAreaVo findPermedRoleAppAreas(Trace t, Long parentAreaId, Long companyId, Long roleId, Long appId);
-	
-	/**
 	 * 得到某应用的区域权限，并根据某角色是否有权限打上标记
 	 *
 	 * @param t
@@ -245,42 +232,4 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	 */
 	Tree findPermedAreaTree(Trace t, Sid companyId, Sid roleId, Sid appId);
 
-	// Long getRoleAreaRootId(Trace t, Long roleId, Long appId);
-
-	/**
-	 * 得到某公司区域的根，用于给某角色某应用设置区域权限（适合后台调用）
-	 *
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	Long getCompanyAreaRootId4Role(Trace t, Long companyId);
-
-//	/**
-//	 * 得到某角色某应用可分配的区域资源（适合后台调用）
-//	 * 
-//	 * @param t
-//	 * @param roleId
-//	 * @param appId
-//	 * @return
-//	 */
-//	PermedAreaVo findRoleValidAreaResource(Trace t, Long roleId, Long appId);
-
-	/**
-	 * 得到某公司可分配的区域资源，用于给某角色某应用设置区域权限（适合后台调用）
-	 *
-	 * @param t
-	 * @param companyId
-	 * @return
-	 */
-	PermedAreaVo findCompanyValidAreaResource4Role(Trace t, Long companyId);
-
-//	/**
-//	 * 根据用户id，得到此用户拥有的所在公司的role列表
-//	 *
-//	 * @param t
-//	 * @param userId
-//	 * @return
-//	 */
-//	List<T> findCompanyRoles4Me(Trace t, long userId);
 }

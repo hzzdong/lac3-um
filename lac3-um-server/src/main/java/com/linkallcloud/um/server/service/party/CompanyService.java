@@ -55,11 +55,6 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
-	public Long getCompanyAreaRootId(Trace t, Long companyId, Long appId) {
-		return activity().getCompanyAreaRootId(t, companyId, appId);
-	}
-
-	@Override
 	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
 		return activity().getCompanyAppAreaRootIds(t, companyId, appId);
 	}
@@ -243,7 +238,8 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 
 	@Override
 	public Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId) {
-		List<Tree> items = activity().findCompanyValidMenus(t, myCompanyId.getId(), appId.getId());
+		List<Tree> items = activity().findCompanyValidMenus(t, myCompanyId == null ? null : myCompanyId.getId(),
+				appId.getId());
 		Long[] permedMenuIds = activity().findPermedCompanyAppMenus(t, forCompanyId.getId(), appId.getId());
 		if (items != null && permedMenuIds != null && permedMenuIds.length > 0) {
 			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
@@ -269,6 +265,18 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 				}
 			}
 		}
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		return activity().addApps(t, id, uuid, appUuidIds);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		return activity().removeApps(t, id, uuid, appUuidIds);
 	}
 
 }

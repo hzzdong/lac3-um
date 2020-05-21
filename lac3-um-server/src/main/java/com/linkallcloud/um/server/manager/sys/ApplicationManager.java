@@ -6,6 +6,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.manager.BaseManager;
@@ -36,6 +37,14 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 	}
 
 	@Override
+	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		return service().findPage4YwRole4Select(t, page);
+	}
+
+	@Override
 	public Application fetchByCode(Trace t, String code) {
 		return service().fetchByCode(t, code);
 	}
@@ -46,6 +55,11 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
 		return service().findPage4KhRole(t, page);
+	}
+
+	@Override
+	public Page<Application> findPage4KhRole4Select(Trace t, Page<Application> page) {
+		return service().findPage4KhRole4Select(t, page);
 	}
 
 	@Override
@@ -70,6 +84,16 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 	}
 
 	@Override
+	public Page<Application> findPage4SelfYwCompany(Trace t, Page<Application> page) {
+		return service().findPage4SelfYwCompany(t, page);
+	}
+
+	@Override
+	public Page<Application> findPage4SelfYwCompany4Select(Trace t, Page<Application> page) {
+		return service().findPage4SelfYwCompany4Select(t, page);
+	}
+
+	@Override
 	public List<Application> find4YwUser(Trace t, Long ywUserId) {
 		return service().find4YwUser(t, ywUserId);
 	}
@@ -87,6 +111,11 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 	@Override
 	public Boolean updateMappingInfo(Trace t, Application app) {
 		return service().updateMappingInfo(t, app);
+	}
+
+	@Override
+	public Boolean updateIco(Trace t, Sid app, String ico) {
+		return service().updateIco(t, app, ico);
 	}
 
 }

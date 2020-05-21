@@ -221,5 +221,24 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	T fetchCompanyAdmin(Trace t, Sid companyId);
 	
 	Page<T> leaderPage(Trace t, Page<T> page);
+	
+
+    /**
+     * 单位操作员，查公司或者部门下人员分页列表
+     *
+     * @param t
+     * @param page
+     * @return
+     */
+    Page<T> findUserPage4Org(Trace t, Page<T> page);
+
+    /**
+     * 单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+     *
+     * @param t
+     * @param page
+     * @return
+     */
+    Page<T> findPermedUserPage(Trace t, Page<T> page);
 
 }

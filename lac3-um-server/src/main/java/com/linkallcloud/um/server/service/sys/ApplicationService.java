@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
@@ -13,6 +14,7 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.service.BaseService;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.domain.sys.Application;
+import com.linkallcloud.um.exception.AppException;
 import com.linkallcloud.um.service.sys.IApplicationService;
 
 @Service
@@ -29,7 +31,18 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 
 	@Override
 	public Page<Application> findPage4YwRole(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
 		return activity().findPage4YwRole(t, page);
+	}
+
+	@Override
+	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		return activity().findPage4YwRole4Select(t, page);
 	}
 
 	@Override
@@ -43,12 +56,23 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 	}
 
 	@Override
+	public Page<Application> findPage4KhRole4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		return activity().findPage4KhRole4Select(t, page);
+	}
+
+	@Override
 	public Page<Application> findPage4KhCompany(Trace t, Page<Application> page) {
 		return activity().findPage4KhCompany(t, page);
 	}
 
 	@Override
 	public Page<Application> findPage4SelfKhCompany(Trace t, Page<Application> page) {
+		if (!page.hasRule4Field("khCompanyId") || !page.hasRule4Field("khCompanyUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId,khCompanyUuid参数错误。");
+		}
 		return activity().findPage4SelfKhCompany(t, page);
 	}
 
@@ -58,6 +82,22 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId,khCompanyUuid参数错误。");
 		}
 		return activity().findPage4SelfKhCompany4Select(t, page);
+	}
+
+	@Override
+	public Page<Application> findPage4SelfYwCompany(Trace t, Page<Application> page) {
+		if (!page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "ywCompanyId,ywCompanyUuid参数错误。");
+		}
+		return activity().findPage4SelfYwCompany(t, page);
+	}
+
+	@Override
+	public Page<Application> findPage4SelfYwCompany4Select(Trace t, Page<Application> page) {
+		if (!page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "ywCompanyId,ywCompanyUuid参数错误。");
+		}
+		return activity().findPage4SelfYwCompany4Select(t, page);
 	}
 
 	@Override
@@ -80,6 +120,12 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 	@Override
 	public Boolean updateMappingInfo(Trace t, Application app) {
 		return activity().updateMappingInfo(t, app);
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean updateIco(Trace t, Sid app, String ico) {
+		return activity().updateIco(t, app, ico);
 	}
 
 }

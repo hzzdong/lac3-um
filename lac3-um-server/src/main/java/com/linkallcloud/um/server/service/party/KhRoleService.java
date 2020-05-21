@@ -12,10 +12,12 @@ import com.linkallcloud.um.domain.sys.Menu;
 import com.linkallcloud.um.service.party.IKhRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class KhRoleService extends RoleService<KhRole, KhUser, KhCompany, IKhRoleActivity, IKhUserActivity, IKhCompanyActivity>
         implements IKhRoleService {
 

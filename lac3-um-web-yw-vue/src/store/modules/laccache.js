@@ -54,8 +54,14 @@ const actions = {
       loadCertificateType4Org()
         .then(response => {
           const { data } = response
-          commit('SET_ORG_CERTIFICATE_TYPE', data)
-          resolve(data)
+          const cts = []
+          if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+              cts.push({ key: data[i].govCode, display_name: data[i].name })
+            }
+          }
+          commit('SET_ORG_CERTIFICATE_TYPE', cts)
+          resolve(cts)
         })
         .catch(error => {
           reject(error)
@@ -69,8 +75,14 @@ const actions = {
       loadCertificateType4Person()
         .then(response => {
           const { data } = response
-          commit('SET_PERSON_CERTIFICATE_TYPE', data)
-          resolve(data)
+          const cts = []
+          if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+              cts.push({ key: data[i].govCode, display_name: data[i].name })
+            }
+          }
+          commit('SET_PERSON_CERTIFICATE_TYPE', cts)
+          resolve(cts)
         })
         .catch(error => {
           reject(error)
@@ -84,8 +96,14 @@ const actions = {
       loadOrgTypes()
         .then(response => {
           const { data } = response
-          commit('SET_ORG_TYPE', data)
-          resolve(data)
+          const cts = []
+          if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+              cts.push({ key: data[i].govCode, display_name: data[i].name })
+            }
+          }
+          commit('SET_ORG_TYPE', cts)
+          resolve(cts)
         })
         .catch(error => {
           reject(error)
@@ -99,8 +117,14 @@ const actions = {
       loadCompanyPositions()
         .then(response => {
           const { data } = response
-          commit('SET_COMPANY_POSTIONS', data)
-          resolve(data)
+          const cts = []
+          if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+              cts.push({ key: data[i].govCode, display_name: data[i].name })
+            }
+          }
+          commit('SET_COMPANY_POSTIONS', cts)
+          resolve(cts)
         })
         .catch(error => {
           reject(error)

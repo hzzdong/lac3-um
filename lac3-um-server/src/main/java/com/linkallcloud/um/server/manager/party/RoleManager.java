@@ -1,6 +1,5 @@
 package com.linkallcloud.um.server.manager.party;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,8 +17,6 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.domain.sys.Area;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.IRoleManager;
 import com.linkallcloud.um.service.party.ICompanyService;
 import com.linkallcloud.um.service.party.IRoleService;
@@ -184,68 +181,4 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
 		return tree;
 	}
 
-	@Override
-	public PermedAreaVo findPermedRoleAppAreas(Trace t, Long parentAreaId, Long companyId, Long roleId, Long appId) {
-		Long[] permedItemIds = service().findPermedAreaIds(t, roleId, appId);
-
-		PermedAreaVo result = null;
-		if (parentAreaId != null && parentAreaId.longValue() > 0) {
-			Long companyRootAreaId = getCompanyAreaRootId4Role(t, companyId);// getRoleAreaRootId(t, roleId, appId);
-			if (parentAreaId.equals(companyRootAreaId)) {
-				result = findCompanyValidAreaResource4Role(t, companyId);// findRoleValidAreaResource(t, roleId, appId);
-			} else {
-				result = areaService.findValidAreaResourceByParent(t, parentAreaId);
-			}
-		} else {
-			if (permedItemIds != null && permedItemIds.length > 0) {
-				Area area = areaService.fetchById(t, permedItemIds[0]);
-				parentAreaId = area.getParentId();
-				Long companyRootAreaId = getCompanyAreaRootId4Role(t, companyId);// getRoleAreaRootId(t, roleId, appId);
-				if (parentAreaId.equals(companyRootAreaId)) {
-					result = findCompanyValidAreaResource4Role(t, companyId);// findRoleValidAreaResource(t, roleId,
-																				// appId);
-				} else {
-					result = areaService.findValidAreaResourceByParent(t, parentAreaId);
-				}
-			} else {
-				result = findCompanyValidAreaResource4Role(t, companyId);// findRoleValidAreaResource(t, roleId, appId);
-			}
-		}
-
-		if (result.getAreaNodes() != null && result.getAreaNodes().size() > 0 && permedItemIds != null
-				&& permedItemIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedItemIds);
-			checkMenus(t, result.getAreaNodes(), pmids);
-		}
-		return result;
-	}
-
-	protected PermedAreaVo assemblePermedAreaVo(Trace t, Long parentAreaId, List<Area> areas) {
-		PermedAreaVo result = new PermedAreaVo();
-		result.setParentAreaId(parentAreaId);
-		if (0L != result.getParentAreaId()) {
-			Area parent = areaService.fetchById(t, result.getParentAreaId());
-			if (parent != null) {
-				result.setParentAreaName(parent.getName());
-			}
-		} else {
-			result.setParentAreaName("中华人民共和国");
-		}
-
-		if (areas != null && !areas.isEmpty()) {
-			List<Tree> anodes = new ArrayList<>();
-			for (int i = 0; i < areas.size(); i++) {
-				Tree tn = areas.get(i).toTreeNode();
-				tn.setpId(null);
-				anodes.add(tn);
-			}
-			result.setAreaNodes(Trees.filterTreeNode(anodes));
-		}
-		return result;
-	}
-
-//    @Override
-//    public List<T> findCompanyRoles4Me(Trace t, long userId) {
-//        return service().findCompanyRoles4Me(t, userId);
-//    }
 }

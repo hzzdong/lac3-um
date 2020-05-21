@@ -5,11 +5,11 @@
         <div class="filter-container tool-bar">
           <el-button type="primary" icon="el-icon-close" title="关闭" circle plain @click="onClose()" />
           <el-button type="primary" icon="el-icon-refresh" title="刷新" circle plain @click="onRefresh()" />
-          <el-button v-if="user.status !== 8 && checkPermission(['selfkh_user_edit', 'selfkh_user_roles'])" type="success" icon="el-icon-edit" title="编辑" circle @click="toUpdateUser()" />
-          <el-button v-if="user.status === 0 && checkPermission(['selfkh_user_edit'])" type="warning" icon="el-icon-lock" title="禁用" circle @click="toChangeUserStatus(1)" />
-          <el-button v-if="user.status === 1 && checkPermission(['selfkh_user_edit'])" type="warning" icon="el-icon-unlock" title="启用" circle @click="toChangeUserStatus(0)" />
-          <el-button v-if="user.status !== 8 && checkPermission(['selfkh_user_edit'])" type="warning" icon="el-icon-user" title="离职" circle @click="toChangeUserStatus(8)" />
-          <el-button v-if="checkPermission(['selfkh_user_del'])" type="danger" icon="el-icon-delete" title="删除" circle @click="onDeleteUser()" />
+          <el-button v-if="user.status !== 8 && checkPermission(['yw_user_edit', 'yw_user_roles'])" type="success" icon="el-icon-edit" title="编辑" circle @click="toUpdateUser()" />
+          <el-button v-if="user.status === 0 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-lock" title="禁用" circle @click="toChangeUserStatus(1)" />
+          <el-button v-if="user.status === 1 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-unlock" title="启用" circle @click="toChangeUserStatus(0)" />
+          <el-button v-if="user.status !== 8 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-user" title="离职" circle @click="toChangeUserStatus(8)" />
+          <el-button v-if="checkPermission(['yw_user_del'])" type="danger" icon="el-icon-delete" title="删除" circle @click="onDeleteUser()" />
         </div>
         <aside style="margin-top:15px;">
           <i class="el-icon-info" /> 用户视图。您可以通过选择本视图右侧的页签查看或编辑相关功能信息。
@@ -64,6 +64,18 @@
             </el-col>
           </el-row>
           <el-row>
+            <el-col :span="12">
+              <el-form-item label="创建时间:" prop="createTime">
+                <span class="el-span_view">{{ user.createTime }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="最后更新:" prop="updateTime">
+                <span class="el-span_view">{{ user.updateTime }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="备注:">
                 <el-input v-model="user.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" class="el-textarea_view" />
@@ -87,7 +99,7 @@
           <el-table-column label="角色名称" width="250px" prop="name" sortable>
             <template slot-scope="{row}">
               <span v-if="checkPermission(['selfkh_perm_role']) === false">{{ row.name }}</span>
-              <router-link v-if="checkPermission(['selfkh_perm_role']) === true" :to="'/Role/role-view/'+row.id+'/'+row.uuid" class="link-type">
+              <router-link v-if="checkPermission(['selfkh_perm_role']) === true" :to="'/Role/yw-role-view/'+row.id+'/'+row.uuid" class="link-type">
                 <span>{{ row.name }}</span>
               </router-link>
             </template>
@@ -103,7 +115,7 @@
           <el-input v-model="jz.listQuery.rules.destOrgName.fv" placeholder="兼职机构 模糊匹配" style="width: 150px;" class="filter-item" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleJzFilter" />
           <el-button
-            v-if="user.status !== 8 && checkPermission(['selfkh_user_edit'])"
+            v-if="user.status !== 8 && checkPermission(['yw_user_edit'])"
             class="filter-item"
             style="margin-left: 10px; float: right;"
             type="primary"
@@ -148,7 +160,7 @@
               <span>{{ scope.row.remark }}</span>
             </template>
           </el-table-column>
-          <el-table-column v-if="user.status !== 8 && checkPermission(['selfkh_user_edit'])" label="操作" width="70px">
+          <el-table-column v-if="user.status !== 8 && checkPermission(['yw_user_edit'])" label="操作" width="70px">
             <template slot-scope="scope">
               <el-button type="danger" size="mini" icon="el-icon-delete" title="取消兼职" @click="removeJzUser(scope.row)" />
             </template>
@@ -276,7 +288,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-permission="['selfkh_user_edit']" type="primary" @click="onUpdateUser()">保存</el-button>
+        <el-button v-permission="['yw_user_edit']" type="primary" @click="onUpdateUser()">保存</el-button>
       </div>
     </el-dialog>
 
@@ -326,20 +338,20 @@
 
 <script>
 import { fetchById, updateUser, deleteUser, changeUserStatus, getJzPageOfUser, addPartTimeJob, removePartTimeJob } from '@/api/user'
-import { findCompanyRoles, findUserRoles } from '@/api/khrole'
+import { findCompanyRoles, findUserRoles } from '@/api/ywrole'
 import { validateMobile } from '@/utils/validate'
 import { sheetClose, sheetRefresh } from '@/utils'
 import md5 from 'js-md5'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import waves from '@/directive/waves' // waves directive
 import { userStatusOptions, userTypeOptions } from '@/filters'
-import LacUserSingleSelect from '@/views/yw-user/components/UserSingleSelect'
-import LacOrgSingleSelect from '@/views/yw-company/components/OrgSingleSelect'
+import LacUserSingleSelect from '@/views/yw-user/components/user-single-select'
+import LacOrgSingleSelect from '@/views/yw-company/components/org-single-select'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 
 export default {
-  name: 'UserDetail',
+  name: 'YwUserDetail',
   components: {
     Pagination,
     LacUserSingleSelect,
@@ -689,10 +701,10 @@ export default {
       this.jz.user.parentName = org.name
       if (org.id > 0) {
         this.jz.user.parentId = org.id
-        this.jz.user.parentClass = 'KhDepartment'
+        this.jz.user.parentClass = 'YwDepartment'
       } else {
         this.jz.user.parentId = org.id.substring(1)
-        this.jz.user.parentClass = 'KhCompany'
+        this.jz.user.parentClass = 'YwCompany'
       }
       this.os.dialogFormVisible = false
     },

@@ -26,10 +26,8 @@ import com.linkallcloud.um.domain.party.User;
 import com.linkallcloud.um.domain.sys.Account;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Area;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.exception.AccountException;
 import com.linkallcloud.um.exception.ArgException;
-import com.linkallcloud.um.exception.AuthException;
 import com.linkallcloud.um.server.dao.party.ICompanyDao;
 import com.linkallcloud.um.server.dao.party.IDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IUserDao;
@@ -54,7 +52,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	protected abstract DD getDepartmentDao();
-	
 
 	@Transactional(readOnly = false)
 	@Override
@@ -63,47 +60,31 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		return retBool(rows);
 	}
 
-
 	@Override
 	public List<T> findSubCompanies(Trace t, Long companyId) {
 		return dao().findByParent(t, companyId);
 	}
 
 	@Override
-	public Long getCompanyAreaRootId(Trace t, Long companyId, Long appId) {
-		T company = dao().fetchById(t, companyId);
-		if (company.isTopParent()) {
-			return getCompanyAreaRootIdBySystemConfig(t, companyId);
-		} else {
-			Long[] permedItemIds = findPermedCompanyAppAreas(t, companyId, appId);
-			if (permedItemIds != null && permedItemIds.length > 0) {
-				Area area = areaDao.fetchById(t, permedItemIds[0]);
-				return area.getParentId();
-			} else {
-				throw new AuthException("100001", "请先给单位区域授权后再进行此操作");
-			}
-		}
-	}
-
-	@Override
 	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
 		T company = dao().fetchById(t, companyId);
-		if (company.isTopParent()) {
-			Long[] companyAreaRootIds = new Long[0];
-			Long areaId = getCompanyAreaRootIdBySystemConfig(t, companyId);
-			if (areaId != null) {
-				companyAreaRootIds = new Long[1];
-				companyAreaRootIds[0] = areaId;
-			}
-			return companyAreaRootIds;
-		} else {
-			Long[] permedItemIds = findPermedCompanyAppAreas(t, companyId, appId);
-			if (permedItemIds != null && permedItemIds.length > 0) {
-				return permedItemIds;
-			} else {
-				throw new AuthException("100001", "请先给单位区域授权后再进行此操作");
-			}
-		}
+//		if (company.isTopParent()) {
+//			Long[] companyAreaRootIds = new Long[0];
+//			Long areaId = getCompanyAreaRootIdBySystemConfig(t, companyId);
+//			if (areaId != null) {
+//				companyAreaRootIds = new Long[1];
+//				companyAreaRootIds[0] = areaId;
+//			}
+//			return companyAreaRootIds;
+//		} else {
+//			Long[] permedItemIds = findPermedCompanyAppAreas(t, companyId, appId);
+//			if (permedItemIds != null && permedItemIds.length > 0) {
+//				return permedItemIds;
+//			} else {
+//				throw new AuthException("100001", "请先给单位区域授权后再进行此操作");
+//			}
+//		}
+		return null;
 	}
 
 	@Override
@@ -126,30 +107,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 			return true;
 		}
 		return false;
-	}
-
-	protected PermedAreaVo assemblePermedAreaVo(Trace t, Long parentAreaId, List<Area> areas) {
-		PermedAreaVo result = new PermedAreaVo();
-		result.setParentAreaId(parentAreaId);
-		if (0L != result.getParentAreaId()) {
-			Area parent = areaDao.fetchById(t, result.getParentAreaId());
-			if (parent != null) {
-				result.setParentAreaName(parent.getName());
-			}
-		} else {
-			result.setParentAreaName("中华人民共和国");
-		}
-
-		if (areas != null && !areas.isEmpty()) {
-			List<Tree> anodes = new ArrayList<>();
-			for (int i = 0; i < areas.size(); i++) {
-				Tree tn = areas.get(i).toTreeNode();
-				tn.setpId(null);
-				anodes.add(tn);
-			}
-			result.setAreaNodes(Trees.filterTreeNode(anodes));
-		}
-		return result;
 	}
 
 	@Override
@@ -321,7 +278,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	private List<Tree> getSubCompanyChildren(Trace t, T company) {
 		String rootId = "-" + company.getId();
 		List<Tree> nodes = new ArrayList<Tree>();
-		
+
 		/* 所有子公司 */
 		List<T> allCompanies = findAllCompaniesByParentCode(t, company.getCode());
 		if (allCompanies != null && !allCompanies.isEmpty()) {
@@ -381,66 +338,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		return false;
 	}
 
-	// @Override
-	// public Tree getCompanyOrgTree(Trace t, Long companyId) {
-	// T company = dao().fetchById(t, companyId);
-	// if (company == null) {
-	// return null;
-	// }
-	//
-	// Tree root = new Tree("COM-" + company.getId(), company.getUuid(), null,
-	// company.getName(), company.getGovCode(),
-	// String.valueOf(Domains.ORG_COMPANY), company.getStatus());
-	//
-	// /* 直接子公司 */
-	// List<T> directCompanies = findDirectCompaniesByParentId(t, companyId);
-	// if (directCompanies != null && !directCompanies.isEmpty()) {
-	// Trees.assembleDirectTreeNode(root, directCompanies, "COM-");
-	// }
-	//
-	// /* 部门树 */
-	// List<D> depts = getDepartmentDao().findCompanyDepartments(t, companyId);
-	// if (depts != null && !depts.isEmpty()) {
-	// CopyOnWriteArrayList<D> departments = new CopyOnWriteArrayList<D>(depts);
-	// depts.clear();
-	// // assembleDepartmentTree(root, departments);
-	// Trees.assembleTree(root, departments);
-	// }
-	//
-	// return root;
-	// }
-
-	// private void assembleDepartmentTree(Tree parent, CopyOnWriteArrayList<D>
-	// departments) {
-	// if (parent != null && departments != null) {
-	// for (D dep : departments) {
-	// if (parent.getType().equals(String.valueOf(Domains.ORG_COMPANY))) {
-	// if (dep.isTopParent()) {
-	// Tree child = new Tree(dep.getId().toString(), parent.getId(), dep.getName(),
-	// String.valueOf(Domains.ORG_DEPARTMENT));
-	// parent.addChild(child);
-	// departments.remove(dep);
-	// }
-	// } else {
-	// if (dep.getParentId() != null &&
-	// dep.getParentId().toString().equals(parent.getId())) {
-	// Tree child = new Tree(dep.getId().toString(), parent.getId(), dep.getName(),
-	// String.valueOf(Domains.ORG_DEPARTMENT));
-	// parent.addChild(child);
-	// departments.remove(dep);
-	// }
-	// }
-	// }
-	//
-	// if (parent.getChildren() != null && parent.getChildren().size() > 0 &&
-	// departments.size() > 0) {
-	// for (Tree item : parent.getChildren()) {
-	// assembleDepartmentTree(item, departments);
-	// }
-	// }
-	// }
-	// }
-
 	public boolean checkUserExist(Trace t, boolean isNew, T entity) {
 		if (isNew) {
 			if (!Strings.isBlank(entity.getJphone())) {
@@ -498,6 +395,17 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	 * @param entity
 	 */
 	protected void updateAreaFieldsIfModified(Trace t, T entity) {
+		if (entity == null) {
+			return;
+		}
+		T dbEntity = dao().fetchById(t, entity.getId());
+		if (dbEntity == null) {
+			return;
+		}
+
+		if (!dbEntity.getAreaId().equals(entity.getAreaId())) {
+			updateAreaFields(t, entity);
+		}
 	}
 
 	/**
@@ -507,6 +415,23 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	 * @param entity
 	 */
 	protected void updateAreaFields(Trace t, T entity) {
+		if (entity == null || entity.getAreaId() == null || entity.getAreaId().longValue() <= 0) {
+			return;
+		}
+		Area area = areaDao.fetchById(t, entity.getAreaId());
+		if (area != null) {
+			entity.setLevel(area.getLevel());
+			String[] aids = area.getCode().split(area.codeTag());
+			if (aids != null && aids.length > 0) {
+				for (int i = 0; i < aids.length; i++) {
+					String aid = aids[i];
+					if (!Strings.isBlank(aid)) {
+						entity.setAreaLevelId(i + 1, Long.parseLong(aid));
+					}
+				}
+			}
+			dao().updateAreaFields(t, entity);
+		}
 	}
 
 	@Override
@@ -603,6 +528,53 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		Account account = new Account(user.getName(), user.getMobile(), user.getAccount(), user.getPassword(),
 				user.getSalt());
 		accountDao.insert(t, account);
+	}
+
+	private List<Application> findAppsByUuidIds(Trace t, Map<String, Long> appUuidIds) {
+		List<Long> ids = Domains.parseIds(appUuidIds);
+		if (ids != null && ids.size() > 0) {
+			List<Application> entities = applicationDao.findByIds(t, ids);
+			if (entities != null && !entities.isEmpty()) {
+				List<Application> results = new ArrayList<Application>();
+				for (Application entity : entities) {
+					if (entity.getUuid() != null && entity.getId().equals(appUuidIds.get(entity.getUuid()))) {
+						results.add(entity);
+					}
+				}
+				return results;
+			}
+		}
+		return null;
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		T khCompany = fetchByIdUuid(t, id, uuid);
+		if (khCompany != null) {
+			List<Application> checkedEntities = findAppsByUuidIds(t, appUuidIds);
+			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == appUuidIds.size()) {
+				List<Long> appIds = Domains.parseIds(appUuidIds);
+				int rows = dao().addApps(t, id, appIds);
+				return retBool(rows);
+			}
+		}
+		return false;
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		T khCompany = fetchByIdUuid(t, id, uuid);
+		if (khCompany != null) {
+			List<Application> checkedEntities = findAppsByUuidIds(t, appUuidIds);
+			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == appUuidIds.size()) {
+				List<Long> appIds = Domains.parseIds(appUuidIds);
+				int rows = dao().removeApps(t, id, appIds);
+				return retBool(rows);
+			}
+		}
+		return false;
 	}
 
 }

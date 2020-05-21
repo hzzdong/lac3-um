@@ -76,9 +76,18 @@
           <el-form-item label="登出地址:" prop="logout">
             <span class="el-span_view">{{ app.logout }}</span>
           </el-form-item>
-          <el-form-item label="创建时间:" prop="createTime">
-            <span class="el-span_view">{{ app.createTime }}</span>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="创建时间:" prop="createTime">
+                <span class="el-span_view">{{ app.createTime }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="最后更新:" prop="updateTime">
+                <span class="el-span_view">{{ app.updateTime }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item label="备注:">
             <el-input v-model="app.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" class="el-textarea_view" />
           </el-form-item>
@@ -336,6 +345,30 @@
         </el-table>
         <pagination v-show="operations.total>0" :total="operations.total" :page.sync="operations.listQuery.page" :limit.sync="operations.listQuery.limit" @pagination="findAppMenuOperations" />
       </el-tab-pane>
+      <el-tab-pane label="应用图标上传" name="tabAppIco">
+        <aside>
+          <i class="el-icon-info" /> 应用[ <span>{{ app.name }}</span> ] 图标上传。
+        </aside>
+        <div class="filter-container">
+          <span>
+            <my-upload
+              v-model="show"
+              field="file"
+              :width="300"
+              :height="300"
+              url="/fss/pub/Archive/upload"
+              :params="params"
+              :headers="headers"
+              img-format="png"
+              @crop-success="cropSuccess"
+              @crop-upload-success="cropUploadSuccess"
+              @crop-upload-fail="cropUploadFail"
+            />
+            <el-avatar :size="100" :src="app.ico" />
+            <el-button type="primary" icon="el-icon-upload" circle title="应用图标上传" @click="toggleShow()" />
+          </span>
+        </div>
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="应用编辑" :visible.sync="dialogVisible">
@@ -383,12 +416,12 @@
         <el-form-item label="备注">
           <el-input v-model="entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
         </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="onAppUpdate()">保存</el-button>
-      </div>
-    </el-dialog>
+        </el-form-item>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="onAppUpdate()">保存</el-button>
+        </div>
+      </el-form></el-dialog>
 
     <el-dialog title="新增子菜单" :visible.sync="menu.dialogVisible" width="50%">
       <el-form ref="menuForm" :rules="menu.rules" :model="menu.entity" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">
@@ -468,7 +501,7 @@
 </template>
 
 <script>
-import { fetchById, updateApp, deleteApp, changeAppStatus, updateAppInterface, updateAppMappingInterface } from '@/api/application'
+import { fetchById, updateApp, deleteApp, changeAppStatus, updateAppInterface, updateAppMappingInterface, saveAppIco } from '@/api/application'
 import { loadAppMenuTree, saveMenu, getMenuOperationPage, saveOperation, deleteOperation } from '@/api/menu'
 import { sheetClose, sheetRefresh, autoChildren } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -478,10 +511,11 @@ import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 import LacMenuSingleSelect from '@/views/menu/components/menu-single-select'
 import { statusOptions, appTypeOptions, appClazz, accountMappringTypes, screenTypes, signAlgs, encAlgs, menuTypes } from '@/filters'
+import myUpload from 'vue-image-crop-upload'
 
 export default {
   name: 'AppDetail',
-  components: { Pagination, LacMenuSingleSelect },
+  components: { Pagination, LacMenuSingleSelect, 'my-upload': myUpload },
   directives: { waves, permission },
   data() {
     return {
@@ -576,6 +610,17 @@ export default {
         appId: 0,
         appUuid: '',
         withButtons: true
+      },
+      /* ICO */
+      show: false,
+      params: {
+        appId: '1',
+        appName: '用户中心',
+        objectId: '',
+        objectType: '10003'
+      },
+      headers: {
+        smail: '*_~'
       }
 
     }
@@ -598,6 +643,10 @@ export default {
         that.entity = Object.assign({ dataType: 'Object' }, that.app)
         that.ms.appId = that.app.id
         that.ms.appUuid = that.app.uuid
+        that.params.objectId = that.app.uuid
+        if (that.app.ico) {
+          that.app.ico = that.$store.state.settings.fssBaseUrl + that.app.ico
+        }
         that.setTagsViewTitle()
         that.setPageTitle()
       }).catch(err => {
@@ -672,8 +721,7 @@ export default {
           that.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
           that.onClose()
         }).catch((err) => console.log(err))
-      }).catch(() => {
-      })
+      }).catch((err) => console.log(err))
     },
     onClose() {
       sheetClose(this)
@@ -870,6 +918,51 @@ export default {
           that.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
         }).catch(err => console.log(err))
       }).catch(err => console.log(err))
+    },
+    /* ICO */
+    toggleShow() {
+      this.show = true
+    },
+    /**
+			 * crop success
+			 *
+			 * [param] imgDataUrl
+			 * [param] field
+			 */
+    cropSuccess(imgDataUrl, field) {
+      console.log('-------- crop success --------')
+      this.app.ico = imgDataUrl
+    },
+    /**
+			 * upload success
+			 *
+			 * [param] jsonData   服务器返回数据，已进行json转码
+			 * [param] field
+			 */
+    cropUploadSuccess(jsonData, field) {
+      const that = this
+      console.log('-------- upload success --------')
+      console.log(jsonData)
+      console.log('field: ' + field)
+      if (jsonData && jsonData.code === '0') {
+        const req = { id: that.app.id, uuid: that.app.uuid, type: jsonData.data.path }
+        saveAppIco(req).then(() => {
+          that.show = false
+          that.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
+        }).catch(() => {
+        })
+      }
+    },
+    /**
+			 * upload fail
+			 *
+			 * [param] status    server api return error status, like 500
+			 * [param] field
+			 */
+    cropUploadFail(status, field) {
+      console.log('-------- upload fail --------')
+      console.log(status)
+      console.log('field: ' + field)
     }
 
   }

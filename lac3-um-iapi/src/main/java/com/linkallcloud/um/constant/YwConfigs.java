@@ -13,7 +13,7 @@ public class YwConfigs {
 
 	public static List<YwSystemConfig> defaultConfigs(Trace t) {
 		List<String> keys = Arrays.asList(Consts.CONFIG_PERMISSION_ORG, Consts.CONFIG_PERMISSION_AREA,
-				Consts.CONFIG_AREAS, Consts.CONFIG_LOGO, Consts.CONFIG_MANAGE_DEPARTMENT, Consts.CONFIG_ZZD, Consts.CONFIG_COMPANY_CLASS);
+				Consts.CONFIG_AREAS, Consts.CONFIG_LOGO, Consts.CONFIG_MANAGE_DEPARTMENT, Consts.CONFIG_ZZD);// ,Consts.CONFIG_COMPANY_CLASS
 		List<YwSystemConfig> entities = new ArrayList<YwSystemConfig>();
 		for (String key : keys) {
 			entities.add(defaultConfig(t, key));
@@ -35,9 +35,10 @@ public class YwConfigs {
 				return new YwSystemConfig(Consts.CONFIG_MANAGE_DEPARTMENT, "管理部门模式", "no", "是否启用管理部门模式");
 			} else if (Consts.CONFIG_ZZD.equals(key)) {
 				return new YwSystemConfig(Consts.CONFIG_ZZD, "浙政钉对接", "no", "是否启用浙政钉对接");
-			} else if (Consts.CONFIG_COMPANY_CLASS.equals(key)) {
-				return new YwSystemConfig(Consts.CONFIG_COMPANY_CLASS, "单位类型", "kh_xx", "请选择单位类型");
 			}
+//			else if (Consts.CONFIG_COMPANY_CLASS.equals(key)) {
+//				return new YwSystemConfig(Consts.CONFIG_COMPANY_CLASS, "单位类型", "kh_xx", "请选择单位类型");
+//			}
 		}
 		return null;
 	}

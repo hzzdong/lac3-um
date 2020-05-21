@@ -1,6 +1,5 @@
 package com.linkallcloud.um.server.manager.party;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,13 +11,10 @@ import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.domain.sys.Area;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.iapi.party.ICompanyManager;
 import com.linkallcloud.um.service.party.ICompanyService;
 import com.linkallcloud.um.service.party.IDepartmentService;
@@ -48,47 +44,8 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public Long getCompanyAreaRootId(Trace t, Long companyId, Long appId) {
-		return service().getCompanyAreaRootId(t, companyId, appId);
-	}
-
-	@Override
 	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
 		return service().getCompanyAppAreaRootIds(t, companyId, appId);
-	}
-
-	@Override
-	public List<Tree> getDefinedCompanyAreas(Trace t, Long companyId, Long appId) {
-		Long areaRootId = 0L;
-		T company = service().fetchById(t, companyId);
-		if (company.isTopParent()) {
-			areaRootId = service().getCompanyAreaRootIdBySystemConfig(t, companyId);
-			if (areaRootId != null && areaRootId.longValue() > 0) {
-				return areaService.findChildrenTreeNodes(t, areaRootId, new Equal("status", 0));
-			} else {
-				return areaService.getTreeNodes(t, true);
-			}
-		} else {
-			List<Area> permedAreas = areaService.findPermedKhCompanyAppAreas(t, companyId, appId);
-			List<Tree> result = new ArrayList<>();
-			if (permedAreas != null && !permedAreas.isEmpty()) {
-				Area rootArea = areaService.fetchById(t, permedAreas.get(0).getParentId());
-
-				Tree root = rootArea.toTreeNode();
-				root.setpId(null);
-				root.setOpen(true);
-
-				for (Area pa : permedAreas) {
-					List<Area> areas = areaService.findChildren(t, pa.getCode(), new Equal("status", 0));
-					for (Area area : areas) {
-						Tree node = area.toTreeNode();
-						result.add(node);
-					}
-				}
-				result.add(root);
-			}
-			return result;
-		}
 	}
 
 	@Override
@@ -139,42 +96,6 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public PermedAreaVo findPermedCompanyAppAreas(Trace t, Long myCompanyId, Long forCompanyId, Long parentAreaId,
-			Long appId) {
-		Long[] permedItemIds = service().findPermedCompanyAppAreas(t, forCompanyId, appId);
-
-		PermedAreaVo result = null;
-		if (parentAreaId != null && parentAreaId.longValue() > 0) {
-			Long companyRootAreaId = service().getCompanyAreaRootId(t, myCompanyId, appId);
-			if (parentAreaId.equals(companyRootAreaId)) {
-				result = service().findCompanyValidAreaResource(t, myCompanyId, appId);
-			} else {
-				result = areaService.findValidAreaResourceByParent(t, parentAreaId);
-			}
-		} else {
-			if (permedItemIds != null && permedItemIds.length > 0) {
-				Area area = areaService.fetchById(t, permedItemIds[0]);
-				parentAreaId = area.getParentId();
-				Long companyRootAreaId = service().getCompanyAreaRootId(t, myCompanyId, appId);
-				if (parentAreaId.equals(companyRootAreaId)) {
-					result = service().findCompanyValidAreaResource(t, myCompanyId, appId);
-				} else {
-					result = areaService.findValidAreaResourceByParent(t, parentAreaId);
-				}
-			} else {
-				result = service().findCompanyValidAreaResource(t, myCompanyId, appId);
-			}
-		}
-
-		if (result.getAreaNodes() != null && result.getAreaNodes().size() > 0 && permedItemIds != null
-				&& permedItemIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedItemIds);
-			checkMenus(t, result.getAreaNodes(), pmids);
-		}
-		return result;
-	}
-
-	@Override
 	public Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
 			Map<String, Long> uuidIds) {
 		return service().saveCompanyAppAreaPerm(t, companyId, companyUuid, appId, appUuid, uuidIds);
@@ -221,6 +142,16 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	@Override
 	public Tree getCompanyTree(Trace t, String treeType, Sid companyId) {
 		return service().getCompanyTree(t, treeType, companyId);
+	}
+
+	@Override
+	public Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		return service().addApps(t, id, uuid, appUuidIds);
+	}
+
+	@Override
+	public Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
+		return service().removeApps(t, id, uuid, appUuidIds);
 	}
 
 }

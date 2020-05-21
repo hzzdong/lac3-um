@@ -1,6 +1,5 @@
 package com.linkallcloud.um.server.activity.sys;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import com.linkallcloud.core.query.rule.Less;
 import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.sys.Area;
-import com.linkallcloud.um.dto.base.PermedAreaVo;
 import com.linkallcloud.um.server.dao.sys.IAreaDao;
 
 @Component
@@ -68,22 +66,10 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	@Override
 	public List<Tree> getTreeNodes(Trace t, boolean valid) {
 		List<Tree> result = super.getTreeNodes(t, valid);
-		Tree root = new Tree(null, null, "中华人民共和国");
+		Tree root = Trees.vroot("中华人民共和国");
 		root.setOpen(true);
-		// result = Trees.assembleChildren2Parent(result, root);
 		Trees.assembleTree(root, result);
 		return root.getChildren();
-	}
-
-	// @Cacheable(value = "AreaChildrenTreeNodes", key = "#areaRootId + \"-\" +
-	// #statusRule.toString()")
-	@Override
-	public List<Tree> findChildrenTreeNodes(Trace t, Long areaRootId, QueryRule statusRule) {
-		Tree root = findChildrenTree(t, areaRootId, statusRule);
-		if (root != null) {
-			return root.getChildren();
-		}
-		return null;
 	}
 
 	@Override
@@ -144,23 +130,6 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 		return this.find(t, qry);
 	}
 
-	// @Cacheable(value = "AreaDirectChildrenTreeNodes", key = "#parentId")
-	@Override
-	public List<Tree> findDirectChildrenTreeNodes(Trace t, Long parentId, QueryRule statusRule) {
-		List<Tree> result = new ArrayList<>();
-		if (parentId != null) {
-			List<Area> areas = dao().findByParent(t, parentId, statusRule);
-			if (areas != null && !areas.isEmpty()) {
-				for (Area area : areas) {
-					Tree node = area.toTreeNode();
-					node.setpId(null);
-					result.add(node);
-				}
-			}
-		}
-		return result;
-	}
-
 	// @Cacheable(value = "AreaDirectChildren", key = "#parentId")
 	@Override
 	public List<Area> findDirectChildren(Trace t, Long parentId, QueryRule statusRule) {
@@ -186,36 +155,4 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 		return dao().findPermedYwCompanyAppAreas(t, ywCompanyId, appId);
 	}
 
-	@Override
-	public PermedAreaVo findValidAreaResourceByParent(Trace t, Long parentAreaId) {
-		if (parentAreaId == null) {
-			return null;
-		}
-		List<Area> areas = areaDao.findByParent(t, parentAreaId, new Equal("status", 0));
-		return assemblePermedAreaVo(t, parentAreaId, areas);
-	}
-
-	protected PermedAreaVo assemblePermedAreaVo(Trace t, Long parentAreaId, List<Area> areas) {
-		PermedAreaVo result = new PermedAreaVo();
-		result.setParentAreaId(parentAreaId);
-		if (0L != result.getParentAreaId()) {
-			Area parent = areaDao.fetchById(t, result.getParentAreaId());
-			if (parent != null) {
-				result.setParentAreaName(parent.getName());
-			}
-		} else {
-			result.setParentAreaName("中华人民共和国");
-		}
-
-		if (areas != null && !areas.isEmpty()) {
-			List<Tree> anodes = new ArrayList<>();
-			for (int i = 0; i < areas.size(); i++) {
-				Tree tn = areas.get(i).toTreeNode();
-				tn.setpId(null);
-				anodes.add(tn);
-			}
-			result.setAreaNodes(Trees.filterTreeNode(anodes));
-		}
-		return result;
-	}
 }

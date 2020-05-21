@@ -186,7 +186,7 @@
 		update 
 			um_kh_role 
 		set 
-			name=#{entity.name},sort=#{entity.sort},type=#{entity.type},ico=#{entity.ico},remark=#{entity.remark},updateTime=now()
+			name=#{entity.name},sort=#{entity.sort},ico=#{entity.ico},remark=#{entity.remark},updateTime=now()
 			<if test="entity.parentId != null"> ,parentId=#{entity.parentId},parentClass=#{entity.parentClass}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>
@@ -194,6 +194,15 @@
 			<if test="entity.level != null and entity.level > 0"> ,level=#{entity.level}</if>
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateStatus">
+		update 
+			um_kh_role 
+		set 
+			status=#{status},updateTime=now()
+		where 
+			id=#{id} and uuid=#{uuid}
 	</update>
 
 	<delete id="delete">

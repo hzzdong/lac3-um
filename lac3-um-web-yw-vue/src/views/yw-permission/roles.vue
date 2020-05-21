@@ -8,7 +8,7 @@
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" plain @click="handleFilter" />
       <el-button
-        v-permission="['selfkh_perm_role']"
+        v-permission="['yw_perm_role']"
         class="filter-item"
         style="float: right;"
         type="primary"
@@ -36,8 +36,8 @@
       </el-table-column>
       <el-table-column label="角色名称" width="250px" prop="name" sortable>
         <template slot-scope="{row}">
-          <span v-if="checkPermission(['selfkh_perm_role']) === false">{{ row.name }}</span>
-          <router-link v-if="checkPermission(['selfkh_perm_role']) === true" :to="'/Role/role-view/'+row.id+'/'+row.uuid" class="link-type">
+          <span v-if="checkPermission(['yw_perm_role']) === false">{{ row.name }}</span>
+          <router-link v-if="checkPermission(['yw_perm_role']) === true" :to="'/role/yw-role-view/'+row.id+'/'+row.uuid" class="link-type">
             <span>{{ row.name }}</span>
           </router-link>
         </template>
@@ -71,8 +71,12 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="temp.status" size="small">
-            <el-radio-button label="0">正常</el-radio-button>
-            <el-radio-button label="1">禁用</el-radio-button>
+            <el-radio-button v-for="item in statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="等级" prop="level">
+          <el-radio-group v-model="temp.level" size="small">
+            <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="排序号" prop="sort">
@@ -91,15 +95,15 @@
 </template>
 
 <script>
-import { findCompanyRolePage, createKhRole } from '@/api/khrole'
+import { findCompanyRolePage, createYwRole } from '@/api/ywrole'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { statusOptions } from '@/filters'
+import { statusOptions, levelOptions } from '@/filters'
 
 export default {
-  name: 'KhRole',
+  name: 'YwRole',
   components: { Pagination },
   directives: { waves, permission },
   data() {
@@ -119,6 +123,7 @@ export default {
         orderby: { orderby: 'sort', order: 'asc' }
       },
       statusOptions: statusOptions(),
+      levelOptions: levelOptions(),
       temp: {
         id: undefined,
         name: '',
@@ -177,6 +182,7 @@ export default {
         name: '',
         govCode: '',
         status: 0,
+        level: 0,
         remark: ''
       }
     },
@@ -191,7 +197,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({ dataType: 'Object' }, this.temp)
-          createKhRole(tempData).then((response) => {
+          createYwRole(tempData).then((response) => {
             const tempData = Object.assign({}, response.data)
             this.list.unshift(tempData)
             this.dialogFormVisible = false

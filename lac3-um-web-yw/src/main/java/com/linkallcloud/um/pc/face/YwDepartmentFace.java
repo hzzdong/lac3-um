@@ -51,7 +51,7 @@ public class YwDepartmentFace extends BaseTreeFace<YwDepartment, IYwDepartmentMa
 	@Override
 	protected void doSave(Trace t, YwDepartment entity, SessionUser su) {
 		entity.setCompanyId(su.companyId());
-		if (!entity.getParentClass().equals(YwDepartment.class.getSimpleName()) || entity.getParentId() == null
+		if (!YwDepartment.class.getSimpleName().equals(entity.getParentClass()) || entity.getParentId() == null
 				|| entity.getParentId().longValue() == 0) {
 			entity.setParentClass(null);
 			entity.setParentId(0L);
@@ -97,7 +97,6 @@ public class YwDepartmentFace extends BaseTreeFace<YwDepartment, IYwDepartmentMa
 		}
 		return null;
 	}
-	
 
 	@Face(simple = true)
 	@RequestMapping(value = "/leaderPage", method = RequestMethod.POST)
@@ -121,6 +120,5 @@ public class YwDepartmentFace extends BaseTreeFace<YwDepartment, IYwDepartmentMa
 		Rel4OrgLeader leader = fr.getData();
 		return manager().deleteLeader(t, leader);
 	}
-
 
 }

@@ -71,27 +71,9 @@ public class AreaFace {
 	}
 
 	@Face(login = false)
-	@RequestMapping(value = "/findChildrenTreeNodesByParentCode", method = RequestMethod.POST)
-	public @ResponseBody Object findChildrenTreeNodesByParentCode(ParentCodeAreaRequest faceReq, Trace t) {
-		return areaManager.findChildrenTreeNodes(t, faceReq.getParentCode(), faceReq.getStatusRule());
-	}
-
-	@Face(login = false)
-	@RequestMapping(value = "/findChildrenTreeNodesByParentId", method = RequestMethod.POST)
-	public @ResponseBody Object findChildrenTreeNodesByParentId(ParentIdAreaRequest faceReq, Trace t) {
-		return areaManager.findChildrenTreeNodes(t, faceReq.getParentId(), faceReq.getStatusRule());
-	}
-
-	@Face(login = false)
 	@RequestMapping(value = "/findDirectChildren", method = RequestMethod.POST)
 	public @ResponseBody Object findDirectChildren(ParentIdAreaRequest faceReq, Trace t) {
 		return areaManager.findDirectChildren(t, faceReq.getParentId(), faceReq.getStatusRule());
-	}
-
-	@Face(login = false)
-	@RequestMapping(value = "/findDirectChildrenTreeNodes", method = RequestMethod.POST)
-	public @ResponseBody Object findDirectChildrenTreeNodes(ParentIdAreaRequest faceReq, Trace t) {
-		return areaManager.findDirectChildrenTreeNodes(t, faceReq.getParentId(), faceReq.getStatusRule());
 	}
 
 	@Face(login = false)

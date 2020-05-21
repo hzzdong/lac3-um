@@ -32,7 +32,7 @@
               <el-input v-model="listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" />
               <el-button
-                v-permission="['selfkh_user_add']"
+                v-permission="['yw_user_add']"
                 class="filter-item"
                 style="margin-left: 10px; float: right;"
                 type="primary"
@@ -59,8 +59,8 @@
               </el-table-column>
               <el-table-column label="姓名" width="160px" prop="name" sortable>
                 <template slot-scope="{row}">
-                  <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.name }}</span>
-                  <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
+                  <span v-if="checkPermission(['yw_user_view']) === false">{{ row.name }}</span>
+                  <router-link v-if="checkPermission(['yw_user_view']) === true" :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
                     <span>{{ row.name }}</span>
                   </router-link>
                   <el-tag v-if="row.type == 9">管</el-tag>
@@ -96,7 +96,7 @@
               <el-input v-model="jz.listQuery.rules.destOrgName.fv" placeholder="兼职机构 模糊匹配" style="width: 150px;" class="filter-item" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleJzFilter" />
               <el-button
-                v-permission="['selfkh_user_add']"
+                v-permission="['yw_user_add']"
                 class="filter-item"
                 style="margin-left: 10px; float: right;"
                 type="primary"
@@ -118,8 +118,8 @@
             >
               <el-table-column label="姓名" width="130px" prop="userName" sortable>
                 <template slot-scope="{row}">
-                  <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.userName }}</span>
-                  <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/User/user-view/'+row.userId+'/'+row.userUuid" class="link-type">
+                  <span v-if="checkPermission(['yw_user_view']) === false">{{ row.userName }}</span>
+                  <router-link v-if="checkPermission(['yw_user_view']) === true" :to="'/User/user-view/'+row.userId+'/'+row.userUuid" class="link-type">
                     <span>{{ row.userName }}</span>
                   </router-link>
                 </template>
@@ -144,7 +144,7 @@
                   <span>{{ scope.row.remark }}</span>
                 </template>
               </el-table-column>
-              <el-table-column v-if="checkPermission(['selfkh_user_del'])" label="操作" width="60px">
+              <el-table-column v-if="checkPermission(['yw_user_del'])" label="操作" width="60px">
                 <template slot-scope="scope">
                   <el-button type="danger" size="mini" icon="el-icon-delete" title="取消兼职" @click="removeJzUser(scope.row)" />
                 </template>
@@ -327,7 +327,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-permission="['selfkh_user_add']" type="primary" @click="createData()">保存</el-button>
+        <el-button v-permission="['yw_user_add']" type="primary" @click="createData()">保存</el-button>
       </div>
     </el-dialog>
 
@@ -349,7 +349,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="jz.dialogFormVisible = false">取消</el-button>
-        <el-button v-permission="['selfkh_user_add']" type="primary" @click="addJzUser()">保存</el-button>
+        <el-button v-permission="['yw_user_add']" type="primary" @click="addJzUser()">保存</el-button>
       </div>
     </el-dialog>
 
@@ -377,20 +377,20 @@
 
 <script>
 import { getPage, createUser, getJzPage, addPartTimeJob, removePartTimeJob } from '@/api/user'
-import { findCompanyRoles } from '@/api/khrole'
+import { findCompanyRoles } from '@/api/ywrole'
 import { getOrgTree } from '@/api/organization'
 import waves from '@/directive/waves' // waves directive
 import { validateMobile } from '@/utils/validate'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import md5 from 'js-md5'
-import LacUserSingleSelect from '@/views/yw-user/components/UserSingleSelect'
-import LacOrgSingleSelect from '@/views/yw-company/components/OrgSingleSelect'
+import LacUserSingleSelect from '@/views/yw-user/components/user-single-select'
+import LacOrgSingleSelect from '@/views/yw-company/components/org-single-select'
 import { userStatusOptions, userTypeOptions } from '@/filters'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 
 export default {
-  name: 'User',
+  name: 'YwUser',
   components: {
     Pagination,
     LacUserSingleSelect,
@@ -682,7 +682,7 @@ export default {
         id: undefined,
         uuid: '',
         parentId: this.tree.checkedNode.id,
-        parentClass: this.tree.checkedNode.id > 0 ? 'KhDepartment' : 'KhCompany',
+        parentClass: this.tree.checkedNode.id > 0 ? 'YwDepartment' : 'YwCompany',
         orgName: selectNode.name,
         name: '',
         account: '',
@@ -704,9 +704,9 @@ export default {
         return
       }
       if (this.tree.checkedNode.id > 0) {
-        this.getCompanyRoles(this.tree.checkedNode.id, 'KhDepartment')
+        this.getCompanyRoles(this.tree.checkedNode.id, 'YwDepartment')
       } else {
-        this.getCompanyRoles(this.tree.checkedNode.id.substring(1), 'KhCompany')
+        this.getCompanyRoles(this.tree.checkedNode.id.substring(1), 'YwCompany')
       }
       this.resetTemp()
       this.dialogFormVisible = true
@@ -735,10 +735,10 @@ export default {
     getJzList() {
       if (this.tree.checkedNode.id > 0) {
         this.jz.listQuery.rules.destOrgId.fv = this.tree.checkedNode.id
-        this.jz.listQuery.rules.destOrgClass.fv = 'KhDepartment'
+        this.jz.listQuery.rules.destOrgClass.fv = 'YwDepartment'
       } else {
         this.jz.listQuery.rules.destOrgId.fv = this.tree.checkedNode.id.substring(1)
-        this.jz.listQuery.rules.destOrgClass.fv = 'KhCompany'
+        this.jz.listQuery.rules.destOrgClass.fv = 'YwCompany'
       }
 
       this.jz.listLoading = true
@@ -769,10 +769,10 @@ export default {
       this.jz.user.parentName = this.tree.checkedNode.name
       if (this.tree.checkedNode.id > 0) {
         this.jz.user.parentId = this.tree.checkedNode.id
-        this.jz.user.parentClass = 'KhDepartment'
+        this.jz.user.parentClass = 'YwDepartment'
       } else {
         this.jz.user.parentId = this.tree.checkedNode.id.substring(1)
-        this.jz.user.parentClass = 'KhCompany'
+        this.jz.user.parentClass = 'YwCompany'
       }
       this.jz.dialogFormVisible = true
       this.$nextTick(() => {
@@ -797,10 +797,10 @@ export default {
       this.jz.user.parentName = org.name
       if (org.id > 0) {
         this.jz.user.parentId = org.id
-        this.jz.user.parentClass = 'KhDepartment'
+        this.jz.user.parentClass = 'YwDepartment'
       } else {
         this.jz.user.parentId = org.id.substring(1)
-        this.jz.user.parentClass = 'KhCompany'
+        this.jz.user.parentClass = 'YwCompany'
       }
       this.os.dialogFormVisible = false
     },
@@ -809,8 +809,8 @@ export default {
         if (valid) {
           const user = Object.assign({}, this.jz.user)
           addPartTimeJob(user).then((response) => {
-            if ((this.jz.user.parentClass === 'KhDepartment' && this.jz.user.parentId === this.tree.checkedNode.id) ||
-            (this.jz.user.parentClass === 'KhCompany' && ('-' + this.jz.user.parentId) === this.tree.checkedNode.id)) {
+            if ((this.jz.user.parentClass === 'YwDepartment' && this.jz.user.parentId === this.tree.checkedNode.id) ||
+            (this.jz.user.parentClass === 'YwCompany' && ('-' + this.jz.user.parentId) === this.tree.checkedNode.id)) {
               const tempData = Object.assign({}, response.data)
               this.jz.list.unshift(tempData)
             }
