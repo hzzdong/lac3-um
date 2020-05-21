@@ -416,7 +416,6 @@
         <el-form-item label="备注">
           <el-input v-model="entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
         </el-form-item>
-        </el-form-item>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button type="primary" @click="onAppUpdate()">保存</el-button>
