@@ -50,14 +50,4 @@ public class AreaManager extends BaseTreeManager<Area, IAreaService> implements 
 		return service().findByParentCodeAndLevel(t, parentCode, levelLt);
 	}
 
-	@Override
-	public List<Area> findPermedKhCompanyAppAreas(Trace t, Long khCompanyId, Long appId) {
-		return service().findPermedKhCompanyAppAreas(t, khCompanyId, appId);
-	}
-
-	@Override
-	public List<Area> findPermedYwCompanyAppAreas(Trace t, Long ywCompanyId, Long appId) {
-		return service().findPermedYwCompanyAppAreas(t, ywCompanyId, appId);
-	}
-
 }

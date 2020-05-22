@@ -110,10 +110,10 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 			}
 		} else if (user.isAdmin()) {
 			if (user.getUserType().equals(KhUser.class.getSimpleName())) {
-				root = companyService().findCompanyValidMenuTree(t, user.getCompanyId(), appId);
+				root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
 			} else if (user.getUserType().equals(YwUser.class.getSimpleName())) {
 				if ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode())) {
-					root = companyService().findCompanyValidMenuTree(t, user.getCompanyId(), appId);
+					root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
 				} else {
 					dealCommonUserAppMenu(t, userId, appId, root);
 				}

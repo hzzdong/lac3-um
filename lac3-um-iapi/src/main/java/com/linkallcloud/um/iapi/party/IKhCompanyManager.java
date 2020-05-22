@@ -3,7 +3,6 @@ package com.linkallcloud.um.iapi.party;
 import java.util.List;
 
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhUser;
 
@@ -14,6 +13,6 @@ public interface IKhCompanyManager extends ICompanyManager<KhCompany, KhUser> {
 	 */
 	List<KhCompany> countByArea4id(Trace t, KhCompany entity);
 
-	List<Tree> findPermedKhCompanyAppMenus(Trace t, Long ywCompanyId, Long khCompanyId, Long appId);
+//	List<Tree> findPermedKhCompanyAppMenus(Trace t, Long ywCompanyId, Long khCompanyId, Long appId);
 
 }

@@ -2,7 +2,6 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -122,56 +121,19 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
 
 	@Override
 	public Tree findPermedMenuTree(Trace t, Long companyId, Long roleId, Long appId) {
-		List<Tree> items = findPermedMenus(t, companyId, roleId, appId);
-		return Trees.assembleTree(items);
-	}
-
-	@Override
-	public List<Tree> findPermedMenus(Trace t, Long companyId, Long roleId, Long appId) {
-		List<Tree> items = findCompanyValidMenus(t, companyId, appId);
-		Long[] permedMenuIds = service().findPermedMenuIds(t, roleId, appId);
-		if (permedMenuIds != null && permedMenuIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
-			checkMenus(t, items, pmids);
-		}
-		return items;
-	}
-
-	protected abstract List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
-
-	private void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedItemIds) {
-		if (items == null || items.isEmpty() || permedItemIds == null || permedItemIds.isEmpty()) {
-			return;
-		}
-		for (Tree item : items) {
-			for (Long pid : permedItemIds) {
-				if (pid.toString().equals(item.getId())) {
-					item.setChecked(true);
-					permedItemIds.remove(pid);
-					break;
-				}
-			}
-		}
+		Tree tree = companyService().loadCompanyMenuTree(t, companyId, appId);
+		Long[] permedItemIds = service().findPermedMenuIds(t, roleId, appId);
+		Trees.checked(tree, permedItemIds);
+		return tree;
 	}
 
 	@Override
 	public Tree findPermedOrgTree(Trace t, Long companyId, Long roleId, Long appId) {
-		List<Tree> items = findPermedOrgs(t, companyId, roleId, appId);
-		return Trees.assembleTree(items);
-	}
-
-	@Override
-	public List<Tree> findPermedOrgs(Trace t, Long companyId, Long roleId, Long appId) {
-		List<Tree> items = findCompanyValidOrgs(t, companyId);
+		Tree tree = companyService().loadCompanyOrgTree(t, companyId);
 		Long[] permedItemIds = service().findPermedOrgIds(t, roleId, appId);
-		if (permedItemIds != null && permedItemIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedItemIds);
-			checkMenus(t, items, pmids);
-		}
-		return items;
+		Trees.checked(tree, permedItemIds);
+		return tree;
 	}
-
-	protected abstract List<Tree> findCompanyValidOrgs(Trace t, Long companyId);
 
 	@Override
 	public Tree findPermedAreaTree(Trace t, Sid companyId, Sid roleId, Sid appId) {

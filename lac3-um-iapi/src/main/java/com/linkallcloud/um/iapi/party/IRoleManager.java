@@ -178,17 +178,6 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 
 	/**
 	 * 得到某应用的菜单，并根据某角色是否有权限打上标记
-	 *
-	 * @param t
-	 * @param companyId
-	 * @param roleId
-	 * @param appId
-	 * @return
-	 */
-	List<Tree> findPermedMenus(Trace t, Long companyId, Long roleId, Long appId);
-
-	/**
-	 * 得到某应用的菜单，并根据某角色是否有权限打上标记
 	 * 
 	 * @param t
 	 * @param companyId
@@ -197,18 +186,7 @@ public abstract interface IRoleManager<T extends Role, U extends User> extends I
 	 * @return
 	 */
 	Tree findPermedMenuTree(Trace t, Long companyId, Long roleId, Long appId);
-	
-	/**
-	 * 得到某应用的组织权限，并根据某角色是否有权限打上标记
-	 *
-	 * @param t
-	 * @param companyId
-	 * @param roleId
-	 * @param appId
-	 * @return
-	 */
-	List<Tree> findPermedOrgs(Trace t, Long companyId, Long roleId, Long appId);
-	
+
 	/**
 	 * 得到某应用的组织权限，并根据某角色是否有权限打上标记
 	 *

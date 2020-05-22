@@ -6,14 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.dto.NameValue;
-import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
-import com.linkallcloud.core.exception.BaseException;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.pagination.Page;
-import com.linkallcloud.core.query.Query;
 import com.linkallcloud.um.activity.party.IKhCompanyActivity;
 import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.KhCompany;
@@ -26,13 +22,9 @@ import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.server.dao.party.IKhCompanyDao;
 import com.linkallcloud.um.server.dao.party.IKhDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IKhUserDao;
-import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
-import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
-import com.linkallcloud.um.server.dao.sys.IAreaDao;
 import com.linkallcloud.um.server.dao.sys.IKhSystemConfigDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
-import com.linkallcloud.um.server.utils.UmTools;
 
 @Component
 public class KhCompanyActivity
@@ -46,16 +38,7 @@ public class KhCompanyActivity
 	private IKhUserDao khUserDao;
 
 	@Autowired
-	private IYwCompanyDao ywCompanyDao;
-
-	@Autowired
-	private IYwUserDao ywUserDao;
-
-	@Autowired
 	private IKhDepartmentDao khDepartmentDao;
-
-	@Autowired
-	private IAreaDao areaDao;
 
 	@Autowired
 	private IKhSystemConfigDao khSystemConfigDao;
@@ -89,56 +72,12 @@ public class KhCompanyActivity
 //        }
 	}
 
-	@Override
-	public List<KhCompany> find(Trace t, Query query) {
-		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, query, ywCompanyDao, ywUserDao, areaDao);
-		} catch (BaseException e) {
-			return null;
-		}
-		return super.find(t, query);
-	}
-
-	/**
-	 * 根据user的区域权限，查找客户单位
-	 *
-	 * @param t
-	 * @param page 必须包含ywUserId，appId参数条件
-	 * @return
-	 */
-	@Override
-	public Page<KhCompany> findPage(Trace t, Page<KhCompany> page) {
-		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyDao, ywUserDao, areaDao);
-		} catch (BaseException e) {
-			return page;
-		}
-		return super.findPage(t, page);
-	}
-
-	/**
-	 * 根据user的区域权限，查找客户单位
-	 *
-	 * @param t
-	 * @param page 必须包含ywUserId，appId参数条件
-	 * @return
-	 */
-	@Override
-	public Page<KhCompany> findPage4Select(Trace t, Page<KhCompany> page) {
-		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyDao, ywUserDao, areaDao);
-		} catch (BaseException e) {
-			return page;
-		}
-		return super.findPage4Select(t, page);
-	}
-
 	public List<KhCompany> countByArea4id(Trace t, KhCompany entity) {
 		return khCompanyDao.countByArea4id(t, entity);
 	}
 
 	@Override
-	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
+	public Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId) {
 		Application app = applicationDao.fetchById(t, appId);
 		if (app == null) {
 			throw new ArgException("80000001", "无法查询对应的应用，可能是您的参数有误。");
@@ -151,21 +90,7 @@ public class KhCompanyActivity
 	}
 
 	@Override
-	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-		Application app = applicationDao.fetchById(t, appId);
-		if (app == null) {
-			throw new ArgException("80000001", "无法查询对应的应用，可能是您的参数有误。");
-		}
-
-		Tree root = app.toMenuRoot();
-		List<Menu> menus = menuDao.findKhCompanyAppMenusWithButton(t, companyId, appId, true);
-		List<Tree> result = Trees.assembleDomain2List(root, menus);
-		Tree.sort(result);
-		return result;
-	}
-
-	@Override
-	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId) {
 		List<NameValue> areas = getConfigCompanyAreaRoots(t, companyId);
 		if (areas != null && areas.size() > 0) {
 			Long[] areaRootIds = new Long[areas.size()];
@@ -178,8 +103,8 @@ public class KhCompanyActivity
 	}
 
 	@Override
-	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
-		KhSystemConfig config = khSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_AREAS);
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId) {
+		KhSystemConfig config = khSystemConfigDao.fetch(t, companyId, Consts.CONFIG_AREAS);
 		if (config != null && !Strings.isBlank(config.getValue())) {
 			List<NameValue> areas = config.parse();
 			return areas;

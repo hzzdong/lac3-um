@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.dto.NameValue;
-import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -45,7 +44,7 @@ public class YwCompanyActivity
 
 	@Autowired
 	private IYwDepartmentDao ywDepartmentDao;
-	
+
 	@Autowired
 	private IApplicationDao applicationDao;
 
@@ -120,46 +119,29 @@ public class YwCompanyActivity
 	}
 
 	@Override
-	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
+	public Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId) {
 		Application app = applicationDao.fetchById(t, appId);
 		if (app == null) {
 			throw new ArgException("80000001", "无法查询对应的应用，可能是您的参数有误。");
 		}
 
 		Tree root = app.toMenuRoot();
-		List<Menu> menus = menuDao.findYwCompanyAppMenus(t, companyId, appId, true);
-		// Trees.assembleTree(root, new CopyOnWriteArrayList<Menu>(menus));
+		YwCompany company = dao().fetchById(t, companyId);
+
+		List<Menu> menus = null;
+		if (company.isTopParent()) {
+			menus = menuDao.findYwCompanyAppMenus(t, null, appId, true);
+		} else {
+			menus = menuDao.findYwCompanyAppMenus(t, companyId, appId, true);
+		}
+
 		Trees.assembleDomain2Tree(root, menus);
+		root.sort();
 		return root;
 	}
 
 	@Override
-	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-		Application app = applicationDao.fetchById(t, appId);
-		if (app == null) {
-			throw new ArgException("80000001", "无法查询对应的应用，可能是您的参数有误。");
-		}
-
-		YwCompany company = fetchById(t, companyId);
-		if (company == null) {
-			throw new ArgException("80000002", "无法查询对应的公司，可能是您的参数有误。");
-		}
-
-		List<Menu> menus = null;
-		if (company.isTopParent()) {
-			menus = menuDao.findAppMenusWithButton(t, app.getId(), true);
-		} else {
-			menus = menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
-		}
-
-		Tree root = app.toMenuRoot();
-		List<Tree> result = Trees.assembleDomain2List(root, menus);
-		Tree.sort(result);
-		return result;
-	}
-
-	@Override
-	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId) {
 		List<NameValue> areas = getConfigCompanyAreaRoots(t, companyId);
 		if (areas != null && areas.size() > 0) {
 			Long[] areaRootIds = new Long[areas.size()];
@@ -172,8 +154,8 @@ public class YwCompanyActivity
 	}
 
 	@Override
-	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
-		YwSystemConfig config = ywSystemConfigDao.fetch(t, companyId.getId(), Consts.CONFIG_AREAS);
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId) {
+		YwSystemConfig config = ywSystemConfigDao.fetch(t, companyId, Consts.CONFIG_AREAS);
 		if (config != null && !Strings.isBlank(config.getValue())) {
 			List<NameValue> areas = config.parse();
 			return areas;

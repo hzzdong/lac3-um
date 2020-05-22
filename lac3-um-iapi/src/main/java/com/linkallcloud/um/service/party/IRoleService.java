@@ -165,6 +165,7 @@ public abstract interface IRoleService<T extends Role, U extends User> extends I
 	 * @return
 	 */
 	Long[] findPermedMenuIds(Trace t, Long roleId, Long appId);
+	List<Menu> findPermedMenus(Trace t, Long roleId, Long appId);
 
 	Long[] findPermedOrgIds(Trace t, Long roleId, Long appId);
 
@@ -179,16 +180,5 @@ public abstract interface IRoleService<T extends Role, U extends User> extends I
 	 * @return
 	 */
 	String[] findPermedMenuResCodes(Trace t, Long roleId, Long appId);
-
-	List<Menu> findPermedMenus(Trace t, Long roleId, Long appId);
-
-//    /**
-//     * 根据用户id，得到此用户拥有的所在公司的role列表
-//     *
-//     * @param t
-//     * @param userId
-//     * @return
-//     */
-//    List<T> findCompanyRoles4Me(Trace t, long userId);
 
 }

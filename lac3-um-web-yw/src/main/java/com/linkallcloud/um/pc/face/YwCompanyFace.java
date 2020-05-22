@@ -33,7 +33,6 @@ import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.Rel4OrgLeader;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
@@ -181,9 +180,13 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/getConfigCompanyAreaRoots", method = RequestMethod.POST)
 	public @ResponseBody Object getConfigCompanyAreaRoots(IdFaceRequest fr, Trace t, SessionUser su) {
-		Sid companyId = su.getCompany();
-		if (fr.getId() != null) {
-			companyId = new Sid(fr.getId(), fr.getUuid());
+//		Sid company = su.getCompany();
+//		if (fr.getId() != null) {
+//			company = new Sid(fr.getId(), fr.getUuid());
+//		}
+		Long companyId = fr.getId();
+		if (companyId == null || companyId.longValue() <= 0) {
+			companyId = su.companyId();
 		}
 		return manager().getConfigCompanyAreaRoots(t, companyId);
 	}
@@ -191,9 +194,13 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/getConfigCompanyAreaRootIds", method = RequestMethod.POST)
 	public @ResponseBody Object getConfigCompanyAreaRootIds(IdFaceRequest fr, Trace t, SessionUser su) {
-		Sid companyId = su.getCompany();
-		if (fr.getId() != null) {
-			companyId = new Sid(fr.getId(), fr.getUuid());
+//		Sid companyId = su.getCompany();
+//		if (fr.getId() != null) {
+//			companyId = new Sid(fr.getId(), fr.getUuid());
+//		}
+		Long companyId = fr.getId();
+		if (companyId == null || companyId.longValue() <= 0) {
+			companyId = su.companyId();
 		}
 		return manager().getConfigCompanyAreaRootIds(t, companyId);
 	}
@@ -272,23 +279,5 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 		YwCompany entity = manager().fetchById(t, myCompanyId);
 		return entity;
 	}
-
-//	@Face(simple = true)
-//	@RequestMapping(value = "/fetchTypedCompany", method = RequestMethod.POST)
-//	public @ResponseBody Object fetchTypedCompany(IdFaceRequest faceReq, Trace t, SessionUser su) {
-//		if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
-//			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
-//		}
-//		YwCompany entity = doFetch(t, faceReq.getId(), faceReq.getUuid(), su);
-//
-//		String typeCode = "kh_xx";
-//		YwSystemConfig config = ywSystemConfigManager.fetch(t, faceReq.getId(), Consts.CONFIG_COMPANY_CLASS);
-//		if (config != null && !Strings.isBlank(config.getValue())) {
-//			typeCode = config.getValue();
-//		}
-//		entity.setTypeCode(typeCode);
-//
-//		return convert(t, "fetchTypedCompany", faceReq, entity);
-//	}
 
 }

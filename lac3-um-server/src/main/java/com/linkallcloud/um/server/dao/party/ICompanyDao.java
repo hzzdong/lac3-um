@@ -31,13 +31,13 @@ public interface ICompanyDao<T extends Company> extends IOrgDao<T> {
 	List<T> findAllCompaniesByParentCode(@Param("t") Trace t, @Param("parentCode") String parentCode,
 			@Param("len") int parentCodeLen);
 
-	Long[] findPermedCompanyAppAreas(@Param("t") Trace t, @Param("companyId") Long companyId,
-			@Param("appId") Long appId);
+//	Long[] findPermedCompanyAppAreas(@Param("t") Trace t, @Param("companyId") Long companyId,
+//			@Param("appId") Long appId);
 
-	void clearCompanyAppAreaPerms(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("appId") Long appId);
-
-	void saveCompanyAppAreaPerms(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("appId") Long appId,
-			@Param("areaIds") List<Long> areaIds);
+//	void clearCompanyAppAreaPerms(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("appId") Long appId);
+//
+//	void saveCompanyAppAreaPerms(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("appId") Long appId,
+//			@Param("areaIds") List<Long> areaIds);
 
 	Long[] findPermedCompanyAppMenus(@Param("t") Trace t, @Param("companyId") Long companyId,
 			@Param("appId") Long appId);

@@ -31,19 +31,12 @@ import com.linkallcloud.sso.client.web.filter.TicketValidationFilter;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.pc.aop.LacPermissionInterceptor;
 import com.linkallcloud.um.pc.aop.LoginFilter;
-import com.linkallcloud.web.interceptors.LacEnvInterceptor;
 import com.linkallcloud.web.support.AppVisitorArgumentResolver;
 import com.linkallcloud.web.support.TraceArgumentResolver;
 
 @Configuration
 @SpringBootApplication(scanBasePackages = { "com.linkallcloud.um.pc" })
 public class UmYwApplication implements WebMvcConfigurer {
-
-	@Value("${lac.static.server}")
-	private String staticServer;
-
-	@Value("${lac.static.res.version}")
-	private String staticResourceVersion;
 
 	@Value("${lac.lf.appcode}")
 	private String myAppCode;
@@ -59,21 +52,6 @@ public class UmYwApplication implements WebMvcConfigurer {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
-
-	@Bean
-	public LacEnvInterceptor getLacEnvInterceptor() {
-		return new LacEnvInterceptor() {
-			@Override
-			protected String getStaticServer() {
-				return staticServer;
-			}
-
-			@Override
-			protected String getResourceVersion() {
-				return staticResourceVersion;
-			}
-		};
-	}
 
 	@Bean
 	@Order(1)
@@ -113,11 +91,6 @@ public class UmYwApplication implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		InterceptorRegistration envpi = registry.addInterceptor(getLacEnvInterceptor());
-		envpi.excludePathPatterns("/js/**", "/css/**", "/images/**", "/img/**", "/static/**");
-		envpi.addPathPatterns("/**");
-		envpi.order(4);
-
 		InterceptorRegistration pi = registry.addInterceptor(getPermissionInterceptor());
 		pi.excludePathPatterns("/js/**", "/css/**", "/images/**", "/img/**", "/static/**", "/login/**", "/verifyCode",
 				"/imageValidate", "/exit", "/unsupport", "/error", "/pub/**", "/nnl/**", "/face/**");

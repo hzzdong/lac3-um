@@ -136,10 +136,6 @@
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -171,11 +167,6 @@
 			<groupId>com.linkallcloud</groupId>
 			<artifactId>lac3-um-iapi</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.thymeleaf</groupId>
-			<artifactId>thymeleaf</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.attoparser</groupId>

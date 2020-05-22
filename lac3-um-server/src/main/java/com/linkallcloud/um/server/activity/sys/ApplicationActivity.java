@@ -10,7 +10,6 @@ import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.activity.BaseActivity;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.exception.BaseException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
@@ -19,11 +18,8 @@ import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.exception.AppException;
-import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
-import com.linkallcloud.um.server.dao.sys.IAreaDao;
-import com.linkallcloud.um.server.utils.UmTools;
 
 @Component
 public class ApplicationActivity extends BaseActivity<Application, IApplicationDao> implements IApplicationActivity {
@@ -32,13 +28,7 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 	private IApplicationDao applicationDao;
 
 	@Autowired
-	private IYwCompanyDao ywCompanyDao;
-
-	@Autowired
 	private IYwUserDao ywUserDao;
-
-	@Autowired
-	private IAreaDao areaDao;
 
 	@Override
 	public IApplicationDao dao() {
@@ -129,16 +119,6 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
 	@Override
 	public Page<Application> findPage4KhCompany(Trace t, Page<Application> page) {
-		if (page == null || !page.hasRule4Field("khCompanyId") || !page.hasRule4Field("khCompanyUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId,khCompanyUuid参数错误。");
-		}
-
-		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyDao, ywUserDao, areaDao);
-		} catch (BaseException e) {
-			return page;
-		}
-
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());

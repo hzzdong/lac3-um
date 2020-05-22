@@ -21,6 +21,7 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	T loginValidate(Trace t, String accountOrMobile, String password);
 
 	Boolean updateHeaderImage(Trace t, Sid user, String ico);
+
 	boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd);
 
 	boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
@@ -141,6 +142,8 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	 */
 	List<Long> findUserAppPermedOrgs(Trace t, Long userId, Long appId);
 
+	List<Long> findUserAppPermedAreas(Trace t, Long userId, Long appId);
+
 	/**
 	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
 	 *
@@ -208,7 +211,7 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	 * @return
 	 */
 	boolean updateStatusByDepartment(Trace t, int status, Long departmentId);
-	
+
 	/**
 	 * 是否部门管理员
 	 * 
@@ -217,28 +220,27 @@ public interface IUserActivity<T extends User> extends IPartyActivity<T> {
 	 * @return
 	 */
 	boolean isUserDepartmentAdmin(Trace t, Long userId);
-	
+
 	T fetchCompanyAdmin(Trace t, Sid companyId);
-	
+
 	Page<T> leaderPage(Trace t, Page<T> page);
-	
 
-    /**
-     * 单位操作员，查公司或者部门下人员分页列表
-     *
-     * @param t
-     * @param page
-     * @return
-     */
-    Page<T> findUserPage4Org(Trace t, Page<T> page);
+	/**
+	 * 单位操作员，查公司或者部门下人员分页列表
+	 *
+	 * @param t
+	 * @param page
+	 * @return
+	 */
+	Page<T> findUserPage4Org(Trace t, Page<T> page);
 
-    /**
-     * 单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
-     *
-     * @param t
-     * @param page
-     * @return
-     */
-    Page<T> findPermedUserPage(Trace t, Page<T> page);
+	/**
+	 * 单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+	 *
+	 * @param t
+	 * @param page
+	 * @return
+	 */
+	Page<T> findPermedUserPage(Trace t, Page<T> page);
 
 }

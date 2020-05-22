@@ -7,13 +7,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.exception.BaseException;
+import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.core.query.Query;
 import com.linkallcloud.um.activity.party.IKhCompanyActivity;
 import com.linkallcloud.um.activity.party.IKhDepartmentActivity;
 import com.linkallcloud.um.activity.party.IKhUserActivity;
+import com.linkallcloud.um.activity.party.IYwCompanyActivity;
+import com.linkallcloud.um.activity.party.IYwUserActivity;
+import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhUser;
+import com.linkallcloud.um.server.utils.UmTools;
 import com.linkallcloud.um.service.party.IKhCompanyService;
 
 @Service
@@ -30,6 +36,15 @@ public class KhCompanyService extends
 
 	@Autowired
 	private IKhDepartmentActivity khDepartmentActivity;
+
+	@Autowired
+	private IYwCompanyActivity ywCompanyActivity;
+
+	@Autowired
+	private IYwUserActivity ywUserActivity;
+
+	@Autowired
+	private IAreaActivity areaActivity;
 
 	@Override
 	protected IKhUserActivity getUserActivity() {
@@ -51,8 +66,33 @@ public class KhCompanyService extends
 	}
 
 	@Override
-	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidMenuTree(t, companyId, appId);
+	public List<KhCompany> find(Trace t, Query query) {
+		try {
+			UmTools.addAreaCnds4YwUserAppPermission(t, query, ywCompanyActivity, ywUserActivity, areaActivity);
+		} catch (BaseException e) {
+			return null;
+		}
+		return super.find(t, query);
+	}
+
+	@Override
+	public Page<KhCompany> findPage(Trace t, Page<KhCompany> page) {
+		try {
+			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+		} catch (BaseException e) {
+			return page;
+		}
+		return super.findPage(t, page);
+	}
+
+	@Override
+	public Page<KhCompany> findPage4Select(Trace t, Page<KhCompany> page) {
+		try {
+			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+		} catch (BaseException e) {
+			return page;
+		}
+		return super.findPage4Select(t, page);
 	}
 
 }

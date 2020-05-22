@@ -184,17 +184,17 @@ export function updateCompanyLogo(data) {
   })
 }
 
-export function fetchDepartment(data) {
+export function fetchParentDepartmentAsTreeNode(data) {
   return request({
-    url: '/api4umyw/face/YwDepartment/fetch',
+    url: '/api4umyw/face/YwDepartment/fetchParentTreeNode',
     method: 'post',
     data
   })
 }
 
-export function fetchParentDepartmentAsTreeNode(data) {
+export function fetchDepartment(data) {
   return request({
-    url: '/api4umyw/face/YwDepartment/fetchParentTreeNode',
+    url: '/api4umyw/face/YwDepartment/fetch',
     method: 'post',
     data
   })

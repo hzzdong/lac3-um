@@ -14,9 +14,4 @@ public interface IOrgManager<T extends Org, U extends User> extends IPartyManage
 
 	boolean deleteLeader(Trace t, Rel4OrgLeader leader);
 
-//	boolean addLeaders(Trace t, Long orgId, String orgUuid, Map<String, Long> userUuidIds)
-//			throws BaseRuntimeException;
-//	boolean deleteLeaders(Trace t, Long orgId, String orgUuid, Map<String, Long> userUuidIds)
-//			throws BaseRuntimeException;
-
 }

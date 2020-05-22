@@ -51,8 +51,4 @@ public interface IAreaManager extends ITreeManager<Area> {
 	 */
 	List<Area> findByParentCodeAndLevel(Trace t, String parentCode, int levelLt);
 
-	List<Area> findPermedKhCompanyAppAreas(Trace t, Long khCompanyId, Long appId);
-
-	List<Area> findPermedYwCompanyAppAreas(Trace t, Long ywCompanyId, Long appId);
-
 }

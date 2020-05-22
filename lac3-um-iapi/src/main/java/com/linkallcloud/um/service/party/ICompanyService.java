@@ -30,36 +30,25 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	List<T> findAllCompaniesByParentCode(Trace t, String govCode);
-
-	Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId);
-
-	List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
-
-	List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
-
-	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
-
-	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> areaUuidIds);
-
-	Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId);
-
-	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> menuUuidIds);
-
-	/*
-	 * -----------------------------------------------------------------------------
-	 */
-
+	
 	/**
-	 * 公司某应用的根区域ids
+	 * 得到某公司某应用的菜单树
 	 * 
 	 * @param t
 	 * @param companyId
 	 * @param appId
 	 * @return
 	 */
-	Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId);
+	Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId);
+	
+	/**
+	 * 得到某公司某应用的机构树
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Tree loadCompanyOrgTree(Trace t, Long companyId);
 
 	/**
 	 * 得到公司管理员在系统设置中设定的根区域ids。若未设定，返回null。
@@ -68,9 +57,9 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @param companyId
 	 * @return
 	 */
-	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
+	Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId);
 
-	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
+	List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId);
 
 	/**
 	 * 公司全局根区域的ids。由公司管理员在系统设置中设定。若未设定，默认同父公司。顶层公司未设定为系统全区域。
@@ -79,7 +68,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @param companyId
 	 * @return
 	 */
-	Long[] getCompanyAreaRootIds(Trace t, Sid companyId);
+	Long[] getCompanyAreaRootIds(Trace t, Long companyId);
 
 	/**
 	 * 公司全局可设置根区域树。1.顶层公司为系统全区域；2.子公司为父公司根区域（父公司管理员给父公司设定的根区域，若未设置，继续往上找）；
@@ -89,7 +78,7 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Tree loadCompanyAreaFullTree(Trace t, Sid companyId);
-
+	
 	/**
 	 * 公司管理员在系统设置中设定的公司区域树。 若未设定，默认同父公司。顶层公司未设定为系统全区域。
 	 * 
@@ -100,7 +89,6 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	Tree loadCompanyAreaTree(Trace t, Sid companyId);
 
 	Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId);
-
 	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
 
 	/**

@@ -264,6 +264,11 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		return dao().findUserAppPermedOrgs(t, userId, appId);
 	}
 
+	@Override
+	public List<Long> findUserAppPermedAreas(Trace t, Long userId, Long appId) {
+		return dao().findUserAppPermedAreas(t, userId, appId);
+	}
+
 	// @Cacheable(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
 	@Override
 	public String getUserAppPermissions4MenuJsonString(Trace t, Long userId, Long appId) {

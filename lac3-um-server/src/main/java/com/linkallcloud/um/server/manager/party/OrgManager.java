@@ -29,16 +29,4 @@ public abstract class OrgManager<T extends Org, S extends IOrgService<T>, U exte
 		return service().deleteLeader(t, leader);
 	}
 
-//	@Override
-//	public boolean addLeaders(Trace t, Long orgId, String orgUuid, Map<String, Long> userUuidIds)
-//			throws BaseRuntimeException {
-//		return service().addLeaders(t, orgId, orgUuid, userUuidIds);
-//	}
-//
-//	@Override
-//	public boolean deleteLeaders(Trace t, Long orgId, String orgUuid, Map<String, Long> userUuidIds)
-//			throws BaseRuntimeException {
-//		return service().deleteLeaders(t, orgId, orgUuid, userUuidIds);
-//	}
-
 }

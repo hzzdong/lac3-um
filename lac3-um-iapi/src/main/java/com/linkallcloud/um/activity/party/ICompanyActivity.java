@@ -51,33 +51,13 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 */
 	List<T> findAllCompaniesByParentCode(Trace t, String govCode);
 
-	Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId);
-
-	List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId);
-
-	List<Tree> findCompanyValidOrgResource(Trace t, Long companyId);
-
-	Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId);
-
-	Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> areaUuidIds);
+	Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId);
+	Tree loadCompanyOrgTree(Trace t, Long companyId);
 
 	Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId);
 
-	Boolean saveCompanyAppMenuPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> menuUuidIds);
 	Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds);
 
-	/**
-	 * 公司某应用的根区域ids
-	 * 
-	 * @param t
-	 * @param companyId
-	 * @param appId
-	 * @return
-	 */
-	Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId);
-	
 	/**
 	 * 得到公司管理员在系统设置中设定的根区域ids。若未设定，返回null。
 	 * 
@@ -85,8 +65,18 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 * @param companyId
 	 * @return
 	 */
-	Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId);
-	List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId);
+	Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId);
+	
+	/**
+	 * 公司全局根区域的ids。由公司管理员在系统设置中设定。若未设定，默认同父公司。顶层公司未设定为系统全区域。
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @return
+	 */
+	Long[] getCompanyAreaRootIds(Trace t, Long companyId);
+	List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId);
+	
 	Boolean updateCompanyLogo(Trace t, Sid companyId, String logo);
 	
 	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);

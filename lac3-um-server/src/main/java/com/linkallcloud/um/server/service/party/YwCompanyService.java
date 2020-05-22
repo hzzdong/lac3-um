@@ -45,8 +45,8 @@ public class YwCompanyService extends
 	}
 
 	@Override
-	public Tree findCompanyValidMenuTree(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidMenuTree(t, companyId, appId);
+	public Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId) {
+		return activity().loadCompanyMenuTree(t, companyId, appId);
 	}
 
 }

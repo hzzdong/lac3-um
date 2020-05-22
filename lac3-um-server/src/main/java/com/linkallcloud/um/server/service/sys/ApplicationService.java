@@ -8,13 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BaseException;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.service.BaseService;
+import com.linkallcloud.um.activity.party.IYwCompanyActivity;
+import com.linkallcloud.um.activity.party.IYwUserActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
+import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.exception.AppException;
+import com.linkallcloud.um.server.utils.UmTools;
 import com.linkallcloud.um.service.sys.IApplicationService;
 
 @Service
@@ -23,6 +28,15 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 
 	@Autowired
 	private IApplicationActivity applicationActivity;
+	
+	@Autowired
+    private IYwCompanyActivity ywCompanyActivity;
+
+    @Autowired
+    private IYwUserActivity ywUserActivity;
+
+    @Autowired
+    private IAreaActivity areaActivity;
 
 	@Override
 	public IApplicationActivity activity() {
@@ -65,6 +79,14 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 
 	@Override
 	public Page<Application> findPage4KhCompany(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("khCompanyId") || !page.hasRule4Field("khCompanyUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "khCompanyId,khCompanyUuid参数错误。");
+		}
+		try {
+			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+		} catch (BaseException e) {
+			return page;
+		}
 		return activity().findPage4KhCompany(t, page);
 	}
 

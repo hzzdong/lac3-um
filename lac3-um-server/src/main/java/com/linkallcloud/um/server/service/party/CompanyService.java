@@ -3,7 +3,6 @@ package com.linkallcloud.um.server.service.party;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,28 +51,6 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	@Override
 	public List<C> findSubCompanies(Trace t, Long companyId) {
 		return activity().findSubCompanies(t, companyId);
-	}
-
-	@Override
-	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
-		return activity().getCompanyAppAreaRootIds(t, companyId, appId);
-	}
-
-	@Override
-	public Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId) {
-		return activity().findPermedCompanyAppAreas(t, companyId, appId);
-	}
-
-	@Transactional(readOnly = false)
-	@Override
-	public Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> areaUuidIds) {
-		return activity().saveCompanyAppAreaPerm(t, companyId, companyUuid, appId, appUuid, areaUuidIds);
-	}
-
-	@Override
-	public List<Tree> findCompanyValidOrgResource(Trace t, Long companyId) {
-		return activity().findCompanyValidOrgResource(t, companyId);
 	}
 
 	@Override
@@ -157,44 +134,23 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 
 	@Transactional(readOnly = false)
 	@Override
-	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
-			Map<String, Long> menuUuidIds) {
-		return activity().saveCompanyAppMenuPerm(t, id, uuid, appId, appUuid, menuUuidIds);
-	}
-
-	@Transactional(readOnly = false)
-	@Override
 	public Boolean saveAppMenuPerm(Trace t, Sid companyId, Sid appId, Map<String, Long> menuUuidIds) {
 		return activity().saveAppMenuPerm(t, companyId, appId, menuUuidIds);
 	}
 
 	@Override
-	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId) {
 		return activity().getConfigCompanyAreaRootIds(t, companyId);
 	}
 
 	@Override
-	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId) {
 		return activity().getConfigCompanyAreaRoots(t, companyId);
 	}
 
 	@Override
-	public Long[] getCompanyAreaRootIds(Trace t, Sid companyId) {
-		Long[] roots = getConfigCompanyAreaRootIds(t, companyId);
-		if (roots != null && roots.length > 0) {
-			return roots;
-		} else {
-			C company = activity().fetchByIdUuid(t, companyId.getId(), companyId.getUuid());
-			if (company == null) {
-				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "company参数错误");
-			}
-			if (company.isTopParent()) {
-				return null;
-			} else {
-				C parent = activity().fetchById(t, company.getParentId());
-				return getCompanyAreaRootIds(t, parent.sid());
-			}
-		}
+	public Long[] getCompanyAreaRootIds(Trace t, Long companyId) {
+		return activity().getCompanyAreaRootIds(t, companyId);
 	}
 
 	@Override
@@ -213,7 +169,7 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 
 	@Override
 	public Tree loadCompanyAreaTree(Trace t, Sid companyId) {
-		Long[] areaIds = getCompanyAreaRootIds(t, companyId);
+		Long[] areaIds = getCompanyAreaRootIds(t, companyId.getId());
 		if (areaIds != null && areaIds.length > 0) {
 			Tree root = Trees.vroot("区域");
 			for (Long rootAreaId : areaIds) {
@@ -227,44 +183,21 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
-	public List<Tree> findCompanyValidMenus(Trace t, Long companyId, Long appId) {
-		return activity().findCompanyValidMenus(t, companyId, appId);
+	public Tree loadCompanyOrgTree(Trace t, Long companyId) {
+		return activity().loadCompanyOrgTree(t, companyId);
 	}
 
 	@Override
-	public Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId) {
-		return activity().findPermedCompanyAppMenus(t, companyId, appId);
+	public Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId) {
+		return activity().loadCompanyMenuTree(t, companyId, appId);
 	}
 
 	@Override
 	public Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId) {
-		List<Tree> items = activity().findCompanyValidMenus(t, myCompanyId == null ? null : myCompanyId.getId(),
-				appId.getId());
-		Long[] permedMenuIds = activity().findPermedCompanyAppMenus(t, forCompanyId.getId(), appId.getId());
-		if (items != null && permedMenuIds != null && permedMenuIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
-			checkMenus(t, items, pmids);
-		}
-		Tree root = Trees.assembleTree(items);
-//		Tree vroot = Trees.vroot("菜单树");
-//		Trees.assembleTree(vroot, items);
-		root.sort();
-		return root;
-	}
-
-	private void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {
-		if (items == null || items.isEmpty() || permedMenuIds == null || permedMenuIds.isEmpty()) {
-			return;
-		}
-		for (Tree item : items) {
-			for (Long pid : permedMenuIds) {
-				if (pid.toString().equals(item.getId())) {
-					item.setChecked(true);
-					permedMenuIds.remove(pid);
-					break;
-				}
-			}
-		}
+		Tree tree = activity().loadCompanyMenuTree(t, myCompanyId == null ? null : myCompanyId.getId(), appId.getId());
+		Long[] permedItemIds = activity().findPermedCompanyAppMenus(t, forCompanyId.getId(), appId.getId());
+		Trees.checked(tree, permedItemIds);
+		return tree;
 	}
 
 	@Transactional(readOnly = false)

@@ -149,7 +149,7 @@
                   <span>{{ row.name }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="编号" width="160px" prop="code" sortable>
+              <el-table-column label="编号" width="180px" prop="code" sortable>
                 <template slot-scope="scope">
                   <span>{{ scope.row.code }}</span>
                 </template>

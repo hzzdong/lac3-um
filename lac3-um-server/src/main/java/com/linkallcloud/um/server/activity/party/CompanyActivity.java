@@ -14,6 +14,7 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.BaseRuntimeException;
+import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.security.Securities;
@@ -66,47 +67,21 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
-		T company = dao().fetchById(t, companyId);
-//		if (company.isTopParent()) {
-//			Long[] companyAreaRootIds = new Long[0];
-//			Long areaId = getCompanyAreaRootIdBySystemConfig(t, companyId);
-//			if (areaId != null) {
-//				companyAreaRootIds = new Long[1];
-//				companyAreaRootIds[0] = areaId;
-//			}
-//			return companyAreaRootIds;
-//		} else {
-//			Long[] permedItemIds = findPermedCompanyAppAreas(t, companyId, appId);
-//			if (permedItemIds != null && permedItemIds.length > 0) {
-//				return permedItemIds;
-//			} else {
-//				throw new AuthException("100001", "请先给单位区域授权后再进行此操作");
-//			}
-//		}
-		return null;
-	}
-
-	@Override
-	public Long[] findPermedCompanyAppAreas(Trace t, Long companyId, Long appId) {
-		return dao().findPermedCompanyAppAreas(t, companyId, appId);
-	}
-
-	@Transactional(readOnly = false)
-	@Override
-	public Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> areaUuidIds) {
-		T company = fetchByIdUuid(t, companyId, companyUuid);
-		Application app = applicationDao.fetchByIdUuid(t, appId, appUuid);
-		if (company != null && app != null) {
-			dao().clearCompanyAppAreaPerms(t, companyId, appId);
-			if (areaUuidIds != null && !areaUuidIds.isEmpty()) {
-				List<Long> areaIds = Domains.parseIds(areaUuidIds);
-				dao().saveCompanyAppAreaPerms(t, companyId, appId, areaIds);
+	public Long[] getCompanyAreaRootIds(Trace t, Long companyId) {
+		Long[] roots = getConfigCompanyAreaRootIds(t, companyId);
+		if (roots != null && roots.length > 0) {
+			return roots;
+		} else {
+			T company = dao().fetchById(t, companyId);
+			if (company == null) {
+				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "company参数错误");
 			}
-			return true;
+			if (company.isTopParent()) {
+				return null;
+			} else {
+				return getCompanyAreaRootIds(t, company.getParentId());
+			}
 		}
-		return false;
 	}
 
 	@Override
@@ -120,9 +95,9 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public List<Tree> findCompanyValidOrgResource(Trace t, Long companyId) {
+	public Tree loadCompanyOrgTree(Trace t, Long companyId) {
 		T company = dao().fetchById(t, companyId);
-		return getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
+		return getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
 	}
 
 	@Override
@@ -304,23 +279,6 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	@Override
 	public Long[] findPermedCompanyAppMenus(Trace t, Long companyId, Long appId) {
 		return dao().findPermedCompanyAppMenus(t, companyId, appId);
-	}
-
-	@Transactional(readOnly = false)
-	@Override
-	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
-			Map<String, Long> menuUuidIds) {
-		T company = fetchByIdUuid(t, id, uuid);
-		Application app = applicationDao.fetchByIdUuid(t, appId, appUuid);
-		if (company != null && app != null) {
-			dao().clearCompanyAppMenuPerms(t, id, appId);
-			if (menuUuidIds != null && !menuUuidIds.isEmpty()) {
-				List<Long> menuIds = Domains.parseIds(menuUuidIds);
-				dao().saveCompanyAppMenuPerms(t, id, appId, menuIds);
-			}
-			return true;
-		}
-		return false;
 	}
 
 	@Override

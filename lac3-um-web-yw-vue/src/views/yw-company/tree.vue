@@ -542,7 +542,7 @@ export default {
     },
     getTree() {
       getOrgTree().then(response => {
-        console.log('Company Tree Data', response.data)
+        // console.log('Company Tree Data', response.data)
         const items = response.data
         if (items && items.length > 0) {
           this.autoChildren(items)

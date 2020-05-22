@@ -2,7 +2,6 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,41 +42,41 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 		return service().findSubCompanies(t, companyId);
 	}
 
-	@Override
-	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
-		return service().getCompanyAppAreaRootIds(t, companyId, appId);
-	}
+//	@Override
+//	public Long[] getCompanyAppAreaRootIds(Trace t, Long companyId, Long appId) {
+//		return service().getCompanyAppAreaRootIds(t, companyId, appId);
+//	}
 
 	@Override
 	public List<T> findDirectCompaniesByParentId(Trace t, Long parentCompanyId) {
 		return service().findDirectCompaniesByParentId(t, parentCompanyId);
 	}
 
-	protected void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {
-		if (items == null || items.isEmpty() || permedMenuIds == null || permedMenuIds.isEmpty()) {
-			return;
-		}
-		for (Tree item : items) {
-			for (Long pid : permedMenuIds) {
-				if (pid.toString().equals(item.getId())) {
-					item.setChecked(true);
-					permedMenuIds.remove(pid);
-					break;
-				}
-			}
-		}
-	}
+//	protected void checkMenus(Trace t, List<Tree> items, CopyOnWriteArrayList<Long> permedMenuIds) {
+//		if (items == null || items.isEmpty() || permedMenuIds == null || permedMenuIds.isEmpty()) {
+//			return;
+//		}
+//		for (Tree item : items) {
+//			for (Long pid : permedMenuIds) {
+//				if (pid.toString().equals(item.getId())) {
+//					item.setChecked(true);
+//					permedMenuIds.remove(pid);
+//					break;
+//				}
+//			}
+//		}
+//	}
 
-	@Override
-	public List<Tree> findPermedCompanyAppMenus(Trace t, Long myCompanyId, Long forCompanyId, Long appId) {
-		List<Tree> items = service().findCompanyValidMenus(t, myCompanyId, appId);
-		Long[] permedMenuIds = service().findPermedCompanyAppMenus(t, forCompanyId, appId);
-		if (items != null && permedMenuIds != null && permedMenuIds.length > 0) {
-			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
-			checkMenus(t, items, pmids);
-		}
-		return items;
-	}
+//	@Override
+//	public List<Tree> findPermedCompanyAppMenus(Trace t, Long myCompanyId, Long forCompanyId, Long appId) {
+//		List<Tree> items = service().findCompanyValidMenus(t, myCompanyId, appId);
+//		Long[] permedMenuIds = service().findPermedCompanyAppMenus(t, forCompanyId, appId);
+//		if (items != null && permedMenuIds != null && permedMenuIds.length > 0) {
+//			CopyOnWriteArrayList<Long> pmids = new CopyOnWriteArrayList<Long>(permedMenuIds);
+//			checkMenus(t, items, pmids);
+//		}
+//		return items;
+//	}
 
 	@Override
 	public Tree findPermedAppMenusTree(Trace t, Sid myCompanyId, Sid forCompanyId, Sid appId) {
@@ -89,17 +88,17 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 		return service().saveAppMenuPerm(t, companyId, appId, menuUuidIds);
 	}
 
-	@Override
-	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
-			Map<String, Long> menuUuidIds) {
-		return service().saveCompanyAppMenuPerm(t, id, uuid, appId, appUuid, menuUuidIds);
-	}
-
-	@Override
-	public Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
-			Map<String, Long> uuidIds) {
-		return service().saveCompanyAppAreaPerm(t, companyId, companyUuid, appId, appUuid, uuidIds);
-	}
+//	@Override
+//	public Boolean saveCompanyAppMenuPerm(Trace t, Long id, String uuid, Long appId, String appUuid,
+//			Map<String, Long> menuUuidIds) {
+//		return service().saveCompanyAppMenuPerm(t, id, uuid, appId, appUuid, menuUuidIds);
+//	}
+//
+//	@Override
+//	public Boolean saveCompanyAppAreaPerm(Trace t, Long companyId, String companyUuid, Long appId, String appUuid,
+//			Map<String, Long> uuidIds) {
+//		return service().saveCompanyAppAreaPerm(t, companyId, companyUuid, appId, appUuid, uuidIds);
+//	}
 
 	@Override
 	public boolean updateStatus(Trace t, int status, Long id, String uuid) throws BaseRuntimeException {
@@ -110,17 +109,17 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public Long[] getConfigCompanyAreaRootIds(Trace t, Sid companyId) {
+	public Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId) {
 		return service().getConfigCompanyAreaRootIds(t, companyId);
 	}
 
 	@Override
-	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Sid companyId) {
+	public List<NameValue> getConfigCompanyAreaRoots(Trace t, Long companyId) {
 		return service().getConfigCompanyAreaRoots(t, companyId);
 	}
 
 	@Override
-	public Long[] getCompanyAreaRootIds(Trace t, Sid companyId) {
+	public Long[] getCompanyAreaRootIds(Trace t, Long companyId) {
 		return service().getCompanyAreaRootIds(t, companyId);
 	}
 

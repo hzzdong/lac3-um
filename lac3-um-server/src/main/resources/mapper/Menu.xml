@@ -92,10 +92,11 @@
 	<select id="findKhCompanyAppMenus" resultType="com.linkallcloud.um.domain.sys.Menu">
 		SELECT
 			<include refid="Base_Column_List" />
-		FROM
-			um_app_menu u JOIN um_kh_company_perm_menu cpm ON u.id=cpm.menuId
+		FROM um_app_menu u 
+			<if test="khCompanyId != null"> JOIN um_kh_company_perm_menu cpm ON u.id=cpm.menuId </if>
 		WHERE
-			u.status &lt;&gt; 9 AND u.type=0 AND u.appId = #{appId} AND cpm.companyId = #{khCompanyId} 
+			u.status &lt;&gt; 9 AND u.type=0 AND u.appId = #{appId} 
+			<if test="khCompanyId != null"> AND cpm.companyId = #{khCompanyId} </if>
 		    <if test="valid==true"> AND u.status=0</if>
 	</select>
 	
@@ -113,20 +114,22 @@
 	<select id="findYwCompanyAppMenus" resultType="com.linkallcloud.um.domain.sys.Menu">
 		SELECT
 			<include refid="Base_Column_List" />
-		FROM
-			um_app_menu u JOIN um_yw_company_perm_menu cpm ON u.id=cpm.menuId
+		FROM um_app_menu u 
+			<if test="ywCompanyId != null"> JOIN um_yw_company_perm_menu cpm ON u.id=cpm.menuId </if>
 		WHERE
-			u.status &lt;&gt; 9 AND u.type=0 AND u.appId = #{appId} AND cpm.companyId = #{ywCompanyId} 
+			u.status &lt;&gt; 9 AND u.type=0 AND u.appId = #{appId} 
+			<if test="ywCompanyId != null"> AND cpm.companyId = #{ywCompanyId} </if>
 		    <if test="valid==true"> AND u.status=0</if>
 	</select>
 	
 	<select id="findYwCompanyAppMenusWithButton" resultType="com.linkallcloud.um.domain.sys.Menu">
 		SELECT
 			<include refid="Base_Column_List" />
-		FROM
-			um_app_menu u JOIN um_yw_company_perm_menu cpm ON u.id=cpm.menuId
+		FROM um_app_menu u 
+			<if test="ywCompanyId != null"> JOIN um_yw_company_perm_menu cpm ON u.id=cpm.menuId </if>
 		WHERE
-			u.status &lt;&gt; 9 AND u.appId = #{appId} AND cpm.companyId = #{ywCompanyId} 
+			u.status &lt;&gt; 9 AND u.appId = #{appId} 
+			<if test="ywCompanyId != null"> AND cpm.companyId = #{ywCompanyId} </if>
 		    <if test="valid==true"> AND u.status=0</if>
 	</select>
 	

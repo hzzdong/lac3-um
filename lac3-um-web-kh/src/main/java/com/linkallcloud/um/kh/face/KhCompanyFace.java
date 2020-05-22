@@ -197,9 +197,13 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/getConfigCompanyAreaRoots", method = RequestMethod.POST)
 	public @ResponseBody Object getConfigCompanyAreaRoots(IdFaceRequest fr, Trace t, SessionUser su) {
-		Sid companyId = su.getCompany();
-		if (fr.getId() != null) {
-			companyId = new Sid(fr.getId(), fr.getUuid());
+//		Sid companyId = su.getCompany();
+//		if (fr.getId() != null) {
+//			companyId = new Sid(fr.getId(), fr.getUuid());
+//		}
+		Long companyId = fr.getId();
+		if (companyId == null || companyId.longValue() <= 0) {
+			companyId = su.companyId();
 		}
 		return manager().getConfigCompanyAreaRoots(t, companyId);
 	}
@@ -207,9 +211,13 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Face(simple = true)
 	@RequestMapping(value = "/getConfigCompanyAreaRootIds", method = RequestMethod.POST)
 	public @ResponseBody Object getConfigCompanyAreaRootIds(IdFaceRequest fr, Trace t, SessionUser su) {
-		Sid companyId = su.getCompany();
-		if (fr.getId() != null) {
-			companyId = new Sid(fr.getId(), fr.getUuid());
+//		Sid companyId = su.getCompany();
+//		if (fr.getId() != null) {
+//			companyId = new Sid(fr.getId(), fr.getUuid());
+//		}
+		Long companyId = fr.getId();
+		if (companyId == null || companyId.longValue() <= 0) {
+			companyId = su.companyId();
 		}
 		return manager().getConfigCompanyAreaRootIds(t, companyId);
 	}

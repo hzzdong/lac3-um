@@ -66,10 +66,10 @@ public class DictTypeManager extends BaseTreeManager<DictType, IDictTypeService>
 		return super.delete(t, id, uuid);
 	}
 
-	private void cleanDictOrTypeCache(Trace t, DictType entity) {
-		Long topDictTypeId = entity.isTopParent() ? entity.getId() : entity.getTopParentId();
-		service().cleanDictTypeCache(t, topDictTypeId);
-		service().cleanDictCache(t, entity.getId());
-	}
+//	private void cleanDictOrTypeCache(Trace t, DictType entity) {
+//		Long topDictTypeId = entity.isTopParent() ? entity.getId() : entity.getTopParentId();
+//		service().cleanDictTypeCache(t, topDictTypeId);
+//		service().cleanDictCache(t, entity.getId());
+//	}
 
 }
