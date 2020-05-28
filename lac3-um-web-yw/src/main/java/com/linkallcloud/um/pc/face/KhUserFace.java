@@ -24,7 +24,6 @@ import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.ptj.KhPartTimeJob;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
@@ -149,48 +148,26 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 	}
 
 	@Face(simple = true)
-	@RequestMapping(value = "/page4Role", method = RequestMethod.POST)
-	public @ResponseBody Object page4Role(PageFaceRequest faceReq, Trace t, SessionUser su) {
+	@RequestMapping(value = "/page4Role4Yw", method = RequestMethod.POST)
+	public @ResponseBody Object page4Role4Yw(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<KhUser> page = new Page<>(faceReq);
+		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		page = manager().page4Role4Yw(t, page);
+		desensitization(page.getData());
+		return page;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/page4UnRole4Yw", method = RequestMethod.POST)
+	public @ResponseBody Object page4UnRole4Yw(PageFaceRequest faceReq, Trace t, SessionUser su) {
 		Page<KhUser> page = new Page<>(faceReq);
 
 		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-
-		Long companyId = su.companyId();
-		Equal r = (Equal) page.getRule4Field("companyId");
-		if (r != null) {
-			r.setValue(companyId);
-		} else {
-			r = new Equal("companyId", companyId);
-			page.addRule(r);
-		}
-
-		Equal rr = (Equal) page.getRule4Field("roleId");
-		if (rr != null) {
-			KhRole role = khRoleManager.fetchById(t, (Long) rr.getValue());
-			page.addRule(new Equal("type", role.getType()));
-		}
-
-		page = manager().findPage4Role(t, page);
-
-		desensitization(page.getData());
-		return page;
-	}
-
-	@Override
-	protected Page<KhUser> doPage4Select(Trace t, Page<KhUser> page, SessionUser su) {
-		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
-
-		Equal r = (Equal) page.getRule4Field("companyId");
-		if (r != null) {
-			r.setValue(su.companyId());
-		} else {
-			page.addRule(new Equal("companyId", su.companyId()));
-		}
-		page = manager().findPage4Select(t, page);
+		page = manager().page4UnRole4Yw(t, page);
 
 		desensitization(page.getData());
 		return page;

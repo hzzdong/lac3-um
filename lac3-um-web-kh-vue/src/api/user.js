@@ -126,7 +126,7 @@ export function findRoleUsers(data) {
 
 export function findUnRoleUsers(data) {
   return request({
-    url: '/api4umkh/face/KhUser/page4Select',
+    url: '/api4umkh/face/KhUser/page4UnRole',
     method: 'post',
     data
   })

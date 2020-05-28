@@ -6,6 +6,22 @@
           <el-button type="primary" icon="el-icon-close" circle plain @click="onClose()" />
           <el-button type="primary" icon="el-icon-refresh" circle plain @click="onRefresh()" />
           <el-button v-permission="['selfkh_perm_role']" type="success" icon="el-icon-edit" circle @click="toRoleUpdate()" />
+          <el-button
+            v-if="role.status === 0 && checkPermission(['selfkh_perm_role']) === true"
+            type="warning"
+            icon="el-icon-lock"
+            title="禁用"
+            circle
+            @click="toChangeStatus(1)"
+          />
+          <el-button
+            v-if="role.status === 1 && checkPermission(['selfkh_perm_role']) === true"
+            type="warning"
+            icon="el-icon-unlock"
+            title="启用"
+            circle
+            @click="toChangeStatus(0)"
+          />
           <el-button v-permission="['selfkh_perm_role']" type="danger" icon="el-icon-delete" circle @click="onRoleDelete()" />
         </div>
         <aside style="margin-top:15px;">
@@ -20,6 +36,9 @@
           </el-form-item>
           <el-form-item label="状态:" prop="status">
             <span class="el-span_view">{{ role.status | statusFilter }}</span>
+          </el-form-item>
+          <el-form-item label="等级:" prop="level">
+            <span class="el-span_view">{{ role.level | levelFilter }}</span>
           </el-form-item>
           <el-form-item label="排序号:" prop="sort">
             <span class="el-span_view">{{ role.sort }}</span>
@@ -225,6 +244,15 @@
             <el-radio-button label="1">禁用</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="等级：" prop="level">
+          <el-radio-group v-model="temp.level" size="small">
+            <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+          </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 部门级 ] 角色可以分配给任何用户；<br>[ 公司级 ] 角色只能分配给管理部门和单位节点下的用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
+        </el-form-item>
         <el-form-item label="排序号" prop="sort">
           <el-input v-model="temp.sort" />
         </el-form-item>
@@ -233,12 +261,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          取消
-        </el-button>
-        <el-button type="primary" @click="onRoleUpdate()">
-          保存
-        </el-button>
+        <el-button @click="dialogFormVisible = false"> 取消 </el-button>
+        <el-button type="primary" @click="onRoleUpdate()"> 保存 </el-button>
       </div>
     </el-dialog>
 
@@ -271,7 +295,7 @@
         </el-table-column>
         <el-table-column label="姓名" width="180px" prop="name" sortable>
           <template slot-scope="{row}">
-            <router-link :to="'/KhCompany/user-view/'+row.id+'/'+row.uuid" class="link-type">
+            <router-link :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
               <span>{{ row.name }}</span>
             </router-link>
             <el-tag v-if="row.type == 9">管</el-tag>
@@ -351,7 +375,7 @@
 </template>
 
 <script>
-import { fetchById, updateKhRole, deleteKhRole, addRoleUsers, removeRoleUser, addRoleApps, removeRoleApp, getPermedMenuTree, getPermedOrgTree, getPermedAreaTree, saveRoleAppMenuPerm, saveRoleAppOrgPerm, saveRoleAppAreaPerm } from '@/api/khrole'
+import { fetchById, updateKhRole, deleteKhRole, changeRoleStatus, addRoleUsers, removeRoleUser, addRoleApps, removeRoleApp, getPermedMenuTree, getPermedOrgTree, getPermedAreaTree, saveRoleAppMenuPerm, saveRoleAppOrgPerm, saveRoleAppAreaPerm } from '@/api/khrole'
 import { findRoleUsers, findUnRoleUsers } from '@/api/user'
 import { findAppPage4KhRole, findAppPage4UnKhRole } from '@/api/application'
 import { sheetClose, sheetRefresh, parseCheckedTreeIds } from '@/utils'
@@ -359,7 +383,7 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { statusOptions, userStatusOptions, userTypeOptions, appTypeOptions } from '@/filters'
+import { statusOptions, userStatusOptions, userTypeOptions, appTypeOptions, levelOptions } from '@/filters'
 
 export default {
   name: 'RoleDetail',
@@ -383,6 +407,9 @@ export default {
         remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]
       },
       dialogFormVisible: false,
+      statusOptions: statusOptions(),
+      typeOptions: userTypeOptions(),
+      levelOptions: levelOptions(),
       temp: {},
       loading: false,
       /* 角色分配 */
@@ -406,6 +433,7 @@ export default {
         },
         statusOptions: statusOptions(),
         typeOptions: userTypeOptions(),
+        levelOptions: levelOptions(),
         dialogFormVisible: false
       },
       users: {
@@ -558,6 +586,19 @@ export default {
           this.roleApps.loaded = true
         }
       }
+    },
+    toChangeStatus(status) {
+      this.$confirm('您确定要执行此操作吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const req = { id: this.role.id, uuid: this.role.uuid, status: status }
+        changeRoleStatus(req).then(() => {
+          this.role.status = status
+          this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+        }).catch((e) => console.log(e))
+      }).catch((e) => console.log(e))
     },
     toRoleUpdate() {
       this.temp = Object.assign({ dataType: 'Object' }, this.role)

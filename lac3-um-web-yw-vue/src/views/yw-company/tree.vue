@@ -88,8 +88,7 @@
           <el-col :span="12">
             <el-form-item label="状态" prop="status">
               <el-radio-group v-model="department.entity.status" size="small">
-                <el-radio-button label="0">正常</el-radio-button>
-                <el-radio-button label="1">禁用</el-radio-button>
+                <el-radio-button v-for="item in commonData.statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -171,8 +170,7 @@
               <el-col :span="12">
                 <el-form-item label="状态" prop="status">
                   <el-radio-group v-model="company.entity.status" size="small">
-                    <el-radio-button label="0">正常</el-radio-button>
-                    <el-radio-button label="1">禁用</el-radio-button>
+                    <el-radio-button v-for="item in commonData.statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -362,7 +360,7 @@ import {
 import { loadCachedMyCompanyAreaTree, loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { companyClasses } from '@/filters'
+import { statusOptions, companyClasses } from '@/filters'
 
 export default {
   name: 'CompanyTree',
@@ -372,6 +370,7 @@ export default {
       currentNode: undefined,
       data: [],
       commonData: {
+        statusOptions: statusOptions(),
         companyClasses: companyClasses(),
         certificateTypeOptions: [],
         personCertificateTypeOptions: [],

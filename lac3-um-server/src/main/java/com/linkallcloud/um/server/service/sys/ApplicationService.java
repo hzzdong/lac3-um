@@ -28,15 +28,15 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 
 	@Autowired
 	private IApplicationActivity applicationActivity;
-	
+
 	@Autowired
-    private IYwCompanyActivity ywCompanyActivity;
+	private IYwCompanyActivity ywCompanyActivity;
 
-    @Autowired
-    private IYwUserActivity ywUserActivity;
+	@Autowired
+	private IYwUserActivity ywUserActivity;
 
-    @Autowired
-    private IAreaActivity areaActivity;
+	@Autowired
+	private IAreaActivity areaActivity;
 
 	@Override
 	public IApplicationActivity activity() {
@@ -45,17 +45,11 @@ public class ApplicationService extends BaseService<Application, IApplicationAct
 
 	@Override
 	public Page<Application> findPage4YwRole(Trace t, Page<Application> page) {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
 		return activity().findPage4YwRole(t, page);
 	}
 
 	@Override
 	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
 		return activity().findPage4YwRole4Select(t, page);
 	}
 

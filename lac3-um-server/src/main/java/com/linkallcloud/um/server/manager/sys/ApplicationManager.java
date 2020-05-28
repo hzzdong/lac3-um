@@ -30,17 +30,11 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 
 	@Override
 	public Page<Application> findPage4YwRole(Trace t, Page<Application> page) throws AppException {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
 		return service().findPage4YwRole(t, page);
 	}
 
 	@Override
 	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
 		return service().findPage4YwRole4Select(t, page);
 	}
 
@@ -51,9 +45,6 @@ public class ApplicationManager extends BaseManager<Application, IApplicationSer
 
 	@Override
 	public Page<Application> findPage4KhRole(Trace t, Page<Application> page) throws AppException {
-		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
 		return service().findPage4KhRole(t, page);
 	}
 

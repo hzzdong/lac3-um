@@ -40,7 +40,9 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	 * @param appId
 	 * @return
 	 */
-	String[] getUserAppPermissions4Menu(Trace t, Long userId, Long appId);
+	String[] getUserAppMenus(Trace t, Long userId, Long appId);
+	List<Long> getUserAppOrgs(Trace t, Long userId, Long appId);
+	List<Long> getUserAppAreas(Trace t, Long userId, Long appId);
 
 	void cleanCache4UserAppPermissions4Menu(Trace t, Long userId, Long appId);
 
@@ -65,6 +67,7 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	 * @return
 	 */
 	Page<T> findPage4Role(Trace t, Page<T> page);
+	Page<T> findPage4UnRole(Trace t, Page<T> page);
 
 	/**
 	 * 查询某角色已分配的用户

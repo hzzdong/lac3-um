@@ -79,8 +79,8 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 
 	// @Cacheable(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
 	@Override
-	public String[] getUserAppPermissions4Menu(Trace t, Long userId, Long appId) {
-		return service().getUserAppPermissions4Menu(t, userId, appId);
+	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
+		return service().getUserAppMenus(t, userId, appId);
 //        String[] result = new String[0];
 //        String jsonStr = service().getUserAppPermissions4MenuJsonString(t, userId, appId);
 //        if (!Strings.isBlank(jsonStr)) {
@@ -88,6 +88,16 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 //            result = list.toArray(new String[list.size()]);
 //        }
 //        return result;
+	}
+
+	@Override
+	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
+		return service().getUserAppOrgs(t, userId, appId);
+	}
+
+	@Override
+	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
+		return service().getUserAppAreas(t, userId, appId);
 	}
 
 	// @Cacheable(value = "AppMenu", key = "#userId + \"-\" + #appId")
@@ -159,6 +169,11 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	@Override
 	public Page<T> findPage4Role(Trace t, Page<T> page) {
 		return service().findPage4Role(t, page);
+	}
+
+	@Override
+	public Page<T> findPage4UnRole(Trace t, Page<T> page) {
+		return service().findPage4UnRole(t, page);
 	}
 
 	@Override
@@ -302,7 +317,6 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	public T fetchCompanyAdmin(Trace t, Sid companyId) {
 		return service().fetchCompanyAdmin(t, companyId);
 	}
-	
 
 	@Override
 	public Page<T> findUserPage4Org(Trace t, Page<T> page) {
@@ -313,6 +327,5 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	public Page<T> findPermedUserPage(Trace t, Page<T> page) {
 		return service().findPermedUserPage(t, page);
 	}
-
 
 }

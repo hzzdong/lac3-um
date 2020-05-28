@@ -236,11 +236,19 @@
           <el-radio-group v-model="temp.level" size="small">
             <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 部门级 ] 角色可以分配给任何用户；<br>[ 公司级 ] 角色只能分配给管理部门和单位节点下的用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="类型：" prop="type">
-          <el-radio-group v-model="temp.type" size="small" disabled="true">
+          <el-radio-group v-model="temp.type" size="small" disabled>
             <el-radio-button v-for="item in sysOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 普通角色 ] 只能分配给角色所属单位用户；<br>[ 系统角色 ] 可以分配给任何单位用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="排序号：" prop="sort">
           <el-input v-model="temp.sort" />
@@ -265,7 +273,8 @@
       </aside>
       <div class="filter-container">
         <el-input v-model="users.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryRoleUsers" />
-        <el-input v-model="users.listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
+        <el-input v-model="users.listQuery.rules.account.fv" placeholder="账号 精确匹配" style="width: 150px;" class="filter-item" />
+        <el-input v-model="users.listQuery.rules.mobile.fv" placeholder="手机号 精确匹配" style="width: 150px;" class="filter-item" />
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryUnRoleUsers()" />
         <el-button class="filter-item" style="float: right;" type="primary" icon="el-icon-check" @click="onSelectUsers()">
           确定选择
@@ -370,8 +379,8 @@
 <script>
 import {
   fetchById,
-  updateKhRole,
-  deleteKhRole,
+  updateSysKhRole,
+  deleteSysKhRole,
   changeRoleStatus,
   addRoleUsers,
   removeRoleUser,
@@ -455,7 +464,8 @@ export default {
             roleId: { fv: undefined, oper: 'eq', stype: 'L' },
             roleUuid: { fv: undefined, oper: 'eq', stype: 'S' },
             name: { fv: undefined, oper: 'cn', stype: 'S' },
-            mobile: { fv: undefined, oper: 'cn', stype: 'S' },
+            account: { fv: undefined, oper: 'eq', stype: 'S' },
+            mobile: { fv: undefined, oper: 'eq', stype: 'S' },
             status: { fv: 0, oper: 'eq', stype: 'I' }
           },
           orderby: { orderby: 'id', order: 'desc' }
@@ -550,14 +560,7 @@ export default {
   created() {
     const id = this.$route.params && this.$route.params.id
     const uuid = this.$route.params && this.$route.params.uuid
-    this.roleUsers.listQuery.rules.roleId.fv = id
-    this.roleUsers.listQuery.rules.roleUuid.fv = uuid
-    this.users.listQuery.rules.roleId.fv = id
-    this.users.listQuery.rules.roleUuid.fv = uuid
-    this.roleApps.listQuery.rules.roleId.fv = id
-    this.roleApps.listQuery.rules.roleUuid.fv = uuid
-    this.apps.listQuery.rules.roleId.fv = id
-    this.apps.listQuery.rules.roleUuid.fv = uuid
+
     this.fetchData(id, uuid)
     this.tempRoute = Object.assign({}, this.$route)
   },
@@ -605,7 +608,7 @@ export default {
       this.$refs['roleForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({ dataType: 'Object' }, this.temp)
-          updateKhRole(tempData).then(() => {
+          updateSysKhRole(tempData).then(() => {
             this.role = Object.assign({}, this.temp)
             this.dialogFormVisible = false
             this.$notify({ title: '提示', message: '保存成功', type: 'success', duration: 2000 })
@@ -633,7 +636,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const { id, uuid } = this.role
-        deleteKhRole({ id, uuid }).then(() => {
+        deleteSysKhRole({ id, uuid }).then(() => {
           this.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
           this.onClose()
         }).catch(() => {
@@ -650,19 +653,25 @@ export default {
     },
     // 以下为角色用户分配
     findRoleUsers() {
-      this.roleUsers.listLoading = true
-      findRoleUsers(this.roleUsers.listQuery).then(response => {
-        this.roleUsers.list = response.data.data
-        this.roleUsers.total = response.data.recordsTotal
-        this.roleUsers.listLoading = false
+      const that = this
+      that.roleUsers.listQuery.rules.roleId.fv = that.role.id
+      that.roleUsers.listQuery.rules.roleUuid.fv = that.role.uuid
+      that.roleUsers.listLoading = true
+      findRoleUsers(that.roleUsers.listQuery).then(response => {
+        that.roleUsers.list = response.data.data
+        that.roleUsers.total = response.data.recordsTotal
+        that.roleUsers.listLoading = false
       })
     },
     findUnRoleUsers() {
-      this.users.listLoading = true
-      findUnRoleUsers(this.users.listQuery).then(response => {
-        this.users.list = response.data.data
-        this.users.total = response.data.recordsTotal
-        this.users.listLoading = false
+      const that = this
+      that.users.listQuery.rules.roleId.fv = that.role.id
+      that.users.listQuery.rules.roleUuid.fv = that.role.uuid
+      that.users.listLoading = true
+      findUnRoleUsers(that.users.listQuery).then(response => {
+        that.users.list = response.data.data
+        that.users.total = response.data.recordsTotal
+        that.users.listLoading = false
       })
     },
     queryRoleUsers() {
@@ -721,26 +730,32 @@ export default {
     },
     // 以下是角色应用许可授权
     findRoleApps() {
-      this.roleApps.listLoading = true
-      findAppPage4SysKhRole(this.roleApps.listQuery).then(response => {
-        this.roleApps.list = response.data.data
-        this.roleApps.total = response.data.recordsTotal
-        this.roleApps.listLoading = false
-        this.$nextTick(() => {
-          if (this.roleApps.list && this.roleApps.list.length > 0) {
-            this.currentApp = this.roleApps.list[0]
-            this.$refs.roleAppTable.setCurrentRow(this.currentApp)
+      const that = this
+      that.roleApps.listQuery.rules.roleId.fv = that.role.id
+      that.roleApps.listQuery.rules.roleUuid.fv = that.role.uuid
+      that.roleApps.listLoading = true
+      findAppPage4SysKhRole(that.roleApps.listQuery).then(response => {
+        that.roleApps.list = response.data.data
+        that.roleApps.total = response.data.recordsTotal
+        that.roleApps.listLoading = false
+        that.$nextTick(() => {
+          if (that.roleApps.list && that.roleApps.list.length > 0) {
+            that.currentApp = that.roleApps.list[0]
+            that.$refs.roleAppTable.setCurrentRow(that.currentApp)
             // 加载权限
           }
         })
       })
     },
     findUnRoleApps() {
-      this.apps.listLoading = true
-      findAppPage4UnSysKhRole(this.apps.listQuery).then(response => {
-        this.apps.list = response.data.data
-        this.apps.total = response.data.recordsTotal
-        this.apps.listLoading = false
+      const that = this
+      that.apps.listQuery.rules.roleId.fv = that.role.id
+      that.apps.listQuery.rules.roleUuid.fv = that.role.uuid
+      that.apps.listLoading = true
+      findAppPage4UnSysKhRole(that.apps.listQuery).then(response => {
+        that.apps.list = response.data.data
+        that.apps.total = response.data.recordsTotal
+        that.apps.listLoading = false
       })
     },
     queryRoleApps() {

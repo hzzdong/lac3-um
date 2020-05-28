@@ -82,7 +82,7 @@ export function getPage4Role(data) {
 
 export function findRoleUsers(data) {
   return request({
-    url: '/api4umyw/face/KhUser/page4Role',
+    url: '/api4umyw/face/KhUser/page4Role4Yw',
     method: 'post',
     data
   })
@@ -90,7 +90,7 @@ export function findRoleUsers(data) {
 
 export function findUnRoleUsers(data) {
   return request({
-    url: '/api4umyw/face/KhUser/page4Select',
+    url: '/api4umyw/face/KhUser/page4UnRole4Yw',
     method: 'post',
     data
   })

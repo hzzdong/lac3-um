@@ -14,5 +14,10 @@ public interface IYwSystemConfigManager extends IManager<YwSystemConfig> {
 	List<YwSystemConfig> find(Trace t, Long companyId);
 
 	Boolean change(Trace t, Sid companyId, String configItemCode, String value);
-
+	
+	boolean isEnableOrgPermission(Trace t, Long companyId);
+	boolean isEnableAreaPermission(Trace t, Long companyId);
+	boolean isEnableManageDepMode(Trace t, Long companyId);
+	boolean isEnableZZD(Trace t, Long companyId);
+	
 }

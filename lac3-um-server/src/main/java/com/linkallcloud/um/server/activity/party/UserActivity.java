@@ -1,19 +1,18 @@
 package com.linkallcloud.um.server.activity.party;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
+import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
@@ -24,10 +23,8 @@ import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.activity.party.IUserActivity;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
-import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Account;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Menu;
@@ -194,6 +191,28 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new ArgException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
+		
+		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
+		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
+		R role = getRoleDao().fetchByIdUuid(t, roleId, roleUuid);
+		if (role == null) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		
+		Equal r = (Equal) page.getRule4Field("type");
+		if (r != null) {
+			r.setValue(role.getType());
+		} else {
+			page.addRule(new Equal("type", role.getType()));
+		}
+		
+		Equal rl = (Equal) page.getRule4Field("level");
+		if (rl != null) {
+			rl.setValue(role.getLevel());
+		} else {
+			page.addRule(new Equal("level", role.getLevel()));
+		}
+		
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -208,6 +227,76 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		} finally {
 			PageHelper.clearPage();
 		}
+	}
+
+	@Override
+	public Page<T> findPage4UnRole(Trace t, Page<T> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new ArgException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		
+		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
+		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
+		R role = getRoleDao().fetchByIdUuid(t, roleId, roleUuid);
+		if (role == null) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		
+		Equal r = (Equal) page.getRule4Field("type");
+		if (r != null) {
+			r.setValue(role.getType());
+		} else {
+			page.addRule(new Equal("type", role.getType()));
+		}
+		
+		Equal rl = (Equal) page.getRule4Field("level");
+		if (rl != null) {
+			rl.setValue(role.getLevel());
+		} else {
+			page.addRule(new Equal("level", role.getLevel()));
+		}
+		
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<T> list = dao().findPage4UnRole(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
+
+	@Override
+	public Page<T> findPage4Select(Trace t, Page<T> page) {
+		if (page.hasRule4Field("roleId") && page.hasRule4Field("roleUuid")) {
+			Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
+			String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
+			R role = getRoleDao().fetchByIdUuid(t, roleId, roleUuid);
+			if (role == null) {
+				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+			}
+			
+			Equal r = (Equal) page.getRule4Field("type");
+			if (r != null) {
+				r.setValue(role.getType());
+			} else {
+				page.addRule(new Equal("type", role.getType()));
+			}
+			
+			Equal rl = (Equal) page.getRule4Field("level");
+			if (rl != null) {
+				rl.setValue(role.getLevel());
+			} else {
+				page.addRule(new Equal("level", role.getLevel()));
+			}
+		}
+		return super.findPage4Select(t, page);
 	}
 
 	@Override
@@ -256,28 +345,22 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	}
 
 	@Override
-	public List<Long> findUserAppPermedOrgs(Trace t, Long userId, Long appId) {
+	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
+		return dao().findUserAppOrgs(t, userId, appId);
+	}
+
+	@Override
+	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
 		T user = dao().fetchById(t, userId);
-		if (user == null) {
+		Application app = applicationDao.fetchById(t, appId);
+		if (user == null || app == null) {
 			return null;
 		}
-		return dao().findUserAppPermedOrgs(t, userId, appId);
+		return dao().findUserAppAreas(t, userId, appId);
 	}
 
 	@Override
-	public List<Long> findUserAppPermedAreas(Trace t, Long userId, Long appId) {
-		return dao().findUserAppPermedAreas(t, userId, appId);
-	}
-
-	// @Cacheable(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
-	@Override
-	public String getUserAppPermissions4MenuJsonString(Trace t, Long userId, Long appId) {
-		String[] result = getUserAppPermissions4Menu(t, userId, appId);
-		return JSON.toJSONString(result);
-	}
-
-	@Override
-	public String[] getUserAppPermissions4Menu(Trace t, Long userId, Long appId) {
+	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
 		T user = dao().fetchById(t, userId);
 		Application app = applicationDao.fetchById(t, appId);
 		if (user == null || app == null) {
@@ -287,49 +370,15 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (user.getAccount().equals("superadmin")) {
 			List<Menu> menus = menuDao.findAppMenusWithButton(t, appId, true);
 			return menu2RescodeArray(menus);
-		} else if (user.isAdmin()) {// && ("lac_app_um".equals(app.getCode()) ||
-									// "lac_app_um_kh".equals(app.getCode()))
-			List<Menu> menus = null;
-			if (user.getUserType().equals(KhUser.class.getSimpleName().substring(0, 2))) {
-				menus = menuDao.findKhCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);
-			} else if (user.getUserType().equals(YwUser.class.getSimpleName().substring(0, 2))) {
-				if ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode())) {
-					menus = menuDao.findYwCompanyAppMenusWithButton(t, user.getCompanyId(), appId, true);
-				} else {
-					return getCommonUserAppPermissions4Menu(t, userId, appId);
-				}
-			}
+		} else if (user.isAdmin()) {
+			List<Menu> menus = findCompanyAppMenusWithButton(t, user.getCompanyId(), appId);
 			return menu2RescodeArray(menus);
 		} else {
-			return getCommonUserAppPermissions4Menu(t, userId, appId);
+			return dao().findUserAppMenuResCodes(t, userId, appId);
 		}
 	}
 
-	/**
-	 * 查询普通用户的应用权限
-	 *
-	 * @param t
-	 * @param userId
-	 * @param appId
-	 * @return
-	 */
-	private String[] getCommonUserAppPermissions4Menu(Trace t, Long userId, Long appId) {
-		List<R> roles = getRoleDao().find4User(t, userId);
-		if (roles == null || roles.isEmpty()) {
-			return new String[0];
-		}
-
-		Set<String> result = new HashSet<String>();
-		for (R role : roles) {
-			String[] rolePerms = getRoleDao().findPermedMenuResCodes(t, role.getId(), appId);
-			if (rolePerms != null && rolePerms.length > 0) {
-				for (String res : rolePerms) {
-					result.add(res);
-				}
-			}
-		}
-		return (String[]) result.toArray(new String[result.size()]);
-	}
+	protected abstract List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId);
 
 	private String[] menu2RescodeArray(List<Menu> menus) {
 		if (menus != null && !menus.isEmpty()) {
@@ -350,7 +399,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 
 	@Override
 	public Boolean updateHeaderImage(Trace t, Sid user, String ico) {
-		int rows =  dao().updateHeaderImage(t, user, ico);
+		int rows = dao().updateHeaderImage(t, user, ico);
 		return retBool(rows);
 	}
 
@@ -598,7 +647,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Page<T> leaderPage(Trace t, Page<T> page) {
 		if (!page.hasRule4Field("orgId")) {
@@ -618,43 +667,41 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			PageHelper.clearPage();
 		}
 	}
-	
 
-    @Override
-    public Page<T> findUserPage4Org(Trace t, Page<T> page) {
-        page.checkPageParameters();
-        try {
-            PageHelper.startPage(page.getPageNum(), page.getLength());
-            List<T> list = dao().findUserPage4Org(t, page);
-            if (list instanceof com.github.pagehelper.Page) {
-                page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
-                page.checkPageParameters();
-                page.setRecordsFiltered(page.getRecordsTotal());
-                page.addDataAll(list);
-            }
-            return page;
-        } finally {
-            PageHelper.clearPage();
-        }
-    }
+	@Override
+	public Page<T> findUserPage4Org(Trace t, Page<T> page) {
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<T> list = dao().findUserPage4Org(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
 
-    @Override
-    public Page<T> findPermedUserPage(Trace t, Page<T> page) {
-        page.checkPageParameters();
-        try {
-            PageHelper.startPage(page.getPageNum(), page.getLength());
-            List<T> list = dao().findPermedUserPage(t, page);
-            if (list instanceof com.github.pagehelper.Page) {
-                page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
-                page.checkPageParameters();
-                page.setRecordsFiltered(page.getRecordsTotal());
-                page.addDataAll(list);
-            }
-            return page;
-        } finally {
-            PageHelper.clearPage();
-        }
-    }
-
+	@Override
+	public Page<T> findPermedUserPage(Trace t, Page<T> page) {
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<T> list = dao().findPermedUserPage(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
 
 }

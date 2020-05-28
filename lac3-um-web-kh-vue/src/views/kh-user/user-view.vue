@@ -64,6 +64,18 @@
             </el-col>
           </el-row>
           <el-row>
+            <el-col :span="12">
+              <el-form-item label="创建时间:" prop="createTime">
+                <span class="el-span_view">{{ user.createTime }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="最后更新:" prop="updateTime">
+                <span class="el-span_view">{{ user.updateTime }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="备注:">
                 <el-input v-model="user.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" class="el-textarea_view" />
@@ -98,7 +110,7 @@
       </el-tab-pane>
       <el-tab-pane label="兼职机构" name="tabUserOrgs">
         <div class="filter-container">
-          <el-input v-model="jz.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+          <el-input v-model="jz.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleJzFilter" />
           <el-input v-model="jz.listQuery.rules.srcOrgName.fv" placeholder="归属机构 模糊匹配" style="width: 150px;" class="filter-item" />
           <el-input v-model="jz.listQuery.rules.destOrgName.fv" placeholder="兼职机构 模糊匹配" style="width: 150px;" class="filter-item" />
           <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleJzFilter" />

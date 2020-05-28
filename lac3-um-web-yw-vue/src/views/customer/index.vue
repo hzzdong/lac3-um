@@ -342,7 +342,6 @@ export default {
       const that = this
       that.listLoading = true
       findCustomerPage(that.listQuery).then(response => {
-        console.log(response.data)
         that.list = response.data.data
         that.total = response.data.recordsTotal
         that.listLoading = false

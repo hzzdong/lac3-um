@@ -103,6 +103,18 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		convert(t, "page4KhRole", faceReq, page);
 		return page;
 	}
+	
+	@Face(simple = true)
+	@RequestMapping(value = "/page4KhRole4Select", method = RequestMethod.POST)
+	public @ResponseBody Object page4KhRole4Select(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<Application> page = new Page<>(faceReq);
+		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		page = manager().findPage4KhRole4Select(t, page);
+		convert(t, "page4YwRole4Select", faceReq, page);
+		return page;
+	}
 
 	@Override
 	protected Page<Application> doPage4Select(Trace t, Page<Application> page, SessionUser su) {

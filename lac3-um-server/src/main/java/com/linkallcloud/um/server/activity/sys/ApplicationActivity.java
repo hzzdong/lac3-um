@@ -8,16 +8,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.activity.BaseActivity;
+import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
+import com.linkallcloud.um.domain.party.KhRole;
+import com.linkallcloud.um.domain.party.YwCompany;
+import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.exception.AppException;
+import com.linkallcloud.um.server.dao.party.IKhRoleDao;
+import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
+import com.linkallcloud.um.server.dao.party.IYwRoleDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 
@@ -30,6 +38,15 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 	@Autowired
 	private IYwUserDao ywUserDao;
 
+	@Autowired
+	private IYwCompanyDao ywCompanyDao;
+
+	@Autowired
+	private IYwRoleDao ywRoleDao;
+
+	@Autowired
+	private IKhRoleDao khRoleDao;
+
 	@Override
 	public IApplicationDao dao() {
 		return applicationDao;
@@ -37,6 +54,10 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
 	@Override
 	public Page<Application> findPage4YwRole(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -55,6 +76,25 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
 	@Override
 	public Page<Application> findPage4YwRole4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
+		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
+		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
+
+		YwRole role = ywRoleDao.fetchByIdUuid(t, roleId, roleUuid);
+		if (role == null) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
+		if (role.getType() != Domains.ROLE_SYSTEM) {
+			YwCompany company = ywCompanyDao.fetchById(t, role.getCompanyId());
+			if (!company.isTopParent()) {
+				page.addRule(new Equal("companyId", role.getCompanyId()));
+			}
+		}
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -101,6 +141,22 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 
 	@Override
 	public Page<Application> findPage4KhRole4Select(Trace t, Page<Application> page) {
+		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
+		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
+		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
+
+		KhRole role = khRoleDao.fetchByIdUuid(t, roleId, roleUuid);
+		if (role == null) {
+			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
+		if (role.getType() != Domains.ROLE_SYSTEM) {
+			page.addRule(new Equal("companyId", role.getCompanyId()));
+		}
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());

@@ -286,7 +286,7 @@
 			u.roleId=#{roleId}  AND u.appId=#{appId}
 	</select>
 	
-	<select id="findPermedMenuResCodes" resultType="java.lang.String">
+	<select id="findRoleAppMenuResCodes" resultType="java.lang.String">
 		SELECT
 			m.govCode
 		FROM
@@ -295,7 +295,7 @@
 			u.status=0 AND u.roleId=#{roleId}  AND u.appId=#{appId}
 	</select>
 	
-	<select id="findPermedMenus" resultType="com.linkallcloud.um.domain.sys.Menu">
+	<select id="findRoleAppMenus" resultType="com.linkallcloud.um.domain.sys.Menu">
 		SELECT
 			m.*
 		FROM

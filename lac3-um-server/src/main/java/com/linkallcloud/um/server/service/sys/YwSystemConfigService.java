@@ -15,6 +15,7 @@ import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.activity.sys.IYwSystemConfigActivity;
 import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.constant.YwConfigs;
+import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.service.sys.IYwSystemConfigService;
 
@@ -36,7 +37,14 @@ public class YwSystemConfigService extends BaseService<YwSystemConfig, IYwSystem
 
 	@Override
 	public YwSystemConfig fetch(Trace t, Long companyId, String configItemCode) {
-		return activity().fetch(t, companyId, configItemCode);
+		YwSystemConfig config = activity().fetch(t, companyId, configItemCode);
+		if (config == null) {
+			YwCompany company = ywCompanyActivity.fetchById(t, companyId);
+			if (!company.isTopParent()) {
+				return this.fetch(t, company.getParentId(), configItemCode);
+			}
+		}
+		return config;
 	}
 
 	@Override
@@ -65,6 +73,42 @@ public class YwSystemConfigService extends BaseService<YwSystemConfig, IYwSystem
 		}
 
 		return result;
+	}
+	
+	@Override
+	public boolean isEnableOrgPermission(Trace t, Long companyId) {
+		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_ORG);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEnableAreaPermission(Trace t, Long companyId) {
+		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_AREA);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEnableManageDepMode(Trace t, Long companyId) {
+		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_MANAGE_DEPARTMENT);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEnableZZD(Trace t, Long companyId) {
+		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_ZZD);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
 	}
 
 }

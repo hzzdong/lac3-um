@@ -1,6 +1,5 @@
 package com.linkallcloud.um.kh.face;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.dubbo.config.annotation.Reference;
@@ -19,7 +18,7 @@ import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
-import com.linkallcloud.um.constant.Consts;
+import com.linkallcloud.um.constant.KhConfigs;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.dto.base.ConfigFaceRequest;
@@ -65,12 +64,12 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 
 		List<KhSystemConfig> entities = super.doFind(t, wq, su);
 		if (entities == null || entities.size() <= 0) {
-			return defaultConfigs(t);
+			return KhConfigs.defaultConfigs(t);
 		} else {
-			if (entities.size() >= 4) {
+			if (entities.size() >= 6) {
 				return entities;
 			} else {
-				List<KhSystemConfig> defs = defaultConfigs(t);
+				List<KhSystemConfig> defs = KhConfigs.defaultConfigs(t);
 				for (KhSystemConfig def : defs) {
 					for (KhSystemConfig entity : entities) {
 						if (def.getKey().equals(entity.getKey())) {
@@ -82,15 +81,6 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 				return defs;
 			}
 		}
-	}
-
-	private List<KhSystemConfig> defaultConfigs(Trace t) {
-		List<KhSystemConfig> entities = new ArrayList<KhSystemConfig>();
-		entities.add(new KhSystemConfig(Consts.CONFIG_PERMISSION_ORG, "启用机构权限", "no", "是否启用机构权限功能"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_PERMISSION_AREA, "启用区域权限", "no", "是否启用区域权限功能"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_AREAS, "根区域", "", "可设置多个区域节点作为根区域"));
-		entities.add(new KhSystemConfig(Consts.CONFIG_LOGO, "LOGO", "", "设置公司LOGO"));
-		return entities;
 	}
 
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")

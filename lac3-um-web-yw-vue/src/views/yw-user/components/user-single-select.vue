@@ -325,19 +325,21 @@ export default {
     },
     /* 兼职管理 */
     getJzList() {
-      if (this.tree.checkedNode.id > 0) {
-        this.jz.listQuery.rules.destOrgId.fv = this.tree.checkedNode.id
-        this.jz.listQuery.rules.destOrgClass.fv = 'KhDepartment'
+      const that = this
+      const orgId = Number.parseInt(that.tree.checkedNode.id)
+      if (orgId > 0) {
+        that.jz.listQuery.rules.destOrgId.fv = orgId
+        that.jz.listQuery.rules.destOrgClass.fv = 'YwDepartment'
       } else {
-        this.jz.listQuery.rules.destOrgId.fv = this.tree.checkedNode.id.substring(1)
-        this.jz.listQuery.rules.destOrgClass.fv = 'KhCompany'
+        that.jz.listQuery.rules.destOrgId.fv = orgId * -1 // this.tree.checkedNode.id.substring(1)
+        that.jz.listQuery.rules.destOrgClass.fv = 'YwCompany'
       }
 
-      this.jz.listLoading = true
-      getJzPage(this.jz.listQuery).then(response => {
-        this.jz.list = response.data.data
-        this.jz.total = response.data.recordsTotal
-        this.jz.listLoading = false
+      that.jz.listLoading = true
+      getJzPage(that.jz.listQuery).then(response => {
+        that.jz.list = response.data.data
+        that.jz.total = response.data.recordsTotal
+        that.jz.listLoading = false
       }).catch(err => {
         console.log(err)
       })

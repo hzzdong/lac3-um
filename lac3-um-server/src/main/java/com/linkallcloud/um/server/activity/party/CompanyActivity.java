@@ -96,13 +96,12 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 
 	@Override
 	public Tree loadCompanyOrgTree(Trace t, Long companyId) {
-		T company = dao().fetchById(t, companyId);
-		return getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, company.sid());
+		return getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, companyId);
 	}
 
 	@Override
-	public Tree getCompanyTree(Trace t, String treeType, Sid comId) {
-		T company = dao().fetchByIdUuid(t, comId.getId(), comId.getUuid());
+	public Tree getCompanyTree(Trace t, String treeType, Long comId) {
+		T company = dao().fetchById(t, comId);
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}
@@ -129,8 +128,8 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
-	public List<Tree> getCompanyTreeList(Trace t, String treeType, Sid comId) {
-		T company = dao().fetchByIdUuid(t, comId.getId(), comId.getUuid());
+	public List<Tree> getCompanyTreeList(Trace t, String treeType, Long comId) {
+		T company = dao().fetchById(t, comId);
 		if (company == null) {
 			throw new ArgException("companyId参数错误");
 		}

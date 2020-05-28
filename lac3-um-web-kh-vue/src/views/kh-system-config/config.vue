@@ -18,14 +18,14 @@
             v-model="entity.enable_org_permission"
             active-text="启用"
             inactive-text="禁用"
-            @change="haddleChangeOrgPermission($event, row)"
+            @change="haddleChangeStatusSwitch($event, row)"
           />
           <el-switch
             v-if="row.key === 'enable_area_permission'"
             v-model="entity.enable_area_permission"
             active-text="启用"
             inactive-text="禁用"
-            @change="haddleChangeAreaPermission($event, row)"
+            @change="haddleChangeStatusSwitch($event, row)"
           />
           <span v-if="row.key === 'area_roots'">
             <el-table
@@ -62,6 +62,20 @@
             <el-avatar :size="100" :src="entity.logo" />
             <el-button type="primary" icon="el-icon-upload" circle title="公司LOGO上传" @click="toggleShow()" />
           </span>
+          <el-switch
+            v-if="row.key === 'enable_m_dep'"
+            v-model="entity.enable_m_dep"
+            active-text="启用"
+            inactive-text="禁用"
+            @change="haddleChangeStatusSwitch($event, row)"
+          />
+          <el-switch
+            v-if="row.key === 'enable_zzd'"
+            v-model="entity.enable_zzd"
+            active-text="启用"
+            inactive-text="禁用"
+            @change="haddleChangeStatusSwitch($event, row)"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注说明" min-width="100px" />
@@ -107,7 +121,9 @@ export default {
         enable_area_permission: false,
         // area_roots: [],
         companyAreas: [],
-        logo: ''
+        logo: '',
+        enable_m_dep: false,
+        enable_zzd: false
       },
       areaTree: {
         dialogFormVisible: false,
@@ -158,6 +174,10 @@ export default {
               if (item.value && item.value.length > 0) {
                 this.entity.logo = this.$store.state.settings.fssBaseUrl + item.value
               }
+            } else if (item.key === 'enable_m_dep') {
+              this.entity.enable_m_dep = item.value === 'yes'
+            } else if (item.key === 'enable_zzd') {
+              this.entity.enable_zzd = item.value === 'yes'
             }
           }
         }
@@ -174,21 +194,12 @@ export default {
     handleFilter() {
       this.getList()
     },
-    haddleChangeOrgPermission(val, row) {
+    haddleChangeStatusSwitch(val, row) {
       const fv = val === true ? 'yes' : 'no'
       const req = { key: row.key, value: fv }
       saveCompanyConfig(req).then(() => {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
-      }).catch(() => {
-      })
-    },
-    haddleChangeAreaPermission(val, row) {
-      const fv = val === true ? 'yes' : 'no'
-      const req = { key: row.key, value: fv }
-      saveCompanyConfig(req).then(() => {
-        this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
-      }).catch(() => {
-      })
+      }).catch((err) => console.log(err))
     },
     getAreaTree() {
       loadCompanyAreaFullTree().then(response => {

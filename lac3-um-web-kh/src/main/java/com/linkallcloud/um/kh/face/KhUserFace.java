@@ -24,7 +24,6 @@ import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.ptj.KhPartTimeJob;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
@@ -158,6 +157,21 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
 
+		page = manager().findPage4Role(t, page);
+
+		desensitization(page.getData());
+		return page;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/page4UnRole", method = RequestMethod.POST)
+	public @ResponseBody Object page4UnRole(PageFaceRequest faceReq, Trace t, SessionUser su) {
+		Page<KhUser> page = new Page<>(faceReq);
+
+		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
+			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+
 		Long companyId = su.companyId();
 		Equal r = (Equal) page.getRule4Field("companyId");
 		if (r != null) {
@@ -167,13 +181,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 			page.addRule(r);
 		}
 
-		Equal rr = (Equal) page.getRule4Field("roleId");
-		if (rr != null) {
-			KhRole role = khRoleManager.fetchById(t, (Long) rr.getValue());
-			page.addRule(new Equal("type", role.getType()));
-		}
-
-		page = manager().findPage4Role(t, page);
+		page = manager().findPage4UnRole(t, page);
 
 		desensitization(page.getData());
 		return page;

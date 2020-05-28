@@ -1,5 +1,6 @@
 package com.linkallcloud.um.server.service.party;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.ServLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
@@ -19,10 +22,12 @@ import com.linkallcloud.um.activity.party.IUserActivity;
 import com.linkallcloud.um.activity.sys.IAccountActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.activity.sys.IMenuActivity;
+import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
+import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.service.party.IUserService;
 
 @Module(name = "用户")
@@ -106,6 +111,11 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 	}
 
 	@Override
+	public Page<T> findPage4UnRole(Trace t, Page<T> page) {
+		return activity().findPage4UnRole(t, page);
+	}
+
+	@Override
 	public List<T> find4Role(Trace t, Long roleId) {
 		return activity().find4Role(t, roleId);
 	}
@@ -151,19 +161,41 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 	}
 
 	@Override
-	public List<Long> findUserAppPermedOrgs(Trace t, Long userId, Long appId) {
-		return activity().findUserAppPermedOrgs(t, userId, appId);
-	}
-
-	// @Cacheable(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
-	@Override
-	public String getUserAppPermissions4MenuJsonString(Trace t, Long userId, Long appId) {
-		return activity().getUserAppPermissions4MenuJsonString(t, userId, appId);
+	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
+		return activity().getUserAppMenus(t, userId, appId);
 	}
 
 	@Override
-	public String[] getUserAppPermissions4Menu(Trace t, Long userId, Long appId) {
-		return activity().getUserAppPermissions4Menu(t, userId, appId);
+	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
+		T user = activity().fetchById(t, userId);
+		Application app = applicationActivity.fetchById(t, appId);
+		if (user == null || app == null) {
+			return null;
+		}
+
+		if (user.isAdmin()) {
+			List<Tree> orgs = getCompanyActivity().getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY,
+					user.getCompanyId());
+			return Trees.getLongIds(orgs, true);
+		} else {
+			return activity().getUserAppOrgs(t, userId, appId);
+		}
+	}
+
+	@Override
+	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
+		T user = activity().fetchById(t, userId);
+		Application app = applicationActivity.fetchById(t, appId);
+		if (user == null || app == null) {
+			return null;
+		}
+
+		if (user.isAdmin()) {
+			Long[] ids = getCompanyActivity().getCompanyAreaRootIds(t, user.getCompanyId());
+			return Arrays.asList(ids);
+		} else {
+			return activity().getUserAppAreas(t, userId, appId);
+		}
 	}
 
 	@Override

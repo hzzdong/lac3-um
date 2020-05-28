@@ -8,13 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.service.BaseService;
 import com.linkallcloud.um.activity.party.IKhCompanyActivity;
 import com.linkallcloud.um.activity.sys.IKhSystemConfigActivity;
 import com.linkallcloud.um.constant.Consts;
+import com.linkallcloud.um.constant.KhConfigs;
+import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.service.sys.IKhSystemConfigService;
 
@@ -25,7 +26,7 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 
 	@Autowired
 	private IKhSystemConfigActivity khSystemConfigActivity;
-	
+
 	@Autowired
 	private IKhCompanyActivity khCompanyActivity;
 
@@ -36,7 +37,14 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 
 	@Override
 	public KhSystemConfig fetch(Trace t, Long companyId, String configItemCode) {
-		return activity().fetch(t, companyId, configItemCode);
+		KhSystemConfig config = activity().fetch(t, companyId, configItemCode);
+		if (config == null) {
+			KhCompany company = khCompanyActivity.fetchById(t, companyId);
+			if (!company.isTopParent()) {
+				return this.fetch(t, company.getParentId(), configItemCode);
+			}
+		}
+		return config;
 	}
 
 	@Override
@@ -55,28 +63,51 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 			dbEntity.setValue(value);
 			result = activity().update(t, dbEntity);
 		} else {
-			KhSystemConfig entity = defaultConfig(t, configItemCode);
+			KhSystemConfig entity = KhConfigs.defaultConfig(t, configItemCode);
 			entity.setCompanyId(companyId.getId());
 			entity.setValue(value);
 			activity().insert(t, entity);
 		}
-		khCompanyActivity.updateCompanyLogo(t, companyId, value);
+		if (Consts.CONFIG_LOGO.equals(configItemCode)) {
+			khCompanyActivity.updateCompanyLogo(t, companyId, value);
+		}
 		return result;
 	}
 
-	private KhSystemConfig defaultConfig(Trace t, String key) {
-		if (!Strings.isBlank(key)) {
-			if (Consts.CONFIG_PERMISSION_ORG.equals(key)) {
-				return new KhSystemConfig(Consts.CONFIG_PERMISSION_ORG, "启用机构权限", "no", "是否启用机构权限功能");
-			} else if (Consts.CONFIG_PERMISSION_AREA.equals(key)) {
-				return new KhSystemConfig(Consts.CONFIG_PERMISSION_AREA, "启用区域权限", "no", "是否启用区域权限功能");
-			} else if (Consts.CONFIG_AREAS.equals(key)) {
-				return new KhSystemConfig(Consts.CONFIG_AREAS, "根区域", "", "可设置多个区域节点作为根区域");
-			} else if (Consts.CONFIG_LOGO.equals(key)) {
-				return new KhSystemConfig(Consts.CONFIG_LOGO, "LOGO", "", "设置公司LOGO");
-			}
+	@Override
+	public boolean isEnableOrgPermission(Trace t, Long companyId) {
+		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_ORG);
+		if (config != null) {
+			return "yes".equals(config.getValue());
 		}
-		return null;
+		return false;
+	}
+
+	@Override
+	public boolean isEnableAreaPermission(Trace t, Long companyId) {
+		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_AREA);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEnableManageDepMode(Trace t, Long companyId) {
+		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_MANAGE_DEPARTMENT);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isEnableZZD(Trace t, Long companyId) {
+		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_ZZD);
+		if (config != null) {
+			return "yes".equals(config.getValue());
+		}
+		return false;
 	}
 
 }

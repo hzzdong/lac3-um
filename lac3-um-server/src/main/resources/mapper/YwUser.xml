@@ -151,16 +151,42 @@
 			left join um_yw_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.account &lt;&gt; 'superadmin' 
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
+			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
+				AND ( c.areaId &lt; 0 
+					<choose>
+				        <when test="page.cnds.AND_0.level_1_eq != null"> OR c.area1Id = #{page.cnds.AND_0.level_1_eq} </when>
+				        <when test="page.cnds.AND_0.level_1_in != null"> OR c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_1_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_2_eq != null"> OR c.area2Id = #{page.cnds.AND_0.level_2_eq} </when>
+				        <when test="page.cnds.AND_0.level_2_in != null"> OR c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_2_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_3_eq != null"> OR c.area3Id = #{page.cnds.AND_0.level_3_eq} </when>
+				        <when test="page.cnds.AND_0.level_3_in != null"> OR c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_3_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_4_eq != null"> OR c.area4Id = #{page.cnds.AND_0.level_4_eq} </when>
+				        <when test="page.cnds.AND_0.level_4_in != null"> OR c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_4_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_5_eq != null"> OR c.area5Id = #{page.cnds.AND_0.level_5_eq} </when>
+				        <when test="page.cnds.AND_0.level_5_in != null"> OR c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_5_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_6_eq != null"> OR c.area6Id = #{page.cnds.AND_0.level_6_eq} </when>
+				        <when test="page.cnds.AND_0.level_6_in != null"> OR c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_6_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_7_eq != null"> OR c.area7Id = #{page.cnds.AND_0.level_7_eq} </when>
+				        <when test="page.cnds.AND_07level_7_in != null"> OR c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_7_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_8_eq != null"> OR c.area8Id = #{page.cnds.AND_0.level_8_eq} </when>
+				        <when test="page.cnds.AND_0.level_8_in != null"> OR c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_8_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				)
+			</if>
 			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId}</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.parentClass != null"> AND u.parentClass = #{page.cnds.parentClass}</if>
@@ -193,7 +219,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId} AND u.parentClass='YwDepartment' </if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
-			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account like #{page.cnds.account}</if>
+			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
@@ -217,7 +243,7 @@
 							else yw.parentId*-1 
 							end parentId,
 							yw.parentClass,yw.account,yw.name,yw.nickName,yw.mobile,yw.idCard,yw.sex,yw.birthday,yw.remark,yw.lastLoginTime,
-							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,
+							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,
 							d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_yw_user yw 
@@ -256,16 +282,42 @@
 			left join um_yw_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND u.account &lt;&gt; 'superadmin' 
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
+			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
+				AND ( c.areaId &lt; 0 
+					<choose>
+				        <when test="page.cnds.AND_0.level_1_eq != null"> OR c.area1Id = #{page.cnds.AND_0.level_1_eq} </when>
+				        <when test="page.cnds.AND_0.level_1_in != null"> OR c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_1_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_2_eq != null"> OR c.area2Id = #{page.cnds.AND_0.level_2_eq} </when>
+				        <when test="page.cnds.AND_0.level_2_in != null"> OR c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_2_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_3_eq != null"> OR c.area3Id = #{page.cnds.AND_0.level_3_eq} </when>
+				        <when test="page.cnds.AND_0.level_3_in != null"> OR c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_3_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_4_eq != null"> OR c.area4Id = #{page.cnds.AND_0.level_4_eq} </when>
+				        <when test="page.cnds.AND_0.level_4_in != null"> OR c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_4_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_5_eq != null"> OR c.area5Id = #{page.cnds.AND_0.level_5_eq} </when>
+				        <when test="page.cnds.AND_0.level_5_in != null"> OR c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_5_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_6_eq != null"> OR c.area6Id = #{page.cnds.AND_0.level_6_eq} </when>
+				        <when test="page.cnds.AND_0.level_6_in != null"> OR c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_6_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_7_eq != null"> OR c.area7Id = #{page.cnds.AND_0.level_7_eq} </when>
+				        <when test="page.cnds.AND_07level_7_in != null"> OR c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_7_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_8_eq != null"> OR c.area8Id = #{page.cnds.AND_0.level_8_eq} </when>
+				        <when test="page.cnds.AND_0.level_8_in != null"> OR c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_8_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				)
+			</if>
 			<if test="page.cnds!=null and page.cnds.roleId != null">
 				 AND u.id not in ( SELECT rel.userId FROM um_yw_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
 			</if>
@@ -280,7 +332,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
-			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account like #{page.cnds.account}</if>
+			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
@@ -303,7 +355,7 @@
 							else yw.parentId*-1 
 							end parentId,
 							yw.parentClass,yw.account,yw.name,yw.nickName,yw.mobile,yw.idCard,yw.sex,yw.birthday,yw.remark,yw.lastLoginTime,
-							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,c.name as companyName
+							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,d.name as orgName,c.name as companyName
 						FROM
 							um_yw_user yw 
 								LEFT JOIN um_yw_department d on yw.parentId=d.id
@@ -330,7 +382,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
-			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account like #{page.cnds.account}</if>
+			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
@@ -353,23 +405,48 @@
 				join um_yw_rel_role_user rel on u.id=rel.userId
 		WHERE
 			u.status &lt;&gt; 9 AND rel.roleId = #{page.cnds.roleId}
-			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
-				AND u.companyId = #{page.cnds.companyId}
-			</if>
-			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type == 9 "> 
-				AND u.companyId in (
-					SELECT com.id FROM um_yw_company com WHERE com.parentId=#{page.cnds.companyId} OR com.id=#{page.cnds.companyId}
-				) 
-			</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
 			</when>
 			<otherwise>
 				order by u.id
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findPage4UnRole" resultType="com.linkallcloud.um.domain.party.YwUser">
+		SELECT
+			u.id,u.uuid,u.status,u.createTime,u.updateTime,
+			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		FROM um_yw_user u 
+			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
+			left join um_yw_company c on u.companyId=c.id 
+		WHERE
+			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND u.account &lt;&gt; 'superadmin' 
+			AND u.id not in ( SELECT rel.userId FROM um_yw_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			AND u.companyId = #{page.cnds.companyId}
+			<if test="page.cnds!=null and page.cnds.level == 9 "> 
+				AND ( u.parentClass = 'YwCompany' OR d.type = 1 )
+			</if>
+			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
+			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
+			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+		<choose>
+			<when test="page.orders != null and page.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.parentId
 			</otherwise>
 		</choose>
 	</select>
@@ -691,7 +768,18 @@
 		update um_yw_user set code=#{code},updateTime=now() where id=#{id}
 	</update>
 	
-	<select id="findUserAppPermedOrgs" resultType="java.lang.Long">
+	<select id="findUserAppMenuResCodes" resultType="java.lang.String">
+		SELECT
+			DISTINCT(m.govCode)
+		FROM
+			um_app_menu m 
+			join um_yw_perm_menu pm on m.id=pm.menuId 
+			join um_yw_rel_role_user ru on ru.roleId=pm.roleId
+		WHERE
+			m.status=0 AND pm.appId=#{appId} AND ru.userId=#{userId}
+	</select>
+	
+	<select id="findUserAppOrgs" resultType="java.lang.Long">
 		SELECT
 			p.orgId
 		FROM
@@ -700,7 +788,7 @@
 		  r.userId=#{userId}  AND p.appId=#{appId}
 	</select>
 	
-	<select id="findUserAppPermedAreas" resultType="java.lang.Long">
+	<select id="findUserAppAreas" resultType="java.lang.Long">
 		SELECT
 			p.areaId
 		FROM

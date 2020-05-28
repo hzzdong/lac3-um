@@ -271,6 +271,13 @@ export const asyncRoutes = [
         name: 'RoleView',
         meta: { title: '单位预览', noCache: true, activeMenu: '/customer/index', requires: ['kh_company_m', 'kh_company_user_m', 'kh_company_app'] },
         hidden: true
+      },
+      {
+        path: 'user-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/customer/user-view'),
+        name: 'KhUserView',
+        meta: { title: '用户预览', noCache: true, activeMenu: '/customer/index', requires: ['kh_company_m'] },
+        hidden: true
       }
     ]
   },

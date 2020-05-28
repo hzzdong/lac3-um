@@ -44,7 +44,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="remark" label="备注说明" min-width="100" />
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="100">
         <template slot-scope="{row}">
           <el-button
             v-if="(row.attributes.alias !== 'Company' || !row.pId) && checkPermission(['selfkh_org_add_department'])"
@@ -55,14 +55,14 @@
             @click="handleAddDepartment(row)"
           />
           <el-button
-            v-if="row.pId && checkPermission(['selfkh_org_edit'])"
+            v-if="(row.attributes.alias === 'Company' && row.pId) && checkPermission(['selfkh_org_add_department'])"
             type="primary"
             size="mini"
-            icon="el-icon-edit"
-            title="编辑"
-            @click="handleEdit(row)"
+            icon="el-icon-plus"
+            title="新增部门"
+            disabled
+            @click="handleAddDepartment(row)"
           />
-          <el-button v-if="row.pId && checkPermission(['selfkh_org_edit'])" type="danger" size="mini" icon="el-icon-delete" title="删除" @click="handleDelete(row)" />
           <el-button
             v-if="row.attributes.alias === 'Company' && !row.pId && checkPermission(['selfkh_org_add_company'])"
             type="primary"
@@ -89,8 +89,7 @@
           <el-col :span="12">
             <el-form-item label="状态" prop="status">
               <el-radio-group v-model="department.entity.status" size="small">
-                <el-radio-button label="0">正常</el-radio-button>
-                <el-radio-button label="1">禁用</el-radio-button>
+                <el-radio-button v-for="item in commonData.statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -170,8 +169,7 @@
               <el-col :span="12">
                 <el-form-item label="状态" prop="status">
                   <el-radio-group v-model="company.entity.status" size="small">
-                    <el-radio-button label="0">正常</el-radio-button>
-                    <el-radio-button label="1">禁用</el-radio-button>
+                    <el-radio-button v-for="item in commonData.statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -346,12 +344,22 @@
 </template>
 
 <script>
-import { getOrgTree, fetchKhDepartment, createKhDepartment, updateKhDepartment, deleteKhDepartment, createKhCompany, fetchKhCompany, updateKhCompany, deleteKhCompany } from '@/api/organization'
+import {
+  getOrgTree,
+  fetchKhDepartment,
+  createKhDepartment,
+  updateKhDepartment,
+  deleteKhDepartment,
+  createKhCompany,
+  fetchKhCompany,
+  updateKhCompany,
+  deleteKhCompany
+} from '@/api/organization'
 // import { loadAreaTree } from '@/api/area'
 import { loadCachedMyCompanyAreaTree, loadOrgCertificateType, loadPersonCertificateType, loadOrgType } from '@/utils/laccache'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-// import { userStatusOptions, userTypeOptions } from '@/filters'
+import { statusOptions, companyClasses } from '@/filters'
 
 export default {
   name: 'CompanyTree',
@@ -361,6 +369,8 @@ export default {
       currentNode: undefined,
       data: [],
       commonData: {
+        statusOptions: statusOptions(),
+        companyClasses: companyClasses(),
         certificateTypeOptions: [],
         personCertificateTypeOptions: [],
         orgTypeOptions: []
@@ -481,35 +491,17 @@ export default {
   methods: {
     checkPermission,
     loadCommonData() {
-      loadOrgCertificateType().then(ct => {
-        this.commonData.certificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.certificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadOrgCertificateType().then(res => {
+        this.commonData.certificateTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
 
-      loadPersonCertificateType().then(ct => {
-        this.commonData.personCertificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.personCertificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadPersonCertificateType().then(res => {
+        this.commonData.personCertificateTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
 
-      loadOrgType().then(ct => {
-        this.commonData.orgTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            this.commonData.orgTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(() => {
-      })
+      loadOrgType().then(res => {
+        this.commonData.orgTypeOptions = (res && res.length > 0) ? res : []
+      }).catch((err) => console.log(err))
     },
     handleNodeClick(data, checked, node) {
       this.areaTree.checkedId = data.id

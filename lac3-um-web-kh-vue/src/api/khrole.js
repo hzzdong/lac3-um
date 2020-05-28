@@ -72,6 +72,14 @@ export function deleteKhRole(data) {
   })
 }
 
+export function changeRoleStatus(data) {
+  return request({
+    url: '/api4umkh/face/KhRole/changeStatus',
+    method: 'post',
+    data
+  })
+}
+
 export function addRoleUsers(data) {
   return request({
     url: '/api4umkh/face/KhRole/addUsers',

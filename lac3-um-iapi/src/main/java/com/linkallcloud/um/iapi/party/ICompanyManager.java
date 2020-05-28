@@ -44,7 +44,7 @@ public interface ICompanyManager<T extends Company, U extends User> extends IOrg
 	 * @param userId
 	 * @return
 	 */
-	Tree getPermedCompanyTree(Trace t, Long appId, Long userId);
+	Tree getUserAppCompanyTree(Trace t, Long appId, Long userId);
 
 	/**
 	 * 根据treeType得到companyId的机构树

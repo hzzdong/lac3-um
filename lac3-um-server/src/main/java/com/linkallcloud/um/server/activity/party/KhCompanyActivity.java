@@ -86,6 +86,7 @@ public class KhCompanyActivity
 		Tree root = app.toMenuRoot();
 		List<Menu> menus = menuDao.findKhCompanyAppMenusWithButton(t, companyId, appId, true);
 		Trees.assembleDomain2Tree(root, menus);
+		root.sort();
 		return root;
 	}
 

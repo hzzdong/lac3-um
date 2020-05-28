@@ -130,9 +130,9 @@ public class YwCompanyActivity
 
 		List<Menu> menus = null;
 		if (company.isTopParent()) {
-			menus = menuDao.findYwCompanyAppMenus(t, null, appId, true);
+			menus = menuDao.findYwCompanyAppMenusWithButton(t, null, appId, true);
 		} else {
-			menus = menuDao.findYwCompanyAppMenus(t, companyId, appId, true);
+			menus = menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
 		}
 
 		Trees.assembleDomain2Tree(root, menus);

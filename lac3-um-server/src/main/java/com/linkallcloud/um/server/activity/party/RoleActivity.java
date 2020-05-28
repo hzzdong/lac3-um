@@ -353,7 +353,7 @@ public abstract class RoleActivity<R extends Role, U extends User, O extends Org
 
 	@Override
 	public String[] findPermedMenuResCodes(Trace t, Long roleId, Long appId) {
-		return dao().findPermedMenuResCodes(t, roleId, appId);
+		return dao().findRoleAppMenuResCodes(t, roleId, appId);
 	}
 
 	@Override

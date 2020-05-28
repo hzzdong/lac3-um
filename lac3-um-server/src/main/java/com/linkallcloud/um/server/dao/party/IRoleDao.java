@@ -159,7 +159,7 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * @param appId
 	 * @return
 	 */
-	String[] findPermedMenuResCodes(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("appId") Long appId);
+	String[] findRoleAppMenuResCodes(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("appId") Long appId);
 
 	/**
 	 * 获取某角色某应用有权限的菜单
@@ -169,6 +169,6 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * @param appId
 	 * @return
 	 */
-	List<Menu> findPermedMenus(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("appId") Long appId);
+	List<Menu> findRoleAppMenus(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("appId") Long appId);
 
 }

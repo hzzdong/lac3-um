@@ -56,6 +56,6 @@ public class KhRoleActivity extends RoleActivity<KhRole, KhUser, KhCompany, IKhR
 
     @Override
     public List<Menu> findPermedMenus(Trace t, Long roleId, Long appId) {
-        return dao().findPermedMenus(t, roleId, appId);
+        return dao().findRoleAppMenus(t, roleId, appId);
     }
 }

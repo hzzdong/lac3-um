@@ -5,6 +5,7 @@
         <div class="filter-container tool-bar">
           <el-button type="primary" icon="el-icon-close" circle plain @click="onClose()" />
           <el-button type="primary" icon="el-icon-refresh" circle plain @click="onRefresh()" />
+          <el-button v-permission="['selfkh_org_edit']" type="success" icon="el-icon-edit" circle @click="toCompanyUpdate()" />
           <el-button
             v-if="isMyCompany === false && company.status === 0 && checkPermission(['selfkh_org_edit']) === true"
             type="warning"
@@ -21,8 +22,15 @@
             circle
             @click="toChangeStatus(0)"
           />
+          <el-button
+            v-if="isMyCompany === false && checkPermission(['selfkh_org_edit']) === true"
+            type="danger"
+            icon="el-icon-delete"
+            circle
+            @click="onCompanyDelete()"
+          />
         </div>
-        <el-form ref="companyForm" :model="company" size="small" status-icon label-position="right" label-width="120px" style="width: 100%;">
+        <el-form ref="companyViewForm" :model="company" size="small" status-icon label-position="right" label-width="120px" style="width: 100%;">
           <el-card class="box-card" style="margin-top: -10px; margin-bottom: 10px;">
             <div slot="header" class="clearfix">
               <span>单位基本信息</span>
@@ -89,7 +97,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="company.khTypeCode === 'kh_qy'">
+              <el-row v-if="entity.typeCode === 'kh_qy'">
                 <el-col :span="12">
                   <el-form-item label="单位规模:" prop="scale">
                     <span class="el-span_view">{{ company.scale }}</span>
@@ -101,7 +109,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="company.khTypeCode === 'kh_qy'">
+              <el-row v-if="entity.typeCode === 'kh_qy'">
                 <el-col :span="12">
                   <el-form-item label="证照类型:" prop="certificateType">
                     <span class="el-span_view">{{ company.certificateType | certificateTypeFilter }}</span>
@@ -113,17 +121,29 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="company.khTypeCode === 'kh_qy'">
+              <el-row v-if="entity.typeCode === 'kh_qy'">
                 <el-col :span="24">
                   <el-form-item label="经营范围:" prop="business">
                     <el-input v-model="company.business" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="经营范围" class="el-textarea_view" />
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row v-if="company.khTypeCode === 'kh_qy'">
+              <el-row v-if="entity.typeCode === 'kh_qy'">
                 <el-col :span="24">
                   <el-form-item label="单位资质:" prop="credentials">
                     <el-input v-model="company.credentials" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="单位资质" class="el-textarea_view" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="创建时间:" prop="createTime">
+                    <span class="el-span_view">{{ company.createTime }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最后更新:" prop="updateTime">
+                    <span class="el-span_view">{{ company.updateTime }}</span>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -206,7 +226,7 @@
           <el-table-column label="姓名" width="200px" prop="name">
             <template slot-scope="{row}">
               <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.name }}</span>
-              <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
+              <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
                 <span>{{ row.name }}</span>
               </router-link>
               <el-tag v-if="row.type == 9">管</el-tag>
@@ -374,7 +394,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="单位可许可应用选择" :visible.sync="apps.dialogFormVisible" width="75%">
+    <el-dialog title="单位可许可应用选择" :visible.sync="apps.dialogVisible" width="75%">
       <aside>
         <i class="el-icon-info" /> 单位[ <span>{{ company.name }}</span> ]可许可应用列表。选择应用后点击“确定选择”按钮即可给单位许可选中应用。
       </aside>
@@ -416,7 +436,7 @@
       <pagination v-show="apps.total>0" :total="apps.total" :page.sync="apps.listQuery.page" :limit.sync="apps.listQuery.limit" @pagination="findUnCompanyApps" />
     </el-dialog>
 
-    <el-dialog title="单位根区域设置" :visible.sync="areaTree.dialogFormVisible">
+    <el-dialog title="单位根区域设置" :visible.sync="areaTree.dialogVisible">
       <el-tree
         ref="tree_area"
         :data="areaTree.data"
@@ -428,12 +448,12 @@
         :check-strictly="true"
       />
       <div slot="footer" class="dialog-footer">
-        <el-button @click="areaTree.dialogFormVisible = false">取消</el-button>
+        <el-button @click="areaTree.dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="onSaveAreas()">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog title="单位领导设置" :visible.sync="leaders.dialogFormVisible" width="50%">
+    <el-dialog title="单位领导设置" :visible.sync="leaders.dialogVisible" width="50%">
       <el-form ref="leaderForm" :rules="leaders.rules" :inline="false" :model="leaders.leader" size="small" status-icon label-post="right" label-width="80px" style="width: 98%; margin-left:10px;">
         <el-form-item label="用户" prop="userName">
           <el-input v-model="leaders.leader.userName" :disabled="true">
@@ -450,12 +470,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="leaders.dialogFormVisible = false">取消</el-button>
+        <el-button @click="leaders.dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addCompanyLeader()">保存</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog id="dlg-user-select4company-view" title="用户选择" :visible.sync="us.dialogFormVisible" width="80%">
+    <el-dialog id="dlg-user-select4company-view" title="用户选择" :visible.sync="us.dialogVisible" width="80%">
       <lac-user-single-select
         :tree-type="us.treeType"
         :company-id="us.companyId"
@@ -464,11 +484,184 @@
       />
     </el-dialog>
 
+    <el-dialog id="dlg-area-select4company-view" title="区域选择" :visible.sync="as.dialogVisible" width="50%">
+      <lac-area-single-select
+        :tree-type="as.treeType"
+        @onAreaSingleSelected="onAreaSelected"
+      />
+    </el-dialog>
+
+    <el-dialog title="单位编辑" :visible.sync="dialogVisible" width="70%">
+      <el-form ref="companyForm" :rules="rules" :model="entity" size="small" status-icon label-position="right" label-width="90px" style="width: 98%; margin-left:10px;">
+        <el-card class="box-card" style="margin-top: -20px; margin-bottom: 10px;">
+          <div slot="header" class="clearfix">
+            <span>单位基本信息</span>
+            <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+          </div>
+          <div class="text item">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="上级单位" prop="orgName">
+                  <el-input v-model="entity.orgName" :disabled="true" placeholder="请选择上级单位">
+                    <el-button slot="append" icon="el-icon-search" :disabled="true" />
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="状态" prop="status">
+                  <el-radio-group v-model="entity.status" size="small">
+                    <el-radio-button v-for="item in statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="单位名称" prop="name">
+                  <el-input v-model="entity.name" placeholder="请输入单位名称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="编号" prop="govCode">
+                  <el-input v-model="entity.govCode" placeholder="请输入单位编号" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="电话" prop="phone">
+                  <el-input v-model="entity.phone" placeholder="请输入单位联系电话" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="传真" prop="fax">
+                  <el-input v-model="entity.fax" placeholder="请输入单位传真号码" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="所在区域" prop="areaName">
+                  <el-input v-model="entity.areaName" :disabled="true" placeholder="请选择所在区域">
+                    <el-button slot="append" icon="el-icon-search" @click="toSelectArea()" />
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="单位网址" prop="url">
+                  <el-input v-model="entity.url" placeholder="请输入单位网址" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="单位地址" prop="address">
+                  <el-input v-model.number="entity.address" placeholder="请输入单位地址" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="排序号" prop="sort">
+                  <el-input v-model.number="entity.sort" placeholder="请输入排序号" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="entity.typeCode === 'kh_qy'">
+              <el-col :span="12">
+                <el-form-item label="单位规模" prop="scale">
+                  <el-input v-model="entity.scale" placeholder="请输入人员规模" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="业务开通" prop="businessStart">
+                  <el-date-picker v-model="entity.businessStart" type="datetime" placeholder="请选择" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="entity.typeCode === 'kh_qy'">
+              <el-col :span="12">
+                <el-form-item label="证照类型" prop="certificateType">
+                  <el-select v-model="entity.certificateType" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in cd.certificateTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="证照号码" prop="certificateNo">
+                  <el-input v-model="entity.certificateNo" placeholder="请输入证照号码" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="entity.typeCode === 'kh_qy'">
+              <el-col :span="24">
+                <el-form-item label="经营范围" prop="business">
+                  <el-input v-model="entity.business" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="entity.typeCode === 'kh_qy'">
+              <el-col :span="24">
+                <el-form-item label="单位资质" prop="credentials">
+                  <el-input v-model="entity.credentials" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="备注" prop="remark">
+                  <el-input v-model="entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-card>
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>单位联系人信息</span>
+            <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+          </div>
+          <div class="text item">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="联系人/法人" prop="juridical">
+                  <el-input v-model="entity.juridical" placeholder="请输入联系人或法人名称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="联系电话" prop="jphone">
+                  <el-input v-model="entity.jphone" placeholder="请输入联系人或法人联系电话" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="证照类型" prop="jType">
+                  <el-select v-model="entity.jType" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in cd.personCertificateTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="证照号码" prop="jNo">
+                  <el-input v-model="entity.jNo" placeholder="请输入证照号码" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-card>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false"> 取消 </el-button>
+        <el-button type="primary" @click="onUpdateCompany()"> 保存 </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { fetchKhCompany,
+  updateKhCompany,
+  deleteKhCompany,
   getFullOrgTree,
   addCompanyApps,
   removeCompanyApps,
@@ -487,12 +680,14 @@ import { sheetClose, sheetRefresh, parseTreeNodeChecked, parseCheckedTreeIds, ch
 import { loadOrgCertificateType, loadPersonCertificateType, loadOrgType, loadCompanyPositions } from '@/utils/laccache'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { statusOptions, userTypeOptions, appTypeOptions } from '@/filters'
+import { statusOptions, userTypeOptions, appTypeOptions, companyClasses } from '@/filters'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 import LacUserSingleSelect from '@/views/kh-user/components/UserSingleSelect'
+import LacAreaSingleSelect from '@/views/area/components/AreaSingleSelect'
 
 const commonData = {
+  companyClasses: companyClasses(),
   certificateTypeOptions: [],
   personCertificateTypeOptions: [],
   orgTypeOptions: [],
@@ -501,7 +696,7 @@ const commonData = {
 
 export default {
   name: 'CompanyView',
-  components: { Pagination, LacUserSingleSelect },
+  components: { Pagination, LacUserSingleSelect, LacAreaSingleSelect },
   directives: { waves, permission },
   filters: {
     certificateTypeFilter(type) {
@@ -537,6 +732,13 @@ export default {
   },
   data() {
     return {
+      cd: {
+        companyClasses: companyClasses(),
+        certificateTypeOptions: [],
+        personCertificateTypeOptions: [],
+        orgTypeOptions: [],
+        companyPositions: []
+      },
       tabPosition: 'right',
       activeTab: 'tabCompany',
       tempRoute: {},
@@ -545,6 +747,30 @@ export default {
       typeOptions: userTypeOptions(),
       company: {},
       companyTree: [],
+      entity: {},
+      dialogVisible: false,
+      rules: {
+        name: [{ required: true, message: '名称不能为空', trigger: 'blur' }, { min: 2, max: 20, message: '名称长度在 2 到 64 个字符', trigger: 'blur' }],
+        govCode: [{ required: true, message: '编号不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '编号长度在 2 到 64 个字符', trigger: 'blur' }],
+        phone: [{ min: 8, max: 32, message: '联系方式长度在 8 到 32 个字符', trigger: 'blur' }],
+        fax: [{ min: 8, max: 32, message: '传真长度在 8 到 32 个字符', trigger: 'blur' }],
+        areaName: [{ required: true, message: '区域不能为空', trigger: 'blur' }],
+        url: [{ min: 10, max: 250, message: '联系方式长度在 10 到 250 个字符', trigger: 'blur' }],
+        address: [{ min: 2, max: 120, message: '地址长度在 2 到 120 个字符', trigger: 'blur' }],
+        scale: [{ type: 'number', message: '单位规模必须为数字值' }],
+        certificateNo: [{ min: 2, max: 64, message: '证件号码长度在 2 到 64 个字符', trigger: 'blur' }],
+        business: [{ min: 5, max: 500, message: '经营范围长度在 5 到 250 个字符', trigger: 'blur' }],
+        credentials: [{ min: 2, max: 120, message: '单位资质长度在 2 到 120 个字符', trigger: 'blur' }],
+        juridical: [{ min: 2, max: 60, message: '法人/联系人长度在 2 到 60 个字符', trigger: 'blur' }],
+        jphone: [{ min: 2, max: 30, message: '联系方式长度在 2 到 30 个字符', trigger: 'blur' }],
+        jNo: [{ min: 2, max: 60, message: '证照号码长度在 2 到 60 个字符', trigger: 'blur' }],
+        sort: [{ required: true, message: '排序号不能为空', trigger: 'blur' }, { type: 'number', message: '排序号必须为数字值' }],
+        remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]
+      },
+      as: {
+        dialogVisible: false,
+        treeType: 'FullTree'
+      },
       /* 单位领导 */
       leaders: {
         loaded: false,
@@ -583,10 +809,10 @@ export default {
         statusOptions: statusOptions(),
         typeOptions: userTypeOptions(),
         positions: [],
-        dialogFormVisible: false
+        dialogVisible: false
       },
       us: {
-        dialogFormVisible: false,
+        dialogVisible: false,
         treeType: 'SelfTree',
         companyId: 0,
         companyUuid: ''
@@ -611,7 +837,7 @@ export default {
         },
         statusOptions: statusOptions(),
         appTypeOptions: appTypeOptions(),
-        dialogFormVisible: false
+        dialogVisible: false
       },
       selectedApps: [],
       apps: {
@@ -633,7 +859,7 @@ export default {
         },
         statusOptions: statusOptions(),
         appTypeOptions,
-        dialogFormVisible: false
+        dialogVisible: false
       },
       /* 根区域 */
       companyAreas: {
@@ -643,7 +869,7 @@ export default {
         listLoading: true
       },
       areaTree: {
-        dialogFormVisible: false,
+        dialogVisible: false,
         data: [],
         defaultProps: {
           children: 'children',
@@ -710,41 +936,24 @@ export default {
       }
     },
     loadCommonData() {
-      loadOrgCertificateType().then(ct => {
-        commonData.certificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            commonData.certificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(err => console.log(err))
+      loadOrgCertificateType().then(res => {
+        commonData.certificateTypeOptions = (res && res.length > 0) ? res : []
+        this.cd.certificateTypeOptions = commonData.certificateTypeOptions
+      }).catch((err) => console.log(err))
 
-      loadPersonCertificateType().then(ct => {
-        commonData.personCertificateTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            commonData.personCertificateTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(err => console.log(err))
+      loadPersonCertificateType().then(res => {
+        commonData.personCertificateTypeOptions = (res && res.length > 0) ? res : []
+        this.cd.personCertificateTypeOptions = commonData.personCertificateTypeOptions
+      }).catch((err) => console.log(err))
 
-      loadOrgType().then(ct => {
-        commonData.orgTypeOptions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            commonData.orgTypeOptions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
-      }).catch(err => console.log(err))
+      loadOrgType().then(res => {
+        commonData.orgTypeOptions = (res && res.length > 0) ? res : []
+        this.cd.orgTypeOptions = commonData.orgTypeOptions
+      }).catch((err) => console.log(err))
 
-      loadCompanyPositions().then(ct => {
-        debugger
-        commonData.companyPositions = []
-        if (ct && ct.length > 0) {
-          for (let i = 0; i < ct.length; i++) {
-            commonData.companyPositions.push({ key: ct[i].govCode, display_name: ct[i].name })
-          }
-        }
+      loadCompanyPositions().then(res => {
+        commonData.companyPositions = (res && res.length > 0) ? res : []
+        this.cd.companyPositions = commonData.companyPositions
       }).catch(err => console.log(err))
     },
     fetchCompany(id, uuid) {
@@ -792,6 +1001,62 @@ export default {
     onRefresh() {
       sheetRefresh(this)
     },
+    toChangeStatus(status) {
+      this.$confirm('您确定要执行此操作吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const req = { id: this.company.id, uuid: this.company.uuid, status: status }
+        changeCompanyStatus(req).then(() => {
+          this.company.status = status
+          this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
+        }).catch((e) => console.log(e))
+      }).catch((e) => console.log(e))
+    },
+    toSelectArea() {
+      this.as.dialogVisible = true
+    },
+    onAreaSelected(area) {
+      this.entity.areaId = area.id
+      this.entity.areaName = area.name
+      this.as.dialogVisible = false
+    },
+    toCompanyUpdate() {
+      const that = this
+      that.entity = Object.assign({ dataType: 'Object' }, that.company)
+      that.dialogVisible = true
+      that.$nextTick(() => {
+        that.$refs['companyForm'].clearValidate()
+      })
+    },
+    onUpdateCompany() {
+      const that = this
+      that.$refs['companyForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({ dataType: 'Object' }, that.entity)
+          updateKhCompany(tempData).then(() => {
+            that.company = tempData
+            that.dialogVisible = false
+            that.$notify({ title: '提示', message: '保存成功', type: 'success', duration: 2000 })
+          })
+        }
+      })
+    },
+    onCompanyDelete() {
+      const that = this
+      that.$confirm('您确定要删除吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const { id, uuid } = that.company
+        deleteKhCompany({ id, uuid }).then(() => {
+          that.$notify({ title: '提示', message: '删除成功！', type: 'success', duration: 2000 })
+          that.onClose()
+        }).catch((err) => console.log(err))
+      }).catch((err) => console.log(err))
+    },
     /* 应用许可 */
     handleSelectAppChange(val) {
       this.selectedApps = val
@@ -816,7 +1081,7 @@ export default {
     },
     toSelectApps() {
       this.findUnCompanyApps()
-      this.apps.dialogFormVisible = true
+      this.apps.dialogVisible = true
     },
     onSelectApps() {
       if (!this.selectedApps || this.selectedApps.length <= 0) {
@@ -829,7 +1094,7 @@ export default {
         }
 
         addCompanyApps(req).then(() => {
-          this.apps.dialogFormVisible = false
+          this.apps.dialogVisible = false
           for (let i = 0; i < this.selectedApps.length; i++) {
             this.companyApps.list.unshift(this.selectedApps[i])
           }
@@ -867,7 +1132,7 @@ export default {
     onCompanyAreasSetup() {
       loadCompanyAreaTree().then((response) => {
         this.areaTree.data = response.data
-        this.areaTree.dialogFormVisible = true
+        this.areaTree.dialogVisible = true
         this.$nextTick(() => {
           const checkedIds = []
           if (this.companyAreas.list && this.companyAreas.list.length > 0) {
@@ -899,7 +1164,7 @@ export default {
             this.companyAreas.list.push(Object.assign({ }, areas[i]))
           }
         }
-        this.areaTree.dialogFormVisible = false
+        this.areaTree.dialogVisible = false
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch(() => {
       })
@@ -939,19 +1204,6 @@ export default {
         unCheckTree(this.$refs.tree_menu)
       }
     },
-    toChangeStatus(status) {
-      this.$confirm('您确定要执行此操作吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const req = { id: this.company.id, uuid: this.company.uuid, status: status }
-        changeCompanyStatus(req).then(() => {
-          this.company.status = status
-          this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
-        }).catch((e) => console.log(e))
-      }).catch((e) => console.log(e))
-    },
     /*  单位领导 */
     getCompanyLeaders() {
       this.leaders.listQuery.rules.orgId.fv = this.company.id
@@ -968,19 +1220,19 @@ export default {
       this.getCompanyLeaders()
     },
     handleComapnyLeaderAdd() {
-      this.leaders.dialogFormVisible = true
+      this.leaders.dialogVisible = true
       this.$nextTick(() => {
         this.$refs['leaderForm'].clearValidate()
       })
     },
     toSelectUser() {
-      this.us.dialogFormVisible = true
+      this.us.dialogVisible = true
     },
     onUserSelected(user) {
       this.leaders.user = user
       this.leaders.leader.userId = user.id
       this.leaders.leader.userName = user.name
-      this.us.dialogFormVisible = false
+      this.us.dialogVisible = false
     },
     addCompanyLeader() {
       this.$refs['leaderForm'].validate((valid) => {
@@ -993,7 +1245,7 @@ export default {
             tempData.jobPosition = this.leaders.leader.jobPosition
             tempData.sort = this.leaders.leader.sort
             this.leaders.list.unshift(tempData)
-            this.leaders.dialogFormVisible = false
+            this.leaders.dialogVisible = false
             this.$notify({ title: '提示', message: '操作成功！', type: 'success', duration: 2000 })
           }).catch(err => {
             console.log(err)

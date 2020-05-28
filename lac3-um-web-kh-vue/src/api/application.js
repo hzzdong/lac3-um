@@ -10,7 +10,7 @@ export function findAppPage4KhRole(data) {
 
 export function findAppPage4UnKhRole(data) {
   return request({
-    url: '/api4umkh/face/Application/page4Select',
+    url: '/api4umkh/face/Application/page4KhRole4Select',
     method: 'post',
     data
   })

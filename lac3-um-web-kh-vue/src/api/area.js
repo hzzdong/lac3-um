@@ -7,3 +7,11 @@ export function loadAreaTree(data) {
     data
   })
 }
+
+export function loadTree(data) {
+  return request({
+    url: '/api4umkh/face/Area/loadTree',
+    method: 'post',
+    data
+  })
+}

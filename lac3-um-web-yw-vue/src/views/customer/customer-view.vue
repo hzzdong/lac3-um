@@ -288,6 +288,67 @@
           </el-col>
         </el-row>
       </el-tab-pane>
+      <el-tab-pane label="单位用户列表" name="tabCompanyUsers">
+        <aside>
+          <i class="el-icon-info" /> 单位[ <span>{{ company.name }}</span> ]用户列表列表。
+        </aside>
+        <div class="filter-container">
+          <el-input v-model="companyUsers.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryCompanyUsers" />
+          <el-input v-model="companyUsers.listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
+          <el-select v-model="companyUsers.listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
+            <el-option v-for="item in companyUsers.statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+          </el-select>
+          <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryCompanyUsers" />
+          <el-button
+            class="filter-item"
+            style="float: right;"
+            type="primary"
+            icon="el-icon-plus"
+            @click="toCreateUser()"
+          >
+            添加
+          </el-button>
+        </div>
+        <el-table
+          ref="userTable"
+          :data="companyUsers.list"
+          tooltip-effect="dark"
+          border
+          style="width: 100%"
+        >
+          <el-table-column label="" class-name="status-col" width="40" prop="status" sortable>
+            <template slot-scope="{row}">
+              <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
+            </template>
+          </el-table-column>
+          <el-table-column label="姓名" width="180px" prop="name" sortable>
+            <template slot-scope="{row}">
+              <span v-if="checkPermission(['kh_company_m']) === false">{{ row.name }}</span>
+              <router-link v-if="checkPermission(['kh_company_m']) === true" :to="'/customer/user-view/'+row.id+'/'+row.uuid" class="link-type">
+                <span>{{ row.name }}</span>
+              </router-link>
+              <el-tag v-if="row.type == 9">管</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="账号" width="150px" align="center" prop="account" sortable>
+            <template slot-scope="scope">
+              <span>{{ scope.row.account }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="部门" width="250px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.orgFullName || scope.row.companyName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="手机" width="120px" align="center" prop="mobile" sortable>
+            <template slot-scope="scope">
+              <span>{{ scope.row.mobile }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注说明" min-width="100px" />
+        </el-table>
+        <pagination v-show="companyUsers.total>0" :total="companyUsers.total" :page.sync="companyUsers.listQuery.page" :limit.sync="companyUsers.listQuery.limit" @pagination="getCompanyUsers" />
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="单位可许可应用选择" :visible.sync="apps.dialogVisible" width="75%">
@@ -295,7 +356,7 @@
         <i class="el-icon-info" /> 单位[ <span>{{ company.name }}</span> ]可许可应用列表。选择应用后点击“确定选择”按钮即可给单位许可选中应用。
       </aside>
       <div class="filter-container">
-        <el-input v-model="apps.listQuery.rules.name.fv" placeholder="名称 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryRoleApps" />
+        <el-input v-model="apps.listQuery.rules.name.fv" placeholder="名称 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryUnCompanyApps" />
         <el-input v-model="apps.listQuery.rules.code.fv" placeholder="编号 精确匹配" style="width: 150px;" class="filter-item" />
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryUnCompanyApps()" />
         <el-button class="filter-item" style="float: right;" type="primary" icon="el-icon-check" @click="onSelectApps()">
@@ -411,8 +472,7 @@
               <el-col :span="12">
                 <el-form-item label="状态" prop="status">
                   <el-radio-group v-model="entity.status" size="small">
-                    <el-radio-button label="0">正常</el-radio-button>
-                    <el-radio-button label="1">禁用</el-radio-button>
+                    <el-radio-button v-for="item in statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -514,6 +574,105 @@
       </div>
     </el-dialog>
 
+    <el-dialog :title="companyUsers.textMap[companyUsers.dialogStatus]" :visible.sync="companyUsers.dialogVisible" width="75%">
+      <el-form ref="userForm" :rules="companyUsers.rules" :inline="false" :model="companyUsers.entity" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
+        <el-card class="box-card" style="margin-top: -20px;">
+          <div slot="header" class="clearfix">
+            <span>用户基本信息</span>
+            <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
+          </div>
+          <div class="text item">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="所属机构" prop="orgName">
+                  <el-input v-model="companyUsers.entity.orgName" :disabled="true">
+                    <el-button slot="append" icon="el-icon-search" @click="toSelectOrg()" />
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="状态" prop="status">
+                  <el-radio-group v-model="companyUsers.entity.status" size="small">
+                    <el-radio-button v-for="item in companyUsers.statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="姓名" prop="name">
+                  <el-input v-model="companyUsers.entity.name" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="手机" prop="mobile">
+                  <el-input v-model="companyUsers.entity.mobile" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="账号" prop="account">
+                  <el-input v-model="companyUsers.entity.account" :disabled="companyUsers.entity.id != undefined" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="工号" prop="govCode">
+                  <el-input v-model="companyUsers.entity.govCode" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="密码" prop="password">
+                  <el-input v-model="companyUsers.entity.password" type="password" autocomplete="off" placeholder="请输入密码" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="确认密码" prop="checkPass">
+                  <el-input v-model="companyUsers.entity.checkPass" type="password" autocomplete="off" placeholder="请输入确认密码" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="用户类型" prop="type">
+                  <el-radio-group v-model="companyUsers.entity.type" size="small">
+                    <el-radio-button v-for="item in companyUsers.typeOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="昵称" prop="nickName">
+                  <el-input v-model="companyUsers.entity.nickName" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="备注">
+                  <el-input v-model="companyUsers.entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-card>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="companyUsers.dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="onCreateUser()">保存</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog id="dlg-org-select4user-view" title="机构选择" :visible.sync="os.dialogVisible" width="40%">
+      <lac-org-single-select
+        :tree-type="os.treeType"
+        :company-id="os.companyId"
+        :company-uuid="os.companyUuid"
+        @onOrgSingleSelected="onOrgSelected"
+      />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -528,14 +687,19 @@ import { fetchKhCompany,
   saveCompanyAppMenuPerm,
   changeCompanyStatus
 } from '@/api/customer'
+import { getPage, createUser } from '@/api/khuser'
 import { findAppPage4KhCompany, findAppPage4UnKhCompany } from '@/api/application'
+import { loadTree } from '@/api/area'
 import { sheetClose, sheetRefresh, parseCheckedTreeIds, checkTree, unCheckTree } from '@/utils'
 import { loadOrgCertificateType, loadPersonCertificateType, loadOrgType, loadCompanyPositions } from '@/utils/laccache'
+import md5 from 'js-md5'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { statusOptions, userTypeOptions, appTypeOptions, companyClasses } from '@/filters'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
+import { validateMobile } from '@/utils/validate'
+import LacOrgSingleSelect from '@/views/customer/components/OrgSingleSelect'
 
 const commonData = {
   companyClasses: companyClasses(),
@@ -547,7 +711,7 @@ const commonData = {
 
 export default {
   name: 'CustomerView',
-  components: { Pagination },
+  components: { Pagination, LacOrgSingleSelect },
   directives: { waves, permission },
   filters: {
     certificateTypeFilter(type) {
@@ -582,6 +746,40 @@ export default {
     }
   },
   data() {
+    var validatePass = (rule, value, callback) => {
+      if (this.companyUsers.entity.id) {
+        if (value !== '' && this.companyUsers.entity.checkPass !== '') {
+          this.$refs.userForm.validateField('checkPass')
+        }
+        callback()
+      } else {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else {
+          if (this.companyUsers.entity.checkPass !== '') {
+            this.$refs.userForm.validateField('checkPass')
+          }
+          callback()
+        }
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (this.companyUsers.entity.id) {
+        if (value !== '' && value !== this.companyUsers.entity.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      } else {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.companyUsers.entity.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       commonData: { companyClasses: companyClasses() },
       tabPosition: 'right',
@@ -589,7 +787,6 @@ export default {
       tempRoute: {},
       loading: false,
       statusOptions: statusOptions(),
-      typeOptions: userTypeOptions(),
       company: {},
       entity: {},
       dialogVisible: false,
@@ -674,6 +871,60 @@ export default {
           children: 'children',
           label: 'name'
         }
+      },
+      /* 单位用户 */
+      companyUsers: {
+        loaded: false,
+        tableKey: 0,
+        list: null,
+        total: 0,
+        listLoading: true,
+        listQuery: {
+          page: 1,
+          limit: 20,
+          rules: {
+            companyId: { fv: undefined, oper: 'eq', stype: 'L' },
+            companyUuid: { fv: undefined, oper: 'eq', stype: 'S' },
+            name: { fv: undefined, oper: 'cn', stype: 'S' },
+            mobile: { fv: undefined, oper: 'cn', stype: 'S' },
+            status: { fv: undefined, oper: 'eq', stype: 'I' }
+          },
+          orderby: { orderby: 'id', order: 'desc' }
+        },
+        statusOptions: statusOptions(),
+        typeOptions: userTypeOptions(),
+        dialogStatus: '',
+        textMap: {
+          update: '用户编辑',
+          create: '用户新增'
+        },
+        dialogVisible: false,
+        entity: {},
+        rules: {
+          orgName: [{ required: true, message: '请选择归属机构', trigger: 'blur' }],
+          account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 6, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
+          name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }, { min: 2, max: 20, message: '姓名长度在 2 到 20 个字符', trigger: 'blur' }],
+          mobile: [{ validator: (rule, value, callback) => {
+            if (value && value !== '') {
+              if (!validateMobile(value)) {
+                callback(new Error('请输入有效的手机号码'))
+                return
+              }
+            }
+            callback()
+          }, trigger: 'blur' }],
+          govCode: [{ min: 2, max: 64, message: '工号长度在 2 到 64 个字符', trigger: 'blur' }],
+          timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+          password: [{ validator: validatePass, trigger: 'blur' }],
+          checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+          remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]
+        }
+      },
+      os: {
+        dialogVisible: false,
+        treeType: 'SelfTree',
+        companyId: 0,
+        companyUuid: ''
       }
 
     }
@@ -686,8 +937,12 @@ export default {
     // https://github.com/PanJiaChen/vue-element-admin/issues/1221
     this.tempRoute = Object.assign({}, this.$route)
 
+    this.os.companyId = Number.parseInt(id)
+    this.os.companyUuid = uuid
+
     this.loadCommonData()
     this.fetchCompany(id, uuid)
+    this.getAreaTree()
   },
   methods: {
     checkPermission,
@@ -699,6 +954,10 @@ export default {
       } else if (tab.name === 'tabCompanyApps') {
         if (!this.companyApps.list) {
           this.getCompanyApps()
+        }
+      } else if (tab.name === 'tabCompanyUsers') {
+        if (!this.companyUsers.list) {
+          this.getCompanyUsers()
         }
       }
     },
@@ -767,6 +1026,16 @@ export default {
     },
     onRefresh() {
       sheetRefresh(this)
+    },
+    getAreaTree() {
+      /*
+      loadCachedMyCompanyAreaTree().then(response => {
+        this.areaTree.data = response
+      }).catch((err) => console.log(err))
+      */
+      loadTree().then(response => {
+        this.areaTree.data = response.data
+      }).catch((err) => console.log(err))
     },
     handleNodeClick(data, checked, node) {
       this.areaTree.checkedId = data.id
@@ -920,6 +1189,82 @@ export default {
       } else {
         unCheckTree(this.$refs.tree_menu)
       }
+    },
+    /* 用户管理 */
+    getCompanyUsers() {
+      const that = this
+      that.companyUsers.listQuery.rules.companyId.fv = that.company.id
+      that.companyUsers.listQuery.rules.companyUuid.fv = that.company.uuid
+
+      that.companyUsers.listLoading = true
+      getPage(that.companyUsers.listQuery).then(response => {
+        that.companyUsers.list = response.data.data
+        that.companyUsers.total = response.data.recordsTotal
+        that.companyUsers.listLoading = false
+      }).catch(err => console.log(err))
+    },
+    queryCompanyUsers() {
+      this.companyUsers.listQuery.page = 1
+      this.getCompanyUsers()
+    },
+    toSelectOrg() {
+      this.os.dialogVisible = true
+    },
+    onOrgSelected(org) {
+      this.companyUsers.entity.parentUuid = org.uuid
+      this.companyUsers.entity.parentName = org.name
+      if (org.id > 0) {
+        this.companyUsers.entity.parentId = org.id
+        this.companyUsers.entity.parentClass = 'KhDepartment'
+      } else {
+        this.companyUsers.entity.parentId = org.id.substring(1)
+        this.companyUsers.entity.parentClass = 'KhCompany'
+      }
+      this.os.dialogVisible = false
+    },
+    resetUser() {
+      this.companyUsers.entity = {
+        id: undefined,
+        uuid: '',
+        parentId: this.company.id,
+        parentClass: 'KhCompany',
+        orgName: this.company.name,
+        name: '',
+        account: '',
+        govCode: '',
+        mobile: '',
+        password: '',
+        checkPass: '',
+        nickName: '',
+        type: 1,
+        status: 0,
+        remark: '',
+        roleEnabled: false
+      }
+    },
+    toCreateUser() {
+      this.resetUser()
+      this.companyUsers.dialogStatus = 'create'
+      this.companyUsers.dialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['userForm'].clearValidate()
+      })
+    },
+    onCreateUser() {
+      this.$refs['userForm'].validate((valid) => {
+        if (valid) {
+          const user = Object.assign({ dataType: 'Object' }, this.companyUsers.entity)
+          user.password = md5(user.password)
+          user.checkPass = ''
+          user.roleEnabled = false
+          createUser(user).then((response) => {
+            const tempData = Object.assign({}, response.data)
+            this.companyUsers.list.unshift(tempData)
+            this.companyUsers.dialogVisible = false
+            this.$notify({ title: '提示', message: '用户创建成功！', type: 'success', duration: 2000 })
+          })
+        }
+      })
     }
 
   }

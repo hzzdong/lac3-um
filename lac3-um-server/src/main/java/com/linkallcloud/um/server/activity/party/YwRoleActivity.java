@@ -56,6 +56,6 @@ public class YwRoleActivity extends RoleActivity<YwRole, YwUser, YwCompany, IYwR
 
     @Override
     public List<Menu> findPermedMenus(Trace t, Long roleId, Long appId) {
-        return dao().findPermedMenus(t, roleId, appId);
+        return dao().findRoleAppMenus(t, roleId, appId);
     }
 }

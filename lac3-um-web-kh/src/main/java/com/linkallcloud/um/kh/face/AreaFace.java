@@ -10,15 +10,17 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.web.face.annotation.Face;
+import com.linkallcloud.web.face.base.BaseTreeFace;
 import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/face/Area", method = RequestMethod.POST)
 @Module(name = "区域")
-public class AreaFace {
+public class AreaFace extends BaseTreeFace<Area, IAreaManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IAreaManager areaManager;
@@ -31,6 +33,11 @@ public class AreaFace {
 	public @ResponseBody Object loadTree4MyCompany(ObjectFaceRequest<Object> fr, Trace t, SessionUser suser) {
 		Tree root = khCompanyManager.loadCompanyAreaTree(t, suser.getCompany());
 		return root.getChildren();
+	}
+
+	@Override
+	protected IAreaManager manager() {
+		return areaManager;
 	}
 
 }

@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.activity.party.IYwDepartmentActivity;
 import com.linkallcloud.um.activity.party.IYwUserActivity;
@@ -42,11 +40,6 @@ public class YwCompanyService extends
 	@Override
 	protected IYwDepartmentActivity getDepartmentActivity() {
 		return ywDepartmentActivity;
-	}
-
-	@Override
-	public Tree loadCompanyMenuTree(Trace t, Long companyId, Long appId) {
-		return activity().loadCompanyMenuTree(t, companyId, appId);
 	}
 
 }

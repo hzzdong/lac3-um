@@ -412,9 +412,7 @@ export default {
       self.companyPositions = commonData.companyPositions
 
       self.fetchDepartment(id, uuid)
-    }).catch((e) => {
-      console.log(e)
-    })
+    }).catch((e) => console.log(e))
   },
   methods: {
     checkPermission,

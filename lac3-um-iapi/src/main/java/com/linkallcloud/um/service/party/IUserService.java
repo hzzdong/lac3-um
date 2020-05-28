@@ -39,6 +39,7 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	 * @return
 	 */
 	Page<T> findPage4Role(Trace t, Page<T> page);
+	Page<T> findPage4UnRole(Trace t, Page<T> page);
 
 	/**
 	 * 查询某角色已分配的用户
@@ -123,27 +124,9 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	 * @param appId
 	 * @return
 	 */
-	String[] getUserAppPermissions4Menu(Trace t, Long userId, Long appId);
-
-	/**
-	 * 返回某用户某角色具有权限的菜单资源的resCode数组
-	 *
-	 * @param t
-	 * @param userId
-	 * @param appId
-	 * @return
-	 */
-	String getUserAppPermissions4MenuJsonString(Trace t, Long userId, Long appId);
-
-	/**
-	 * 获取某用户某App的组织权限，不区分superadmin和管理员，都按照表中权限数据查询。
-	 *
-	 * @param t
-	 * @param userId
-	 * @param appId
-	 * @return
-	 */
-	List<Long> findUserAppPermedOrgs(Trace t, Long userId, Long appId);
+	String[] getUserAppMenus(Trace t, Long userId, Long appId);
+	List<Long> getUserAppOrgs(Trace t, Long userId, Long appId);
+	List<Long> getUserAppAreas(Trace t, Long userId, Long appId);
 
 	/**
 	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数

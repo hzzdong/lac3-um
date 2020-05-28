@@ -9,10 +9,8 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.BaseManager;
-import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.iapi.sys.IKhSystemConfigManager;
-import com.linkallcloud.um.service.party.IKhCompanyService;
 import com.linkallcloud.um.service.sys.IKhSystemConfigService;
 
 @Service(interfaceClass = IKhSystemConfigManager.class, version = "${dubbo.service.version}")
@@ -23,9 +21,6 @@ public class KhSystemConfigManager extends BaseManager<KhSystemConfig, IKhSystem
 	@Autowired
 	private IKhSystemConfigService khSystemConfigService;
 
-	@Autowired
-	private IKhCompanyService khCompanyService;
-
 	@Override
 	protected IKhSystemConfigService service() {
 		return khSystemConfigService;
@@ -33,14 +28,7 @@ public class KhSystemConfigManager extends BaseManager<KhSystemConfig, IKhSystem
 
 	@Override
 	public KhSystemConfig fetch(Trace t, Long companyId, String configItemCode) {
-		KhSystemConfig config = service().fetch(t, companyId, configItemCode);
-		if (config == null) {
-			KhCompany company = khCompanyService.fetchById(t, companyId);
-			if (!company.isTopParent()) {
-				return this.fetch(t, company.getParentId(), configItemCode);
-			}
-		}
-		return config;
+		return service().fetch(t, companyId, configItemCode);
 	}
 
 	@Override
@@ -51,6 +39,26 @@ public class KhSystemConfigManager extends BaseManager<KhSystemConfig, IKhSystem
 	@Override
 	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
 		return service().change(t, companyId, configItemCode, value);
+	}
+
+	@Override
+	public boolean isEnableOrgPermission(Trace t, Long companyId) {
+		return service().isEnableOrgPermission(t, companyId);
+	}
+
+	@Override
+	public boolean isEnableAreaPermission(Trace t, Long companyId) {
+		return service().isEnableAreaPermission(t, companyId);
+	}
+
+	@Override
+	public boolean isEnableManageDepMode(Trace t, Long companyId) {
+		return service().isEnableManageDepMode(t, companyId);
+	}
+
+	@Override
+	public boolean isEnableZZD(Trace t, Long companyId) {
+		return service().isEnableZZD(t, companyId);
 	}
 
 }

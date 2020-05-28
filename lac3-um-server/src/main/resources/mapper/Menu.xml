@@ -119,7 +119,7 @@
 		WHERE
 			u.status &lt;&gt; 9 AND u.type=0 AND u.appId = #{appId} 
 			<if test="ywCompanyId != null"> AND cpm.companyId = #{ywCompanyId} </if>
-		    <if test="valid==true"> AND u.status=0</if>
+		    <if test="valid == true"> AND u.status=0</if>
 	</select>
 	
 	<select id="findYwCompanyAppMenusWithButton" resultType="com.linkallcloud.um.domain.sys.Menu">

@@ -16,10 +16,12 @@ import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
+import com.linkallcloud.um.domain.sys.Menu;
 import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IYwRoleDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
+import com.linkallcloud.um.server.dao.sys.IMenuDao;
 
 @Component
 public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao> implements IYwUserActivity {
@@ -35,6 +37,9 @@ public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartmen
 
     @Autowired
     private IYwRoleDao ywRoleDao;
+    
+    @Autowired
+	protected IMenuDao menuDao;
 
     public YwUserActivity() {
         super();
@@ -104,6 +109,11 @@ public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartmen
 	@Override
 	protected String departmentAdminRoleCode() {
 		return "YwRole_sys_dept";
+	}
+
+	@Override
+	protected List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId) {
+		return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
 	}
 
 }

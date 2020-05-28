@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
@@ -23,6 +24,7 @@ import com.linkallcloud.um.service.party.IKhDepartmentService;
 import com.linkallcloud.um.service.party.IKhRoleService;
 import com.linkallcloud.um.service.party.IKhUserService;
 import com.linkallcloud.um.service.sys.IAreaService;
+import com.linkallcloud.um.service.sys.IKhSystemConfigService;
 import com.linkallcloud.web.session.SessionUser;
 
 @Service(interfaceClass = IKhUserManager.class, version = "${dubbo.service.version}")
@@ -43,6 +45,9 @@ public class KhUserManager
 
 	@Autowired
 	private IKhDepartmentService khDepartmentService;
+
+	@Autowired
+	private IKhSystemConfigService khSystemConfigService;
 
 	@Autowired
 	private IAreaService areaService;
@@ -101,12 +106,48 @@ public class KhUserManager
 			}
 
 			Application app = applicationService.fetchByCode(t, appCode);
-			String[] perms = this.getUserAppPermissions4Menu(t, dbUser.getId(), app.getId());
-			su.setPermissions(perms, null, null);
 			su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
+
+			String[] perms4Menu = this.getUserAppMenus(t, dbUser.getId(), app.getId());
+			Long[] perms4Orgs = getUserAppOrgIds(t, dbUser.getCompanyId(), dbUser.getId(), app.getId());
+			Long[] perms4Areas = getUserAppAreaIds(t, dbUser.getCompanyId(), dbUser.getId(), app.getId());
+			su.setPermissions(perms4Menu, perms4Orgs, perms4Areas);
+
 			return su;
 		}
 		throw new ArgException("Arg", "Account或AppCode参数错误");
+	}
+
+	private Long[] getUserAppAreaIds(Trace t, Long companyId, Long userId, Long appId) {
+		Long[] perms4Areas = new Long[0];
+		if (khSystemConfigService.isEnableAreaPermission(t, companyId)) {
+			List<Long> ids = service().getUserAppAreas(t, userId, appId);
+			if (ids != null && !ids.isEmpty()) {
+				perms4Areas = ids.stream().toArray(Long[]::new);
+			}
+		}
+		return perms4Areas;
+	}
+
+	private Long[] getUserAppOrgIds(Trace t, Long companyId, Long userId, Long appId) {
+		Long[] perms4Orgs = new Long[0];
+		if (khSystemConfigService.isEnableOrgPermission(t, companyId)) {
+			List<Long> ids = service().getUserAppOrgs(t, userId, appId);
+			if (ids != null && !ids.isEmpty()) {
+				perms4Orgs = ids.stream().toArray(Long[]::new);
+			}
+		}
+		return perms4Orgs;
+	}
+
+	@Override
+	public Page<KhUser> page4UnRole4Yw(Trace t, Page<KhUser> page) {
+		return service().page4UnRole4Yw(t, page);
+	}
+
+	@Override
+	public Page<KhUser> page4Role4Yw(Trace t, Page<KhUser> page) {
+		return service().page4Role4Yw(t, page);
 	}
 
 }

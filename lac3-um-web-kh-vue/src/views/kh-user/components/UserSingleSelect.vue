@@ -105,7 +105,7 @@
               <el-table-column label="姓名" min-width="100px" prop="userName" sortable>
                 <template slot-scope="{row}">
                   <span v-if="checkPermission(['selfkh_user_view']) === false">{{ row.userName }}</span>
-                  <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/User/user-view/'+row.userId+'/'+row.userUuid" class="link-type">
+                  <router-link v-if="checkPermission(['selfkh_user_view']) === true" :to="'/user/user-view/'+row.userId+'/'+row.userUuid" class="link-type">
                     <span>{{ row.userName }}</span>
                   </router-link>
                 </template>

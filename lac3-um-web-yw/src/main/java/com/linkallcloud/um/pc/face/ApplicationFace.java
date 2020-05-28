@@ -117,12 +117,6 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-
-		YwCompany company = ywCompanyManager.fetchById(t, su.companyId());
-		if (!company.isTopParent()) {
-			page.addRule(new Equal("companyId", su.companyId()));
-		}
-
 		page = manager().findPage4YwRole4Select(t, page);
 		convert(t, "page4YwRole4Select", faceReq, page);
 		return page;

@@ -133,7 +133,7 @@ public class YwUserFace {
 			}
 
 			Application app = applicationManager.fetchByCode(t, faceReq.getAppCode());
-			String[] perms = ywUserManager.getUserAppPermissions4Menu(t, su.id(), app.getId());
+			String[] perms = ywUserManager.getUserAppMenus(t, su.id(), app.getId());
 			su.setPermissions(perms, null, null);
 			su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
 			return su;
@@ -155,7 +155,7 @@ public class YwUserFace {
 	@RequestMapping(value = "/getUserAppPermissions4Menu", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppPermissions4Menu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			String[] perms = ywUserManager.getUserAppPermissions4Menu(t, faceReq.getUserId(), faceReq.getAppId());
+			String[] perms = ywUserManager.getUserAppMenus(t, faceReq.getUserId(), faceReq.getAppId());
 			return perms;
 		}
 		return null;

@@ -101,4 +101,24 @@ public class KhUserService extends
 		return super.findPage4Select(t, page);
 	}
 
+	@Override
+	public Page<KhUser> page4UnRole4Yw(Trace t, Page<KhUser> page) {
+//		try {
+//			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+//		} catch (BaseException e) {
+//			return page;
+//		}
+		return activity().page4UnRole4Yw(t, page);
+	}
+
+	@Override
+	public Page<KhUser> page4Role4Yw(Trace t, Page<KhUser> page) {
+//		try {
+//			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+//		} catch (BaseException e) {
+//			return page;
+//		}
+		return activity().page4Role4Yw(t, page);
+	}
+
 }

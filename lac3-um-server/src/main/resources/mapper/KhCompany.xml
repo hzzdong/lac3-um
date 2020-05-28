@@ -94,16 +94,42 @@
 			<if test="page.cnds!=null and page.cnds.top != null and page.cnds.top == true"> 
 				AND u.parentId IS NULL 
 			</if>
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND u.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND u.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND u.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND u.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND u.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND u.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND u.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND u.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
+			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
+				AND ( u.areaId &lt; 0 
+					<choose>
+				        <when test="page.cnds.AND_0.level_1_eq != null"> OR u.area1Id = #{page.cnds.AND_0.level_1_eq} </when>
+				        <when test="page.cnds.AND_0.level_1_in != null"> OR u.area1Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_1_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_2_eq != null"> OR u.area2Id = #{page.cnds.AND_0.level_2_eq} </when>
+				        <when test="page.cnds.AND_0.level_2_in != null"> OR u.area2Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_2_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_3_eq != null"> OR u.area3Id = #{page.cnds.AND_0.level_3_eq} </when>
+				        <when test="page.cnds.AND_0.level_3_in != null"> OR u.area3Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_3_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_4_eq != null"> OR u.area4Id = #{page.cnds.AND_0.level_4_eq} </when>
+				        <when test="page.cnds.AND_0.level_4_in != null"> OR u.area4Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_4_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_5_eq != null"> OR u.area5Id = #{page.cnds.AND_0.level_5_eq} </when>
+				        <when test="page.cnds.AND_0.level_5_in != null"> OR u.area5Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_5_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_6_eq != null"> OR u.area6Id = #{page.cnds.AND_0.level_6_eq} </when>
+				        <when test="page.cnds.AND_0.level_6_in != null"> OR u.area6Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_6_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_7_eq != null"> OR u.area7Id = #{page.cnds.AND_0.level_7_eq} </when>
+				        <when test="page.cnds.AND_07level_7_in != null"> OR u.area7Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_7_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_8_eq != null"> OR u.area8Id = #{page.cnds.AND_0.level_8_eq} </when>
+				        <when test="page.cnds.AND_0.level_8_in != null"> OR u.area8Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_8_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				)
+			</if>
 		    <if test="page.cnds!=null and page.cnds.address != null"> AND u.address like #{page.cnds.address}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.phone != null"> AND u.phone like #{page.cnds.phone}</if>
@@ -127,16 +153,42 @@
 			um_kh_company u 
 		WHERE
 			u.status &lt;&gt; 9 
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND u.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND u.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND u.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND u.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND u.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND u.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND u.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND u.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
+			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
+				AND ( u.areaId &lt; 0 
+					<choose>
+				        <when test="page.cnds.AND_0.level_1_eq != null"> OR u.area1Id = #{page.cnds.AND_0.level_1_eq} </when>
+				        <when test="page.cnds.AND_0.level_1_in != null"> OR u.area1Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_1_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_2_eq != null"> OR u.area2Id = #{page.cnds.AND_0.level_2_eq} </when>
+				        <when test="page.cnds.AND_0.level_2_in != null"> OR u.area2Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_2_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_3_eq != null"> OR u.area3Id = #{page.cnds.AND_0.level_3_eq} </when>
+				        <when test="page.cnds.AND_0.level_3_in != null"> OR u.area3Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_3_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_4_eq != null"> OR u.area4Id = #{page.cnds.AND_0.level_4_eq} </when>
+				        <when test="page.cnds.AND_0.level_4_in != null"> OR u.area4Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_4_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_5_eq != null"> OR u.area5Id = #{page.cnds.AND_0.level_5_eq} </when>
+				        <when test="page.cnds.AND_0.level_5_in != null"> OR u.area5Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_5_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_6_eq != null"> OR u.area6Id = #{page.cnds.AND_0.level_6_eq} </when>
+				        <when test="page.cnds.AND_0.level_6_in != null"> OR u.area6Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_6_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_7_eq != null"> OR u.area7Id = #{page.cnds.AND_0.level_7_eq} </when>
+				        <when test="page.cnds.AND_07level_7_in != null"> OR u.area7Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_7_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="page.cnds.AND_0.level_8_eq != null"> OR u.area8Id = #{page.cnds.AND_0.level_8_eq} </when>
+				        <when test="page.cnds.AND_0.level_8_in != null"> OR u.area8Id in <foreach item="areaId" index="index" collection="page.cnds.AND_0.level_8_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				)
+			</if>
 		    <if test="page.cnds!=null and page.cnds.address != null"> AND u.address like #{page.cnds.address}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.phone != null"> AND u.phone like #{page.cnds.phone}</if>
@@ -158,20 +210,46 @@
 			um_kh_company u
 		WHERE
 			u.status &lt;&gt; 9 
-			<choose>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 1"> AND u.area1Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 2"> AND u.area2Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 3"> AND u.area3Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 4"> AND u.area4Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 5"> AND u.area5Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 6"> AND u.area6Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 7"> AND u.area7Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="query!=null and query.cnds!=null and query.cnds.areaIds != null and query.cnds.level == 8"> AND u.area8Id in <foreach item="areaId" index="index" collection="query.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
+			<if test="query!=null and query.cnds!=null and query.cnds.AND_0 != null and query.cnds.AND_0.size > 0"> 
+				AND ( u.areaId &lt; 0 
+					<choose>
+				        <when test="query.cnds.AND_0.level_1_eq != null"> OR u.area1Id = #{query.cnds.AND_0.level_1_eq} </when>
+				        <when test="query.cnds.AND_0.level_1_in != null"> OR u.area1Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_1_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_2_eq != null"> OR u.area2Id = #{query.cnds.AND_0.level_2_eq} </when>
+				        <when test="query.cnds.AND_0.level_2_in != null"> OR u.area2Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_2_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_3_eq != null"> OR u.area3Id = #{query.cnds.AND_0.level_3_eq} </when>
+				        <when test="query.cnds.AND_0.level_3_in != null"> OR u.area3Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_3_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_4_eq != null"> OR u.area4Id = #{query.cnds.AND_0.level_4_eq} </when>
+				        <when test="query.cnds.AND_0.level_4_in != null"> OR u.area4Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_4_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_5_eq != null"> OR u.area5Id = #{query.cnds.AND_0.level_5_eq} </when>
+				        <when test="query.cnds.AND_0.level_5_in != null"> OR u.area5Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_5_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_6_eq != null"> OR u.area6Id = #{query.cnds.AND_0.level_6_eq} </when>
+				        <when test="query.cnds.AND_0.level_6_in != null"> OR u.area6Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_6_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_7_eq != null"> OR u.area7Id = #{query.cnds.AND_0.level_7_eq} </when>
+				        <when test="query.cnds.AND_07level_7_in != null"> OR u.area7Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_7_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				    <choose>
+				        <when test="query.cnds.AND_0.level_8_eq != null"> OR u.area8Id = #{query.cnds.AND_0.level_8_eq} </when>
+				        <when test="query.cnds.AND_0.level_8_in != null"> OR u.area8Id in <foreach item="areaId" index="index" collection="query.cnds.AND_0.level_8_in" open="(" separator="," close=")">#{areaId}</foreach> </when>
+				    </choose>
+				)
+			</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.areaId != null"> AND u.areaId = #{query.cnds.areaId}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.parentId != null"> AND u.parentId = #{query.cnds.parentId}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
-		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">

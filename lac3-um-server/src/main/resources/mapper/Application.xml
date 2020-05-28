@@ -80,26 +80,8 @@
 			<include refid="Base_Column_List" />
 		FROM
 			um_application u
-			<if test="(page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId != null) or (page.cnds!=null and page.cnds.rootKhCompanyId != null)">
-				 JOIN um_kh_rel_company_app rcp ON u.id=rcp.appId 
-			</if>
 		WHERE
 			u.status &lt;&gt; 9 
-			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='YwRole'">
-				 AND u.clazz=0 AND u.id not in ( SELECT rel.appId FROM um_yw_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
-			</if>
-			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId == null">
-				 AND u.clazz=1 AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
-			</if>
-			<if test="page.cnds!=null and page.cnds.roleId != null and page.cnds.roleType=='KhRole' and page.cnds.khCompanyId != null">
-				 AND rcp.companyId=#{page.cnds.khCompanyId} AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
-			</if>
-			<if test="page.cnds!=null and page.cnds.rootKhCompanyId != null">
-				 AND rcp.companyId=#{page.cnds.rootKhCompanyId}
-			</if>
-			<if test="page.cnds!=null and page.cnds.khCompanyId != null and page.cnds.roleId==null ">
-				 AND u.id not in ( SELECT rel.appId FROM um_kh_rel_company_app rel WHERE rel.companyId = #{page.cnds.khCompanyId} ) 
-			</if>
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
 			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>

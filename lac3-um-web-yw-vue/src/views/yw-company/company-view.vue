@@ -515,8 +515,7 @@
               <el-col :span="12">
                 <el-form-item label="状态" prop="status">
                   <el-radio-group v-model="entity.status" size="small">
-                    <el-radio-button label="0">正常</el-radio-button>
-                    <el-radio-button label="1">禁用</el-radio-button>
+                    <el-radio-button v-for="item in statusOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -750,7 +749,6 @@ export default {
       tempRoute: {},
       loading: false,
       statusOptions: statusOptions(),
-      typeOptions: userTypeOptions(),
       company: {},
       entity: {},
       companyTree: [],
@@ -914,7 +912,7 @@ export default {
     // https://github.com/PanJiaChen/vue-element-admin/issues/1221
     this.tempRoute = Object.assign({}, this.$route)
 
-    this.us.companyId = id
+    this.us.companyId = Number.parseInt(id)
     this.us.companyUuid = uuid
 
     this.loadCommonData()

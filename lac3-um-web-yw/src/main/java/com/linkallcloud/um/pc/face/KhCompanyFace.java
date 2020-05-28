@@ -44,7 +44,30 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 	protected IKhCompanyManager manager() {
 		return khCompanyManager;
 	}
-	
+
+	/**
+	 * 加载单位组织树，含单位和部门节点。 参见：com.linkallcloud.um.constant.Consts
+	 * （1）若type='SelfTree'，则组织树中紧包含本单位的部门节点；
+	 * （2）若type='CompanyTree'，则组织树中包含本单位的部门节点及包含子单位的根节点；
+	 * （3）若type='FullTree'，则组织树中包含本单位的部门节点及包含子单位的所有节点；
+	 * （4）若type="FullTreeCompany"，则组织树中包含所有子单位节点，不含部门节点
+	 * 
+	 * @param fr
+	 * @param t
+	 * @param su
+	 * @return
+	 */
+	@Face(simple = true)
+	@RequestMapping(value = "/loadCompanyTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadCompanyTree(IdFaceRequest fr, Trace t, SessionUser su) {
+		Sid company = su.getCompany();
+		if (fr.getId() != null && !Strings.isBlank(fr.getUuid())) {
+			company = new Sid(fr.getId(), fr.getUuid());
+		}
+		Tree root = khCompanyManager.getCompanyTree(t, fr.getType(), company);
+		List<Tree> items = Arrays.asList(root);
+		return items;
+	}
 
 	/**
 	 * 加载单位完整的组织树，含单位和部门节点
@@ -70,6 +93,8 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 	@Override
 	protected Page<KhCompany> doPage(Trace t, Page<KhCompany> page, SessionUser su) {
 		page.addRule(new Equal("top", true));
+		page.addRule(new Equal("ywUserId", su.id()));
+		page.addRule(new Equal("appId", su.appId()));
 		return super.doPage(t, page, su);
 	}
 
@@ -80,7 +105,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		entity.setIco(null);
 		super.doSave(t, entity, su);
 	}
-	
+
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addApps", method = RequestMethod.POST)

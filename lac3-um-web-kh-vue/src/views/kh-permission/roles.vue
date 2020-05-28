@@ -47,6 +47,11 @@
           <span>{{ scope.row.govCode }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="角色级别" width="110px" prop="level" sortable>
+        <template slot-scope="scope">
+          <el-tag effect="dark" size="small" :type="scope.row.level | statusTypeFilter"><span>{{ scope.row.level | levelFilter }}</span></el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="排序号" width="100px" align="center" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.sort }}</span>
@@ -75,6 +80,15 @@
             <el-radio-button label="1">禁用</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="等级" prop="level">
+          <el-radio-group v-model="temp.level" size="small">
+            <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+          </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 部门级 ] 角色可以分配给任何用户；<br>[ 公司级 ] 角色只能分配给管理部门和单位节点下的用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
+        </el-form-item>
         <el-form-item label="排序号" prop="sort">
           <el-input v-model="temp.sort" />
         </el-form-item>
@@ -96,7 +110,7 @@ import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
-import { statusOptions } from '@/filters'
+import { statusOptions, levelOptions } from '@/filters'
 
 export default {
   name: 'KhRole',
@@ -119,11 +133,13 @@ export default {
         orderby: { orderby: 'sort', order: 'asc' }
       },
       statusOptions: statusOptions(),
+      levelOptions: levelOptions(),
       temp: {
         id: undefined,
         name: '',
         govCode: '',
         status: 0,
+        level: 1,
         remark: ''
       },
       dialogFormVisible: false,
@@ -177,6 +193,7 @@ export default {
         name: '',
         govCode: '',
         status: 0,
+        level: 1,
         remark: ''
       }
     },

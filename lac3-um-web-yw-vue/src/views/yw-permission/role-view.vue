@@ -117,7 +117,7 @@
         <el-row>
           <el-col :span="12">
             <div class="filter-container">
-              <el-input v-model="roleApps.listQuery.rules.name.fv" placeholder="名称 模糊匹配" style="width: 300px;" class="filter-item" @keyup.enter.native="queryRoleUsers" />
+              <el-input v-model="roleApps.listQuery.rules.name.fv" placeholder="名称 模糊匹配" style="width: 300px;" class="filter-item" @keyup.enter.native="queryRoleApps" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryRoleApps" />
               <el-button
                 v-permission="['yw_perm_role_apps']"
@@ -239,11 +239,19 @@
           <el-radio-group v-model="temp.level" size="small">
             <el-radio-button v-for="item in levelOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 部门级 ] 角色可以分配给任何用户；<br>[ 公司级 ] 角色只能分配给管理部门和单位节点下的用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="类型：" prop="type">
           <el-radio-group v-model="temp.type" size="small" disabled="true">
             <el-radio-button v-for="item in sysOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
           </el-radio-group>
+          <el-tooltip class="item" effect="dark" placement="bottom-start">
+            <div slot="content">[ 普通角色 ] 只能分配给角色所属单位用户；<br>[ 系统角色 ] 可以分配给任何单位用户。</div>
+            <el-button type="text" icon="el-icon-warning-outline" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="排序号：" prop="sort">
           <el-input v-model="temp.sort" />
@@ -267,7 +275,7 @@
         <i class="el-icon-info" /> 角色[ <span>{{ role.name }}</span> ]可分配用户列表。选择用户后点击“确定选择”按钮即可把角色分配给选中用户。
       </aside>
       <div class="filter-container">
-        <el-input v-model="users.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryRoleUsers" />
+        <el-input v-model="users.listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="queryUnRoleUsers" />
         <el-input v-model="users.listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="queryUnRoleUsers()" />
         <el-button class="filter-item" style="float: right;" type="primary" icon="el-icon-check" @click="onSelectUsers()">
