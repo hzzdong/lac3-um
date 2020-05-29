@@ -53,7 +53,7 @@ public abstract class DepartmentActivity<D extends Department, DD extends IDepar
 		dealFullName(t, isNew, entity);
 		if (isNew) {
 			if (entity.isTopParent()) {
-				entity.setLevel(2);
+				entity.setLevel(1);
 			} else {
 				D parent = dao().fetchById(t, entity.getParentId());
 				if (parent != null) {
@@ -61,7 +61,7 @@ public abstract class DepartmentActivity<D extends Department, DD extends IDepar
 				}
 			}
 		} else {// 修改
-			updateCodeIfModifiedParent(t, entity);
+			// updateCodeIfModifiedParent(t, entity);
 		}
 	}
 

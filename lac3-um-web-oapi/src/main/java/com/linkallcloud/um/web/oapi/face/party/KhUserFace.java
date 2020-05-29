@@ -18,11 +18,7 @@ import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
-import com.linkallcloud.um.domain.party.Company;
-import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhUser;
-import com.linkallcloud.um.domain.sys.Application;
-import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.face.account.SessionUserRequest;
 import com.linkallcloud.um.face.account.UserAppRequest;
@@ -33,7 +29,6 @@ import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.oapi.request.CompanyEntityRequest;
 import com.linkallcloud.web.face.annotation.Face;
-import com.linkallcloud.web.session.SessionUser;
 
 @Controller
 @RequestMapping(value = "/face/KhUser", method = RequestMethod.POST)
@@ -58,7 +53,7 @@ public class KhUserFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		KhUser user = khUserManager.fetchById(t, faceReq.getId());
@@ -108,37 +103,7 @@ public class KhUserFace {
 		if (Strings.isBlank(faceReq.getAccount()) || Strings.isBlank(faceReq.getAppCode())) {
 			throw new ArgException("Arg", "Account和AppCode都不能为空");
 		}
-
-		KhUser dbUser = khUserManager.fecthByAccount(t, faceReq.getAccount());
-		if (dbUser != null) {
-			Company dbCompany = khCompanyManager.fetchById(t, dbUser.getCompanyId());
-			String orgName = dbCompany.getName();
-			if (KhDepartment.class.getSimpleName().equals(dbUser.getParentClass())) {
-				KhDepartment parent = khDepartmentManager.fetchById(t, dbUser.getParentId());
-				if (parent != null) {
-					orgName = parent.getFullName();
-				}
-			}
-			SessionUser su = new SessionUser(dbUser.getId(), dbUser.getUuid(), dbUser.getAccount(), dbUser.getName(),
-					dbUser.getUserType(), dbUser.getCompanyId(), dbCompany.getUuid(), dbCompany.getName(),
-					dbUser.getParentId() != null ? dbUser.getParentId() : dbUser.getCompanyId(), orgName,
-					dbUser.getClass().getSimpleName().substring(0, 2));
-			su.setAdmin(dbUser.isAdmin());
-
-			if (dbCompany.getAreaId() != null) {
-				Area area = areaManager.fetchById(t, dbCompany.getAreaId());
-				if (area != null) {
-					su.setAreaInfo(area.getId(), area.getUuid(), area.getCode(), area.getName(), area.getLevel());
-				}
-			}
-
-			Application app = applicationManager.fetchByCode(t, faceReq.getAppCode());
-			String[] perms = khUserManager.getUserAppMenus(t, su.id(), app.getId());
-			su.setPermissions(perms, null, null);
-			su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
-			return su;
-		}
-		throw new ArgException("Arg", "Account或AppCode参数错误");
+		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode());
 	}
 
 	@Face(login = false)
@@ -152,11 +117,29 @@ public class KhUserFace {
 	}
 
 	@Face(login = false)
-	@RequestMapping(value = "/getUserAppPermissions4Menu", method = RequestMethod.POST)
+	@RequestMapping(value = "/getUserAppMenuRes", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppPermissions4Menu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
 			String[] perms = khUserManager.getUserAppMenus(t, faceReq.getUserId(), faceReq.getAppId());
 			return perms;
+		}
+		return null;
+	}
+
+	@Face(login = false)
+	@RequestMapping(value = "/getUserAppOrgIds", method = RequestMethod.POST)
+	public @ResponseBody Object getUserAppOrgIds(UserAppRequest faceReq, Trace t) {
+		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
+			return khUserManager.getUserAppOrgs(t, faceReq.getUserId(), faceReq.getAppId());
+		}
+		return null;
+	}
+
+	@Face(login = false)
+	@RequestMapping(value = "/getUserAppAreaIds", method = RequestMethod.POST)
+	public @ResponseBody Object getUserAppAreaIds(UserAppRequest faceReq, Trace t) {
+		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
+			return khUserManager.getUserAppAreas(t, faceReq.getUserId(), faceReq.getAppId());
 		}
 		return null;
 	}
