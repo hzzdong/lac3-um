@@ -628,7 +628,7 @@
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.YwUser" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_yw_user
 			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid)
-		values(#{entity.uuid},0,now(),now(),#{entity.companyId},#{entity.parentId},#{entity.parentClass},#{entity.account},#{entity.password},#{entity.salt},#{entity.name},#{entity.nickName},
+		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.parentId},#{entity.parentClass},#{entity.account},#{entity.password},#{entity.salt},#{entity.name},#{entity.nickName},
 			#{entity.mobile},#{entity.idCard},#{entity.sex},#{entity.birthday},#{entity.remark},
 			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid})
 	</insert>

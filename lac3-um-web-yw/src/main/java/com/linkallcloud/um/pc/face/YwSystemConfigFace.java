@@ -62,14 +62,15 @@ public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfig
 			wq.addRule(new StringRuleDescriptor("companyId", "eq", su.companyId(), "L"));
 		}
 
+		YwCompany company = ywCompanyManager.fetchById(t, su.companyId());
 		List<YwSystemConfig> entities = super.doFind(t, wq, su);
 		if (entities == null || entities.size() <= 0) {
-			return YwConfigs.defaultConfigs(t);
+			return YwConfigs.defaultConfigs(t, company.isTopParent());
 		} else {
-			if (entities.size() >= 6) {
+			if ((company.isTopParent() && entities.size() >= 4) || (!company.isTopParent() && entities.size() >= 2)) {
 				return entities;
 			} else {
-				List<YwSystemConfig> defs = YwConfigs.defaultConfigs(t);
+				List<YwSystemConfig> defs = YwConfigs.defaultConfigs(t, company.isTopParent());
 				for (YwSystemConfig def : defs) {
 					for (YwSystemConfig entity : entities) {
 						if (def.getKey().equals(entity.getKey())) {
@@ -83,7 +84,6 @@ public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfig
 		}
 	}
 
-	
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/change", method = RequestMethod.POST)

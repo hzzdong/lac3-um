@@ -14,7 +14,7 @@
         <aside style="margin-top:15px;">
           <i class="el-icon-info" /> 用户视图。您可以通过选择本视图右侧的页签查看或编辑相关功能信息。
         </aside>
-        <el-form ref="userForm" :model="user" size="small" status-icon label-position="right" label-width="120px" style="width: 98%;">
+        <el-form ref="userViewForm" :model="user" size="small" status-icon label-position="right" label-width="120px" style="width: 98%;">
           <el-row>
             <el-col :span="12">
               <el-form-item label="所属机构:" prop="orgName">
@@ -172,7 +172,7 @@
     </el-tabs>
 
     <el-dialog title="用户编辑" :visible.sync="dialogFormVisible" width="75%">
-      <el-form ref="dataForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
+      <el-form ref="userForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
         <el-row>
           <el-col :span="16">
             <el-card class="box-card" style="margin-top: -20px;">
@@ -362,7 +362,7 @@ export default {
     var validatePass = (rule, value, callback) => {
       if (this.temp.id) {
         if (value !== '' && this.temp.checkPass !== '') {
-          this.$refs.dataForm.validateField('checkPass')
+          this.$refs.userForm.validateField('checkPass')
         }
         callback()
       } else {
@@ -370,7 +370,7 @@ export default {
           callback(new Error('请输入密码'))
         } else {
           if (this.temp.checkPass !== '') {
-            this.$refs.dataForm.validateField('checkPass')
+            this.$refs.userForm.validateField('checkPass')
           }
           callback()
         }
@@ -419,7 +419,7 @@ export default {
       },
       rules: {
         orgName: [{ required: true, message: '请选择归属机构', trigger: 'blur' }],
-        account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 6, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
+        account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }, { min: 2, max: 20, message: '姓名长度在 2 到 20 个字符', trigger: 'blur' }],
         mobile: [{ validator: (rule, value, callback) => {
           if (value && value !== '') {

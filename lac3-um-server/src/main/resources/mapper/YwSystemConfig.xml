@@ -3,7 +3,7 @@
 <mapper namespace="com.linkallcloud.um.server.dao.sys.IYwSystemConfigDao">
 
 	<sql id="Base_Column_List">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.key,u.name,u.value,u.remark
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.key,u.name,u.value,u.remark,u.sort
 	</sql>
 
 	<select id="fetch" resultType="com.linkallcloud.um.domain.sys.YwSystemConfig" >
@@ -29,14 +29,14 @@
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
 			</when>
 			<otherwise>
-				order by u.id
+				order by u.sort
 			</otherwise>
 		</choose>
 	</select>
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.YwSystemConfig" useGeneratedKeys="true" keyProperty="entity.id">
-		insert into um_yw_config (uuid, status,createTime,updateTime,companyId,`key`,name,value,remark)
-		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.key},#{entity.name},#{entity.value},#{entity.remark})
+		insert into um_yw_config (uuid, status,createTime,updateTime,companyId,`key`,name,value,remark,sort)
+		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.key},#{entity.name},#{entity.value},#{entity.remark},#{entity.sort})
 	</insert>
 	
 	<update id="update">

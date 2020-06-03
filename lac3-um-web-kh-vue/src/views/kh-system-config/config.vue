@@ -13,20 +13,6 @@
       <el-table-column prop="name" label="名称" width="200px" />
       <el-table-column prop="value" label="值" width="350px">
         <template slot-scope="{row}">
-          <el-switch
-            v-if="row.key === 'enable_org_permission'"
-            v-model="entity.enable_org_permission"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
-          />
-          <el-switch
-            v-if="row.key === 'enable_area_permission'"
-            v-model="entity.enable_area_permission"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
-          />
           <span v-if="row.key === 'area_roots'">
             <el-table
               ref="companyAreaTable"
@@ -62,13 +48,6 @@
             <el-avatar :size="100" :src="entity.logo" />
             <el-button type="primary" icon="el-icon-upload" circle title="公司LOGO上传" @click="toggleShow()" />
           </span>
-          <el-switch
-            v-if="row.key === 'enable_m_dep'"
-            v-model="entity.enable_m_dep"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
-          />
           <el-switch
             v-if="row.key === 'enable_zzd'"
             v-model="entity.enable_zzd"
@@ -117,12 +96,8 @@ export default {
       list: null,
       listLoading: true,
       entity: {
-        enable_org_permission: false,
-        enable_area_permission: false,
-        // area_roots: [],
         companyAreas: [],
         logo: '',
-        enable_m_dep: false,
         enable_zzd: false
       },
       areaTree: {
@@ -161,11 +136,7 @@ export default {
         this.listLoading = false
         if (this.list && this.list.length > 0) {
           for (const item of this.list) {
-            if (item.key === 'enable_org_permission') {
-              this.entity.enable_org_permission = item.value === 'yes'
-            } else if (item.key === 'enable_area_permission') {
-              this.entity.enable_area_permission = item.value === 'yes'
-            } else if (item.key === 'area_roots') {
+            if (item.key === 'area_roots') {
               // this.entity.area_roots = item.value
               if (item.value && item.value.length > 0) {
                 this.entity.companyAreas = JSON.parse(item.value)
@@ -174,8 +145,6 @@ export default {
               if (item.value && item.value.length > 0) {
                 this.entity.logo = this.$store.state.settings.fssBaseUrl + item.value
               }
-            } else if (item.key === 'enable_m_dep') {
-              this.entity.enable_m_dep = item.value === 'yes'
             } else if (item.key === 'enable_zzd') {
               this.entity.enable_zzd = item.value === 'yes'
             }

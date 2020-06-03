@@ -6,7 +6,9 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.manager.BaseTreeManager;
 import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.um.domain.sys.Area;
@@ -48,6 +50,16 @@ public class AreaManager extends BaseTreeManager<Area, IAreaService> implements 
 	@Override
 	public List<Area> findByParentCodeAndLevel(Trace t, String parentCode, int levelLt) {
 		return service().findByParentCodeAndLevel(t, parentCode, levelLt);
+	}
+
+	@Override
+	public List<Tree> loadTreeNodes(Trace t, Sid parentSid) {
+		return service().loadTreeNodes(t, parentSid);
+	}
+
+	@Override
+	public Tree loadLevel1Tree(Trace t) {
+		return service().loadLevel1Tree(t);
 	}
 
 }

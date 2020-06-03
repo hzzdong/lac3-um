@@ -2,6 +2,7 @@ package com.linkallcloud.um.service.sys;
 
 import java.util.List;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.query.rule.QueryRule;
@@ -65,5 +66,22 @@ public interface IAreaService extends ITreeService<Area> {
 	List<Area> findPermedKhCompanyAppAreas(Trace t, Long khCompanyId, Long appId);
 
 	List<Area> findPermedYwCompanyAppAreas(Trace t, Long ywCompanyId, Long appId);
+
+	/**
+	 * 分层懒加载树的子节点
+	 * 
+	 * @param t
+	 * @param parentSid
+	 * @return
+	 */
+	List<Tree> loadTreeNodes(Trace t, Sid parentSid);
+	
+	/**
+	 * 加载level1以上Area的为tree
+	 * 
+	 * @param t
+	 * @return
+	 */
+	Tree loadLevel1Tree(Trace t);
 
 }

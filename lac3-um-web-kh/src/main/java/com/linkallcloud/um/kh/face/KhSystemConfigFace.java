@@ -62,14 +62,15 @@ public class KhSystemConfigFace extends BaseFace<KhSystemConfig, IKhSystemConfig
 			wq.addRule(new StringRuleDescriptor("companyId", "eq", su.companyId(), "L"));
 		}
 
+		KhCompany company = khCompanyManager.fetchById(t, su.companyId());
 		List<KhSystemConfig> entities = super.doFind(t, wq, su);
 		if (entities == null || entities.size() <= 0) {
-			return KhConfigs.defaultConfigs(t);
+			return KhConfigs.defaultConfigs(t, company.isTopParent());
 		} else {
-			if (entities.size() >= 6) {
+			if ((company.isTopParent() && entities.size() >= 3) || (!company.isTopParent() && entities.size() >= 2)) {
 				return entities;
 			} else {
-				List<KhSystemConfig> defs = KhConfigs.defaultConfigs(t);
+				List<KhSystemConfig> defs = KhConfigs.defaultConfigs(t,company.isTopParent());
 				for (KhSystemConfig def : defs) {
 					for (KhSystemConfig entity : entities) {
 						if (def.getKey().equals(entity.getKey())) {

@@ -58,7 +58,7 @@ public class YwSystemConfigService extends BaseService<YwSystemConfig, IYwSystem
 	@Override
 	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
 		boolean result = true;
-		YwSystemConfig dbEntity = fetch(t, companyId.getId(), configItemCode);
+		YwSystemConfig dbEntity = activity().fetch(t, companyId.getId(), configItemCode);
 		if (dbEntity != null) {
 			dbEntity.setValue(value);
 			result = activity().update(t, dbEntity);
@@ -74,41 +74,15 @@ public class YwSystemConfigService extends BaseService<YwSystemConfig, IYwSystem
 
 		return result;
 	}
-	
-	@Override
-	public boolean isEnableOrgPermission(Trace t, Long companyId) {
-		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_ORG);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
-	}
 
 	@Override
-	public boolean isEnableAreaPermission(Trace t, Long companyId) {
-		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_AREA);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isEnableManageDepMode(Trace t, Long companyId) {
-		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_MANAGE_DEPARTMENT);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
+	public boolean isCustomerManageMode4Area(Trace t, Long companyId) {
+		return activity().isCustomerManageMode4Area(t, companyId);
 	}
 
 	@Override
 	public boolean isEnableZZD(Trace t, Long companyId) {
-		YwSystemConfig config = fetch(t, companyId, Consts.CONFIG_ZZD);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
+		return activity().isEnableZZD(t, companyId);
 	}
 
 }

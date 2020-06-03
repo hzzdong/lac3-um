@@ -15,9 +15,7 @@ public interface IYwSystemConfigService extends IService<YwSystemConfig> {
 
 	Boolean change(Trace t, Sid companyId, String configItemCode, String value);
 	
-	boolean isEnableOrgPermission(Trace t, Long companyId);
-	boolean isEnableAreaPermission(Trace t, Long companyId);
-	boolean isEnableManageDepMode(Trace t, Long companyId);
+	boolean isCustomerManageMode4Area(Trace t, Long companyId);
 	boolean isEnableZZD(Trace t, Long companyId);
 
 }

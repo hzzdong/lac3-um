@@ -416,11 +416,12 @@
         <el-form-item label="备注">
           <el-input v-model="entity.remark" :autosize="{ minRows: 3, maxRows: 5}" type="textarea" placeholder="请输入备注说明" />
         </el-form-item>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="onAppUpdate()">保存</el-button>
-        </div>
-      </el-form></el-dialog>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="onAppUpdate()">保存</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog title="新增子菜单" :visible.sync="menu.dialogVisible" width="50%">
       <el-form ref="menuForm" :rules="menu.rules" :model="menu.entity" size="small" status-icon label-position="right" label-width="80px" style="width: 90%; margin-left:30px;">

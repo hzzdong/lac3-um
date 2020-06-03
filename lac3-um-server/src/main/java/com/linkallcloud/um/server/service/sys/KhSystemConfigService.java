@@ -41,7 +41,8 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 		if (config == null) {
 			KhCompany company = khCompanyActivity.fetchById(t, companyId);
 			if (!company.isTopParent()) {
-				return this.fetch(t, company.getParentId(), configItemCode);
+				Long rootId = company.rootCompanyId();
+				return this.fetch(t, rootId, configItemCode);
 			}
 		}
 		return config;
@@ -58,7 +59,7 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 	@Override
 	public Boolean change(Trace t, Sid companyId, String configItemCode, String value) {
 		boolean result = true;
-		KhSystemConfig dbEntity = fetch(t, companyId.getId(), configItemCode);
+		KhSystemConfig dbEntity = activity().fetch(t, companyId.getId(), configItemCode);
 		if (dbEntity != null) {
 			dbEntity.setValue(value);
 			result = activity().update(t, dbEntity);
@@ -72,33 +73,6 @@ public class KhSystemConfigService extends BaseService<KhSystemConfig, IKhSystem
 			khCompanyActivity.updateCompanyLogo(t, companyId, value);
 		}
 		return result;
-	}
-
-	@Override
-	public boolean isEnableOrgPermission(Trace t, Long companyId) {
-		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_ORG);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isEnableAreaPermission(Trace t, Long companyId) {
-		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_PERMISSION_AREA);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isEnableManageDepMode(Trace t, Long companyId) {
-		KhSystemConfig config = fetch(t, companyId, Consts.CONFIG_MANAGE_DEPARTMENT);
-		if (config != null) {
-			return "yes".equals(config.getValue());
-		}
-		return false;
 	}
 
 	@Override

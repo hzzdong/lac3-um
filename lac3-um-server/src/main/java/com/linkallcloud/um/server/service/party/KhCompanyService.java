@@ -16,6 +16,7 @@ import com.linkallcloud.um.activity.party.IKhUserActivity;
 import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.activity.party.IYwUserActivity;
 import com.linkallcloud.um.activity.sys.IAreaActivity;
+import com.linkallcloud.um.activity.sys.IYwSystemConfigActivity;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhUser;
@@ -44,6 +45,9 @@ public class KhCompanyService extends
 	private IYwUserActivity ywUserActivity;
 
 	@Autowired
+	private IYwSystemConfigActivity ywSystemConfigActivity;
+
+	@Autowired
 	private IAreaActivity areaActivity;
 
 	@Override
@@ -68,7 +72,8 @@ public class KhCompanyService extends
 	@Override
 	public List<KhCompany> find(Trace t, Query query) {
 		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, query, ywCompanyActivity, ywUserActivity, areaActivity);
+			UmTools.addCnds4CustomerManageMode(t, query, ywSystemConfigActivity, ywCompanyActivity, ywUserActivity,
+					areaActivity);
 		} catch (BaseException e) {
 			return null;
 		}
@@ -78,7 +83,8 @@ public class KhCompanyService extends
 	@Override
 	public Page<KhCompany> findPage(Trace t, Page<KhCompany> page) {
 		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+			UmTools.addCnds4CustomerManageMode(t, page, ywSystemConfigActivity, ywCompanyActivity, ywUserActivity,
+					areaActivity);
 		} catch (BaseException e) {
 			return page;
 		}
@@ -88,7 +94,8 @@ public class KhCompanyService extends
 	@Override
 	public Page<KhCompany> findPage4Select(Trace t, Page<KhCompany> page) {
 		try {
-			UmTools.addAreaCnds4YwUserAppPermission(t, page, ywCompanyActivity, ywUserActivity, areaActivity);
+			UmTools.addCnds4CustomerManageMode(t, page, ywSystemConfigActivity, ywCompanyActivity, ywUserActivity,
+					areaActivity);
 		} catch (BaseException e) {
 			return page;
 		}

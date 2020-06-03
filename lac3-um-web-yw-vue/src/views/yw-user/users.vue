@@ -488,7 +488,7 @@ export default {
       dialogFormVisible: false,
       rules: {
         orgName: [{ required: true, message: '请选择归属机构', trigger: 'blur' }],
-        account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 6, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
+        account: [{ required: true, message: '账号不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '账号长度在 2 到 64 个字符', trigger: 'blur' }],
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }, { min: 2, max: 20, message: '姓名长度在 2 到 20 个字符', trigger: 'blur' }],
         mobile: [{ validator: (rule, value, callback) => {
           if (value && value !== '') {

@@ -8,6 +8,22 @@ export function loadTree4MyCompany(data) {
   })
 }
 
+export function loadLevel1Tree(data) {
+  return request({
+    url: '/api4umyw/face/Area/loadLevel1Tree',
+    method: 'post',
+    data
+  })
+}
+
+export function loadTreeNodes(data) {
+  return request({
+    url: '/api4umyw/face/Area/loadTreeNodes',
+    method: 'post',
+    data
+  })
+}
+
 export function loadTree(data) {
   return request({
     url: '/api4umyw/face/Area/loadTree',

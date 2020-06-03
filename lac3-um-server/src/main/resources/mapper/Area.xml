@@ -31,7 +31,7 @@
 				</foreach>
 			</when>
 			<otherwise>
-				 AND &lt;&gt; 9
+				 AND u.status &lt;&gt; 9
 			</otherwise>
 		</choose>
 	</sql>
@@ -136,6 +136,16 @@
 			um_area u
 		WHERE
 			u.parentId=#{parentId} 
+			<include refid="status_condition" />
+	</select>
+	
+	<select id="findRootAreas" resultType="com.linkallcloud.um.domain.sys.Area">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_area u
+		WHERE
+			u.parentId=0
 			<include refid="status_condition" />
 	</select>
 	

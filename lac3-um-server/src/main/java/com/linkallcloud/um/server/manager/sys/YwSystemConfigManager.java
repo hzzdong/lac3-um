@@ -42,18 +42,8 @@ public class YwSystemConfigManager extends BaseManager<YwSystemConfig, IYwSystem
 	}
 
 	@Override
-	public boolean isEnableOrgPermission(Trace t, Long companyId) {
-		return service().isEnableOrgPermission(t, companyId);
-	}
-
-	@Override
-	public boolean isEnableAreaPermission(Trace t, Long companyId) {
-		return service().isEnableAreaPermission(t, companyId);
-	}
-
-	@Override
-	public boolean isEnableManageDepMode(Trace t, Long companyId) {
-		return service().isEnableManageDepMode(t, companyId);
+	public boolean isCustomerManageMode4Area(Trace t, Long companyId) {
+		return service().isCustomerManageMode4Area(t, companyId);
 	}
 
 	@Override

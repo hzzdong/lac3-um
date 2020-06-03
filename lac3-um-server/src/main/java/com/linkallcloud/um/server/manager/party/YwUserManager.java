@@ -24,7 +24,6 @@ import com.linkallcloud.um.service.party.IYwDepartmentService;
 import com.linkallcloud.um.service.party.IYwRoleService;
 import com.linkallcloud.um.service.party.IYwUserService;
 import com.linkallcloud.um.service.sys.IAreaService;
-import com.linkallcloud.um.service.sys.IYwSystemConfigService;
 import com.linkallcloud.web.session.SessionUser;
 
 @Service(interfaceClass = IYwUserManager.class, version = "${dubbo.service.version}")
@@ -45,9 +44,6 @@ public class YwUserManager
 
 	@Autowired
 	private IYwDepartmentService ywDepartmentService;
-
-	@Autowired
-	private IYwSystemConfigService ywSystemConfigService;
 
 	@Autowired
 	private IAreaService areaService;
@@ -123,12 +119,12 @@ public class YwUserManager
 
 			Application app = applicationService.fetchByCode(t, appCode);
 			su.setAppInfo(app.getId(), app.getUuid(), app.getCode(), app.getName());
-			
+
 			String[] perms4Menu = this.getUserAppMenus(t, dbUser.getId(), app.getId());
 			Long[] perms4Orgs = getUserAppOrgIds(t, dbUser.getCompanyId(), dbUser.getId(), app.getId());
 			Long[] perms4Areas = getUserAppAreaIds(t, dbUser.getCompanyId(), dbUser.getId(), app.getId());
 			su.setPermissions(perms4Menu, perms4Orgs, perms4Areas);
-			
+
 			return su;
 		}
 		throw new ArgException("Arg", "Account或AppCode参数错误");
@@ -136,22 +132,18 @@ public class YwUserManager
 
 	private Long[] getUserAppAreaIds(Trace t, Long companyId, Long userId, Long appId) {
 		Long[] perms4Areas = new Long[0];
-		if (ywSystemConfigService.isEnableAreaPermission(t, companyId)) {
-			List<Long> ids = service().getUserAppAreas(t, userId, appId);
-			if (ids != null && !ids.isEmpty()) {
-				perms4Areas = ids.stream().toArray(Long[]::new);
-			}
+		List<Long> ids = service().getUserAppAreas(t, userId, appId);
+		if (ids != null && !ids.isEmpty()) {
+			perms4Areas = ids.stream().toArray(Long[]::new);
 		}
 		return perms4Areas;
 	}
 
 	private Long[] getUserAppOrgIds(Trace t, Long companyId, Long userId, Long appId) {
 		Long[] perms4Orgs = new Long[0];
-		if (ywSystemConfigService.isEnableOrgPermission(t, companyId)) {
-			List<Long> ids = service().getUserAppOrgs(t, userId, appId);
-			if (ids != null && !ids.isEmpty()) {
-				perms4Orgs = ids.stream().toArray(Long[]::new);
-			}
+		List<Long> ids = service().getUserAppOrgs(t, userId, appId);
+		if (ids != null && !ids.isEmpty()) {
+			perms4Orgs = ids.stream().toArray(Long[]::new);
 		}
 		return perms4Orgs;
 	}

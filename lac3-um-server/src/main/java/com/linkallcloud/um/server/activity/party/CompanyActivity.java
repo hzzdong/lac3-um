@@ -178,7 +178,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 		/* 直接子公司 */
 		List<T> directCompanies = findDirectCompaniesByParentId(t, company.getId());
 		if (directCompanies != null && !directCompanies.isEmpty()) {
-			List<Tree> dcTreeNodeList = Trees.assembleDirectTreeNodeList(rootId, directCompanies, "-");
+			List<Tree> dcTreeNodeList = Trees.assembleDirectDomain(rootId, directCompanies, "-");
 			if (dcTreeNodeList != null && !dcTreeNodeList.isEmpty()) {
 				nodes.addAll(dcTreeNodeList);
 			}

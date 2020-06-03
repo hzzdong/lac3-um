@@ -28,6 +28,7 @@ import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
+import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.face.base.BaseFace;
 import com.linkallcloud.web.session.SessionUser;
@@ -39,6 +40,9 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
+	
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IYwSystemConfigManager ywSystemConfigManager;
 
 	@Override
 	protected IKhCompanyManager manager() {
@@ -100,9 +104,14 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 
 	@Override
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {
+		entity.setYwCompanyId(su.companyId());
+		entity.setCreateUserId(su.id());
+		
 		entity.setParentId(null);
 		entity.setParentClass(null);
+		
 		entity.setIco(null);
+		
 		super.doSave(t, entity, su);
 	}
 

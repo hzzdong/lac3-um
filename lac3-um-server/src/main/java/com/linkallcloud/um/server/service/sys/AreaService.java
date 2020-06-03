@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.query.rule.QueryRule;
@@ -79,6 +80,16 @@ public class AreaService extends BaseTreeService<Area, IAreaActivity> implements
 	@Override
 	public Tree findChildrenTree(Trace t, Long areaRootId, QueryRule statusRule) {
 		return activity().findChildrenTree(t, areaRootId, statusRule);
+	}
+
+	@Override
+	public List<Tree> loadTreeNodes(Trace t, Sid parentSid) {
+		return activity().loadTreeNodes(t, parentSid);
+	}
+
+	@Override
+	public Tree loadLevel1Tree(Trace t) {
+		return activity().loadLevel1Tree(t);
 	}
 
 }

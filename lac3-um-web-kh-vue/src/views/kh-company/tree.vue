@@ -249,7 +249,7 @@
             <el-row v-if="company.khTypeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="单位规模" prop="scale">
-                  <el-input v-model="company.entity.scale" placeholder="请输入人员规模" />
+                  <el-input v-model.number="company.entity.scale" placeholder="请输入人员规模" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">

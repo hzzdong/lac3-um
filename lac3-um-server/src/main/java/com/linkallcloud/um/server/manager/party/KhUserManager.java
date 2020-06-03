@@ -24,7 +24,6 @@ import com.linkallcloud.um.service.party.IKhDepartmentService;
 import com.linkallcloud.um.service.party.IKhRoleService;
 import com.linkallcloud.um.service.party.IKhUserService;
 import com.linkallcloud.um.service.sys.IAreaService;
-import com.linkallcloud.um.service.sys.IKhSystemConfigService;
 import com.linkallcloud.web.session.SessionUser;
 
 @Service(interfaceClass = IKhUserManager.class, version = "${dubbo.service.version}")
@@ -45,9 +44,6 @@ public class KhUserManager
 
 	@Autowired
 	private IKhDepartmentService khDepartmentService;
-
-	@Autowired
-	private IKhSystemConfigService khSystemConfigService;
 
 	@Autowired
 	private IAreaService areaService;
@@ -120,22 +116,18 @@ public class KhUserManager
 
 	private Long[] getUserAppAreaIds(Trace t, Long companyId, Long userId, Long appId) {
 		Long[] perms4Areas = new Long[0];
-		if (khSystemConfigService.isEnableAreaPermission(t, companyId)) {
-			List<Long> ids = service().getUserAppAreas(t, userId, appId);
-			if (ids != null && !ids.isEmpty()) {
-				perms4Areas = ids.stream().toArray(Long[]::new);
-			}
+		List<Long> ids = service().getUserAppAreas(t, userId, appId);
+		if (ids != null && !ids.isEmpty()) {
+			perms4Areas = ids.stream().toArray(Long[]::new);
 		}
 		return perms4Areas;
 	}
 
 	private Long[] getUserAppOrgIds(Trace t, Long companyId, Long userId, Long appId) {
 		Long[] perms4Orgs = new Long[0];
-		if (khSystemConfigService.isEnableOrgPermission(t, companyId)) {
-			List<Long> ids = service().getUserAppOrgs(t, userId, appId);
-			if (ids != null && !ids.isEmpty()) {
-				perms4Orgs = ids.stream().toArray(Long[]::new);
-			}
+		List<Long> ids = service().getUserAppOrgs(t, userId, appId);
+		if (ids != null && !ids.isEmpty()) {
+			perms4Orgs = ids.stream().toArray(Long[]::new);
 		}
 		return perms4Orgs;
 	}

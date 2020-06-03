@@ -1,11 +1,13 @@
 package com.linkallcloud.um.server.activity.sys;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.activity.BaseTreeActivity;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
@@ -57,7 +59,7 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	@Override
 	public Tree tree(Trace t) {
 		List<Tree> result = super.getTreeNodes(t, true);
-		Tree root = Trees.vroot("中华人民共和国");
+		Tree root = Trees.root0("中华人民共和国");
 		root.setOpen(true);
 		Trees.assembleTree(root, result);
 		return root;
@@ -66,10 +68,34 @@ public class AreaActivity extends BaseTreeActivity<Area, IAreaDao> implements IA
 	@Override
 	public List<Tree> getTreeNodes(Trace t, boolean valid) {
 		List<Tree> result = super.getTreeNodes(t, valid);
-		Tree root = Trees.vroot("中华人民共和国");
+		Tree root = Trees.root0("中华人民共和国");
 		root.setOpen(true);
 		Trees.assembleTree(root, result);
 		return root.getChildren();
+	}
+
+	@Override
+	public Tree loadLevel1Tree(Trace t) {
+		Tree root = Trees.root0("中华人民共和国");
+		List<Area> areas = dao().findRootAreas(t, null);
+		Trees.assembleDirectDomain(root, areas, null);
+		return root;
+	}
+
+	@Override
+	public List<Tree> loadTreeNodes(Trace t, Sid parentSid) {
+		Long parentId = parentSid.getId();
+
+		if (parentId != null && parentId.longValue() > 0) {
+			List<Area> areas = findDirectChildren(t, parentId, null);
+			return Trees.assembleDirectDomain(parentId.toString(), areas, null);
+		} else if (parentId != null && parentId.longValue() == 0) {
+			List<Area> areas = dao().findRootAreas(t, null);
+			return Trees.assembleDirectDomain(parentId.toString(), areas, null);
+		} else {
+			Tree root = Trees.root0("中华人民共和国");
+			return Arrays.asList(root);
+		}
 	}
 
 	@Override

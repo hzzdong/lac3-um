@@ -20,12 +20,63 @@ import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.activity.party.IYwCompanyActivity;
 import com.linkallcloud.um.activity.party.IYwUserActivity;
 import com.linkallcloud.um.activity.sys.IAreaActivity;
+import com.linkallcloud.um.activity.sys.IYwSystemConfigActivity;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.exception.ArgException;
 
 public class UmTools {
 	private static final Log log = Logs.get();
+	
+	public static void addCnds4CustomerManageMode(Trace t, Query query, IYwSystemConfigActivity ywSystemConfigActivity,IYwCompanyActivity ywCompanyActivity,
+			IYwUserActivity ywUserActivity, IAreaActivity areaActivity) throws BaseException {
+		Equal ywUserIdRule = (Equal) query.getRule4Field("ywUserId");
+		Equal appIdRule = (Equal) query.getRule4Field("appId");
+		// if (ywUserIdRule == null || appIdRule == null) {
+		// log.error("参数错误: ywUserId,appId参数都不能为空。");
+		// throw new BaseRuntimeException("100001", "参数错误: ywUserId,appId参数都不能为空。");
+		// }
+
+		if (ywUserIdRule == null && appIdRule == null) {
+			return;
+		}
+
+		Long ywUserId = (Long) ywUserIdRule.getValue();
+		Long appId = (Long) appIdRule.getValue();
+
+		YwUser ywUser = ywUserActivity.fetchById(t, ywUserId);
+		if (ywUser == null) {
+			log.error("参数错误，用于不存在：ywUserId:" + ywUserId);
+			throw new ArgException("参数错误，用户不存在：ywUserId:" + ywUserId);
+		}
+
+		if (ywUser.getAccount().equals("superadmin")) {
+			return;
+		}
+		
+		if(ywSystemConfigActivity.isCustomerManageMode4Area(t, ywUser.getCompanyId())) {//区域隔离
+			List<Long> areaIds = null;
+			if (ywUser.isAdmin()) {// 管理员，用公司区域权限
+				Long[] areaArray = ywCompanyActivity.getCompanyAreaRootIds(t, ywUser.getCompanyId());
+				if (areaArray != null && areaArray.length > 0) {
+					areaIds = Arrays.asList(areaArray);
+				}
+			} else {// 普通用户，用户区域权限
+				areaIds = ywUserActivity.getUserAppAreas(t, ywUserId, appId);
+			}
+
+			if (areaIds == null || areaIds.isEmpty()) {
+				log.info("您没有任何区域的权限。ywUserId:" + ywUserId);
+				throw new BizException("no-permisson", "您没有任何区域的权限。ywUserId:" + ywUserId);
+			}
+
+			Query areaQuery = generateAreaQuery(t, areaIds, areaActivity);
+			query.setGroupOp(GroupOperator.AND);
+			query.addGroup(areaQuery);
+		} else {//机构隔离
+			query.addRule(new Equal("ywCompanyId", ywUser.getCompanyId()));
+		}
+	}
 
 	public static void addAreaCnds4YwUserAppPermission(Trace t, Query query, IYwCompanyActivity ywCompanyActivity,
 			IYwUserActivity ywUserActivity, IAreaActivity areaActivity) throws BaseException {

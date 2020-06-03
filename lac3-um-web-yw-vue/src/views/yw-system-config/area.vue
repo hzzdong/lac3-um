@@ -10,6 +10,8 @@
       border
       fit
       highlight-current-row
+      lazy
+      :load="loadChildrenNodes"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       @current-change="handleAreaChange"
     >
@@ -62,7 +64,7 @@
 </template>
 
 <script>
-import { loadTree, saveArea, deleteArea } from '@/api/area'
+import { loadLevel1Tree, loadTreeNodes, saveArea, deleteArea } from '@/api/area'
 import { statusOptions } from '@/filters'
 import { pickTreeNode } from '@/utils'
 import waves from '@/directive/waves' // waves directive
@@ -117,6 +119,7 @@ export default {
       for (const item of items) {
         if (!item.children) {
           item.children = []
+          item.hasChildren = true
         } else if (item.children.length > 0) {
           this.autoChildren(item.children)
         }
@@ -125,7 +128,7 @@ export default {
     getAreaTree() {
       const that = this
       that.listLoading = true
-      loadTree().then(response => {
+      loadLevel1Tree().then(response => {
         const items = response.data
         if (items && items.length > 0) {
           that.autoChildren(items)
@@ -135,6 +138,21 @@ export default {
           }, 100)
         }
         that.listLoading = false
+      }).catch((err) => console.log(err))
+    },
+    loadChildrenNodes(tree, treeNode, resolve) {
+      const that = this
+      const { id, uuid } = tree
+      loadTreeNodes({ id, uuid }).then(response => {
+        const items = response.data
+        if (items && items.length > 0) {
+          that.autoChildren(items)
+          // tree.children.push.apply(tree.children, items)
+          tree.children = items
+          resolve(items)
+        } else {
+          resolve([])
+        }
       }).catch((err) => console.log(err))
     },
     resetArea(parent, me) {

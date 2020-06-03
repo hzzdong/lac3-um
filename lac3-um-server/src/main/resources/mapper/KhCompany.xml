@@ -5,14 +5,14 @@
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 		u.parentId,u.parentClass,u.govCode,u.code,u.name,u.fullName,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,u.scale,
-		u.juridical,u.jphone,u.jType,u.jNo,
+		u.juridical,u.jphone,u.jType,u.jNo,u.ywCompanyId,u.createUserId,
 		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart
 	</sql>
 	
 	<sql id="Column_with_orgName">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 		u.parentId,u.parentClass,u.govCode,u.code,u.name,u.fullName,u.scale,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,
-		u.juridical,u.jphone,u.jType,u.jNo,d.name as orgName,
+		u.juridical,u.jphone,u.jType,u.jNo,u.ywCompanyId,u.createUserId,d.name as orgName,
 		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,
 		area.name as areaName
 	</sql>
@@ -86,13 +86,16 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 			u.parentId,u.parentClass,u.govCode,u.code,u.name,u.scale,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,u.juridical,u.jphone,u.jType,u.jNo,
-			u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,area.name as areaName
+			u.ywCompanyId,u.createUserId,u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,area.name as areaName
 		FROM
 			um_kh_company u LEFT JOIN um_area area ON u.areaId=area.id 
 		WHERE
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.top != null and page.cnds.top == true"> 
 				AND u.parentId IS NULL 
+			</if>
+			<if test="page.cnds!=null and page.cnds.ywCompanyId != null"> 
+				AND u.ywCompanyId = #{page.cnds.ywCompanyId}
 			</if>
 			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
 				AND ( u.areaId &lt; 0 
@@ -153,6 +156,9 @@
 			um_kh_company u 
 		WHERE
 			u.status &lt;&gt; 9 
+			<if test="page.cnds!=null and page.cnds.ywCompanyId != null"> 
+				AND u.ywCompanyId = #{page.cnds.ywCompanyId}
+			</if>
 			<if test="page.cnds!=null and page.cnds.AND_0 != null and page.cnds.AND_0.size > 0"> 
 				AND ( u.areaId &lt; 0 
 					<choose>
@@ -210,6 +216,9 @@
 			um_kh_company u
 		WHERE
 			u.status &lt;&gt; 9 
+			<if test="query!=null and query.cnds!=null and query.cnds.ywCompanyId != null"> 
+				AND u.ywCompanyId = #{query.cnds.ywCompanyId}
+			</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.AND_0 != null and query.cnds.AND_0.size > 0"> 
 				AND ( u.areaId &lt; 0 
 					<choose>
@@ -263,11 +272,11 @@
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.KhCompany" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_kh_company 
-			(uuid, status,createTime,updateTime,sort,url,type,ico,remark,typeCode,
+			(uuid, status,createTime,updateTime,sort,url,type,ico,remark,typeCode,ywCompanyId,createUserId,
 				parentId,parentClass,govCode,code,name,scale,areaId,address,phone,fax,certificateType,certificateNo,business,credentials,
 				juridical,jphone,jType,jNo,businessStart)
 		values
-			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.typeCode},
+			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.typeCode},#{entity.ywCompanyId},#{entity.createUserId},
 				#{entity.parentId},#{entity.parentClass},#{entity.govCode},#{entity.code},#{entity.name},#{entity.scale},#{entity.areaId},#{entity.address},#{entity.phone},#{entity.fax},#{entity.certificateType},#{entity.certificateNo},#{entity.business},#{entity.credentials},
 				#{entity.juridical},#{entity.jphone},#{entity.jType},#{entity.jNo},#{entity.businessStart})
 	</insert>

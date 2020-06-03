@@ -230,7 +230,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="编号" prop="govCode">
-              <el-input v-model="entity.govCode" />
+              <el-input v-model="entity.govCode" :disabled="true" />
             </el-form-item>
           </el-col>
         </el-row>

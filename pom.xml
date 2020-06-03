@@ -12,7 +12,7 @@
 
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3-um</artifactId>
-	<version>0.2.0</version>
+	<version>0.2.1</version>
 	<packaging>pom</packaging>
 
 	<name>Linkallcloud UM</name>
@@ -47,13 +47,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
 
-		<comm-base.version>0.3.33</comm-base.version>
-		<comm-core.version>0.3.33</comm-core.version>
-		<comm-cache.version>0.3.33</comm-cache.version>
-		<comm-handshake.version>0.3.33</comm-handshake.version>
-		<comm-web.version>0.3.33</comm-web.version>
+		<comm-base.version>0.4.2</comm-base.version>
+		<comm-core.version>0.4.2</comm-core.version>
+		<comm-cache.version>0.4.2</comm-cache.version>
+		<comm-handshake.version>0.4.2</comm-handshake.version>
+		<comm-web.version>0.4.2</comm-web.version>
 
-		<lac3-sso-client.version>0.2.1</lac3-sso-client.version>
+		<lac3-sso-client.version>0.2.2</lac3-sso-client.version>
 
 		<dubbo.version>2.7.3</dubbo.version>
 		<curator.version>4.2.0</curator.version>
@@ -63,7 +63,7 @@
 		<mybatis-spring-boot.version>2.1.0</mybatis-spring-boot.version>
 		<pagehelper-spring-boot.version>1.2.12</pagehelper-spring-boot.version>
 		<druid.version>1.1.20</druid.version>
-		<fastjson.version>1.2.62</fastjson.version>
+		<fastjson.version>1.2.70</fastjson.version>
 		<attoparser.version>2.0.5.RELEASE</attoparser.version>
 		<unbescape.version>1.1.6.RELEASE</unbescape.version>
 		<rocketmq.version>4.5.2</rocketmq.version>

@@ -2,7 +2,9 @@ package com.linkallcloud.um.iapi.sys;
 
 import java.util.List;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.manager.ITreeManager;
 import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.um.domain.sys.Area;
@@ -50,5 +52,22 @@ public interface IAreaManager extends ITreeManager<Area> {
 	 * @return
 	 */
 	List<Area> findByParentCodeAndLevel(Trace t, String parentCode, int levelLt);
+
+	/**
+	 * 分层懒加载树的子节点
+	 * 
+	 * @param t
+	 * @param parentSid
+	 * @return
+	 */
+	List<Tree> loadTreeNodes(Trace t, Sid parentSid);
+	
+	/**
+	 * 加载level1以上Area的为tree
+	 * 
+	 * @param t
+	 * @return
+	 */
+	Tree loadLevel1Tree(Trace t);
 
 }

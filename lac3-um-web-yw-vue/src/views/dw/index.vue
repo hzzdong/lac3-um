@@ -78,7 +78,7 @@ export default {
       sheetRefresh(this)
     },
     handleDw(row) {
-      this.$confirm('您确定要执行删除操作吗?', '警告', {
+      this.$confirm('您确定要执行此操作吗?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

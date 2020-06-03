@@ -10,6 +10,8 @@ import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.um.domain.sys.Area;
 
 public interface IAreaDao extends ITreeDao<Area> {
+	
+	List<Area> findRootAreas(@Param("t") Trace t, @Param("sr") QueryRule statusRule);
 
 	/**
 	 * 统计非删除状态的子节点数量

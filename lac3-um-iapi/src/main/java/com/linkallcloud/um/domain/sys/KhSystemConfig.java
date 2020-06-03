@@ -20,16 +20,19 @@ public class KhSystemConfig extends Domain {
 	private String value;
 	private String remark;
 
+	private int sort;
+
 	public KhSystemConfig() {
 		super();
 	}
 
-	public KhSystemConfig(String key, String name, String value, String remark) {
+	public KhSystemConfig(String key, String name, String value, String remark, int sort) {
 		super();
 		this.key = key;
 		this.name = name;
 		this.value = value;
 		this.remark = remark;
+		this.sort = sort;
 	}
 
 	public Long getCompanyId() {
@@ -70,6 +73,14 @@ public class KhSystemConfig extends Domain {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public int getSort() {
+		return sort;
+	}
+
+	public void setSort(int sort) {
+		this.sort = sort;
 	}
 
 	public List<NameValue> parse() {

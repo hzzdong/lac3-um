@@ -42,21 +42,6 @@ public class KhSystemConfigManager extends BaseManager<KhSystemConfig, IKhSystem
 	}
 
 	@Override
-	public boolean isEnableOrgPermission(Trace t, Long companyId) {
-		return service().isEnableOrgPermission(t, companyId);
-	}
-
-	@Override
-	public boolean isEnableAreaPermission(Trace t, Long companyId) {
-		return service().isEnableAreaPermission(t, companyId);
-	}
-
-	@Override
-	public boolean isEnableManageDepMode(Trace t, Long companyId) {
-		return service().isEnableManageDepMode(t, companyId);
-	}
-
-	@Override
 	public boolean isEnableZZD(Trace t, Long companyId) {
 		return service().isEnableZZD(t, companyId);
 	}

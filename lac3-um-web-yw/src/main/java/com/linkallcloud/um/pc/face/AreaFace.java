@@ -1,5 +1,8 @@
 package com.linkallcloud.um.pc.face;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +13,7 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.FaceRequest;
+import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.um.domain.sys.Area;
@@ -48,6 +52,21 @@ public class AreaFace extends BaseTreeFace<Area, IAreaManager> {
 //		Tree root = manager().getTree(t, false);
 //		return Arrays.asList(root);
 //	}
+	
+
+	@Face(simple = true)
+	@RequestMapping(value = "/loadLevel1Tree", method = RequestMethod.POST)
+	public @ResponseBody Object loadLevel1Tree(IdFaceRequest fr, Trace t, SessionUser su) {
+		Tree root = manager().loadLevel1Tree(t);
+		return Arrays.asList(root);
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/loadTreeNodes", method = RequestMethod.POST)
+	public @ResponseBody Object loadTreeNodes(IdFaceRequest fr, Trace t, SessionUser su) {
+		List<Tree> nodes = manager().loadTreeNodes(t, fr.sid());
+		return nodes;
+	}
 
 	@Override
 	protected void doSave(Trace t, Area entity, SessionUser su) {

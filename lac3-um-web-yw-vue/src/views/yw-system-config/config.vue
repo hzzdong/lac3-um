@@ -14,15 +14,15 @@
       <el-table-column prop="value" label="值" width="350px">
         <template slot-scope="{row}">
           <el-switch
-            v-if="row.key === 'enable_org_permission'"
-            v-model="entity.enable_org_permission"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
+            v-if="row.key === 'customer_manage_mode'"
+            v-model="entity.customer_manage_mode"
+            active-text="按机构隔离"
+            inactive-text="按区域隔离"
+            @change="haddleChangeCustomerManageMode($event, row)"
           />
           <el-switch
-            v-if="row.key === 'enable_area_permission'"
-            v-model="entity.enable_area_permission"
+            v-if="row.key === 'enable_zzd'"
+            v-model="entity.enable_zzd"
             active-text="启用"
             inactive-text="禁用"
             @change="haddleChangeStatusSwitch($event, row)"
@@ -62,33 +62,6 @@
             <el-avatar :size="100" :src="entity.logo" />
             <el-button type="primary" icon="el-icon-upload" circle title="公司LOGO上传" @click="toggleShow()" />
           </span>
-          <el-switch
-            v-if="row.key === 'enable_m_dep'"
-            v-model="entity.enable_m_dep"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
-          />
-          <el-switch
-            v-if="row.key === 'enable_zzd'"
-            v-model="entity.enable_zzd"
-            active-text="启用"
-            inactive-text="禁用"
-            @change="haddleChangeStatusSwitch($event, row)"
-          />
-          <!--
-          <el-select
-            v-if="row.key === 'company_class'"
-            v-model="entity.company_class"
-            placeholder="请选择单位类型"
-            clearable
-            class="filter-item"
-            style="width: 100%"
-            @change="haddleChangeComanyClass"
-          >
-            <el-option v-for="item in companyClasses" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-          -->
 
         </template>
       </el-table-column>
@@ -137,14 +110,10 @@ export default {
       list: null,
       listLoading: true,
       entity: {
-        enable_org_permission: false,
-        enable_area_permission: false,
-        // area_roots: [],
-        companyAreas: [],
-        logo: '',
-        enable_m_dep: false,
+        customer_manage_mode: true,
         enable_zzd: false,
-        company_class: ''
+        companyAreas: [],
+        logo: ''
       },
       areaTree: {
         dialogFormVisible: false,
@@ -181,10 +150,10 @@ export default {
         this.listLoading = false
         if (this.list && this.list.length > 0) {
           for (const item of this.list) {
-            if (item.key === 'enable_org_permission') {
-              this.entity.enable_org_permission = item.value === 'yes'
-            } else if (item.key === 'enable_area_permission') {
-              this.entity.enable_area_permission = item.value === 'yes'
+            if (item.key === 'customer_manage_mode') {
+              this.entity.customer_manage_mode = item.value === 'org'
+            } else if (item.key === 'enable_zzd') {
+              this.entity.enable_zzd = item.value === 'yes'
             } else if (item.key === 'area_roots') {
               if (item.value && item.value.length > 0) {
                 this.entity.companyAreas = JSON.parse(item.value)
@@ -193,12 +162,6 @@ export default {
               if (item.value && item.value.length > 0) {
                 this.entity.logo = this.$store.state.settings.fssBaseUrl + item.value
               }
-            } else if (item.key === 'enable_m_dep') {
-              this.entity.enable_m_dep = item.value === 'yes'
-            } else if (item.key === 'enable_zzd') {
-              this.entity.enable_zzd = item.value === 'yes'
-            } else if (item.key === 'company_class') {
-              this.entity.company_class = item.value
             }
           }
         }
@@ -222,14 +185,13 @@ export default {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch((err) => console.log(err))
     },
-    /*
-    haddleChangeComanyClass(val) {
-      const req = { key: 'company_class', value: val }
+    haddleChangeCustomerManageMode(val) {
+      const fv = val === true ? 'org' : 'area'
+      const req = { key: 'customer_manage_mode', value: fv }
       saveCompanyConfig(req).then(() => {
         this.$notify({ title: '提示', message: '保存成功！', type: 'success', duration: 2000 })
       }).catch((err) => console.log(err))
     },
-    */
     getAreaTree() {
       loadCompanyAreaFullTree().then(response => {
         this.areaTree.data = response.data
