@@ -22,13 +22,13 @@ import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Lang;
 import com.linkallcloud.core.vo.LoginVo;
-import com.linkallcloud.um.domain.sys.Account;
+import com.linkallcloud.um.domain.sys.KhAccount;
 import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
-import com.linkallcloud.um.iapi.sys.IAccountManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
+import com.linkallcloud.um.iapi.sys.IKhAccountManager;
 import com.linkallcloud.web.exception.LoginException;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
@@ -40,7 +40,7 @@ import com.linkallcloud.web.vc.SessionValidateCode;
 public class LoginController {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IAccountManager accountManager;
+	private IKhAccountManager khAccountManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
@@ -75,7 +75,7 @@ public class LoginController {
 		// throw new LoginException(10002005, "验证码错误，请重新输入！");
 		// }
 
-		Account account = accountManager.loginValidate(t, lvo.getLoginName(), Lang.md5(lvo.getPassword()));
+		KhAccount account = khAccountManager.loginValidate(t, lvo.getLoginName(), Lang.md5(lvo.getPassword()));
 		if (account != null) {
 			SessionUser su = khUserManager.assembleSessionUser(t, lvo.getLoginName(), myAppCode);
 			Controllers.login(myAppCode, su);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.linkallcloud.um.server.dao.sys.IAccountDao">
+<mapper namespace="com.linkallcloud.um.server.dao.sys.IYwAccountDao">
 
 	<!-- 通用查询结果列 -->
 	<sql id="Base_Column_List">
@@ -22,84 +22,84 @@
 		,u.remark
 	</sql>
 	
-	<select id="fetchById" resultType="com.linkallcloud.um.domain.sys.Account" parameterType="java.lang.Long">
+	<select id="fetchById" resultType="com.linkallcloud.um.domain.sys.YwAccount" parameterType="java.lang.Long">
 		select
 			<include refid="Base_Column_List" />
 		from 
-			um_account u 
+			um_yw_account u 
 		where 
 			u.id=#{id}
 	</select>
 
-	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.sys.Account">
+	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.sys.YwAccount">
 		SELECT
 			<include refid="Base_Column_List" />
 		FROM
-			um_account u
+			um_yw_account u
 		WHERE
 			u.id = #{id} and u.uuid=#{uuid} and u.status &lt;&gt; 9
 	</select>
 	
-	<select id="findByIds" resultType="com.linkallcloud.um.domain.sys.Account" parameterType="java.lang.Long">
+	<select id="findByIds" resultType="com.linkallcloud.um.domain.sys.YwAccount" parameterType="java.lang.Long">
 		select
 			<include refid="Base_Column_List" />
-		from um_account u 
+		from um_yw_account u 
 		where u.status &lt;&gt; 9 and  u.id in
 			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
 				#{id}
 			</foreach>
 	</select>
 	
-	<select id="fecthByAccount" resultType="com.linkallcloud.um.domain.sys.Account" parameterType="java.lang.String">
+	<select id="fecthByAccount" resultType="com.linkallcloud.um.domain.sys.YwAccount" parameterType="java.lang.String">
 		SELECT
 			<include refid="Base_Column_List" />
 		FROM
-			um_account u
+			um_yw_account u
 		WHERE
 			u.loginname = #{account} and u.status &lt;&gt; 9
 	</select>
 	
-	<select id="fecthByMobile" resultType="com.linkallcloud.um.domain.sys.Account" parameterType="java.lang.String">
+	<select id="fecthByMobile" resultType="com.linkallcloud.um.domain.sys.YwAccount" parameterType="java.lang.String">
 		SELECT
 			<include refid="Base_Column_List" />
 		FROM
-			um_account u
+			um_yw_account u
 		WHERE
 			u.mobile = #{mobile} and u.status &lt;&gt; 9
 	</select>
 
-	<select id="fecthByEmail" resultType="com.linkallcloud.um.domain.sys.Account">
+	<select id="fecthByEmail" resultType="com.linkallcloud.um.domain.sys.YwAccount">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM
-		um_account u
+		um_yw_account u
 		WHERE
 		u.email = #{email}
 	</select>
 
-	<select id="fechByWechatOpenId" resultType="com.linkallcloud.um.domain.sys.Account">
+	<select id="fechByWechatOpenId" resultType="com.linkallcloud.um.domain.sys.YwAccount">
 		select
 		<include refid="Base_Column_List" />
 		from
-		um_account u
+		um_yw_account u
 		where
 		u.wechatOpenId=#{openid}
 	</select>
 
-	<select id="fetchByAlipayOpenId" resultType="com.linkallcloud.um.domain.sys.Account">
+	<select id="fetchByAlipayOpenId" resultType="com.linkallcloud.um.domain.sys.YwAccount">
 		select
 		<include refid="Base_Column_List" />
 		from
-		um_account u
+		um_yw_account u
 		where
 		u.alipayOpenId=#{openid}
 	</select>
 
-	<select id="find" resultType="com.linkallcloud.um.domain.sys.Account">
+	<select id="find" resultType="com.linkallcloud.um.domain.sys.YwAccount">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM
-		um_account u
+		um_yw_account u
 		WHERE
 		u.status &lt;&gt; 9
 		<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
@@ -128,8 +128,8 @@
 		</choose>
 	</select>
 
-	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.Account" useGeneratedKeys="true" keyProperty="entity.id">
-		insert into um_account
+	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.YwAccount" useGeneratedKeys="true" keyProperty="entity.id">
+		insert into um_yw_account
 			(uuid,status,createTime,updateTime
 			,loginname
 			,name
@@ -169,7 +169,7 @@
 	
 	<update id="update">
 		update
-			um_account
+			um_yw_account
 		set
 			updateTime=now()
 			,name=#{entity.name}
@@ -187,7 +187,7 @@
 
 	<update id="updatePassword">
 		update
-			um_account
+			um_yw_account
 		set
 			updateTime=now(),passwd=#{entity.passwd},salt=#{entity.salt},oldPasswds=#{entity.oldPasswds},lastPasswdDate=now()
 		where
@@ -196,7 +196,7 @@
 
 	<delete id="delete">
 		update 
-			um_account 
+			um_yw_account 
 		set
 			status=9,updateTime=now()
 		where
@@ -205,7 +205,7 @@
 	
 	<delete id="deletes">
 		update 
-			um_account 
+			um_yw_account 
 		set 
 			status=9,updateTime=now()
 		where 
@@ -217,7 +217,7 @@
 
 	<update id="updateLastLoginTime">
 		update 
-			um_account 
+			um_yw_account 
 		set 
 			lastLoginDate=now()
 		where 
@@ -226,7 +226,7 @@
 
 	<update id="updateWechatOpenId">
 		update 
-			um_account 
+			um_yw_account 
 		set 
 			updateTime=now(),wechatOpenId=#{openid}
 		where 
@@ -235,7 +235,7 @@
 
 	<update id="updateAlipayOpenId">
 		update 
-			um_account 
+			um_yw_account 
 		set 
 			updateTime=now(),alipayOpenId=#{openid}
 		where 

@@ -4,18 +4,18 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.service.IService;
 import com.linkallcloud.um.domain.sys.Account;
 
-public interface IAccountService extends IService<Account> {
+public interface IAccountService<T extends Account> extends IService<T> {
 
-    Account fecthByMobile(Trace t, String mobile);
+    T fecthByMobile(Trace t, String mobile);
 
-    Account fecthByAccount(Trace t, String account);
+    T fecthByAccount(Trace t, String account);
 
-    Account loginValidate(Trace t, String accountOrMobile, String password);
+    T loginValidate(Trace t, String accountOrMobile, String password);
 
     boolean updatePassword(Trace t, Long id, String uuid, String oldPwd, String newPwd);
     boolean modifyPassword(Trace t, String account, String oldPwd, String newPwd);
 
-    Account fechByWechatOpenId(Trace t, String openid);
+    T fechByWechatOpenId(Trace t, String openid);
 
     boolean updateAccountWechatOpenId(Trace t, Long accountId, String openid);
 

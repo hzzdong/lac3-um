@@ -38,6 +38,9 @@ import com.linkallcloud.web.support.TraceArgumentResolver;
 @SpringBootApplication(scanBasePackages = { "com.linkallcloud.um.pc" })
 public class UmYwApplication implements WebMvcConfigurer {
 
+	@Value("${lac.lf.appclazz:0}")
+	private int myAppClazz;
+
 	@Value("${lac.lf.appcode}")
 	private String myAppCode;
 
@@ -57,7 +60,7 @@ public class UmYwApplication implements WebMvcConfigurer {
 	@Order(1)
 	public FilterRegistrationBean<AuthenticationFilter> authenticationFilter() {
 		FilterRegistrationBean<AuthenticationFilter> frb = new FilterRegistrationBean<AuthenticationFilter>();
-		frb.setFilter(new AuthenticationFilter(myAppCode, appServerName, ssoServer));
+		frb.setFilter(new AuthenticationFilter(myAppClazz, myAppCode, appServerName, ssoServer));
 		frb.addUrlPatterns("/*");
 		frb.setName("AuthenticationFilter");
 		return frb;
@@ -67,7 +70,7 @@ public class UmYwApplication implements WebMvcConfigurer {
 	@Order(2)
 	public FilterRegistrationBean<TicketValidationFilter> serviceTicketValidationFilter() {
 		FilterRegistrationBean<TicketValidationFilter> frb = new FilterRegistrationBean<TicketValidationFilter>();
-		frb.setFilter(new TicketValidationFilter(myAppCode, appServerName, null,
+		frb.setFilter(new TicketValidationFilter(myAppClazz, myAppCode, appServerName, null,
 				new ServiceTicketValidator(ssoServer, false)));
 		frb.addUrlPatterns("/*");
 		frb.setName("ServiceTicketValidationFilter");

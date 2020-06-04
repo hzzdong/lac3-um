@@ -16,6 +16,7 @@ import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.sys.Application;
+import com.linkallcloud.um.domain.sys.KhAccount;
 import com.linkallcloud.um.domain.sys.KhSystemConfig;
 import com.linkallcloud.um.domain.sys.Menu;
 import com.linkallcloud.um.exception.ArgException;
@@ -23,12 +24,13 @@ import com.linkallcloud.um.server.dao.party.IKhCompanyDao;
 import com.linkallcloud.um.server.dao.party.IKhDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IKhUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
+import com.linkallcloud.um.server.dao.sys.IKhAccountDao;
 import com.linkallcloud.um.server.dao.sys.IKhSystemConfigDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
 
 @Component
-public class KhCompanyActivity
-		extends CompanyActivity<KhCompany, IKhCompanyDao, KhUser, IKhUserDao, KhDepartment, IKhDepartmentDao>
+public class KhCompanyActivity extends
+		CompanyActivity<KhCompany, IKhCompanyDao, KhUser, IKhUserDao, KhDepartment, IKhDepartmentDao, KhAccount, IKhAccountDao>
 		implements IKhCompanyActivity {
 
 	@Autowired
@@ -42,6 +44,9 @@ public class KhCompanyActivity
 
 	@Autowired
 	private IKhSystemConfigDao khSystemConfigDao;
+
+	@Autowired
+	private IKhAccountDao khAccountDao;
 
 	@Autowired
 	private IApplicationDao applicationDao;
@@ -62,6 +67,11 @@ public class KhCompanyActivity
 	@Override
 	protected IKhDepartmentDao getDepartmentDao() {
 		return khDepartmentDao;
+	}
+
+	@Override
+	protected IKhAccountDao getAccountDao() {
+		return khAccountDao;
 	}
 
 	@Override
@@ -113,4 +123,10 @@ public class KhCompanyActivity
 		return null;
 	}
 
+	@Override
+	protected void autoCreateAccount(Trace t, KhUser entity) {
+		KhAccount account = new KhAccount(entity.getName(), entity.getMobile(), entity.getAccount(),
+				entity.getPassword(), entity.getSalt());
+		getAccountDao().insert(t, account);
+	}
 }

@@ -19,7 +19,6 @@ import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
 import com.linkallcloud.um.activity.party.IDepartmentActivity;
 import com.linkallcloud.um.activity.party.IUserActivity;
-import com.linkallcloud.um.activity.sys.IAccountActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.activity.sys.IAreaActivity;
 import com.linkallcloud.um.constant.Consts;
@@ -32,9 +31,6 @@ import com.linkallcloud.um.service.party.ICompanyService;
 @Transactional(readOnly = true)
 public abstract class CompanyService<C extends Company, CA extends ICompanyActivity<C>, U extends User, UA extends IUserActivity<U>, D extends Department, DA extends IDepartmentActivity<D>>
 		extends OrgService<C, CA, U, UA> implements ICompanyService<C> {
-
-	@Autowired
-	protected IAccountActivity accountActivity;
 
 	@Autowired
 	private IAreaActivity areaActivity;

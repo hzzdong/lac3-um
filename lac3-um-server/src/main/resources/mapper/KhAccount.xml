@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkallcloud.um.server.dao.sys.IKhAccountDao">
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		u.id,u.uuid,u.status,u.createTime,u.updateTime
+		,u.loginname
+		,u.name
+		,u.mobile
+		,u.email
+		,u.birthday
+		,u.sex
+		,u.ico
+		,u.passwd
+		,u.salt
+		,u.lastLoginDate
+		,u.oldPasswds
+		,u.lastPasswdDate
+		,u.wechatOpenId
+		,u.alipayOpenId
+		,u.remark
+	</sql>
+	
+	<select id="fetchById" resultType="com.linkallcloud.um.domain.sys.KhAccount" parameterType="java.lang.Long">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			um_kh_account u 
+		where 
+			u.id=#{id}
+	</select>
+
+	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.sys.KhAccount">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_kh_account u
+		WHERE
+			u.id = #{id} and u.uuid=#{uuid} and u.status &lt;&gt; 9
+	</select>
+	
+	<select id="findByIds" resultType="com.linkallcloud.um.domain.sys.KhAccount" parameterType="java.lang.Long">
+		select
+			<include refid="Base_Column_List" />
+		from um_kh_account u 
+		where u.status &lt;&gt; 9 and  u.id in
+			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</select>
+	
+	<select id="fecthByAccount" resultType="com.linkallcloud.um.domain.sys.KhAccount" parameterType="java.lang.String">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_kh_account u
+		WHERE
+			u.loginname = #{account} and u.status &lt;&gt; 9
+	</select>
+	
+	<select id="fecthByMobile" resultType="com.linkallcloud.um.domain.sys.KhAccount" parameterType="java.lang.String">
+		SELECT
+			<include refid="Base_Column_List" />
+		FROM
+			um_kh_account u
+		WHERE
+			u.mobile = #{mobile} and u.status &lt;&gt; 9
+	</select>
+
+	<select id="fecthByEmail" resultType="com.linkallcloud.um.domain.sys.KhAccount">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		um_kh_account u
+		WHERE
+		u.email = #{email}
+	</select>
+
+	<select id="fechByWechatOpenId" resultType="com.linkallcloud.um.domain.sys.KhAccount">
+		select
+		<include refid="Base_Column_List" />
+		from
+		um_kh_account u
+		where
+		u.wechatOpenId=#{openid}
+	</select>
+
+	<select id="fetchByAlipayOpenId" resultType="com.linkallcloud.um.domain.sys.KhAccount">
+		select
+		<include refid="Base_Column_List" />
+		from
+		um_kh_account u
+		where
+		u.alipayOpenId=#{openid}
+	</select>
+
+	<select id="find" resultType="com.linkallcloud.um.domain.sys.KhAccount">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		um_kh_account u
+		WHERE
+		u.status &lt;&gt; 9
+		<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.loginname != null"> AND u.loginname = #{query.cnds.loginname}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.nameEq != null"> AND u.name = #{query.cnds.nameEq}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.mobile != null"> AND u.mobile = #{query.cnds.mobile}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.email != null"> AND u.email = #{query.cnds.email}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.sex != null"> AND u.sex = #{query.cnds.sex}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.birthday != null"> AND u.birthday = #{query.cnds.birthday}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.birthdayGe != null"> AND u.birthday &gt;= #{query.cnds.birthdayGe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.birthdayLe != null"> AND u.birthday &lt;= #{query.cnds.birthdayLe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.lastPasswdDateGe != null"> AND u.lastPasswdDate &gt;= #{query.cnds.lastPasswdDateGe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.lastPasswdDateLe != null"> AND u.lastPasswdDate &lt;= #{query.cnds.lastPasswdDateLe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.lastLoginDateGe != null"> AND u.lastLoginDate &gt;= #{query.cnds.lastLoginDateGe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.lastLoginDateLe != null"> AND u.lastLoginDate &lt;= #{query.cnds.lastLoginDateLe}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.wechatOpenId != null"> AND u.wechatOpenId = #{query.cnds.wechatOpenId}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.alipayOpenId != null"> AND u.alipayOpenId = #{query.cnds.alipayOpenId}</if>
+		<choose>
+			<when test="query != null and query.orders != null and query.orders.length > 0">
+				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
+			</when>
+			<otherwise>
+				order by u.id
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.KhAccount" useGeneratedKeys="true" keyProperty="entity.id">
+		insert into um_kh_account
+			(uuid,status,createTime,updateTime
+			,loginname
+			,name
+			,mobile
+			,email
+			,birthday
+			,sex
+			,ico
+			,passwd
+			,salt
+			,lastLoginDate
+			,oldPasswds
+			,lastPasswdDate
+			,wechatOpenId
+			,alipayOpenId
+			,remark
+			)
+		values
+			(#{entity.uuid},0,now(),now()
+			,#{entity.loginname}
+			,#{entity.name}
+			,#{entity.mobile}
+			,#{entity.email}
+			,#{entity.birthday}
+			,#{entity.sex}
+			,#{entity.ico}
+			,#{entity.passwd}
+			,#{entity.salt}
+			,#{entity.lastLoginDate}
+			,#{entity.oldPasswds}
+			,#{entity.lastPasswdDate}
+			,#{entity.wechatOpenId}
+			,#{entity.alipayOpenId}
+			,#{entity.remark}
+			)
+	</insert>
+	
+	<update id="update">
+		update
+			um_kh_account
+		set
+			updateTime=now()
+			,name=#{entity.name}
+			,email=#{entity.email}
+			,birthday=#{entity.birthday}
+			,sex=#{entity.sex}
+			,ico=#{entity.ico}
+			,remark=#{entity.remark}
+			<if test="entity.passwd != null and entity.salt != null"> ,passwd=#{entity.passwd},salt=#{entity.salt}</if>
+			<if test="entity.mobile != null"> ,mobile=#{entity.mobile}</if>
+			<if test="entity.status != null"> ,status=#{entity.status}</if>
+		where
+			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+
+	<update id="updatePassword">
+		update
+			um_kh_account
+		set
+			updateTime=now(),passwd=#{entity.passwd},salt=#{entity.salt},oldPasswds=#{entity.oldPasswds},lastPasswdDate=now()
+		where
+			id=#{entity.id}
+	</update>
+
+	<delete id="delete">
+		update 
+			um_kh_account 
+		set
+			status=9,updateTime=now()
+		where
+			id=#{id} and uuid=#{uuid} and status &lt;&gt; 9
+	</delete>
+	
+	<delete id="deletes">
+		update 
+			um_kh_account 
+		set 
+			status=9,updateTime=now()
+		where 
+			status &lt;&gt; 9 and id in 
+			<foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</delete>
+
+	<update id="updateLastLoginTime">
+		update 
+			um_kh_account 
+		set 
+			lastLoginDate=now()
+		where 
+			id=#{id}
+	</update>
+
+	<update id="updateWechatOpenId">
+		update 
+			um_kh_account 
+		set 
+			updateTime=now(),wechatOpenId=#{openid}
+		where 
+			id=#{id}
+	</update>
+
+	<update id="updateAlipayOpenId">
+		update 
+			um_kh_account 
+		set 
+			updateTime=now(),alipayOpenId=#{openid}
+		where 
+			id=#{id}
+	</update>
+	
+</mapper>

@@ -19,7 +19,6 @@ import com.linkallcloud.um.activity.party.ICompanyActivity;
 import com.linkallcloud.um.activity.party.IDepartmentActivity;
 import com.linkallcloud.um.activity.party.IRoleActivity;
 import com.linkallcloud.um.activity.party.IUserActivity;
-import com.linkallcloud.um.activity.sys.IAccountActivity;
 import com.linkallcloud.um.activity.sys.IApplicationActivity;
 import com.linkallcloud.um.activity.sys.IMenuActivity;
 import com.linkallcloud.um.constant.Consts;
@@ -34,9 +33,6 @@ import com.linkallcloud.um.service.party.IUserService;
 @Transactional(readOnly = true)
 public abstract class UserService<T extends User, UA extends IUserActivity<T>, D extends Department, DA extends IDepartmentActivity<D>, C extends Company, CA extends ICompanyActivity<C>, R extends Role, RA extends IRoleActivity<R, T>>
 		extends PartyService<T, UA> implements IUserService<T> {
-
-	@Autowired
-	protected IAccountActivity accountActivity;
 
 	@Autowired
 	protected IApplicationActivity applicationActivity;

@@ -17,94 +17,106 @@ import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwRole;
 import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Menu;
+import com.linkallcloud.um.domain.sys.YwAccount;
 import com.linkallcloud.um.server.dao.party.IYwCompanyDao;
 import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IYwRoleDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
+import com.linkallcloud.um.server.dao.sys.IYwAccountDao;
 
 @Component
-public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao> implements IYwUserActivity {
+public class YwUserActivity extends
+		UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao, YwAccount, IYwAccountDao>
+		implements IYwUserActivity {
 
-    @Autowired
-    private IYwUserDao ywUserDao;
+	@Autowired
+	private IYwUserDao ywUserDao;
 
-    @Autowired
-    private IYwDepartmentDao ywDepartmentDao;
+	@Autowired
+	private IYwDepartmentDao ywDepartmentDao;
 
-    @Autowired
-    private IYwCompanyDao ywCompanyDao;
+	@Autowired
+	private IYwCompanyDao ywCompanyDao;
 
-    @Autowired
-    private IYwRoleDao ywRoleDao;
-    
-    @Autowired
+	@Autowired
+	private IYwRoleDao ywRoleDao;
+
+	@Autowired
+	private IYwAccountDao ywAccountDao;
+
+	@Autowired
 	protected IMenuDao menuDao;
 
-    public YwUserActivity() {
-        super();
-    }
+	public YwUserActivity() {
+		super();
+	}
 
-    @Override
-    public IYwUserDao dao() {
-        return ywUserDao;
-    }
+	@Override
+	public IYwUserDao dao() {
+		return ywUserDao;
+	}
 
-    @Override
-    protected IYwDepartmentDao getDepartmentDao() {
-        return ywDepartmentDao;
-    }
+	@Override
+	protected IYwAccountDao getAccountDao() {
+		return ywAccountDao;
+	}
 
-    @Override
-    protected IYwCompanyDao getCompanyDao() {
-        return ywCompanyDao;
-    }
+	@Override
+	protected IYwDepartmentDao getDepartmentDao() {
+		return ywDepartmentDao;
+	}
 
-    @Override
-    protected IYwRoleDao getRoleDao() {
-        return ywRoleDao;
-    }
+	@Override
+	protected IYwCompanyDao getCompanyDao() {
+		return ywCompanyDao;
+	}
 
-    @Override
-    public Page<YwUser> findPermedUserPage(Trace t, Page<YwUser> page) {
-        page.checkPageParameters();
-        try {
-            PageHelper.startPage(page.getPageNum(), page.getLength());
-            List<YwUser> list = dao().findPermedUserPage(t, page);
-            if (list instanceof com.github.pagehelper.Page) {
-                page.setRecordsTotal(((com.github.pagehelper.Page<YwUser>) list).getTotal());
-                page.checkPageParameters();
-                page.setRecordsFiltered(page.getRecordsTotal());
-                page.addDataAll(list);
-            }
-            return page;
-        } finally {
-            PageHelper.clearPage();
-        }
-    }
+	@Override
+	protected IYwRoleDao getRoleDao() {
+		return ywRoleDao;
+	}
 
-    @Transactional(readOnly = false)
-    @Override
-    public void cleanOtherUserMobileByUserId(Trace t, String mobile, Long userId) {
-        Query query = new Query();
-        query.addRule(new Equal("mobileEq", mobile));
-        List<YwUser> users = find(t, query);
-        if (users != null && users.size() > 0) {
-            for (YwUser user : users) {
-                if (!user.getId().equals(userId)) {
-                    user.setMobile("");
-                    user.setPassword(null);
-                    user.setSalt(null);
-                    dao().update(t, user);
-                }
-            }
-        }
-    }
+	@Override
+	public Page<YwUser> findPermedUserPage(Trace t, Page<YwUser> page) {
+		page.checkPageParameters();
+		try {
+			PageHelper.startPage(page.getPageNum(), page.getLength());
+			List<YwUser> list = dao().findPermedUserPage(t, page);
+			if (list instanceof com.github.pagehelper.Page) {
+				page.setRecordsTotal(((com.github.pagehelper.Page<YwUser>) list).getTotal());
+				page.checkPageParameters();
+				page.setRecordsFiltered(page.getRecordsTotal());
+				page.addDataAll(list);
+			}
+			return page;
+		} finally {
+			PageHelper.clearPage();
+		}
+	}
 
-    @Override
-    public YwUser findByMobileAndDdStatus(Trace t, String mobile) {
-        return dao().findByMobileAndDdStatus(t, mobile);
-    }
+	@Transactional(readOnly = false)
+	@Override
+	public void cleanOtherUserMobileByUserId(Trace t, String mobile, Long userId) {
+		Query query = new Query();
+		query.addRule(new Equal("mobileEq", mobile));
+		List<YwUser> users = find(t, query);
+		if (users != null && users.size() > 0) {
+			for (YwUser user : users) {
+				if (!user.getId().equals(userId)) {
+					user.setMobile("");
+					user.setPassword(null);
+					user.setSalt(null);
+					dao().update(t, user);
+				}
+			}
+		}
+	}
+
+	@Override
+	public YwUser findByMobileAndDdStatus(Trace t, String mobile) {
+		return dao().findByMobileAndDdStatus(t, mobile);
+	}
 
 	@Override
 	protected String departmentAdminRoleCode() {
@@ -114,6 +126,13 @@ public class YwUserActivity extends UserActivity<YwUser, IYwUserDao, YwDepartmen
 	@Override
 	protected List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId) {
 		return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
+	}
+
+	@Override
+	protected void autoCreateAccount(Trace t, YwUser entity) {
+		YwAccount account = new YwAccount(entity.getName(), entity.getMobile(), entity.getAccount(),
+				entity.getPassword(), entity.getSalt());
+		getAccountDao().insert(t, account);
 	}
 
 }

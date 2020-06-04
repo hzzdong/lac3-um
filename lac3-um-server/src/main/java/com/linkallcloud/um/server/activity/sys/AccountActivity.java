@@ -1,8 +1,5 @@
 package com.linkallcloud.um.server.activity.sys;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.linkallcloud.core.activity.BaseActivity;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Strings;
@@ -13,33 +10,21 @@ import com.linkallcloud.um.exception.AccountException;
 import com.linkallcloud.um.exception.AuthException;
 import com.linkallcloud.um.server.dao.sys.IAccountDao;
 
-@Component
-public class AccountActivity extends BaseActivity<Account, IAccountDao> implements IAccountActivity {
-
-	@Autowired
-	private IAccountDao accountDao;
-//    @Autowired
-//    private IYwUserDao ywUserDao;
-//    @Autowired
-//    private IKhUserDao kuUserDao;
+public abstract class AccountActivity<T extends Account, TD extends IAccountDao<T>> extends BaseActivity<T, TD>
+		implements IAccountActivity<T> {
 
 	@Override
-	public IAccountDao dao() {
-		return accountDao;
-	}
-
-	@Override
-	public Account fecthByMobile(Trace t, String mobile) {
+	public T fecthByMobile(Trace t, String mobile) {
 		return dao().fecthByMobile(t, mobile);
 	}
 
 	@Override
-	public Account fecthByAccount(Trace t, String account) {
+	public T fecthByAccount(Trace t, String account) {
 		return dao().fecthByAccount(t, account);
 	}
 
 	@Override
-	public Account loginValidate(Trace t, String account, String password) {
+	public T loginValidate(Trace t, String account, String password) {
 		if (Strings.isBlank(account)) {
 			throw new AuthException("10002000", "登录名或者密码错误，请重新输入！");
 		}
@@ -47,7 +32,7 @@ public class AccountActivity extends BaseActivity<Account, IAccountDao> implemen
 			throw new AuthException("10002001", "登录名或者密码错误，请重新输入！");
 		}
 
-		Account dbAccount = dao().fecthByAccount(t, account);
+		T dbAccount = dao().fecthByAccount(t, account);
 		if (dbAccount == null) {
 			throw new AuthException("10002000", "登录名或者密码错误，请重新输入！");
 		}
@@ -66,7 +51,7 @@ public class AccountActivity extends BaseActivity<Account, IAccountDao> implemen
 
 	@Override
 	public boolean updatePassword(Trace t, Long id, String uuid, String oldPwd, String newPwd) {
-		Account account = this.fetchByIdUuid(t, id, uuid);
+		T account = this.fetchByIdUuid(t, id, uuid);
 		if (account != null) {
 			if (Securities.validePassword4Md5Src(oldPwd, account.getSalt(), account.getPasswd())) {
 				account.setSalt(account.generateUuid());
@@ -84,8 +69,8 @@ public class AccountActivity extends BaseActivity<Account, IAccountDao> implemen
 	}
 
 	@Override
-	public Account fechByWechatOpenId(Trace t, String openid) {
-		Account account = dao().fechByWechatOpenId(t, openid);
+	public T fechByWechatOpenId(Trace t, String openid) {
+		T account = dao().fechByWechatOpenId(t, openid);
 		if (account != null && account.isValid()) {
 			return account;
 		}

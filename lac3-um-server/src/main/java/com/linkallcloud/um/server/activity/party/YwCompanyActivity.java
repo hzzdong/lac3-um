@@ -18,9 +18,9 @@ import com.linkallcloud.um.constant.Consts;
 import com.linkallcloud.um.domain.party.YwCompany;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.domain.party.YwUser;
-import com.linkallcloud.um.domain.sys.Account;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Menu;
+import com.linkallcloud.um.domain.sys.YwAccount;
 import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.exception.AccountException;
 import com.linkallcloud.um.exception.ArgException;
@@ -29,11 +29,12 @@ import com.linkallcloud.um.server.dao.party.IYwDepartmentDao;
 import com.linkallcloud.um.server.dao.party.IYwUserDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
+import com.linkallcloud.um.server.dao.sys.IYwAccountDao;
 import com.linkallcloud.um.server.dao.sys.IYwSystemConfigDao;
 
 @Component
-public class YwCompanyActivity
-		extends CompanyActivity<YwCompany, IYwCompanyDao, YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao>
+public class YwCompanyActivity extends
+		CompanyActivity<YwCompany, IYwCompanyDao, YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwAccount, IYwAccountDao>
 		implements IYwCompanyActivity {
 
 	@Autowired
@@ -44,6 +45,9 @@ public class YwCompanyActivity
 
 	@Autowired
 	private IYwDepartmentDao ywDepartmentDao;
+
+	@Autowired
+	private IYwAccountDao ywAccountDao;
 
 	@Autowired
 	private IApplicationDao applicationDao;
@@ -74,6 +78,11 @@ public class YwCompanyActivity
 	}
 
 	@Override
+	protected IYwAccountDao getAccountDao() {
+		return ywAccountDao;
+	}
+
+	@Override
 	public boolean checkUserExist(Trace t, boolean isNew, YwCompany entity) {
 		if (isNew) {
 			if (!Strings.isBlank(entity.getGovCode())) {
@@ -82,7 +91,7 @@ public class YwCompanyActivity
 					throw new AccountException(Exceptions.CODE_ERROR_PARAMETER, "账号已经存在：" + entity.getGovCode());
 				}
 
-				Account account = accountDao.fecthByAccount(t, entity.getGovCode());
+				YwAccount account = getAccountDao().fecthByAccount(t, entity.getGovCode());
 				if (account != null) {
 					throw new AccountException(Exceptions.CODE_ERROR_PARAMETER, "账号已经存在：" + entity.getGovCode());
 				}
@@ -163,4 +172,10 @@ public class YwCompanyActivity
 		return null;
 	}
 
+	@Override
+	protected void autoCreateAccount(Trace t, YwUser entity) {
+		YwAccount account = new YwAccount(entity.getName(), entity.getMobile(), entity.getAccount(),
+				entity.getPassword(), entity.getSalt());
+		getAccountDao().insert(t, account);
+	}
 }

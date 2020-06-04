@@ -139,6 +139,19 @@ public class ApplicationFace {
 		return null;
 	}
 
+	@Face(login = false)
+	@RequestMapping(value = "/findByKhUserId", method = RequestMethod.POST)
+	public @ResponseBody Object findByKhUserId(IdFaceRequest faceReq, Trace t) throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		if (isInnerVisitor(t, faceReq)) {
+			List<Application> apps = applicationManager.find4KhUser(t, faceReq.getId());
+			return desensitizations(t, faceReq, apps);
+		}
+		return null;
+	}
+
 	/**
 	 * 访问者appcode匹配，并脱敏
 	 *

@@ -36,11 +36,8 @@ import com.linkallcloud.um.server.dao.sys.IAccountDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IAreaDao;
 
-public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<T>, U extends User, UD extends IUserDao<U>, D extends Department, DD extends IDepartmentDao<D>>
+public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<T>, U extends User, UD extends IUserDao<U>, D extends Department, DD extends IDepartmentDao<D>,A extends Account,AD extends IAccountDao<A>>
 		extends OrgActivity<T, CD, U, UD> implements ICompanyActivity<T> {
-
-	@Autowired
-	protected IAccountDao accountDao;
 
 	@Autowired
 	private IAreaDao areaDao;
@@ -53,6 +50,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	protected abstract DD getDepartmentDao();
+	protected abstract AD getAccountDao();
 
 	@Transactional(readOnly = false)
 	@Override
@@ -303,7 +301,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 					throw new AccountException(Exceptions.CODE_ERROR_PARAMETER, "账号已经存在，手机号码：" + entity.getJphone());
 				}
 
-				Account account = accountDao.fecthByAccount(t, entity.getJphone());
+				A account = getAccountDao().fecthByAccount(t, entity.getJphone());
 				if (account != null) {
 					throw new AccountException(Exceptions.CODE_ERROR_PARAMETER, "账号已经存在，手机号码：" + entity.getJphone());
 				}
@@ -480,12 +478,14 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	 * @param user
 	 */
 	protected abstract void autoAddSysAdminRole(Trace t, U user);
+	
+	protected abstract void autoCreateAccount(Trace t, U user);
 
-	protected void autoCreateAccount(Trace t, User user) {
-		Account account = new Account(user.getName(), user.getMobile(), user.getAccount(), user.getPassword(),
-				user.getSalt());
-		accountDao.insert(t, account);
-	}
+//	protected void autoCreateAccount(Trace t, User user) {
+//		Account account = new Account(user.getName(), user.getMobile(), user.getAccount(), user.getPassword(),
+//				user.getSalt());
+//		accountDao.insert(t, account);
+//	}
 
 	private List<Application> findAppsByUuidIds(Trace t, Map<String, Long> appUuidIds) {
 		List<Long> ids = Domains.parseIds(appUuidIds);

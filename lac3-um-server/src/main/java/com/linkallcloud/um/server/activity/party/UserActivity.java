@@ -39,15 +39,12 @@ import com.linkallcloud.um.server.dao.sys.IAccountDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
 
-public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D extends Department, DD extends IDepartmentDao<D>, C extends Company, CD extends ICompanyDao<C>, R extends Role, RD extends IRoleDao<R, T>>
+public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D extends Department, DD extends IDepartmentDao<D>, C extends Company, CD extends ICompanyDao<C>, R extends Role, RD extends IRoleDao<R, T>,A extends Account,AD extends IAccountDao<A>>
 		extends PartyActivity<T, UD> implements IUserActivity<T> {
 
 	public UserActivity() {
 		super();
 	}
-
-	@Autowired
-	protected IAccountDao accountDao;
 
 	@Autowired
 	protected IApplicationDao applicationDao;
@@ -60,6 +57,8 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	protected abstract CD getCompanyDao();
 
 	protected abstract RD getRoleDao();
+	
+	protected abstract AD getAccountDao();
 
 	@Override
 	public List<T> find4Company(Trace t, Long companyId) {
@@ -406,12 +405,12 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	@Override
 	public boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd) {
 		T user = this.fetchByIdUuid(t, userId, userUuid);
-		Account account = accountDao.fecthByAccount(t, user.getAccount());
+		A account = getAccountDao().fecthByAccount(t, user.getAccount());
 		if (account != null) {
 			if (Securities.validePassword4Md5Src(oldPwd, account.getSalt(), account.getPasswd())) {
 				account.setSalt(account.generateUuid());
 				account.setPasswd(Securities.password4Md5Src(newPwd, account.getSalt()));
-				int rows = accountDao.update(t, account);
+				int rows = getAccountDao().update(t, account);
 				return retBool(rows);
 			}
 		}
@@ -484,7 +483,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	protected boolean existAccount(Trace t, String account) {
 		Query query = new Query();
 		query.addRule(new Equal("loginname", account));
-		List<Account> accounts = accountDao.find(t, query);
+		List<A> accounts = getAccountDao().find(t, query);
 		if (accounts != null && !accounts.isEmpty()) {
 			return true;
 		}
@@ -521,11 +520,11 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			autoCreateAccount(t, entity);
 		} else {
 			if (!Strings.isBlank(entity.getPassword())) {
-				Account account = accountDao.fecthByAccount(t, entity.getAccount());
+				A account = getAccountDao().fecthByAccount(t, entity.getAccount());
 				if (account != null) {
 					account.setPasswd(entity.getPassword());
 					account.setSalt(entity.getSalt());
-					accountDao.update(t, account);
+					getAccountDao().update(t, account);
 				}
 			}
 		}
@@ -533,6 +532,8 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		// 自动创建用户相关其它账户，比如积分账户.若修改的时候发现没有创建，也会进行创建。
 		autoCreateOtherAccount4User(t, entity);
 	}
+
+	protected abstract void autoCreateAccount(Trace t, T entity);
 
 	protected void autoCreateOtherAccount4User(Trace t, T entity) {
 
@@ -557,12 +558,6 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 				throw new ArgException(Exceptions.CODE_ERROR_PARAMETER, "parentId参数错误。");
 			}
 		}
-	}
-
-	private void autoCreateAccount(Trace t, T entity) {
-		Account account = new Account(entity.getName(), entity.getMobile(), entity.getAccount(), entity.getPassword(),
-				entity.getSalt());
-		accountDao.insert(t, account);
 	}
 
 	@Override

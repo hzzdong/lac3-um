@@ -386,7 +386,7 @@
 	
 	<select id="find4YwUser" resultType="com.linkallcloud.um.domain.sys.Application">
 		SELECT
-			<include refid="Base_Column_List" />
+			DISTINCT <include refid="Base_Column_List" />
 		FROM
 			um_application u 
 			join um_yw_rel_role_app relapp on u.id=relapp.appId 
@@ -397,7 +397,7 @@
 	
 	<select id="find4KhUser" resultType="com.linkallcloud.um.domain.sys.Application">
 		SELECT
-			<include refid="Base_Column_List" />
+			DISTINCT <include refid="Base_Column_List" />
 		FROM
 			um_application u 
 			join um_kh_rel_role_app relapp on u.id=relapp.appId 

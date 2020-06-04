@@ -6,15 +6,15 @@ import com.linkallcloud.core.dao.IDao;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.domain.sys.Account;
 
-public interface IAccountDao extends IDao<Account> {
+public interface IAccountDao<T extends Account> extends IDao<T> {
 
-    Account fecthByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
+    T fecthByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
 
-    Account fecthByAccount(@Param("t") Trace t, @Param("account") String account);
+    T fecthByAccount(@Param("t") Trace t, @Param("account") String account);
 
     boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
 
-    Account fechByWechatOpenId(@Param("t") Trace t, @Param("openid") String openid);
+    T fechByWechatOpenId(@Param("t") Trace t, @Param("openid") String openid);
 
     int updateAccountWechatOpenId(@Param("t") Trace t, @Param("id") Long id, @Param("openid") String openid);
 

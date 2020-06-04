@@ -23,13 +23,13 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.vo.LoginVo;
-import com.linkallcloud.um.domain.sys.Account;
+import com.linkallcloud.um.domain.sys.YwAccount;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
-import com.linkallcloud.um.iapi.sys.IAccountManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
+import com.linkallcloud.um.iapi.sys.IYwAccountManager;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
@@ -40,7 +40,7 @@ public class LoginController {
 	private static final Log log = Logs.get();
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-	private IAccountManager accountManager;
+	private IYwAccountManager ywAccountManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
@@ -75,7 +75,7 @@ public class LoginController {
 		// throw new LoginException(10002005, "验证码错误，请重新输入！");
 		// }
 		try {
-			Account account = accountManager.loginValidate(t, lvo.getLoginName(), lvo.getPassword());
+			YwAccount account = ywAccountManager.loginValidate(t, lvo.getLoginName(), lvo.getPassword());
 			if (account != null) {
 				SessionUser su = ywUserManager.assembleSessionUser(t, lvo.getLoginName(), myAppCode);
 				Controllers.login(myAppCode, su);

@@ -7,7 +7,7 @@ import com.linkallcloud.core.domain.annotation.ShowName;
 import java.util.Date;
 
 @ShowName("账号")
-public class Account extends Domain {
+public abstract class Account extends Domain {
     private static final long serialVersionUID = 1248490679564994775L;
 
     private String loginname;// 登录名
