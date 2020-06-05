@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
@@ -75,7 +76,7 @@ public class KhUserManager
 		}
 
 		KhUser dbUser = this.fecthByAccount(t, loginName);
-		if (dbUser != null) {
+		if (dbUser != null && dbUser.getStatus() == Domain.STATUS_NORMAL) {
 			Company dbCompany = companyService().fetchById(t, dbUser.getCompanyId());
 			Long parentId = dbCompany.getId();
 			String parentUuid = dbCompany.getUuid();
@@ -111,7 +112,7 @@ public class KhUserManager
 
 			return su;
 		}
-		throw new ArgException("Arg", "Account或AppCode参数错误");
+		throw new ArgException("Arg", "您的账号无法登陆，请联系管理员");
 	}
 
 	private Long[] getUserAppAreaIds(Trace t, Long companyId, Long userId, Long appId) {

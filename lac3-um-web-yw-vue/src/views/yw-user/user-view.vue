@@ -5,7 +5,7 @@
         <div class="filter-container tool-bar">
           <el-button type="primary" icon="el-icon-close" title="关闭" circle plain @click="onClose()" />
           <el-button type="primary" icon="el-icon-refresh" title="刷新" circle plain @click="onRefresh()" />
-          <el-button v-if="user.status !== 8 && checkPermission(['yw_user_edit', 'yw_user_roles'])" type="success" icon="el-icon-edit" title="编辑" circle @click="toUpdateUser()" />
+          <el-button v-if="user.status !== 8 && checkPermission(['yw_user_edit'])" type="success" icon="el-icon-edit" title="编辑" circle @click="toUpdateUser()" />
           <el-button v-if="user.status === 0 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-lock" title="禁用" circle @click="toChangeUserStatus(1)" />
           <el-button v-if="user.status === 1 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-unlock" title="启用" circle @click="toChangeUserStatus(0)" />
           <el-button v-if="user.status !== 8 && checkPermission(['yw_user_edit'])" type="warning" icon="el-icon-user" title="离职" circle @click="toChangeUserStatus(8)" />

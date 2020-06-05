@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.linkallcloud</groupId>
 		<artifactId>lac3-um</artifactId>
-		<version>0.2.2</version>
+		<version>0.2.3</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -72,6 +72,10 @@
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
+		</dependency>
+		<dependency>
+		   <groupId>org.springframework.boot</groupId>
+		   <artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

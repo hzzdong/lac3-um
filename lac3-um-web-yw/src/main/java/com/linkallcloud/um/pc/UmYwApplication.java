@@ -31,6 +31,7 @@ import com.linkallcloud.sso.client.web.filter.TicketValidationFilter;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.pc.aop.LacPermissionInterceptor;
 import com.linkallcloud.um.pc.aop.LoginFilter;
+import com.linkallcloud.web.filter.ExceptionFilter;
 import com.linkallcloud.web.support.AppVisitorArgumentResolver;
 import com.linkallcloud.web.support.TraceArgumentResolver;
 
@@ -55,6 +56,16 @@ public class UmYwApplication implements WebMvcConfigurer {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
+	
+	@Bean
+	@Order(-1)
+    public FilterRegistrationBean<ExceptionFilter> exceptionFilterRegistration() {
+        FilterRegistrationBean<ExceptionFilter> registration = new FilterRegistrationBean<ExceptionFilter>();
+        registration.setFilter(new ExceptionFilter());
+        registration.setName("ExceptionFilter");
+        registration.setOrder(-1);
+        return registration;
+    }
 
 	@Bean
 	@Order(1)
