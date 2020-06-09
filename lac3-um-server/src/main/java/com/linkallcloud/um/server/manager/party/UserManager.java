@@ -15,10 +15,8 @@ import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.domain.party.Company;
-import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.party.Role;
 import com.linkallcloud.um.domain.party.User;
-import com.linkallcloud.um.domain.party.YwUser;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Menu;
 import com.linkallcloud.um.iapi.party.IUserManager;
@@ -119,16 +117,7 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 				Trees.assembleDomain2Tree(root, menus);
 			}
 		} else if (user.isAdmin()) {
-			if (user.getUserType().equals(KhUser.class.getSimpleName())) {
-				root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
-			} else if (user.getUserType().equals(YwUser.class.getSimpleName())) {
-				if ("lac_app_um".equals(app.getCode()) || "lac_app_um_kh".equals(app.getCode())) {
-					root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
-				} else {
-					dealCommonUserAppMenu(t, userId, appId, root);
-				}
-			}
-
+			root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
 		} else {
 			dealCommonUserAppMenu(t, userId, appId, root);
 		}

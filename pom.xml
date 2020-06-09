@@ -12,7 +12,7 @@
 
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3-um</artifactId>
-	<version>0.2.3</version>
+	<version>0.2.6</version>
 	<packaging>pom</packaging>
 
 	<name>Linkallcloud UM</name>
@@ -47,13 +47,12 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
 
-		<comm-base.version>0.4.6</comm-base.version>
-		<comm-core.version>0.4.6</comm-core.version>
-		<comm-cache.version>0.4.6</comm-cache.version>
-		<comm-handshake.version>0.4.6</comm-handshake.version>
-		<comm-web.version>0.4.6</comm-web.version>
+		<comm-core.version>0.4.8</comm-core.version>
+		<comm-cache.version>0.4.8</comm-cache.version>
+		<comm-handshake.version>0.4.8</comm-handshake.version>
+		<comm-web.version>0.4.8</comm-web.version>
 
-		<lac3-sso-client.version>0.2.8</lac3-sso-client.version>
+		<lac3-sso-client.version>0.3.0</lac3-sso-client.version>
 
 		<dubbo.version>2.7.3</dubbo.version>
 		<curator.version>4.2.0</curator.version>

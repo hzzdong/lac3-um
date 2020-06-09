@@ -58,7 +58,7 @@
           <span>{{ scope.row.code }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="clazz" label="类别" class-name="status-col" width="70">
+      <el-table-column prop="clazz" label="类别" class-name="status-col" width="95">
         <template slot-scope="{row}">
           <el-tag size="small" :type="row.clazz | statusTypeFilter">{{ row.clazz | appClazzFilter }}</el-tag>
         </template>

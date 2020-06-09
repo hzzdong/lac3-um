@@ -188,6 +188,9 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 
 		if (user.isAdmin()) {
 			Long[] ids = getCompanyActivity().getCompanyAreaRootIds(t, user.getCompanyId());
+			if (ids == null || ids.length == 0) {
+				return null;
+			}
 			return Arrays.asList(ids);
 		} else {
 			return activity().getUserAppAreas(t, userId, appId);

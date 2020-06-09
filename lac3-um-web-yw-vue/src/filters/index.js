@@ -177,6 +177,7 @@ export function companyClassFilter(type) {
 
 export function appClazz() {
   return [
+    { key: '-1', display_name: '运维/客户' },
     { key: '0', display_name: '运维' },
     { key: '1', display_name: '客户' }
   ]

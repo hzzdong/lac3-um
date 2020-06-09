@@ -60,7 +60,7 @@
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
-			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND (u.clazz = #{page.cnds.clazz} OR u.clazz=-1)</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -84,7 +84,7 @@
 			u.status &lt;&gt; 9 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
-			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
+			<if test="page.cnds!=null and page.cnds.clazz != null"> AND (u.clazz = #{page.cnds.clazz} OR u.clazz=-1)</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -107,7 +107,7 @@
 		WHERE
 			u.status &lt;&gt; 9 
 			<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.clazz != null"> AND u.clazz = #{query.cnds.clazz}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.clazz != null"> AND (u.clazz = #{query.cnds.clazz} OR u.clazz=-1)</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.screenType != null"> AND u.screenType = #{query.cnds.screenType}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.mappingType != null"> AND u.mappingType = #{query.cnds.mappingType}</if>
 		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
@@ -193,7 +193,7 @@
 		FROM
 			um_application u join um_yw_rel_role_app rel on u.id=rel.appId
 		WHERE
-			u.status=0 And u.clazz=0  AND rel.roleId = #{page.cnds.roleId}
+			u.status=0 And (u.clazz=0 OR u.clazz=-1)  AND rel.roleId = #{page.cnds.roleId}
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -213,14 +213,13 @@
 			</if>
 		WHERE
 			u.status &lt;&gt; 9 
-			AND u.clazz=0 
+			AND (u.clazz=0 OR u.clazz=-1) 
 			<if test="page.cnds!=null and page.cnds.companyId != null">
 				 AND rcp.companyId=#{page.cnds.companyId}
 			</if>
 			AND u.id not in ( SELECT rel.appId FROM um_yw_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
-			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -241,7 +240,7 @@
 		FROM
 			um_application u join um_kh_rel_role_app rel on u.id=rel.appId
 		WHERE
-			u.status=0 And u.clazz=1  AND rel.roleId = #{page.cnds.roleId}
+			u.status=0 And (u.clazz=1 OR u.clazz=-1)  AND rel.roleId = #{page.cnds.roleId}
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -261,14 +260,13 @@
 			</if>
 		WHERE
 			u.status &lt;&gt; 9 
-			AND u.clazz=1 
+			AND (u.clazz=1 OR u.clazz=-1) 
 			<if test="page.cnds!=null and page.cnds.companyId != null">
 				 AND rcp.companyId=#{page.cnds.companyId}
 			</if>
 			AND u.id not in ( SELECT rel.appId FROM um_kh_rel_role_app rel WHERE rel.roleId = #{page.cnds.roleId} ) 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
-			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
 		    <if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
@@ -291,7 +289,7 @@
 			join um_kh_rel_company_app rel on u.id=rel.appId
 			join um_kh_company c on rel.companyId=c.id 
 		WHERE
-			u.status=0 And u.clazz=1 
+			u.status=0 And (u.clazz=1 OR u.clazz=-1) 
 			<choose>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
@@ -321,7 +319,7 @@
 				left join um_kh_rel_company_app rel on u.id=rel.appId
 			</if>
 		WHERE
-			u.status=0 And u.clazz=1 
+			u.status=0 And (u.clazz=1 OR u.clazz=-1)
 			<if test="page.cnds!=null and page.cnds.parentCompanyId != null">
 				AND rel.companyId = #{page.cnds.parentCompanyId}
 			</if>
@@ -342,7 +340,7 @@
 			join um_yw_rel_company_app rel on u.id=rel.appId
 			join um_yw_company c on rel.companyId=c.id 
 		WHERE
-			u.status=0 And u.clazz=0 
+			u.status=0 And (u.clazz=0 OR u.clazz=-1)
 			<choose>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
 		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
@@ -373,7 +371,7 @@
 			left join um_yw_rel_company_app rel on u.id=rel.appId
 			</if>
 		WHERE
-			u.status=0 And u.clazz=0 
+			u.status=0 And (u.clazz=0 OR u.clazz=-1)
 			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND rel.companyId = #{page.cnds.parentCompanyId} </if>
 			AND u.id not in ( SELECT rel2.appId FROM um_yw_rel_company_app rel2 WHERE rel2.companyId = #{page.cnds.ywCompanyId} ) 
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>

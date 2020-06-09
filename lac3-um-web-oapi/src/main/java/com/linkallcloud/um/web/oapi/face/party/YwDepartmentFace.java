@@ -1,13 +1,12 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
+import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ListFaceRequest;
@@ -18,6 +17,7 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.um.domain.party.YwDepartment;
 import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
+import com.linkallcloud.web.face.annotation.Face;
 
 @Controller
 @RequestMapping(value = "/face/YwDepartment", method = RequestMethod.POST)
@@ -30,7 +30,7 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		return ywDepartmentManager.fetchById(t, faceReq.getId());
@@ -66,7 +66,7 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findCompanyDepartments", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
 		return ywDepartmentManager.findCompanyDepartments(t, faceReq.getId());
@@ -97,7 +97,7 @@ public class YwDepartmentFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		return ywDepartmentManager.findCompanyDirectDepartments(t, faceReq.getId());
@@ -118,7 +118,7 @@ public class YwDepartmentFace {
 	@RequestMapping(value = "/findDirectDepartmentsByParentDepartmentId", method = RequestMethod.POST)
 	public @ResponseBody Object findDirectDepartmentsByParentDepartmentId(IdFaceRequest faceReq, Trace t)
 			throws Exception {
-		if (faceReq.getId()!=null) {
+		if (faceReq.getId() != null) {
 			return null;
 		}
 		return ywDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, faceReq.getId());

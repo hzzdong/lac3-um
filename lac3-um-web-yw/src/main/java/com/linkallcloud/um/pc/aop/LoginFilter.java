@@ -41,7 +41,7 @@ public class LoginFilter extends AbstractPrincipalFilter {
     }
 
     @Override
-    protected SessionUser getUserByLoginName(String loginName) {
+    protected SessionUser getUserByLoginName(int appClazz, String loginName) {
         return ywUserManager.assembleSessionUser(new Trace(true), loginName, myAppCode);
     }
     
