@@ -1,6 +1,5 @@
 package com.linkallcloud.um.web.oapi.face;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +16,15 @@ import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ListFaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.core.face.message.request.PageFaceRequest;
+import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.domain.sys.Menu;
+import com.linkallcloud.um.iapi.party.IKhCompanyManager;
+import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IMenuManager;
 import com.linkallcloud.um.iapi.sys.IOperationManager;
@@ -40,6 +43,12 @@ public class ApplicationFace {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IMenuManager menuManager;
+	
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IYwCompanyManager ywCompanyManager;
+	
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhCompanyManager khCompanyManager;
 
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
@@ -152,6 +161,31 @@ public class ApplicationFace {
 		return null;
 	}
 
+	@Face(login = false)
+	@RequestMapping(value = "/page4KhCompany", method = RequestMethod.POST)
+	public @ResponseBody Object page4KhCompany(PageFaceRequest fr, Trace t) throws Exception {
+		Page<Application> page = new Page<>(fr);
+		if (!page.hasRule4Field("khCompanyId") || !page.hasRule4Field("khCompanyUuid")) {
+			return page;
+		}
+		
+		page = applicationManager.findPage4SelfKhCompany(t, page);
+		desensitizations(t, fr, page.getData());
+		return page;
+	}
+	
+	@Face(login = false)
+	@RequestMapping(value = "/page4YwCompany", method = RequestMethod.POST)
+	public @ResponseBody Object page4YwCompany(PageFaceRequest fr, Trace t) throws Exception {
+		Page<Application> page = new Page<>(fr);
+		if (!page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
+			return page;
+		}
+		page = applicationManager.findPage4SelfYwCompany(t, page);
+		desensitizations(t, fr, page.getData());
+		return page;
+	}
+
 	/**
 	 * 访问者appcode匹配，并脱敏
 	 *
@@ -183,16 +217,12 @@ public class ApplicationFace {
 		if (isInnerVisitor(t, faceReq)) {
 			return apps;
 		} else {
-			List<Application> result = new ArrayList<>();
 			if (apps != null && apps.size() > 0) {
 				for (Application app : apps) {
-					if (app.getCode().equals(faceReq.getAppCode())) {
-						app.desensitization();
-						result.add(app);
-					}
+					app.desensitization();
 				}
 			}
-			return result;
+			return apps;
 		}
 	}
 

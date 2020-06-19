@@ -31,7 +31,7 @@ public class KhCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId() != null) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
 		return khCompanyManager.fetchById(t, faceReq.getId());
@@ -64,7 +64,7 @@ public class KhCompanyFace {
 	@Face(login = false)
 	@RequestMapping(value = "/findSubCompanies", method = RequestMethod.POST)
 	public @ResponseBody Object findSubCompanies(IdFaceRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getId() != null) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
 		return khCompanyManager.findSubCompanies(t, faceReq.getId());

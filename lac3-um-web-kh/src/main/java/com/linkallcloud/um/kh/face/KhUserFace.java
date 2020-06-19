@@ -24,8 +24,10 @@ import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhUser;
 import com.linkallcloud.um.domain.ptj.KhPartTimeJob;
+import com.linkallcloud.um.iapi.party.IKhCompanyManager;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.ptj.IKhPartTimeJobManager;
@@ -40,6 +42,9 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
+
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhCompanyManager khCompanyManager;
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhRoleManager khRoleManager;
@@ -107,6 +112,13 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 	protected Page<KhUser> doPage(Trace t, Page<KhUser> page, SessionUser su) {
 		if (!page.hasRule4Field("companyId")) {
 			page.addRule(new Equal("companyId", su.companyId()));
+		} else {
+			Equal companyIdRule = (Equal) page.getRule4Field("companyId");
+			Long companyId = (Long) companyIdRule.getValue();
+			KhCompany company = khCompanyManager.fetchById(t, companyId);
+			if (company == null || !company.isChildOf(su.companyId())) {
+				companyIdRule.setValue(-1L);
+			}
 		}
 
 		if (page.hasRule4Field("parentId")) {// 查部门下的人
@@ -189,13 +201,14 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Override
 	protected Page<KhUser> doPage4Select(Trace t, Page<KhUser> page, SessionUser su) {
-		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
-			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
-		}
-
 		Equal r = (Equal) page.getRule4Field("companyId");
 		if (r != null) {
-			r.setValue(su.companyId());
+			Equal companyIdRule = (Equal) page.getRule4Field("companyId");
+			Long companyId = (Long) companyIdRule.getValue();
+			KhCompany company = khCompanyManager.fetchById(t, companyId);
+			if (company == null || !company.isChildOf(su.companyId())) {
+				r.setValue(-1L);
+			}
 		} else {
 			page.addRule(new Equal("companyId", su.companyId()));
 		}

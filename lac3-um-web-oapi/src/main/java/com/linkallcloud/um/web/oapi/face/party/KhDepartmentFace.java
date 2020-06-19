@@ -23,104 +23,103 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Module(name = "客户部门")
 public class KhDepartmentFace {
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-    private IKhDepartmentManager khDepartmentManager;
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhDepartmentManager khDepartmentManager;
 
-    @Face(login = false)
-    @RequestMapping(value = "/fetchById", method = RequestMethod.POST)
-    public @ResponseBody
-    Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (faceReq.getId()!=null) {
-            return null;
-        }
-        return khDepartmentManager.fetchById(t, faceReq.getId());
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
+	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		return khDepartmentManager.fetchById(t, faceReq.getId());
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/fetchByGovCode", method = RequestMethod.POST)
-    public @ResponseBody Object fetchByGovCode(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
-        String govCode = faceReq.getData();
-        if (!Strings.isBlank(govCode)) {
-            return khDepartmentManager.fetchByGovCode(t, govCode);
-        }
-        return null;
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/fetchByGovCode", method = RequestMethod.POST)
+	public @ResponseBody Object fetchByGovCode(ObjectFaceRequest<String> faceReq, Trace t) throws Exception {
+		String govCode = faceReq.getData();
+		if (!Strings.isBlank(govCode)) {
+			return khDepartmentManager.fetchByGovCode(t, govCode);
+		}
+		return null;
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/find", method = RequestMethod.POST)
-    public @ResponseBody Object find(ListFaceRequest faceReq, Trace t) throws Exception {
-        WebQuery wq = faceReq.getQuery();
-        if (wq != null) {
-            return khDepartmentManager.find(t, wq.toQuery());
-        }
-        return null;
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/find", method = RequestMethod.POST)
+	public @ResponseBody Object find(ListFaceRequest faceReq, Trace t) throws Exception {
+		WebQuery wq = faceReq.getQuery();
+		if (wq != null) {
+			return khDepartmentManager.find(t, wq.toQuery());
+		}
+		return null;
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findPage", method = RequestMethod.POST)
-    public @ResponseBody Object findPage(PageFaceRequest faceReq, Trace t) throws Exception {
-        Page<KhDepartment> page = new Page<>(faceReq);
-        return khDepartmentManager.findPage(t, page);
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findPage", method = RequestMethod.POST)
+	public @ResponseBody Object findPage(PageFaceRequest faceReq, Trace t) throws Exception {
+		Page<KhDepartment> page = new Page<>(faceReq);
+		return khDepartmentManager.findPage(t, page);
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findCompanyDepartments", method = RequestMethod.POST)
-    public @ResponseBody Object findCompanyDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (faceReq.getId()!=null) {
-            return null;
-        }
-        return khDepartmentManager.findCompanyDepartments(t, faceReq.getId());
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findCompanyDepartments", method = RequestMethod.POST)
+	public @ResponseBody Object findCompanyDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		return khDepartmentManager.findCompanyDepartments(t, faceReq.getId());
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findZfDepartmentsByCompanyGovCode", method = RequestMethod.POST)
-    public @ResponseBody Object findZfDepartmentsByCompanyGovCode(ObjectFaceRequest<String> faceReq, Trace t)
-            throws Exception {
-        String govCode = faceReq.getData();
-        if (!Strings.isBlank(govCode)) {
-            return khDepartmentManager.findZfDepartmentsByCompanyGovCode(t, govCode);
-        }
-        return null;
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findZfDepartmentsByCompanyGovCode", method = RequestMethod.POST)
+	public @ResponseBody Object findZfDepartmentsByCompanyGovCode(ObjectFaceRequest<String> faceReq, Trace t)
+			throws Exception {
+		String govCode = faceReq.getData();
+		if (!Strings.isBlank(govCode)) {
+			return khDepartmentManager.findZfDepartmentsByCompanyGovCode(t, govCode);
+		}
+		return null;
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findZfTopDepartmentsByCompanyGovCode", method = RequestMethod.POST)
-    public @ResponseBody Object findZfTopDepartmentsByCompanyGovCode(ObjectFaceRequest<String> faceReq, Trace t)
-            throws Exception {
-        String govCode = faceReq.getData();
-        if (!Strings.isBlank(govCode)) {
-            return khDepartmentManager.findZfTopDepartmentsByCompanyGovCode(t, govCode);
-        }
-        return null;
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findZfTopDepartmentsByCompanyGovCode", method = RequestMethod.POST)
+	public @ResponseBody Object findZfTopDepartmentsByCompanyGovCode(ObjectFaceRequest<String> faceReq, Trace t)
+			throws Exception {
+		String govCode = faceReq.getData();
+		if (!Strings.isBlank(govCode)) {
+			return khDepartmentManager.findZfTopDepartmentsByCompanyGovCode(t, govCode);
+		}
+		return null;
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
-    public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
-        if (faceReq.getId()!=null) {
-            return null;
-        }
-        return khDepartmentManager.findCompanyDirectDepartments(t, faceReq.getId());
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findCompanyDirectDepartments", method = RequestMethod.POST)
+	public @ResponseBody Object findCompanyDirectDepartments(IdFaceRequest faceReq, Trace t) throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		return khDepartmentManager.findCompanyDirectDepartments(t, faceReq.getId());
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findDirectDepartmentsByParentDepartmentGovCode", method = RequestMethod.POST)
-    public @ResponseBody Object findDirectDepartmentsByParentDepartmentGovCode(ObjectFaceRequest<String> faceReq,
-                                                                               Trace t) throws Exception {
-        String govCode = faceReq.getData();
-        if (!Strings.isBlank(govCode)) {
-            return khDepartmentManager.findDirectDepartmentsByParentDepartmentGovCode(t, govCode);
-        }
-        return null;
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findDirectDepartmentsByParentDepartmentGovCode", method = RequestMethod.POST)
+	public @ResponseBody Object findDirectDepartmentsByParentDepartmentGovCode(ObjectFaceRequest<String> faceReq,
+			Trace t) throws Exception {
+		String govCode = faceReq.getData();
+		if (!Strings.isBlank(govCode)) {
+			return khDepartmentManager.findDirectDepartmentsByParentDepartmentGovCode(t, govCode);
+		}
+		return null;
+	}
 
-    @Face(login = false)
-    @RequestMapping(value = "/findDirectDepartmentsByParentDepartmentId", method = RequestMethod.POST)
-    public @ResponseBody Object findDirectDepartmentsByParentDepartmentId(IdFaceRequest faceReq, Trace t)
-            throws Exception {
-        if (faceReq.getId()!=null) {
-            return null;
-        }
-        return khDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, faceReq.getId());
-    }
+	@Face(login = false)
+	@RequestMapping(value = "/findDirectDepartmentsByParentDepartmentId", method = RequestMethod.POST)
+	public @ResponseBody Object findDirectDepartmentsByParentDepartmentId(IdFaceRequest faceReq, Trace t)
+			throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		return khDepartmentManager.findDirectDepartmentsByParentDepartmentId(t, faceReq.getId());
+	}
 }

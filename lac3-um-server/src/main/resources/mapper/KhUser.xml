@@ -240,18 +240,10 @@
 				    </choose>
 				)
 			</if>
-			<if test="page.cnds!=null and page.cnds.roleId != null">
-				 AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
-			</if>
-			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
-				AND u.companyId = #{page.cnds.companyId}
-			</if>
-			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type == 9 "> 
-				AND u.companyId in (
-					SELECT com.id FROM um_kh_company com WHERE com.parentId=#{page.cnds.companyId} OR com.id=#{page.cnds.companyId}
-				) 
-			</if>
-			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
+			<if test="page.cnds!=null and page.cnds.areaId != null"> AND u.areaId = #{page.cnds.areaId}</if>
+			<if test="page.cnds!=null and page.cnds.areaName != null"> AND u.areaName like #{page.cnds.areaName}</if>
+			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId}</if>
+			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId} AND u.parentClass='KhDepartment'</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>

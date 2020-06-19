@@ -53,7 +53,7 @@ public class YwUserFace {
 	@Face(login = false)
 	@RequestMapping(value = "/fetchById", method = RequestMethod.POST)
 	public @ResponseBody Object fetchById(IdFaceRequest faceReq, Trace t) {
-		if (faceReq.getId() != null) {
+		if (faceReq.getId() == null) {
 			return null;
 		}
 		YwUser user = ywUserManager.fetchById(t, faceReq.getId());

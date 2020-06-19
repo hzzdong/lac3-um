@@ -76,7 +76,7 @@ public abstract class Company extends Org {
 			this.area8Id = areaLevelId;
 		}
 	}
-	
+
 	public Long getAreaId() {
 		return areaId;
 	}
@@ -277,6 +277,16 @@ public abstract class Company extends Org {
 	@Override
 	protected String getAlias() {
 		return "Company";
+	}
+
+	public boolean isChildOf(Long parentId) {
+		if (this.getCode().indexOf("#" + parentId + "#") != -1) {
+			return true;
+		}
+		if (this.getCode().indexOf(parentId + "#") == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -290,16 +290,6 @@
 			join um_kh_company c on rel.companyId=c.id 
 		WHERE
 			u.status=0 And (u.clazz=1 OR u.clazz=-1) 
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
 			<if test="page.cnds!=null and page.cnds.khCompanyId != null"> AND rel.companyId = #{page.cnds.khCompanyId} </if>
 			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND c.parentId = #{page.cnds.parentCompanyId} </if>
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
@@ -334,23 +324,20 @@
 	
 	<select id="findPage4SelfYwCompany" resultType="com.linkallcloud.um.domain.sys.Application">
 		SELECT
-			<include refid="Column_with_owner" />
+			<if test="page.cnds!=null and page.cnds.ywCompanyId != null">
+				<include refid="Column_with_owner" />
+			</if>
+			<if test="page.cnds!=null and page.cnds.ywCompanyId == null">
+				<include refid="Base_Column_List" />
+			</if>
 		FROM
 			um_application u 
-			join um_yw_rel_company_app rel on u.id=rel.appId
-			join um_yw_company c on rel.companyId=c.id 
+			<if test="page.cnds!=null and page.cnds.ywCompanyId != null">
+				join um_yw_rel_company_app rel on u.id=rel.appId
+				join um_yw_company c on rel.companyId=c.id 
+			</if>
 		WHERE
 			u.status=0 And (u.clazz=0 OR u.clazz=-1)
-			<choose>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 1"> AND c.area1Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 2"> AND c.area2Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 3"> AND c.area3Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 4"> AND c.area4Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 5"> AND c.area5Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 6"> AND c.area6Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 7"> AND c.area7Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		        <when test="page.cnds!=null and page.cnds.areaIds != null and page.cnds.level == 8"> AND c.area8Id in <foreach item="areaId" index="index" collection="page.cnds.areaIds" open="(" separator="," close=")">#{areaId}</foreach> </when>
-		    </choose>
 			<if test="page.cnds!=null and page.cnds.ywCompanyId != null"> AND rel.companyId = #{page.cnds.ywCompanyId} </if>
 			<if test="page.cnds!=null and page.cnds.parentCompanyId != null"> AND c.parentId = #{page.cnds.parentCompanyId} </if>
 			<if test="page.cnds!=null and page.cnds.code != null"> AND u.code = #{page.cnds.code}</if>
@@ -359,7 +346,6 @@
 			<if test="page.cnds!=null and page.cnds.clazz != null"> AND u.clazz = #{page.cnds.clazz}</if>
 			<if test="page.cnds!=null and page.cnds.screenType != null"> AND u.screenType = #{page.cnds.screenType}</if>
 			<if test="page.cnds!=null and page.cnds.mappingType != null"> AND u.mappingType = #{page.cnds.mappingType}</if>
-		order by rel.companyId
 	</select>
 	
 	<select id="findPage4SelfYwCompany4Select" resultType="com.linkallcloud.um.domain.sys.Application">

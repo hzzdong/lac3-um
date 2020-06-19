@@ -238,6 +238,15 @@ public class ApplicationActivity extends BaseActivity<Application, IApplicationD
 		if (page == null || !page.hasRule4Field("ywCompanyId") || !page.hasRule4Field("ywCompanyUuid")) {
 			throw new AppException(Exceptions.CODE_ERROR_PARAMETER, "ywCompanyId,ywCompanyUuid参数错误。");
 		}
+
+		Equal cidr = (Equal) page.getRule4Field("ywCompanyId");
+		Long companyId = (Long) cidr.getValue();
+		YwCompany company = ywCompanyDao.fetchById(t, companyId);
+		if (company.isTopParent()) {
+			page.delRule4Field("ywCompanyId");
+			page.delRule4Field("ywCompanyUuid");
+		}
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
