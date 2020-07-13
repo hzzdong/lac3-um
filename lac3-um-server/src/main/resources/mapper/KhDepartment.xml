@@ -175,7 +175,7 @@
 	<select id="findDirectDepartmentsByParentDepartmentId" resultType="com.linkallcloud.um.domain.party.KhDepartment">
 		select <include refid="Base_Column_List" />
 		from   um_kh_department u 
-		where  u.status &lt;&gt; 9 AND u.parentId=#{parentDepartmentId} AND u.parentClass='YwDepartment' 
+		where  u.status &lt;&gt; 9 AND u.parentId=#{parentDepartmentId} AND u.parentClass='KhDepartment' 
 		order by u.sort asc
 	</select>
 	

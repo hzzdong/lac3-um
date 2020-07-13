@@ -48,6 +48,7 @@ module.exports = {
         }
       },
       */
+      // http://47.96.234.18/
       '/api4umyw': {
         target: 'http://localhost:8011/',
         pathRewrite: {
