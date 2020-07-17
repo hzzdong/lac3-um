@@ -120,7 +120,7 @@
           </el-row>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="角色列表" name="tabUserRoles">
+      <el-tab-pane label="兼职角色" name="tabUserRoles">
         <el-table
           ref="roleTable"
           :data="userRoles"
@@ -207,7 +207,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="用户编辑" :visible.sync="dialogFormVisible" width="75%">
+    <el-dialog title="兼职用户编辑" :visible.sync="dialogFormVisible" width="75%">
       <el-form ref="userForm" :rules="rules" :inline="false" :model="temp" size="small" status-icon label-position="right" label-width="80px" style="width: 98%; margin-left:10px;">
         <el-row>
           <el-col :span="16">
@@ -337,7 +337,7 @@
           <el-col :span="8">
             <el-card class="box-card" style="margin-top: -20px; margin-left: 10px;">
               <div slot="header" class="clearfix">
-                <span>用户角色分配</span>
+                <span>兼职角色分配</span>
                 <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-warning-outline" />
               </div>
               <div class="text item">
@@ -413,8 +413,8 @@
 </template>
 
 <script>
-import { fetchById, updateUser, deleteUser, changeUserStatus, getJzPageOfUser, addPartTimeJob, removePartTimeJob } from '@/api/user'
-import { findCompanyRoles, findUserRoles } from '@/api/khrole'
+import { fetchById, updateJzUser, deleteUser, changeUserStatus, getJzPageOfUser, addPartTimeJob, removePartTimeJob } from '@/api/user'
+import { findJzCompanyRoles, findJzUserRoles } from '@/api/khrole'
 import { validateMobile } from '@/utils/validate'
 import { sheetClose, sheetRefresh } from '@/utils'
 import md5 from 'js-md5'
@@ -589,8 +589,8 @@ export default {
     // https://github.com/PanJiaChen/vue-element-admin/issues/1221
     this.tempRoute = Object.assign({}, this.$route)
     this.fetchData(id, uuid)
-    this.findUserRoles(id, uuid)
-    this.findCompanyRoles(id, uuid)
+    this.findJzUserRoles(id, uuid)
+    this.findJzCompanyRoles(id, uuid)
   },
   methods: {
     checkPermission,
@@ -619,27 +619,27 @@ export default {
         console.log(err)
       })
     },
-    findUserRoles(id, uuid) {
-      findUserRoles({ id, uuid }).then(response => {
+    findJzUserRoles(id, uuid) {
+      findJzUserRoles({ id, uuid }).then(response => {
         this.userRoles = response.data
       }).catch(err => {
         console.log(err)
       })
     },
-    findCompanyRoles(id, uuid) {
-      findCompanyRoles({ id, uuid }).then(response => {
+    findJzCompanyRoles(id, uuid) {
+      findJzCompanyRoles({ id, uuid }).then(response => {
         this.comapnyRoles = response.data
       }).catch(err => {
         console.log(err)
       })
     },
     setTagsViewTitle() {
-      const title = '用户视图'
+      const title = '兼职用户'
       const route = Object.assign({}, this.tempRoute, { title: `${title}-${this.user.name}` })
       this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     setPageTitle() {
-      const title = '用户视图'
+      const title = '兼职用户'
       document.title = `${title} - ${this.user.name}`
     },
     onClose() {
@@ -692,7 +692,7 @@ export default {
           }
           userObj.roleEnabled = true
           userObj.roleIds = this.parseSelectedUserRoleIds()
-          updateUser(userObj).then(() => {
+          updateJzUser(userObj).then(() => {
             this.user = Object.assign({}, userObj)
             this.userRoles = []
             if (this.checkedUserRoles && this.checkedUserRoles.length > 0) {

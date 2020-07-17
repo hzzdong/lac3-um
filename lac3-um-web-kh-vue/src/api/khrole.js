@@ -24,6 +24,14 @@ export function findCompanyRoles(data) {
   })
 }
 
+export function findJzCompanyRoles(data) {
+  return request({
+    url: '/api4umkh/face/KhRole/findJzCompanyRoles',
+    method: 'post',
+    data
+  })
+}
+
 export function findUserRoleIds(data) {
   return request({
     url: '/api4umkh/face/KhRole/findUserRoleIds',
@@ -32,9 +40,25 @@ export function findUserRoleIds(data) {
   })
 }
 
+export function findJzUserRoleIds(data) {
+  return request({
+    url: '/api4umkh/face/KhRole/findJzUserRoleIds',
+    method: 'post',
+    data
+  })
+}
+
 export function findUserRoles(data) {
   return request({
     url: '/api4umkh/face/KhRole/findUserRoles',
+    method: 'post',
+    data
+  })
+}
+
+export function findJzUserRoles(data) {
+  return request({
+    url: '/api4umkh/face/KhRole/findJzUserRoles',
     method: 'post',
     data
   })

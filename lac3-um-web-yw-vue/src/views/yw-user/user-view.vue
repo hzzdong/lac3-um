@@ -135,7 +135,7 @@
           <el-table-column label="角色名称" width="250px" prop="name" sortable>
             <template slot-scope="{row}">
               <span v-if="checkPermission(['selfkh_perm_role']) === false">{{ row.name }}</span>
-              <router-link v-if="checkPermission(['selfkh_perm_role']) === true" :to="'/Role/yw-role-view/'+row.id+'/'+row.uuid" class="link-type">
+              <router-link v-if="checkPermission(['selfkh_perm_role']) === true" :to="'/role/yw-role-view/'+row.id+'/'+row.uuid" class="link-type">
                 <span>{{ row.name }}</span>
               </router-link>
             </template>

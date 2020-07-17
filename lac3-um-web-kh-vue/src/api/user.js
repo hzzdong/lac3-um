@@ -68,6 +68,14 @@ export function updateUser(data) {
   })
 }
 
+export function updateJzUser(data) {
+  return request({
+    url: '/api4umkh/face/KhUser/updateJz',
+    method: 'post',
+    data
+  })
+}
+
 export function updateMe(data) {
   return request({
     url: '/api4umkh/face/KhUser/updateMe',

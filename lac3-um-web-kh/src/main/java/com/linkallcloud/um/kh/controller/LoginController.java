@@ -74,7 +74,7 @@ public class LoginController {
 
 	@Value("${lac.lf.ssoServer:http://localhost/sso}")
 	private String ssoServer;
-	
+
 	@Value("${lac.lf.h5.home}")
 	private String h5Home;
 
@@ -136,7 +136,7 @@ public class LoginController {
 		}
 		return Controllers.redirect(ssoServer + "/logout?from=" + myAppCode + "&service=" + service);
 	}
-	
+
 	@RequestMapping(value = "/dwLogin", method = RequestMethod.GET)
 	public String dwLogin(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t,
 			HttpSession session, HttpServletRequest request) {
@@ -189,7 +189,7 @@ public class LoginController {
 		} catch (Exception e) {
 		}
 		SessionUser suser = khUserManager.assembleSessionUser(t, srcUser.getLoginName(), srcUser.appCode(),
-				srcUser.getCompany());
+				srcUser.getOrg());
 		Controllers.login(myAppCode, suser);
 
 		String token = Controllers.createToken(srcUser, 0);
@@ -201,7 +201,7 @@ public class LoginController {
 		}
 		throw new AuthException("退出代维模式失败。");
 	}
-	
+
 	@RequestMapping(value = "/orgLogin", method = RequestMethod.GET)
 	public String dwLogout(@RequestParam(value = "orgId") Long orgId, @RequestParam(value = "orgType") String orgType,
 			Trace t, HttpSession session, HttpServletRequest request) {

@@ -6,13 +6,14 @@
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg
 	</sql>
 
 	<sql id="Column_with_dep_com_Name">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+		d.name as orgName,d.fullName as orgFullName,c.name as companyName
 	</sql>
 	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.KhUser">
@@ -261,12 +262,16 @@
 	
 	<select id="findPage4Role" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Column_with_dep_com_Name" />
+			u.id,u.uuid,u.status,u.createTime,u.updateTime,
+			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+			d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
 		FROM
 			um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
 			join um_kh_rel_role_user rel on u.id=rel.userId
+			join um_kh_company pc on rel.companyId=pc.id
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.roleId = #{page.cnds.roleId}
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
@@ -294,7 +299,7 @@
 			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 
-			AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} AND rel.companyId = #{page.cnds.companyId} ) 
 			AND u.companyId = #{page.cnds.companyId}
 			<if test="page.cnds!=null and page.cnds.level == 9 "> 
 				AND ( u.parentClass = 'KhCompany' OR d.type = 1 )
@@ -317,12 +322,16 @@
 	
 	<select id="page4Role4Yw" resultType="com.linkallcloud.um.domain.party.KhUser">
 		SELECT
-			<include refid="Column_with_dep_com_Name" />
+			u.id,u.uuid,u.status,u.createTime,u.updateTime,
+			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+			d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
 		FROM
 			um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
 			join um_kh_rel_role_user rel on u.id=rel.userId
+			join um_kh_company pc on rel.companyId=pc.id
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND rel.roleId = #{page.cnds.roleId}
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
@@ -350,7 +359,7 @@
 			left join um_kh_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 
-			AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} AND rel.companyId = #{page.cnds.companyId} ) 
 			<if test="page.cnds!=null and page.cnds.level != null and page.cnds.level == 9">
 				AND ( u.parentClass = 'KhCompany' OR d.type = 1 )
 			</if>
@@ -419,7 +428,7 @@
 				JOIN um_kh_perm_org p ON u.parentId=p.orgId
 				JOIN um_kh_rel_role_user rel ON p.roleId=rel.roleId
 		WHERE	
-				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId}
+				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId} AND rel.companyId=#{page.cnds.companyId} 
 				<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 				<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 				<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
@@ -457,9 +466,9 @@
 				JOIN um_kh_perm_org p ON u.parentId=p.orgId
 				JOIN um_kh_rel_role_user rel ON p.roleId=rel.roleId
 		WHERE	
-				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId}
+				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId} AND rel.companyId=#{page.cnds.companyId} 
 			<if test="page.cnds!=null and page.cnds.roleId != null">
-				 AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+				 AND u.id not in ( SELECT rel2.userId FROM um_kh_rel_role_user rel2 WHERE rel2.roleId = #{page.cnds.roleId} AND rel2.companyId=#{page.cnds.companyId}  ) 
 			</if>
 			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
 				AND u.companyId = #{page.cnds.companyId}
@@ -553,18 +562,18 @@
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.KhUser" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_kh_user
-			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid)
+			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid,dyType,rdDate,dorg)
 		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.parentId},#{entity.parentClass},#{entity.account},#{entity.password},#{entity.salt},#{entity.name},#{entity.nickName},
 			#{entity.mobile},#{entity.idCard},#{entity.sex},#{entity.birthday},#{entity.remark},
-			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid})
+			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid},#{entity.dyType},#{entity.rdDate},#{entity.dorg})
 	</insert>
 	
 	<insert id="addUserRoles">
         insert into 
-        	um_kh_rel_role_user (status,createTime,updateTime,roleId,userId)
+        	um_kh_rel_role_user (status,createTime,updateTime,roleId,userId,companyId)
         values 
 	        <foreach collection="roleIds" item="roleId" index="index" separator=",">
-	        (0,now(),now(),#{roleId},#{userId})
+	        (0,now(),now(),#{roleId},#{userId},#{companyId})
 	        </foreach>
     </insert>
     
@@ -572,7 +581,7 @@
 		delete from 
 			um_kh_rel_role_user 
 		where 
-			userId=#{userId} and roleId in 
+			userId=#{userId} and companyId=#{companyId} and roleId in 
 			<foreach item="roleId" index="index" collection="roleIds" open="(" separator="," close=")">
 				#{roleId}
 			</foreach>
@@ -582,7 +591,7 @@
 		delete from 
 			um_kh_rel_role_user 
 		where 
-			userId=#{userId}
+			userId=#{userId} and companyId=#{companyId}
 	</delete>
 	
 	<update id="update">
@@ -601,7 +610,8 @@
 			<if test="entity.zwuid != null"> ,zwuid=#{entity.zwuid}</if>
 			<if test="entity.dduid != null"> ,dduid=#{entity.dduid}</if>
 			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
-			,remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},updateTime=now()
+			<if test="entity.dyType != null"> ,dyType=#{entity.dyType}</if>
+			,rdDate=#{entity.rdDate},dorg=#{entity.dorg},remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},updateTime=now()
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>
@@ -702,7 +712,7 @@
 			join um_kh_perm_menu pm on m.id=pm.menuId 
 			join um_kh_rel_role_user ru on ru.roleId=pm.roleId
 		WHERE
-			m.status=0 AND pm.appId=#{appId} AND ru.userId=#{userId}
+			m.status=0 AND pm.appId=#{appId} AND ru.userId=#{userId} AND ru.companyId=#{companyId}
 	</select>
 	
 	<select id="findUserAppOrgs" resultType="java.lang.Long">
@@ -711,7 +721,7 @@
 		FROM
 			um_kh_perm_org p JOIN um_kh_rel_role_user r ON p.roleId=r.roleId
 	  WHERE
-		  r.userId=#{userId}  AND p.appId=#{appId}
+		  r.userId=#{userId}  AND p.appId=#{appId} AND r.companyId=#{companyId}
 	</select>
 	
 	<select id="findUserAppAreas" resultType="java.lang.Long">
@@ -720,7 +730,7 @@
 		FROM
 			um_kh_perm_area p JOIN um_kh_rel_role_user r ON p.roleId=r.roleId
 	  WHERE
-		  r.userId=#{userId}  AND p.appId=#{appId}
+		  r.userId=#{userId}  AND p.appId=#{appId} AND r.companyId=#{companyId}
 	</select>
 	
 	<select id="findCompanyAdmin" resultType="com.linkallcloud.um.domain.party.KhUser">

@@ -40,7 +40,8 @@ const token = param2Object(url).token
 console.log('url', url)
 
 if (token && token !== '') {
-  (async() => await store.dispatch('user/loginByToken', token))()
+  // (async() => await store.dispatch('user/loginByToken', token))()
+  store.dispatch('user/loginByToken', token)
 }
 
 Vue.use(Element, {

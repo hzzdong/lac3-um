@@ -12,7 +12,16 @@
           欢迎
           <i v-if="loginMode === 0" class="el-icon-user-solid" title="正常登录模式" />
           <i v-if="loginMode === 1" class="el-icon-user" title="代维模式" />
-          {{ name }}
+          {{ name }} , 当前登录机构
+
+          <el-select v-model="curOrg" placeholder="切换登录机构" @change="onCompanyChange">
+            <el-option
+              v-for="item in myOrgs"
+              :key="item.id + '#' + item.code"
+              :label="item.name"
+              :value="item.id + '#' + item.code"
+            />
+          </el-select>
         </span>
 
         <el-tooltip content="全屏" effect="dark" placement="bottom">
@@ -69,14 +78,24 @@ export default {
     Screenfull,
     SizeSelect
   },
+  data() {
+    return {
+      curOrg: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'ico',
       'loginMode',
       'name',
+      'companyId',
+      'myOrgs',
       'device'
     ])
+  },
+  created() {
+    this.curOrg = this.$store.getters.orgId + '#' + this.$store.getters.orgType
   },
   methods: {
     toggleSideBar() {

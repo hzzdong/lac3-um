@@ -110,16 +110,24 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@Face(simple = true)
 	@RequestMapping(value = "/addUsers", method = RequestMethod.POST)
 	public @ResponseBody Object addUsers(RelFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds(), suser.companyId());
+		return doAddRoleUsers(t, fr, suser.companyId());
+	}
+
+	protected Boolean doAddRoleUsers(Trace t, RelFaceRequest fr, Long companyId) {
+		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds(), companyId);
 	}
 
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])取消了部分用户的角色 [(${fr.id})], TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
 	public @ResponseBody Object removeUser(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
+		return doRemoveRoleUsers(t, fr, suser.companyId());
+	}
+
+	protected Boolean doRemoveRoleUsers(Trace t, ParentIdFaceRequest fr, Long companyId) {
 		Map<String, Long> userUuidIds = new HashMap<String, Long>();
 		userUuidIds.put(fr.getUuid(), fr.getId());
-		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds, suser.companyId());
+		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds, companyId);
 	}
 
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])给角色 [(${fr.id})]许可了新应用, TID:[(${tid})]")

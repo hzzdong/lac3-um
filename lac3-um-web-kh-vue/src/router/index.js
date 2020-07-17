@@ -146,6 +146,13 @@ export const asyncRoutes = [
         name: 'UserView',
         meta: { title: '用户预览', noCache: true, activeMenu: '/user/index', requires: ['selfkh_user_view'] },
         hidden: true
+      },
+      {
+        path: 'jz-user-view/:id(\\d+)/:uuid',
+        component: () => import('@/views/kh-user/jz-user-view'),
+        name: 'JzUserView',
+        meta: { title: '兼职用户', noCache: true, activeMenu: '/user/index', requires: ['selfkh_user_view'] },
+        hidden: true
       }
     ]
   },

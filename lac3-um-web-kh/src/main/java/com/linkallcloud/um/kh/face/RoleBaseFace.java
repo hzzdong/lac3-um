@@ -66,12 +66,27 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@Face(simple = true)
 	@RequestMapping(value = "/findCompanyRoles", method = RequestMethod.POST)
 	public @ResponseBody Object findCompanyRoles(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
-		return findCompanyRoles4Me(t, suser.companyId(), fr.getParentId(), fr.getParentClass(), fr.getId(), fr.getUuid());
+		return findCompanyRoles4Me(t, null, fr.getParentId(), fr.getParentClass(), fr.getId(), fr.getUuid());
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/findJzCompanyRoles", method = RequestMethod.POST)
+	public @ResponseBody Object findJzCompanyRoles(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
+		return findCompanyRoles4Me(t, suser.companyId(), fr.getParentId(), fr.getParentClass(), fr.getId(),
+				fr.getUuid());
 	}
 
 	@Face(simple = true)
 	@RequestMapping(value = "/findUserRoleIds", method = RequestMethod.POST)
 	public @ResponseBody Object findUserRoleIds(IdFaceRequest fr, Trace t, SessionUser suser) {
+		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid(), null);
+		List<Long> ids = Domains.getIds(roles);
+		return ids;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/findJzUserRoleIds", method = RequestMethod.POST)
+	public @ResponseBody Object findJzUserRoleIds(IdFaceRequest fr, Trace t, SessionUser suser) {
 		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid(), suser.companyId());
 		List<Long> ids = Domains.getIds(roles);
 		return ids;
@@ -80,6 +95,13 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@Face(simple = true)
 	@RequestMapping(value = "/findUserRoles", method = RequestMethod.POST)
 	public @ResponseBody Object findUserRoles(IdFaceRequest fr, Trace t, SessionUser suser) {
+		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid(), null);
+		return roles;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/findJzUserRoles", method = RequestMethod.POST)
+	public @ResponseBody Object findJzUserRoles(IdFaceRequest fr, Trace t, SessionUser suser) {
 		List<R> roles = findUserRoles(t, fr.getId(), fr.getUuid(), suser.companyId());
 		return roles;
 	}
@@ -88,16 +110,24 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	@Face(simple = true)
 	@RequestMapping(value = "/addUsers", method = RequestMethod.POST)
 	public @ResponseBody Object addUsers(RelFaceRequest fr, Trace t, SessionUser suser) {
-		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds(), suser.companyId());
+		return doAddRoleUsers(t, fr, suser.companyId());
+	}
+
+	protected Boolean doAddRoleUsers(Trace t, RelFaceRequest fr, Long companyId) {
+		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds(), companyId);
 	}
 
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])取消了部分用户的角色 [(${fr.id})], TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
 	public @ResponseBody Object removeUser(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
+		return doRemoveRoleUsers(t, fr, suser.companyId());
+	}
+
+	protected Boolean doRemoveRoleUsers(Trace t, ParentIdFaceRequest fr, Long companyId) {
 		Map<String, Long> userUuidIds = new HashMap<String, Long>();
 		userUuidIds.put(fr.getUuid(), fr.getId());
-		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds, suser.companyId());
+		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds, companyId);
 	}
 
 	@WebLog(db = true, desc = "用户([(${su.sid.name})])给角色 [(${fr.id})]许可了新应用, TID:[(${tid})]")
@@ -175,7 +205,8 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return null;
 	}
 
-	protected List<R> findCompanyRoles4Me(Trace t, Long operatorCompanyId, Long parentId, String parentClass, Long userId, String userUuid) {
+	protected List<R> findCompanyRoles4Me(Trace t, Long operatorCompanyId, Long parentId, String parentClass,
+			Long userId, String userUuid) {
 		List<R> roles = null;
 		if (parentId != null && !Strings.isBlank(parentClass)) {
 			if (parentClass.endsWith("Company")) {
@@ -196,12 +227,12 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 							isAdminDepartment = 1 == depart.getType();
 						}
 					}
-					if(operatorCompanyId == null) {
+					if (operatorCompanyId == null) {
 						operatorCompanyId = user.getCompanyId();
 					}
 					roles = findCompanyRoles(t, operatorCompanyId, isAdminDepartment == true ? 9 : null);
 				}
-			}else {
+			} else {
 				roles = findCompanyRoles(t, operatorCompanyId, 9);
 			}
 		}

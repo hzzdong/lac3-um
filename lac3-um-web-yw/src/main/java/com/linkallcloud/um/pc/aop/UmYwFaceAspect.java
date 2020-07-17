@@ -53,8 +53,7 @@ public class UmYwFaceAspect extends FaceAspect {
 
 			@Override
 			protected SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser ssu) {
-				return ywUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(),
-						ssu.getCompany());
+				return ywUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(), ssu.getOrg());
 			}
 
 		};
@@ -82,8 +81,7 @@ public class UmYwFaceAspect extends FaceAspect {
 
 			@Override
 			protected SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser ssu) {
-				return ywUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(),
-						ssu.getCompany());
+				return ywUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(), ssu.getOrg());
 			}
 
 		};

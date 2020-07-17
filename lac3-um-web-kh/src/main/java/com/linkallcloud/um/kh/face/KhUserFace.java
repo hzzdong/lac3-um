@@ -110,14 +110,16 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Override
 	protected Page<KhUser> doPage(Trace t, Page<KhUser> page, SessionUser su) {
+		Long companyId = su.companyId();
 		if (!page.hasRule4Field("companyId")) {
 			page.addRule(new Equal("companyId", su.companyId()));
 		} else {
 			Equal companyIdRule = (Equal) page.getRule4Field("companyId");
-			Long companyId = (Long) companyIdRule.getValue();
+			companyId = (Long) companyIdRule.getValue();
 			KhCompany company = khCompanyManager.fetchById(t, companyId);
 			if (company == null || !company.isChildOf(su.companyId())) {
 				companyIdRule.setValue(-1L);
+				companyId = -1L;
 			}
 		}
 
@@ -127,9 +129,13 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 			if (su.isAdmin()) {
 				page = manager().findUserPage4Org(t, page);
 			} else {
-				page.addRule(new Equal("appId", su.appId()));
-				page.addRule(new Equal("userId", su.id()));
-				page = manager().findPermedUserPage(t, page);
+				if (companyId.equals(su.companyId())) {
+					page.addRule(new Equal("appId", su.appId()));
+					page.addRule(new Equal("userId", su.id()));
+					page = manager().findPermedUserPage(t, page);
+				} else {
+					page = manager().findUserPage4Org(t, page);
+				}
 			}
 		}
 		// page = manager().findPage(t, page);
@@ -160,6 +166,19 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 		super.doSave(t, entity, su);
 	}
 
+	@WebLog(db = true)
+	@Face(simple = true)
+	@RequestMapping(value = "/updateJz", method = RequestMethod.POST)
+	public @ResponseBody Object updateJz(ObjectFaceRequest<KhUser> fr, Trace t, SessionUser su) {
+		if (!checkReferer(true)) {
+			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+		}
+		KhUser entity = fr.getData();
+		entity.setJzCompanyId(su.companyId());
+		manager().update(t, entity);
+		return convert(t, "save", fr, entity);
+	}
+
 	@Face(simple = true)
 	@RequestMapping(value = "/page4Role", method = RequestMethod.POST)
 	public @ResponseBody Object page4Role(PageFaceRequest faceReq, Trace t, SessionUser su) {
@@ -167,6 +186,15 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		
+		Long companyId = su.companyId();
+		Equal r = (Equal) page.getRule4Field("companyId");
+		if (r != null) {
+			r.setValue(companyId);
+		} else {
+			r = new Equal("companyId", companyId);
+			page.addRule(r);
 		}
 
 		page = manager().findPage4Role(t, page);

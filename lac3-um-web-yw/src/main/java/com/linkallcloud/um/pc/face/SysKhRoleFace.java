@@ -10,6 +10,7 @@ import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.ParentIdFaceRequest;
+import com.linkallcloud.core.face.message.request.RelFaceRequest;
 import com.linkallcloud.core.util.Domains;
 import com.linkallcloud.um.domain.party.KhCompany;
 import com.linkallcloud.um.domain.party.KhDepartment;
@@ -64,12 +65,31 @@ public class SysKhRoleFace extends
 	protected IKhRoleManager manager() {
 		return khRoleManager;
 	}
-	
+
 	@Face(simple = true)
 	@RequestMapping(value = "/getPermedMenuTree4SysKhRole", method = RequestMethod.POST)
 	public @ResponseBody Object getPermedMenuTree4SysKhRole(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
 		Tree tree = manager().findPermedMenuTree4SysKhRole(t, fr.getParentId(), fr.getId());
 		return tree.getChildren();
+	}
+
+	@Override
+	protected Boolean doAddRoleUsers(Trace t, RelFaceRequest fr, Long companyId) {
+		if (fr.getUuidIds() != null && !fr.getUuidIds().isEmpty()) {
+			Long userId = fr.getUuidIds().values().iterator().next();
+			KhUser user = userManager().fetchById(t, userId);
+			companyId = user.getCompanyId();
+		}
+		return super.doAddRoleUsers(t, fr, companyId);
+	}
+
+	@Override
+	protected Boolean doRemoveRoleUsers(Trace t, ParentIdFaceRequest fr, Long companyId) {
+		if (fr.getId() != null) {
+			KhUser user = userManager().fetchById(t, fr.getId());
+			companyId = user.getCompanyId();
+		}
+		return super.doRemoveRoleUsers(t, fr, companyId);
 	}
 
 }

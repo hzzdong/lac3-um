@@ -48,7 +48,7 @@ public class LoginFilter extends AbstractPrincipalFilter {
 
 	@Override
 	protected SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser ssu) {
-		return khUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(), ssu.getCompany());
+		return khUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(), ssu.getOrg());
 	}
 
 }

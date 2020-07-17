@@ -41,7 +41,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
-	
+
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
 
@@ -109,29 +109,7 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 	@Override
 	protected Page<KhUser> doPage(Trace t, Page<KhUser> page, SessionUser su) {
-		/*
-		if (!page.hasRule4Field("companyId")) {
-			page.addRule(new Equal("companyId", su.companyId()));
-		} else {
-			Equal companyIdRule = (Equal) page.getRule4Field("companyId");
-			Long companyId = (Long) companyIdRule.getValue();
-			KhCompany company = khCompanyManager.fetchById(t, companyId);
-			if (company == null || !company.isChildOf(su.companyId())) {
-				companyIdRule.setValue(-1L);
-			}
-		}*/
-
-		if (page.hasRule4Field("parentId")) {// 查部门下的人
-			page = manager().findUserPage4Org(t, page);
-		} else {// 查整个公司的人
-			if (su.isAdmin()) {
-				page = manager().findUserPage4Org(t, page);
-			} else {
-				page.addRule(new Equal("appId", su.appId()));
-				page.addRule(new Equal("userId", su.id()));
-				page = manager().findPermedUserPage(t, page);
-			}
-		}
+		page = manager().findUserPage4Org(t, page);
 		desensitization(page.getData());
 		return page;
 	}
@@ -178,6 +156,9 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 
 		if (!page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
+		}
+		if (!page.hasRule4Field("companyId")) {
+			page.addRule(new Equal("companyId", su.companyId()));
 		}
 		page = manager().page4UnRole4Yw(t, page);
 

@@ -119,7 +119,7 @@
               <el-table-column label="姓名" width="130px" prop="userName" sortable>
                 <template slot-scope="{row}">
                   <span v-if="checkPermission(['yw_user_view']) === false || tree.checkedNode.id <= 0">{{ row.userName }}</span>
-                  <router-link v-if="checkPermission(['yw_user_view']) === true && tree.checkedNode.id > 0" :to="'/User/jz-user-view/'+row.userId+'/'+row.userUuid" class="link-type">
+                  <router-link v-if="checkPermission(['yw_user_view']) === true && tree.checkedNode.id > 0" :to="'/user/jz-user-view/'+row.userId+'/'+row.userUuid" class="link-type">
                     <span>{{ row.userName }}</span>
                   </router-link>
                 </template>
@@ -171,7 +171,7 @@
             >
               <el-table-column label="姓名" width="130px" prop="name" sortable>
                 <template slot-scope="{row}">
-                  <router-link :to="'/User/user-view/'+row.id+'/'+row.uuid" class="link-type">
+                  <router-link :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
                     <span>{{ row.name }}</span>
                   </router-link>
                   <el-tag v-if="row.type == 9">管</el-tag>

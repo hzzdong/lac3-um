@@ -183,7 +183,7 @@ public class LoginController {
 		} catch (Exception e) {
 		}
 		SessionUser suser = ywUserManager.assembleSessionUser(t, srcUser.getLoginName(), myAppCode,
-				srcUser.getCompany());
+				srcUser.getOrg());
 		Controllers.login(myAppCode, suser);
 
 		String token = Controllers.createToken(suser, 0);

@@ -200,3 +200,33 @@ export function sysFilter(status) {
   }, {})
   return statusKeyValue[status]
 }
+
+export function sexOptions() {
+  return [
+    { key: 'M', display_name: '男' },
+    { key: 'F', display_name: '女' }
+  ]
+}
+
+export function sexFilter(status) {
+  const sexKeyValue = sexOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return sexKeyValue[status]
+}
+
+export function yesNoOptions() {
+  return [
+    { key: 0, display_name: '否' },
+    { key: 1, display_name: '是' }
+  ]
+}
+
+export function yesNoFilter(status) {
+  const keyValue = yesNoOptions().reduce((acc, cur) => {
+    acc[cur.key] = cur.display_name
+    return acc
+  }, {})
+  return keyValue[status]
+}
