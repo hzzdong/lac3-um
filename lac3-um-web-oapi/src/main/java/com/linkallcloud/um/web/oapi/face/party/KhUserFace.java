@@ -103,8 +103,11 @@ public class KhUserFace {
 		if (Strings.isBlank(faceReq.getAccount()) || Strings.isBlank(faceReq.getAppCode())) {
 			throw new ArgException("Arg", "Account和AppCode都不能为空");
 		}
-		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(),
-				new Sid(faceReq.getOrgId(), null, faceReq.getOrgType(), null));
+		Sid loginOrg = null;
+		if (faceReq.getOrgId() != null && !Strings.isBlank(faceReq.getOrgType())) {
+			loginOrg = new Sid(faceReq.getOrgId(), null, faceReq.getOrgType(), null);
+		}
+		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(), loginOrg);
 	}
 
 	@Face(login = false)
