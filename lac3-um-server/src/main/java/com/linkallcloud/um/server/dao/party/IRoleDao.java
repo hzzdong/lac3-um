@@ -57,11 +57,12 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * 
 	 * @param tid
 	 * @param userId
+	 * @param companyId
 	 * @return
 	 */
-	List<T> find4User(@Param("t") Trace t, @Param("userId") Long userId);
+	List<T> find4User(@Param("t") Trace t, @Param("userId") Long userId, @Param("companyId") Long companyId);
 
-	List<U> getRoleUsers(Trace t, Long roleId);
+	List<U> getRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId);
 
 	/**
 	 * 给角色分配人员
@@ -69,9 +70,10 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * @param tid
 	 * @param roleId
 	 * @param userIds
+	 * @param companyId
 	 * @return
 	 */
-	boolean addRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("userIds") List<Long> userIds);
+	boolean addRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("userIds") List<Long> userIds, @Param("companyId") Long companyId);
 
 	/**
 	 * 删除角色已经分配的人员
@@ -81,9 +83,9 @@ public interface IRoleDao<T extends Role, U extends User> extends IPartyDao<T> {
 	 * @param userIds
 	 * @return
 	 */
-	boolean removeRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("userIds") List<Long> userIds);
+	boolean removeRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId, @Param("userIds") List<Long> userIds, @Param("companyId") Long companyId);
 
-	boolean clearRoleUsers(Trace t, Long roleId);
+	boolean clearRoleUsers(@Param("t") Trace t, @Param("roleId") Long roleId);
 
 	/**
 	 * 增加角色许可应用

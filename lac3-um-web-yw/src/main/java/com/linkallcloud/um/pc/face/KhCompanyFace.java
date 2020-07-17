@@ -98,6 +98,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 	protected Page<KhCompany> doPage(Trace t, Page<KhCompany> page, SessionUser su) {
 		page.addRule(new Equal("top", true));
 		page.addRule(new Equal("ywUserId", su.id()));
+		page.addRule(new Equal("companyId", su.companyId()));
 		page.addRule(new Equal("appId", su.appId()));
 		return super.doPage(t, page, su);
 	}

@@ -134,8 +134,8 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
-	public Tree getUserAppCompanyTree(Trace t, Long appId, Long userId) {
-		return service().getUserAppCompanyTree(t, appId, userId);
+	public Tree getUserAppCompanyTree(Trace t, Long appId, Long userId, Long companyId) {
+		return service().getUserAppCompanyTree(t, appId, userId, companyId);
 	}
 
 	@Override

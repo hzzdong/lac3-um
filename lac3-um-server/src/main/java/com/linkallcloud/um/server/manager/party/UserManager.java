@@ -77,8 +77,8 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 
 	// @Cacheable(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
 	@Override
-	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
-		return service().getUserAppMenus(t, userId, appId);
+	public String[] getUserAppMenus(Trace t, Long companyId, Long userId, Long appId) {
+		return service().getUserAppMenus(t, companyId, userId, appId);
 //        String[] result = new String[0];
 //        String jsonStr = service().getUserAppPermissions4MenuJsonString(t, userId, appId);
 //        if (!Strings.isBlank(jsonStr)) {
@@ -89,18 +89,18 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	}
 
 	@Override
-	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
-		return service().getUserAppOrgs(t, userId, appId);
+	public List<Long> getUserAppOrgs(Trace t, Long companyId, Long userId, Long appId) {
+		return service().getUserAppOrgs(t, companyId, userId, appId);
 	}
 
 	@Override
-	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
-		return service().getUserAppAreas(t, userId, appId);
+	public List<Long> getUserAppAreas(Trace t, Long companyId, Long userId, Long appId) {
+		return service().getUserAppAreas(t, companyId, userId, appId);
 	}
 
 	// @Cacheable(value = "AppMenu", key = "#userId + \"-\" + #appId")
 	@Override
-	public Tree getUserAppMenu(Trace t, Long userId, Long appId) {
+	public Tree getUserAppMenu(Trace t, Long companyId, Long userId, Long appId) {
 		// return service().getUserAppMenu(t, userId, userUuid, appId, appUuid);
 
 		T user = service().fetchById(t, userId);
@@ -119,7 +119,7 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 		} else if (user.isAdmin()) {
 			root = companyService().loadCompanyMenuTree(t, user.getCompanyId(), appId);
 		} else {
-			dealCommonUserAppMenu(t, userId, appId, root);
+			dealCommonUserAppMenu(t, companyId, userId, appId, root);
 		}
 		root.sort();
 		return root;
@@ -129,12 +129,13 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 	 * 处理普通用户的应用菜单
 	 *
 	 * @param t
+	 * @param companyId
 	 * @param userId
 	 * @param appId
 	 * @param root
 	 */
-	private void dealCommonUserAppMenu(Trace t, Long userId, Long appId, Tree root) {
-		List<R> roles = roleService().find4User(t, userId);
+	private void dealCommonUserAppMenu(Trace t, Long companyId, Long userId, Long appId, Tree root) {
+		List<R> roles = roleService().find4User(t, userId, companyId);
 		if (roles != null && !roles.isEmpty()) {
 			Map<Long, Menu> menuMap = new HashMap<>();
 			for (R role : roles) {
@@ -165,89 +166,89 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 		return service().findPage4UnRole(t, page);
 	}
 
-	@Override
-	public List<T> find4Role(Trace t, Long roleId) {
-		return service().find4Role(t, roleId);
-	}
+//	@Override
+//	public List<T> find4Role(Trace t, Long roleId) {
+//		return service().find4Role(t, roleId);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, Long[] roleIds) {
+//		return service().find4Role(t, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String roleGovCode) {
+//		return service().find4Role(t, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String[] roleGovCodes) {
+//		return service().find4Role(t, roleGovCodes);
+//	}
+
+//	@Override
+//	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+//		return service().findByRoleCompany(t, companyId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
+//		return service().findDepartmentUser4Role(t, departmentId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
+//		return service().findDepartmentUser4Role(t, departmentId, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
+//		return service().findDepartmentUser4Role(t, departmentId, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
+//		return service().findDepartmentUser4Role(t, departmentId, roleGovCodes);
+//	}
 
 	@Override
-	public List<T> find4Role(Trace t, Long[] roleIds) {
-		return service().find4Role(t, roleIds);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String roleGovCode) {
-		return service().find4Role(t, roleGovCode);
-	}
-
-	@Override
-	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
-		return service().findByRoleCompany(t, companyId, roleId);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String[] roleGovCodes) {
-		return service().find4Role(t, roleGovCodes);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
-		return service().findDepartmentUser4Role(t, departmentId, roleId);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
-		return service().findDepartmentUser4Role(t, departmentId, roleIds);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
-		return service().findDepartmentUser4Role(t, departmentId, roleGovCode);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
-		return service().findDepartmentUser4Role(t, departmentId, roleGovCodes);
-	}
-
-	@Override
-	public boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
-		boolean result = service().addUserRoles(t, userId, userUuid, roleUuidIds);
+	public boolean addUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
+		boolean result = service().addUserRoles(t, userId, companyId, roleUuidIds);
 		if (result) {
 			List<Application> apps = findApplicaitons4User(t, userId);
 			if (apps != null && !apps.isEmpty()) {
 				for (Application app : apps) {
-					cleanCache4UserAppPermissions4Menu(t, userId, app.getId());
-					cleanCache4UserAppMenu(t, userId, app.getId());
+					cleanCache4UserAppPermissions4Menu(t, companyId, userId, app.getId());
+					cleanCache4UserAppMenu(t, companyId, userId, app.getId());
 				}
 			}
 		}
 		return result;
 	}
 
-	@CacheEvict(value = "Permissions4AppMenu", key = "#userId + \"-\" + #appId")
+	@CacheEvict(value = "Permissions4AppMenu", key = "#companyId + \"-\" + #userId + \"-\" + #appId")
 	@Override
-	public void cleanCache4UserAppPermissions4Menu(Trace t, Long userId, Long appId) {
+	public void cleanCache4UserAppPermissions4Menu(Trace t, Long companyId, Long userId, Long appId) {
 	}
 
-	@CacheEvict(value = "AppMenu", key = "#userId + \"-\" + #appId")
+	@CacheEvict(value = "AppMenu", key = "#companyId + \"-\" + #userId + \"-\" + #appId")
 	@Override
-	public void cleanCache4UserAppMenu(Trace t, Long userId, Long appId) {
+	public void cleanCache4UserAppMenu(Trace t, Long companyId, Long userId, Long appId) {
 	}
 
 	protected abstract List<Application> findApplicaitons4User(Trace t, Long userId);
 
 	@Override
-	public boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
+	public boolean removeUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
 		List<Application> apps = findApplicaitons4User(t, userId);
 		if (apps != null && !apps.isEmpty()) {
 			for (Application app : apps) {
-				cleanCache4UserAppPermissions4Menu(t, userId, app.getId());
-				cleanCache4UserAppMenu(t, userId, app.getId());
+				cleanCache4UserAppPermissions4Menu(t, companyId, userId, app.getId());
+				cleanCache4UserAppMenu(t, companyId, userId, app.getId());
 			}
 		}
 
-		boolean result = service().removeUserRoles(t, userId, userUuid, roleUuidIds);
+		boolean result = service().removeUserRoles(t, userId, companyId, roleUuidIds);
 		return result;
 	}
 

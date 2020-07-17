@@ -6,13 +6,14 @@
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg
 	</sql>
 	
 	<sql id="Column_with_dep_com_Name">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+		d.name as orgName,d.fullName as orgFullName,c.name as companyName
 	</sql>
 	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.YwUser">
@@ -191,11 +192,14 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId} AND u.parentClass='YwDepartment'</if>
 			<if test="page.cnds!=null and page.cnds.parentClass != null"> AND u.parentClass = #{page.cnds.parentClass}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.ddStatus != null"> AND u.ddStatus = #{page.cnds.ddStatus}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -223,6 +227,9 @@
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -243,7 +250,7 @@
 							else yw.parentId*-1 
 							end parentId,
 							yw.parentClass,yw.account,yw.name,yw.nickName,yw.mobile,yw.idCard,yw.sex,yw.birthday,yw.remark,yw.lastLoginTime,
-							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,
+							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,yw.dyType,yw.rdDate,yw.dorg,
 							d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_yw_user yw 
@@ -256,12 +263,15 @@
 				JOIN um_yw_perm_org p ON u.parentId=p.orgId
 				JOIN um_yw_rel_role_user rel ON p.roleId=rel.roleId
 		WHERE	
-				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId}
+				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId} AND rel.companyId=#{page.cnds.companyId} 
 				<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 				<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 				<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 				<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 				<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+				<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+				<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+				<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -276,7 +286,8 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+			d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM um_yw_user u 
 			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
 			left join um_yw_company c on u.companyId=c.id 
@@ -325,6 +336,9 @@
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -345,7 +359,8 @@
 							else yw.parentId*-1 
 							end parentId,
 							yw.parentClass,yw.account,yw.name,yw.nickName,yw.mobile,yw.idCard,yw.sex,yw.birthday,yw.remark,yw.lastLoginTime,
-							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,d.name as orgName,c.name as companyName
+							yw.email,yw.sort,yw.type,yw.ico,yw.code,yw.govCode,yw.jobPosition,yw.job,yw.sms,yw.zwuid,yw.dduid,yw.ddStatus,yw.dyType,yw.rdDate,yw.dorg,
+							d.name as orgName,c.name as companyName
 						FROM
 							um_yw_user yw 
 								LEFT JOIN um_yw_department d on yw.parentId=d.id
@@ -357,9 +372,9 @@
 				JOIN um_yw_perm_org p ON u.parentId=p.orgId
 				JOIN um_yw_rel_role_user rel ON p.roleId=rel.roleId
 		WHERE	
-				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId}
+				p.appId=#{page.cnds.appId} AND rel.userId=#{page.cnds.userId} AND rel.companyId=#{page.cnds.companyId} 
 			<if test="page.cnds!=null and page.cnds.roleId != null">
-				 AND u.id not in ( SELECT rel.userId FROM um_yw_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+				 AND u.id not in ( SELECT rel2.userId FROM um_yw_rel_role_user rel2 WHERE rel2.roleId = #{page.cnds.roleId} AND rel2.companyId=#{page.cnds.companyId} ) 
 			</if>
 			<if test="page.cnds!=null and page.cnds.companyId != null and page.cnds.type != 9 "> 
 				AND u.companyId = #{page.cnds.companyId}
@@ -375,6 +390,9 @@
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -387,19 +405,26 @@
 	
 	<select id="findPage4Role" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
-			<include refid="Column_with_dep_com_Name" />
+			u.id,u.uuid,u.status,u.createTime,u.updateTime,
+			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
+			d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
 		FROM
 			um_yw_user u 
 				left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
 				left join um_yw_company c on u.companyId=c.id 
 				join um_yw_rel_role_user rel on u.id=rel.userId
+				join um_yw_company pc on rel.companyId=pc.id
 		WHERE
-			u.status &lt;&gt; 9 AND rel.roleId = #{page.cnds.roleId}
+			u.status &lt;&gt; 9 AND rel.roleId = #{page.cnds.roleId} 
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -414,13 +439,13 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM um_yw_user u 
 			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
 			left join um_yw_company c on u.companyId=c.id 
 		WHERE
 			u.status &lt;&gt; 9 AND u.status &lt;&gt; 8 AND u.account &lt;&gt; 'superadmin' 
-			AND u.id not in ( SELECT rel.userId FROM um_yw_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} ) 
+			AND u.id not in ( SELECT rel.userId FROM um_yw_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} AND rel.companyId = #{page.cnds.companyId} ) 
 			AND u.companyId = #{page.cnds.companyId}
 			<if test="page.cnds!=null and page.cnds.level == 9 "> 
 				AND ( u.parentClass = 'YwCompany' OR d.type = 1 )
@@ -431,6 +456,9 @@
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
 			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
+			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -440,14 +468,15 @@
 			</otherwise>
 		</choose>
 	</select>
-
+	
+	<!-- 
 	<select id="findByRoleCompany" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
-		<include refid="Base_Column_List" />
+			<include refid="Base_Column_List" />
 		FROM
-		um_yw_user u join um_yw_rel_role_user rel on u.id=rel.userId
+			um_yw_user u join um_yw_rel_role_user rel on u.id=rel.userId
 		WHERE
-		u.status =0 AND u.companyId = #{companyId} AND rel.roleId = #{roleId}
+			u.status =0 AND u.companyId = #{companyId} AND rel.roleId = #{roleId} AND rel.companyId = #{companyId}
 	</select>
 	
 	<select id="find4RoleById" resultType="com.linkallcloud.um.domain.party.YwUser">
@@ -495,7 +524,9 @@
 				#{roleGovCode}
 			</foreach>
 	</select>
+	 -->
 	
+	<!--  
 	<select id="findDepartmentUser4RoleById" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
 			<include refid="Base_Column_List" />
@@ -547,12 +578,13 @@
 				#{roleGovCode}
 			</foreach>
 	</select>
+	-->
 	
 	<select id="find" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.companyId,u.parentId,u.parentClass,u.account,u.salt,
 			u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg
 		FROM
 			um_yw_user u 
 		WHERE
@@ -567,6 +599,9 @@
 			<if test="query!=null and query.cnds!=null and query.cnds.mobileEq != null"> AND u.mobile = #{query.cnds.mobileEq}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.ddStatus != null"> AND u.ddStatus = #{query.cnds.ddStatus}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
@@ -617,18 +652,18 @@
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.YwUser" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_yw_user
-			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid)
+			(uuid, status,createTime,updateTime,companyId,parentId,parentClass,account,password,salt,name,nickName,mobile,idCard,sex,birthday,remark,email,sort,type,ico,code,govCode,jobPosition,job,sms,zwuid,dduid,dyType,rdDate,dorg)
 		values(#{entity.uuid},#{entity.status},now(),now(),#{entity.companyId},#{entity.parentId},#{entity.parentClass},#{entity.account},#{entity.password},#{entity.salt},#{entity.name},#{entity.nickName},
 			#{entity.mobile},#{entity.idCard},#{entity.sex},#{entity.birthday},#{entity.remark},
-			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid})
+			#{entity.email},#{entity.sort},#{entity.type},#{entity.ico},#{entity.code},#{entity.govCode},#{entity.jobPosition},#{entity.job},#{entity.sms},#{entity.zwuid},#{entity.dduid},#{entity.dyType},#{entity.rdDate},#{entity.dorg})
 	</insert>
 	
 	<insert id="addUserRoles">
         insert into 
-        	um_yw_rel_role_user (status,createTime,updateTime,roleId,userId)
+        	um_yw_rel_role_user (status,createTime,updateTime,roleId,userId,companyId)
         values 
 	        <foreach collection="roleIds" item="roleId" index="index" separator=",">
-	        (0,now(),now(),#{roleId},#{userId})
+	        (0,now(),now(),#{roleId},#{userId},#{companyId})
 	        </foreach>
     </insert>
     
@@ -636,7 +671,7 @@
 		delete from 
 			um_yw_rel_role_user 
 		where 
-			userId=#{userId} and roleId in 
+			userId=#{userId} and companyId=#{companyId} and roleId in 
 			<foreach item="roleId" index="index" collection="roleIds" open="(" separator="," close=")">
 				#{roleId}
 			</foreach>
@@ -646,7 +681,7 @@
 		delete from 
 			um_yw_rel_role_user 
 		where 
-			userId=#{userId}
+			userId=#{userId} and companyId=#{companyId}
 	</delete>
 	
 	<update id="update">
@@ -665,7 +700,8 @@
 			<if test="entity.zwuid != null"> ,zwuid=#{entity.zwuid}</if>
 			<if test="entity.dduid != null"> ,dduid=#{entity.dduid}</if>
 			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
-			,remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},updateTime=now()
+			<if test="entity.dyType != null"> ,dyType=#{entity.dyType}</if>
+			,rdDate=#{entity.rdDate},dorg=#{entity.dorg},remark=#{entity.remark},email=#{entity.email},sort=#{entity.sort},updateTime=now()
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>
@@ -766,7 +802,7 @@
 			join um_yw_perm_menu pm on m.id=pm.menuId 
 			join um_yw_rel_role_user ru on ru.roleId=pm.roleId
 		WHERE
-			m.status=0 AND pm.appId=#{appId} AND ru.userId=#{userId}
+			m.status=0 AND pm.appId=#{appId} AND ru.userId=#{userId} AND ru.companyId=#{companyId}
 	</select>
 	
 	<select id="findUserAppOrgs" resultType="java.lang.Long">
@@ -775,7 +811,7 @@
 		FROM
 			um_yw_perm_org p JOIN um_yw_rel_role_user r ON p.roleId=r.roleId
 	  WHERE
-		  r.userId=#{userId}  AND p.appId=#{appId}
+		  r.userId=#{userId}  AND p.appId=#{appId} AND r.companyId=#{companyId}
 	</select>
 	
 	<select id="findUserAppAreas" resultType="java.lang.Long">
@@ -784,7 +820,7 @@
 		FROM
 			um_yw_perm_area p JOIN um_yw_rel_role_user r ON p.roleId=r.roleId
 	  WHERE
-		  r.userId=#{userId}  AND p.appId=#{appId}
+		  r.userId=#{userId}  AND p.appId=#{appId} AND r.companyId=#{companyId}
 	</select>
 	
 	<select id="findCompanyAdmin" resultType="com.linkallcloud.um.domain.party.YwUser">
@@ -795,7 +831,7 @@
 			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment' 
 			left join um_yw_company c on u.companyId=c.id 
 		where 
-			u.status &lt;&gt; 9 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
+			u.status &lt;&gt; 9 and u.status &lt;&gt; 8 and u.type=9 and c.id=#{company.id} and c.uuid=#{company.uuid}
 	</select>
 	
 </mapper>

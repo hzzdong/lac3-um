@@ -86,9 +86,10 @@ public interface IRoleActivity<T extends Role, U extends User> extends IPartyAct
      *
      * @param t
      * @param userId
+     * @param companyId
      * @return
      */
-    List<T> find4User(Trace t, Long userId);
+    List<T> find4User(Trace t, Long userId, Long companyId);
 
     /**
      * 给角色分配人员
@@ -97,9 +98,10 @@ public interface IRoleActivity<T extends Role, U extends User> extends IPartyAct
      * @param roleId
      * @param roleUuid
      * @param userUuidIds
+     * @param companyId
      * @return
      */
-    boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds);
+    boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId);
 
     /**
      * 删除角色已分配的人员
@@ -110,7 +112,7 @@ public interface IRoleActivity<T extends Role, U extends User> extends IPartyAct
      * @param userUuidIds
      * @return
      */
-    boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds);
+    boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId);
 
     boolean clearRoleUsers(Trace t, Long roleId, String roleUuid);
 

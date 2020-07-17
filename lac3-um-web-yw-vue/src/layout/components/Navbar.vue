@@ -12,7 +12,17 @@
           欢迎
           <i v-if="loginMode === 0" class="el-icon-user-solid" title="正常登录模式" />
           <i v-if="loginMode === 1" class="el-icon-user" title="代维模式" />
-          {{ name }}
+          {{ name }} , 当前登录机构
+
+          <el-select v-model="curOrg" placeholder="切换登录机构" @change="onCompanyChange">
+            <el-option
+              v-for="item in myOrgs"
+              :key="item.id + '#' + item.code"
+              :label="item.name"
+              :value="item.id + '#' + item.code"
+            />
+          </el-select>
+
         </span>
 
         <el-tooltip content="全屏" effect="dark" placement="bottom">
@@ -69,14 +79,24 @@ export default {
     Screenfull,
     SizeSelect
   },
+  data() {
+    return {
+      curOrg: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'ico',
       'loginMode',
       'name',
+      'companyId',
+      'myOrgs',
       'device'
     ])
+  },
+  created() {
+    this.curOrg = this.$store.getters.orgId + '#' + this.$store.getters.orgType
   },
   methods: {
     toggleSideBar() {
@@ -97,6 +117,13 @@ export default {
           // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
           window.location = `/api4umyw/dwLogout`
         }).catch(err => console.log(err))
+      }).catch(err => console.log(err))
+    },
+    onCompanyChange(val) {
+      console.log(val)
+      this.$store.dispatch('user/logout').then(() => {
+        const tos = val.split('#')
+        window.location = '/api4umyw/orgLogin?orgId=' + tos[0] + '&orgType=' + tos[1]
       }).catch(err => console.log(err))
     }
   }

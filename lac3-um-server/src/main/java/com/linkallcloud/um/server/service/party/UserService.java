@@ -90,15 +90,15 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 	@Transactional(readOnly = false)
 	@Override
 	@ServLog(db = true, desc = "为用户([(${userId})]) 添加关联角色([(${roleUuidIds})]), TID:[(${tid})]")
-	public boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
-		return activity().addUserRoles(t, userId, userUuid, roleUuidIds);
+	public boolean addUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
+		return activity().addUserRoles(t, userId, companyId, roleUuidIds);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
 	@ServLog(db = true, desc = "为用户([(${userId})]) 移除关联角色([(${roleUuidIds})]), TID:[(${tid})]")
-	public boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
-		return activity().removeUserRoles(t, userId, userUuid, roleUuidIds);
+	public boolean removeUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
+		return activity().removeUserRoles(t, userId, companyId, roleUuidIds);
 	}
 
 	@Override
@@ -111,58 +111,58 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 		return activity().findPage4UnRole(t, page);
 	}
 
+//	@Override
+//	public List<T> find4Role(Trace t, Long roleId) {
+//		return activity().find4Role(t, roleId);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, Long[] roleIds) {
+//		return activity().find4Role(t, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String roleGovCode) {
+//		return activity().find4Role(t, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String[] roleGovCodes) {
+//		return activity().find4Role(t, roleGovCodes);
+//	}
+
+//	@Override
+//	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+//		return activity().findByRoleCompany(t, companyId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
+//		return activity().findDepartmentUser4Role(t, departmentId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
+//		return activity().findDepartmentUser4Role(t, departmentId, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
+//		return activity().findDepartmentUser4Role(t, departmentId, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
+//		return activity().findDepartmentUser4Role(t, departmentId, roleGovCodes);
+//	}
+
 	@Override
-	public List<T> find4Role(Trace t, Long roleId) {
-		return activity().find4Role(t, roleId);
+	public String[] getUserAppMenus(Trace t, Long companyId, Long userId, Long appId) {
+		return activity().getUserAppMenus(t, companyId, userId, appId);
 	}
 
 	@Override
-	public List<T> find4Role(Trace t, Long[] roleIds) {
-		return activity().find4Role(t, roleIds);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String roleGovCode) {
-		return activity().find4Role(t, roleGovCode);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String[] roleGovCodes) {
-		return activity().find4Role(t, roleGovCodes);
-	}
-
-	@Override
-	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
-		return activity().findByRoleCompany(t, companyId, roleId);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
-		return activity().findDepartmentUser4Role(t, departmentId, roleId);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
-		return activity().findDepartmentUser4Role(t, departmentId, roleIds);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
-		return activity().findDepartmentUser4Role(t, departmentId, roleGovCode);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
-		return activity().findDepartmentUser4Role(t, departmentId, roleGovCodes);
-	}
-
-	@Override
-	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
-		return activity().getUserAppMenus(t, userId, appId);
-	}
-
-	@Override
-	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
+	public List<Long> getUserAppOrgs(Trace t, Long companyId, Long userId, Long appId) {
 		T user = activity().fetchById(t, userId);
 		Application app = applicationActivity.fetchById(t, appId);
 		if (user == null || app == null) {
@@ -174,12 +174,12 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 					user.getCompanyId());
 			return Trees.getLongIds(orgs, true);
 		} else {
-			return activity().getUserAppOrgs(t, userId, appId);
+			return activity().getUserAppOrgs(t, companyId, userId, appId);
 		}
 	}
 
 	@Override
-	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
+	public List<Long> getUserAppAreas(Trace t, Long companyId, Long userId, Long appId) {
 		T user = activity().fetchById(t, userId);
 		Application app = applicationActivity.fetchById(t, appId);
 		if (user == null || app == null) {
@@ -193,7 +193,7 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 			}
 			return Arrays.asList(ids);
 		} else {
-			return activity().getUserAppAreas(t, userId, appId);
+			return activity().getUserAppAreas(t, companyId, userId, appId);
 		}
 	}
 

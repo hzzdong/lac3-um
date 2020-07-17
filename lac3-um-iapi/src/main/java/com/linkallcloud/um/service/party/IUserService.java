@@ -26,9 +26,9 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd)
 			throws BaseRuntimeException;
 
-	boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
+	boolean addUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds);
 
-	boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds);
+	boolean removeUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds);
 
 	/**
 	 * 查询某角色已分配的用户
@@ -41,92 +41,93 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
 	Page<T> findPage4Role(Trace t, Page<T> page);
 	Page<T> findPage4UnRole(Trace t, Page<T> page);
 
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleId
-	 * @return
-	 */
-	List<T> find4Role(Trace t, Long roleId);
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleId
+//	 * @return
+//	 */
+//	List<T> find4Role(Trace t, Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleIds
+//	 * @return
+//	 */
+//	List<T> find4Role(Trace t, Long[] roleIds);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCode
+//	 * @return
+//	 */
+//	List<T> find4Role(Trace t, String roleGovCode);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCodes
+//	 * @return
+//	 */
+//	List<T> find4Role(Trace t, String[] roleGovCodes);
 
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleIds
-	 * @return
-	 */
-	List<T> find4Role(Trace t, Long[] roleIds);
-
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleGovCode
-	 * @return
-	 */
-	List<T> find4Role(Trace t, String roleGovCode);
-
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleGovCodes
-	 * @return
-	 */
-	List<T> find4Role(Trace t, String[] roleGovCodes);
-
-	List<T> findByRoleCompany(Trace t, Long companyId, Long roleId);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param departmentId
-	 * @param roleId
-	 * @return
-	 */
-	List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param roleIds
-	 * @return
-	 */
-	List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param roleGovCode
-	 * @return
-	 */
-	List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param roleGovCodes
-	 * @return
-	 */
-	List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes);
+//	List<T> findByRoleCompany(Trace t, Long companyId, Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param departmentId
+//	 * @param roleId
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param roleIds
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCode
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCodes
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes);
 
 	/**
 	 * 返回某用户某角色具有权限的菜单资源的resCode数组
 	 *
 	 * @param t
+	 * @param companyId
 	 * @param userId
 	 * @param appId
 	 * @return
 	 */
-	String[] getUserAppMenus(Trace t, Long userId, Long appId);
-	List<Long> getUserAppOrgs(Trace t, Long userId, Long appId);
-	List<Long> getUserAppAreas(Trace t, Long userId, Long appId);
+	String[] getUserAppMenus(Trace t, Long companyId, Long userId, Long appId);
+	List<Long> getUserAppOrgs(Trace t, Long companyId, Long userId, Long appId);
+	List<Long> getUserAppAreas(Trace t, Long companyId, Long userId, Long appId);
 
 	/**
 	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数

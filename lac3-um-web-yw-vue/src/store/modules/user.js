@@ -1,4 +1,4 @@
-import { login, getInfo } from '@/api/user'
+import { login, getSessionUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 import defaultSettings from '@/settings'
@@ -27,7 +27,8 @@ const state = {
   orgId: '',
   orgName: '',
   orgType: '',
-  menuPermissions: []
+  menuPermissions: [],
+  myOrgs: []
 }
 
 const mutations = {
@@ -77,8 +78,9 @@ const mutations = {
     if (user.org) {
       state.orgId = user.org.id
       state.orgName = user.org.name
+      state.orgType = user.org.code
     }
-    state.orgType = user.userType
+    state.myOrgs = user.myOrgs || []
     // state.menuPermissions = user.menuPermissions || []
   },
   RESET_USER: (state, user) => {
@@ -112,16 +114,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       commit('SET_TOKEN', token)
       setToken(token)
+      commit('SET_PERMISSIONS', [])
       resolve(token)
     })
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getSessionUser({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getSessionUserInfo().then(response => {
         const { data } = response
-
+        debugger
         if (!data) {
           reject('Verification failed, please Login again.')
         }
@@ -135,6 +138,7 @@ const actions = {
 
         resolve(data)
       }).catch(error => {
+        debugger
         reject(error)
       })
     })
@@ -203,7 +207,7 @@ const actions = {
       commit('SET_TOKEN', token)
       setToken(token)
 
-      const { roles } = await dispatch('getInfo')
+      const { roles } = await dispatch('getSessionUser')
 
       resetRouter()
 

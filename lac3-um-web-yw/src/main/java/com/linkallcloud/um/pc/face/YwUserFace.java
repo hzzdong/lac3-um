@@ -110,14 +110,16 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 
 	@Override
 	protected Page<YwUser> doPage(Trace t, Page<YwUser> page, SessionUser su) {
+		Long companyId = su.companyId();
 		if (!page.hasRule4Field("companyId")) {
 			page.addRule(new Equal("companyId", su.companyId()));
 		} else {
 			Equal companyIdRule = (Equal) page.getRule4Field("companyId");
-			Long companyId = (Long) companyIdRule.getValue();
+			companyId = (Long) companyIdRule.getValue();
 			YwCompany company = ywCompanyManager.fetchById(t, companyId);
 			if (company == null || !company.isChildOf(su.companyId())) {
 				companyIdRule.setValue(-1L);
+				companyId = -1L;
 			}
 		}
 
@@ -127,9 +129,13 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 			if (su.isAdmin()) {
 				page = manager().findUserPage4Org(t, page);
 			} else {
-				page.addRule(new Equal("appId", su.appId()));
-				page.addRule(new Equal("userId", su.id()));
-				page = manager().findPermedUserPage(t, page);
+				if(companyId.equals(su.companyId())) {
+					page.addRule(new Equal("appId", su.appId()));
+					page.addRule(new Equal("userId", su.id()));
+					page = manager().findPermedUserPage(t, page);
+				} else {
+					page = manager().findUserPage4Org(t, page);
+				}
 			}
 		}
 		desensitization(page.getData());
@@ -157,6 +163,19 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 			entity.setCompanyId(su.companyId());
 		}
 		super.doSave(t, entity, su);
+	}
+
+	@WebLog(db = true)
+	@Face(simple = true)
+	@RequestMapping(value = "/updateJz", method = RequestMethod.POST)
+	public @ResponseBody Object updateJz(ObjectFaceRequest<YwUser> fr, Trace t, SessionUser su) {
+		if (!checkReferer(true)) {
+			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+		}
+		YwUser entity = fr.getData();
+		entity.setJzCompanyId(su.companyId());
+		manager().update(t, entity);
+		return convert(t, "save", fr, entity);
 	}
 
 	@Face(simple = true)

@@ -96,7 +96,7 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 	@Override
 	public List<Tree> doLoadTree(Trace t, IdFaceRequest fr, SessionUser su) {
 		// Application app = applicationManager.fetchByCode(t, myAppCode);
-		Tree root = ywCompanyManager.getUserAppCompanyTree(t, su.appId(), su.id());
+		Tree root = ywCompanyManager.getUserAppCompanyTree(t, su.appId(), su.id(), su.companyId());
 		if (root != null && "v-root".equals(root.getId())) {
 			return root.getChildren();
 		} else {

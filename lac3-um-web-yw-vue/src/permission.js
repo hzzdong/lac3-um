@@ -1,5 +1,5 @@
-import router from './router'
-import store from './store'
+import router from '@/router'
+import store from '@/store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
@@ -34,7 +34,7 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           // note: menuPermissions must be a object array!
-          const { menuPermissions } = await store.dispatch('user/getInfo')
+          const { menuPermissions } = await store.dispatch('user/getSessionUser')
 
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', menuPermissions)

@@ -118,8 +118,8 @@
             >
               <el-table-column label="姓名" width="130px" prop="userName" sortable>
                 <template slot-scope="{row}">
-                  <span v-if="checkPermission(['yw_user_view']) === false">{{ row.userName }}</span>
-                  <router-link v-if="checkPermission(['yw_user_view']) === true" :to="'/User/user-view/'+row.userId+'/'+row.userUuid" class="link-type">
+                  <span v-if="checkPermission(['yw_user_view']) === false || tree.checkedNode.id <= 0">{{ row.userName }}</span>
+                  <router-link v-if="checkPermission(['yw_user_view']) === true && tree.checkedNode.id > 0" :to="'/User/jz-user-view/'+row.userId+'/'+row.userUuid" class="link-type">
                     <span>{{ row.userName }}</span>
                   </router-link>
                 </template>
@@ -250,7 +250,7 @@
                 </el-row>
                 <el-row>
                   <el-col :span="12">
-                    <el-form-item label="账号" prop="account">
+                    <el-form-item label="登录账号" prop="account">
                       <el-input v-model="temp.account" :disabled="temp.id != undefined" />
                     </el-form-item>
                   </el-col>
@@ -262,13 +262,15 @@
                 </el-row>
                 <el-row>
                   <el-col :span="12">
-                    <el-form-item label="密码" prop="password">
-                      <el-input v-model="temp.password" type="password" autocomplete="off" placeholder="请输入密码" />
+                    <el-form-item label="身份证" prop="idCard">
+                      <el-input v-model="temp.idCard" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item label="确认密码" prop="checkPass">
-                      <el-input v-model="temp.checkPass" type="password" autocomplete="off" placeholder="请输入确认密码" />
+                    <el-form-item label="性别" prop="sex">
+                      <el-radio-group v-model="temp.sex" size="small">
+                        <el-radio-button v-for="item in sexOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+                      </el-radio-group>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -281,8 +283,46 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item label="昵称" prop="nickName">
-                      <el-input v-model="temp.nickName" />
+                    <el-form-item label="党员" prop="dyType">
+                      <el-radio-group v-model="temp.dyType" size="small">
+                        <el-radio-button v-for="item in yesNoOptions" :key="item.key" :label="item.key">{{ item.display_name }}</el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row v-if="temp.dyType === 1">
+                  <el-col :span="12">
+                    <el-form-item label="入党时间" prop="rdDate">
+                      <el-date-picker v-model="temp.rdDate" type="date" placeholder="请选择" style="width:100%;" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="党组织" prop="dorg">
+                      <el-input v-model="temp.dorg" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="岗位" prop="jobPosition">
+                      <el-input v-model="temp.jobPosition" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="职务" prop="job">
+                      <el-input v-model="temp.job" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="密码" prop="password">
+                      <el-input v-model="temp.password" type="password" autocomplete="off" placeholder="请输入密码" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="确认密码" prop="checkPass">
+                      <el-input v-model="temp.checkPass" type="password" autocomplete="off" placeholder="请输入确认密码" />
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -385,7 +425,7 @@ import Pagination from '@/components/Pagination' // secondary package based on e
 import md5 from 'js-md5'
 import LacUserSingleSelect from '@/views/yw-user/components/user-single-select'
 import LacOrgSingleSelect from '@/views/yw-company/components/org-single-select'
-import { userStatusOptions, userTypeOptions } from '@/filters'
+import { userStatusOptions, userTypeOptions, sexOptions, yesNoOptions } from '@/filters'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 
@@ -466,6 +506,8 @@ export default {
       },
       statusOptions: userStatusOptions(),
       typeOptions: userTypeOptions(),
+      sexOptions: sexOptions(),
+      yesNoOptions: yesNoOptions(),
       temp: {
         id: undefined,
         uuid: '',
@@ -473,6 +515,11 @@ export default {
         parentClass: '',
         orgName: '',
         name: '',
+        idCard: '',
+        sex: 'M',
+        birthday: '',
+        jobPosition: '',
+        job: '',
         account: '',
         govCode: '',
         mobile: '',
@@ -483,7 +530,10 @@ export default {
         status: 0,
         remark: '',
         roleEnabled: true,
-        roleIds: []
+        roleIds: [],
+        dyType: 0,
+        rdDate: '',
+        dorg: ''
       },
       dialogFormVisible: false,
       rules: {
@@ -685,6 +735,11 @@ export default {
         parentClass: this.tree.checkedNode.id > 0 ? 'YwDepartment' : 'YwCompany',
         orgName: selectNode.name,
         name: '',
+        idCard: '',
+        sex: 'M',
+        birthday: '',
+        jobPosition: '',
+        job: '',
         account: '',
         govCode: '',
         mobile: '',
@@ -695,7 +750,10 @@ export default {
         status: 0,
         remark: '',
         roleEnabled: true,
-        roleIds: []
+        roleIds: [],
+        dyType: 0,
+        rdDate: '',
+        dorg: ''
       }
     },
     handleCreate() {

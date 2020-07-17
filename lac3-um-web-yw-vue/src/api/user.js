@@ -10,9 +10,8 @@ export function login(data) {
 
 /**
  * 返回sessionUser，包含权限信息
- * @param {*} token
  */
-export function getInfo(token) {
+export function getSessionUserInfo() {
   return request({
     url: '/api4umyw/face/YwUser/fetchLoginUser',
     method: 'post'
@@ -63,6 +62,14 @@ export function createUser(data) {
 export function updateUser(data) {
   return request({
     url: '/api4umyw/face/YwUser/save',
+    method: 'post',
+    data
+  })
+}
+
+export function updateJzUser(data) {
+  return request({
+    url: '/api4umyw/face/YwUser/updateJz',
     method: 'post',
     data
   })

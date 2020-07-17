@@ -77,7 +77,7 @@
               <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
             </template>
           </el-table-column>
-          <el-table-column label="姓名" width="180px" prop="name" sortable>
+          <el-table-column label="姓名" min-width="150px" prop="name" sortable>
             <template slot-scope="{row}">
               <span v-if="checkPermission(['yw_user_view']) === false">{{ row.name }}</span>
               <router-link v-if="checkPermission(['yw_user_view']) === true" :to="'/user/user-view/'+row.id+'/'+row.uuid" class="link-type">
@@ -86,14 +86,9 @@
               <el-tag v-if="row.type == 9">管</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="账号" width="150px" align="center" prop="account" sortable>
+          <el-table-column label="账号" width="180px" align="center" prop="account" sortable>
             <template slot-scope="scope">
               <span>{{ scope.row.account }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="部门" width="250px" align="center">
-            <template slot-scope="scope">
-              <span>{{ scope.row.orgFullName || scope.row.companyName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="手机" width="120px" align="center" prop="mobile" sortable>
@@ -101,7 +96,12 @@
               <span>{{ scope.row.mobile }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注说明" min-width="100px" />
+          <el-table-column label="所在部门/单位" width="250px" align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.orgFullName || scope.row.companyName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="jzCompanyName" label="授权单位" width="250px" align="center" />
           <el-table-column v-if="checkPermission(['yw_perm_role_users'])" label="操作" align="center" width="60" class-name="small-padding">
             <template slot-scope="{row}">
               <el-button type="danger" size="mini" icon="el-icon-close" title="移除" @click="onRoleUserDelete(row)" />
@@ -310,7 +310,7 @@
             <span>{{ scope.row.account }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="部门" width="250px" align="center">
+        <el-table-column label="所在部门/单位" width="250px" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.orgFullName || scope.row.companyName }}</span>
           </template>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -27,7 +28,6 @@ import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
-import com.linkallcloud.um.oapi.request.CompanyEntityRequest;
 import com.linkallcloud.web.face.annotation.Face;
 
 @Controller
@@ -104,14 +104,16 @@ public class YwUserFace {
 			throw new ArgException("Arg", "Account和AppCode都不能为空");
 		}
 
-		return ywUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode());
+		return ywUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(),
+				new Sid(faceReq.getCompanyId(), null, "YwCompany", null));
 	}
 
 	@Face(login = false)
 	@RequestMapping(value = "/getUserAppMenu", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppMenu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			Tree root = ywUserManager.getUserAppMenu(t, faceReq.getUserId(), faceReq.getAppId());
+			Tree root = ywUserManager.getUserAppMenu(t, faceReq.getCompanyId(), faceReq.getUserId(),
+					faceReq.getAppId());
 			return root == null ? null : root.getChildren();
 		}
 		return null;
@@ -121,7 +123,8 @@ public class YwUserFace {
 	@RequestMapping(value = "/getUserAppMenuRes", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppPermissions4Menu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			String[] perms = ywUserManager.getUserAppMenus(t, faceReq.getUserId(), faceReq.getAppId());
+			String[] perms = ywUserManager.getUserAppMenus(t, faceReq.getCompanyId(), faceReq.getUserId(),
+					faceReq.getAppId());
 			return perms;
 		}
 		return null;
@@ -131,7 +134,7 @@ public class YwUserFace {
 	@RequestMapping(value = "/getUserAppOrgIds", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppOrgIds(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			return ywUserManager.getUserAppOrgs(t, faceReq.getUserId(), faceReq.getAppId());
+			return ywUserManager.getUserAppOrgs(t, faceReq.getCompanyId(), faceReq.getUserId(), faceReq.getAppId());
 		}
 		return null;
 	}
@@ -140,7 +143,7 @@ public class YwUserFace {
 	@RequestMapping(value = "/getUserAppAreaIds", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppAreaIds(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			return ywUserManager.getUserAppAreas(t, faceReq.getUserId(), faceReq.getAppId());
+			return ywUserManager.getUserAppAreas(t, faceReq.getCompanyId(), faceReq.getUserId(), faceReq.getAppId());
 		}
 		return null;
 	}
@@ -183,13 +186,13 @@ public class YwUserFace {
 		}
 	}
 
-	@Face(login = false)
-	@RequestMapping(value = "/findByRoleCompany", method = RequestMethod.POST)
-	public @ResponseBody Object findByRoleCompany(CompanyEntityRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getCompanyId() == null || faceReq.getEntityId() == null) {
-			return null;
-		}
-		return ywUserManager.findByRoleCompany(t, faceReq.getCompanyId(), faceReq.getEntityId());
-	}
+//	@Face(login = false)
+//	@RequestMapping(value = "/findByRoleCompany", method = RequestMethod.POST)
+//	public @ResponseBody Object findByRoleCompany(CompanyEntityRequest faceReq, Trace t) throws Exception {
+//		if (faceReq.getCompanyId() == null || faceReq.getEntityId() == null) {
+//			return null;
+//		}
+//		return ywUserManager.findByRoleCompany(t, faceReq.getCompanyId(), faceReq.getEntityId());
+//	}
 
 }

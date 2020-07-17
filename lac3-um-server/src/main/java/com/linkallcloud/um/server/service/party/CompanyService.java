@@ -65,17 +65,20 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
-	public Tree getUserAppCompanyTree(Trace t, Long appId, Long userId) {
+	public Tree getUserAppCompanyTree(Trace t, Long appId, Long userId, Long companyId) {
 		U user = getUserActivity().fetchById(t, userId);
 		if (user == null) {
 			throw new BaseRuntimeException("100001", "userId参数错误:" + userId);
 		}
 
-		C company = activity().fetchById(t, user.getCompanyId());
+		if(companyId == null) {
+			companyId = user.getCompanyId();
+		}
+		C company = activity().fetchById(t, companyId);// user.getCompanyId()
 		if (user.getAccount().equals("superadmin") || user.isAdmin()) {
 			return activity().getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, company.getId());
 		} else {
-			boolean depAdmin = getUserActivity().isUserDepartmentAdmin(t, userId);
+			boolean depAdmin = getUserActivity().isUserDepartmentAdmin(t, userId, companyId);
 			if (depAdmin) {
 				Tree vroot = getCompanyVirtulTreeNode(t, company);
 				if ("YwDepartment".equals(user.getParentClass()) || "KhDepartment".equals(user.getParentClass())) {
@@ -86,7 +89,7 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 			} else {
 				Tree root = null;
 				String rootId = "-" + company.getId();
-				List<Long> permedOrgIds = getUserActivity().getUserAppOrgs(t, userId, appId);
+				List<Long> permedOrgIds = getUserActivity().getUserAppOrgs(t, companyId, userId, appId);
 				if (permedOrgIds != null && !permedOrgIds.isEmpty()) {
 					List<Tree> orgs = activity().getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY, company.getId());
 					List<Tree> items = new ArrayList<Tree>();

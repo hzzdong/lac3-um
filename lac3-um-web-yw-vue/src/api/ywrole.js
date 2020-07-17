@@ -24,6 +24,14 @@ export function findCompanyRoles(data) {
   })
 }
 
+export function findJzCompanyRoles(data) {
+  return request({
+    url: '/api4umyw/face/YwRole/findJzCompanyRoles',
+    method: 'post',
+    data
+  })
+}
+
 export function findUserRoleIds(data) {
   return request({
     url: '/api4umyw/face/YwRole/findUserRoleIds',
@@ -32,9 +40,25 @@ export function findUserRoleIds(data) {
   })
 }
 
+export function findJzUserRoleIds(data) {
+  return request({
+    url: '/api4umyw/face/YwRole/findJzUserRoleIds',
+    method: 'post',
+    data
+  })
+}
+
 export function findUserRoles(data) {
   return request({
     url: '/api4umyw/face/YwRole/findUserRoles',
+    method: 'post',
+    data
+  })
+}
+
+export function findJzUserRoles(data) {
+  return request({
+    url: '/api4umyw/face/YwRole/findJzUserRoles',
     method: 'post',
     data
   })

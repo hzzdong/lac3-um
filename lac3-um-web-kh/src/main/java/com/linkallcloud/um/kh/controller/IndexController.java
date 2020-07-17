@@ -3,7 +3,6 @@ package com.linkallcloud.um.kh.controller;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,15 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.dto.Result;
-import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.enums.LoginMode;
 import com.linkallcloud.core.exception.IllegalParameterException;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.core.www.UrlPattern;
-import com.linkallcloud.um.domain.party.KhUser;
-import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.exception.AuthException;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.web.session.SessionUser;
@@ -72,66 +67,4 @@ public class IndexController {
 		throw new AuthException();
 	}
 
-	@RequestMapping(value = "/dwLogin", method = RequestMethod.GET)
-	public String dwLogin(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t,
-			HttpSession session, HttpServletRequest request) {
-		if (id == null || Strings.isBlank(uuid)) {
-			throw new ArgException("您无法进行代维：参数错误。");
-		}
-
-		SessionUser srcUser = Controllers.getSessionUser(myAppCode, request);
-		if (srcUser == null) {
-			throw new AuthException("您无法进行代维，可能是能未处于登录状态。");
-		}
-
-		KhUser proxyUser = khUserManager.fetchCompanyAdmin(t, new Sid(id, uuid));
-		if (proxyUser == null) {
-			throw new AuthException("您无法进行代维：参数错误，或本单位未设置管理员。");
-		}
-
-		SessionUser proxySu = khUserManager.assembleSessionUser(t, proxyUser.getAccount(), myAppCode);
-
-		try {
-			session.invalidate();
-		} catch (Exception e) {
-		}
-
-		proxySu.proxyFrom(srcUser);
-		Controllers.login(myAppCode, proxySu);
-
-		// userType, loginName, userName, userId, companyId, companyName, validPeriod
-		String token = Controllers.createToken(proxySu, 0);
-
-		try {
-			UrlPattern up = new UrlPattern(h5Home).append("token", token);
-			return Controllers.redirect(up.url());
-		} catch (UnsupportedEncodingException e) {
-		}
-		throw new AuthException("代维失败。");
-	}
-
-	@RequestMapping(value = "/dwLogout", method = RequestMethod.GET)
-	public String dwLogout(Trace t, HttpSession session, HttpServletRequest request) {
-		SessionUser proxySu = Controllers.getSessionUser(myAppCode, request);
-		if (proxySu == null || !proxySu.getLoginMode().equals(LoginMode.Proxy.getCode())
-				|| proxySu.getSrcUser() == null) {
-			throw new AuthException("退出代维模式失败。");
-		}
-
-		SessionUser srcUser = proxySu.getSrcUser();
-		try {
-			session.invalidate();
-		} catch (Exception e) {
-		}
-		Controllers.login(myAppCode, srcUser);
-
-		String token = Controllers.createToken(srcUser, 0);
-
-		try {
-			UrlPattern up = new UrlPattern(h5Home).append("token", token);
-			return Controllers.redirect(up.url());
-		} catch (UnsupportedEncodingException e) {
-		}
-		throw new AuthException("退出代维模式失败。");
-	}
 }

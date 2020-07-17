@@ -15,7 +15,7 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     config.headers['X-Requested-With'] = 'XMLHttpRequest'
-    config.headers.post['content-Type'] = 'application/json; charset=UTF-8'
+    config.headers.post['Content-Type'] = 'application/json; charset=UTF-8'
     // config.responseType = 'json'
     if (store.getters.token) {
       // let each request carry token

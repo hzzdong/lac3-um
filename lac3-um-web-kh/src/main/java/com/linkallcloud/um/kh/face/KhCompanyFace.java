@@ -113,7 +113,7 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Override
 	public List<Tree> doLoadTree(Trace t, IdFaceRequest fr, SessionUser su) {
 		// Application app = applicationManager.fetchByCode(t, myAppCode);
-		Tree root = khCompanyManager.getUserAppCompanyTree(t, su.appId(), su.id());
+		Tree root = khCompanyManager.getUserAppCompanyTree(t, su.appId(), su.id(), su.companyId());
 		if (root != null && "v-root".equals(root.getId())) {
 			return root.getChildren();
 		} else {

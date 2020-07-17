@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -27,7 +28,6 @@ import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
 import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
-import com.linkallcloud.um.oapi.request.CompanyEntityRequest;
 import com.linkallcloud.web.face.annotation.Face;
 
 @Controller
@@ -103,14 +103,16 @@ public class KhUserFace {
 		if (Strings.isBlank(faceReq.getAccount()) || Strings.isBlank(faceReq.getAppCode())) {
 			throw new ArgException("Arg", "Account和AppCode都不能为空");
 		}
-		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode());
+		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(),
+				new Sid(faceReq.getCompanyId(), null, "KhCompany", null));
 	}
 
 	@Face(login = false)
 	@RequestMapping(value = "/getUserAppMenu", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppMenu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			Tree root = khUserManager.getUserAppMenu(t, faceReq.getUserId(), faceReq.getAppId());
+			Tree root = khUserManager.getUserAppMenu(t, faceReq.getCompanyId(), faceReq.getUserId(),
+					faceReq.getAppId());
 			return root == null ? null : root.getChildren();
 		}
 		return null;
@@ -120,7 +122,8 @@ public class KhUserFace {
 	@RequestMapping(value = "/getUserAppMenuRes", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppPermissions4Menu(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			String[] perms = khUserManager.getUserAppMenus(t, faceReq.getUserId(), faceReq.getAppId());
+			String[] perms = khUserManager.getUserAppMenus(t, faceReq.getCompanyId(), faceReq.getUserId(),
+					faceReq.getAppId());
 			return perms;
 		}
 		return null;
@@ -130,7 +133,7 @@ public class KhUserFace {
 	@RequestMapping(value = "/getUserAppOrgIds", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppOrgIds(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			return khUserManager.getUserAppOrgs(t, faceReq.getUserId(), faceReq.getAppId());
+			return khUserManager.getUserAppOrgs(t, faceReq.getCompanyId(), faceReq.getUserId(), faceReq.getAppId());
 		}
 		return null;
 	}
@@ -139,7 +142,7 @@ public class KhUserFace {
 	@RequestMapping(value = "/getUserAppAreaIds", method = RequestMethod.POST)
 	public @ResponseBody Object getUserAppAreaIds(UserAppRequest faceReq, Trace t) {
 		if (faceReq.getUserId() != null && faceReq.getAppId() != null) {
-			return khUserManager.getUserAppAreas(t, faceReq.getUserId(), faceReq.getAppId());
+			return khUserManager.getUserAppAreas(t, faceReq.getCompanyId(), faceReq.getUserId(), faceReq.getAppId());
 		}
 		return null;
 	}
@@ -182,12 +185,12 @@ public class KhUserFace {
 		}
 	}
 
-	@Face(login = false)
-	@RequestMapping(value = "/findByRoleCompany", method = RequestMethod.POST)
-	public @ResponseBody Object findByRoleCompany(CompanyEntityRequest faceReq, Trace t) throws Exception {
-		if (faceReq.getCompanyId() == null || faceReq.getEntityId() == null) {
-			return null;
-		}
-		return khUserManager.findByRoleCompany(t, faceReq.getCompanyId(), faceReq.getEntityId());
-	}
+//	@Face(login = false)
+//	@RequestMapping(value = "/findByRoleCompany", method = RequestMethod.POST)
+//	public @ResponseBody Object findByRoleCompany(CompanyEntityRequest faceReq, Trace t) throws Exception {
+//		if (faceReq.getCompanyId() == null || faceReq.getEntityId() == null) {
+//			return null;
+//		}
+//		return khUserManager.findByRoleCompany(t, faceReq.getCompanyId(), faceReq.getEntityId());
+//	}
 }

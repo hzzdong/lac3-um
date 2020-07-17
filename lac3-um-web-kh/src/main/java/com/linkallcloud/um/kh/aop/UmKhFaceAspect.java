@@ -15,10 +15,13 @@ import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.security.MsgSignObject;
 import com.linkallcloud.um.domain.sys.Application;
+import com.linkallcloud.um.iapi.party.IKhUserManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.web.face.FaceAspect;
 import com.linkallcloud.web.face.processor.PackageJsonProcessor;
-import com.linkallcloud.web.face.processor.PackageXmlProcessor;
+import com.linkallcloud.web.face.processor.SimpleJsonProcessor;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.session.SimpleSessionUser;
 
 @Aspect
 @Component
@@ -28,6 +31,8 @@ public class UmKhFaceAspect extends FaceAspect {
 	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
+	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IKhUserManager khUserManager;
 
 	@Pointcut("execution(public * com.linkallcloud.um.kh.face..*.*(..))")
 	public void oapiface() {
@@ -45,7 +50,15 @@ public class UmKhFaceAspect extends FaceAspect {
 
 	@Override
 	protected PackageJsonProcessor getPackageJsonProcessor() {
-		PackageJsonProcessor pjp = new PackageJsonProcessor();
+		PackageJsonProcessor pjp = new PackageJsonProcessor() {
+
+			@Override
+			protected SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser ssu) {
+				return khUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(),
+						ssu.getCompany());
+			}
+
+		};
 		List<Application> apps = findApplications();
 		if (apps != null && !apps.isEmpty()) {
 			for (Application app : apps) {
@@ -58,15 +71,23 @@ public class UmKhFaceAspect extends FaceAspect {
 		return pjp;
 	}
 
-	@Override
-	protected PackageXmlProcessor getPackageXmlProcessor() {
-		return null;
-	}
-
 	private List<Application> findApplications() {
 		Query query = new Query();
 		query.addRule(new Equal("status", 0));
 		return applicationManager.find(new Trace(true), query);
+	}
+
+	@Override
+	protected SimpleJsonProcessor getSimpleJsonProcessor() {
+		return new SimpleJsonProcessor() {
+
+			@Override
+			protected SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser ssu) {
+				return khUserManager.assembleSessionUser(new Trace(), ssu.getLoginName(), ssu.appCode(),
+						ssu.getCompany());
+			}
+
+		};
 	}
 
 }

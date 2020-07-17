@@ -39,7 +39,7 @@ import com.linkallcloud.um.server.dao.sys.IAccountDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IMenuDao;
 
-public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D extends Department, DD extends IDepartmentDao<D>, C extends Company, CD extends ICompanyDao<C>, R extends Role, RD extends IRoleDao<R, T>,A extends Account,AD extends IAccountDao<A>>
+public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D extends Department, DD extends IDepartmentDao<D>, C extends Company, CD extends ICompanyDao<C>, R extends Role, RD extends IRoleDao<R, T>, A extends Account, AD extends IAccountDao<A>>
 		extends PartyActivity<T, UD> implements IUserActivity<T> {
 
 	public UserActivity() {
@@ -57,7 +57,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	protected abstract CD getCompanyDao();
 
 	protected abstract RD getRoleDao();
-	
+
 	protected abstract AD getAccountDao();
 
 	@Override
@@ -74,7 +74,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	public Long insert(Trace t, T entity) {
 		Long id = super.insert(t, entity);
 		if (entity.getRoleIds() != null && !entity.getRoleIds().isEmpty()) {
-			dao().addUserRoles(t, id, entity.getRoleIds());
+			dao().addUserRoles(t, id, entity.getRoleIds(), entity.getCompanyId());
 		}
 		return id;
 	}
@@ -83,9 +83,10 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	public boolean update(Trace t, T entity) {
 		boolean ret = super.update(t, entity);
 		if (ret && entity.isRoleEnabled()) {
-			dao().removeUserAllRoles(t, entity.getId());
+			Long roledCompanyId = entity.getJzCompanyId() != null ? entity.getJzCompanyId() : entity.getCompanyId();
+			dao().removeUserAllRoles(t, entity.getId(), roledCompanyId);
 			if (entity.getRoleIds() != null && !entity.getRoleIds().isEmpty()) {
-				dao().addUserRoles(t, entity.getId(), entity.getRoleIds());
+				dao().addUserRoles(t, entity.getId(), entity.getRoleIds(), roledCompanyId);
 			}
 		}
 		return ret;
@@ -154,15 +155,15 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	}
 
 	@Override
-	public boolean addUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
-		if (userId != null && !Strings.isBlank(userUuid) && roleUuidIds != null && !roleUuidIds.isEmpty()) {
-			T user = fetchByIdUuid(t, userId, userUuid);
+	public boolean addUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
+		if (userId != null && companyId != null && roleUuidIds != null && !roleUuidIds.isEmpty()) {
+			T user = fetchById(t, userId);
 			if (user != null) {
 				List<R> checkedEntities = findRolesUuidIds(t, roleUuidIds);
 				if (checkedEntities != null && !checkedEntities.isEmpty()
 						&& checkedEntities.size() == roleUuidIds.size()) {
 					List<Long> roleIds = Domains.parseIds(roleUuidIds);
-					return dao().addUserRoles(t, userId, roleIds);
+					return dao().addUserRoles(t, userId, roleIds, companyId);
 				}
 			}
 		}
@@ -170,15 +171,15 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	}
 
 	@Override
-	public boolean removeUserRoles(Trace t, Long userId, String userUuid, Map<String, Long> roleUuidIds) {
-		if (userId != null && !Strings.isBlank(userUuid) && roleUuidIds != null && !roleUuidIds.isEmpty()) {
-			T user = fetchByIdUuid(t, userId, userUuid);
+	public boolean removeUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
+		if (userId != null && companyId != null && roleUuidIds != null && !roleUuidIds.isEmpty()) {
+			T user = fetchById(t, userId);
 			if (user != null) {
 				List<R> checkedEntities = findRolesUuidIds(t, roleUuidIds);
 				if (checkedEntities != null && !checkedEntities.isEmpty()
 						&& checkedEntities.size() == roleUuidIds.size()) {
 					List<Long> roleIds = Domains.parseIds(roleUuidIds);
-					return dao().removeUserRoles(t, userId, roleIds);
+					return dao().removeUserRoles(t, userId, roleIds, companyId);
 				}
 			}
 		}
@@ -190,28 +191,28 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new ArgException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-		
+
 		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
 		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
 		R role = getRoleDao().fetchByIdUuid(t, roleId, roleUuid);
 		if (role == null) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-		
+
 		Equal r = (Equal) page.getRule4Field("type");
 		if (r != null) {
 			r.setValue(role.getType());
 		} else {
 			page.addRule(new Equal("type", role.getType()));
 		}
-		
+
 		Equal rl = (Equal) page.getRule4Field("level");
 		if (rl != null) {
 			rl.setValue(role.getLevel());
 		} else {
 			page.addRule(new Equal("level", role.getLevel()));
 		}
-		
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -233,28 +234,28 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		if (page == null || !page.hasRule4Field("roleId") || !page.hasRule4Field("roleUuid")) {
 			throw new ArgException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-		
+
 		Long roleId = Castors.me().castTo(((Equal) page.getRule4Field("roleId")).getValue(), Long.class);
 		String roleUuid = Castors.me().castToString(((Equal) page.getRule4Field("roleUuid")).getValue());
 		R role = getRoleDao().fetchByIdUuid(t, roleId, roleUuid);
 		if (role == null) {
 			throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 		}
-		
+
 		Equal r = (Equal) page.getRule4Field("type");
 		if (r != null) {
 			r.setValue(role.getType());
 		} else {
 			page.addRule(new Equal("type", role.getType()));
 		}
-		
+
 		Equal rl = (Equal) page.getRule4Field("level");
 		if (rl != null) {
 			rl.setValue(role.getLevel());
 		} else {
 			page.addRule(new Equal("level", role.getLevel()));
 		}
-		
+
 		page.checkPageParameters();
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -280,14 +281,14 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			if (role == null) {
 				throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "roleId,roleUuid参数错误。");
 			}
-			
+
 			Equal r = (Equal) page.getRule4Field("type");
 			if (r != null) {
 				r.setValue(role.getType());
 			} else {
 				page.addRule(new Equal("type", role.getType()));
 			}
-			
+
 			Equal rl = (Equal) page.getRule4Field("level");
 			if (rl != null) {
 				rl.setValue(role.getLevel());
@@ -298,68 +299,68 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		return super.findPage4Select(t, page);
 	}
 
+//	@Override
+//	public List<T> find4Role(Trace t, Long roleId) {
+//		return dao().find4RoleById(t, roleId);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, Long[] roleIds) {
+//		return dao().find4RoleByIds(t, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String roleGovCode) {
+//		return dao().find4RoleByGovCode(t, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> find4Role(Trace t, String[] roleGovCodes) {
+//		return dao().find4RoleByGovCodes(t, roleGovCodes);
+//	}
+//
+//	@Override
+//	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
+//		return dao().findByRoleCompany(t, companyId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
+//		return dao().findDepartmentUser4RoleById(t, departmentId, roleId);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
+//		return dao().findDepartmentUser4RoleByIds(t, departmentId, roleIds);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
+//		return dao().findDepartmentUser4RoleByGovCode(t, departmentId, roleGovCode);
+//	}
+//
+//	@Override
+//	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
+//		return dao().findDepartmentUser4RoleByGovCodes(t, departmentId, roleGovCodes);
+//	}
+
 	@Override
-	public List<T> find4Role(Trace t, Long roleId) {
-		return dao().find4RoleById(t, roleId);
+	public List<Long> getUserAppOrgs(Trace t, Long companyId, Long userId, Long appId) {
+		return dao().findUserAppOrgs(t, companyId, userId, appId);
 	}
 
 	@Override
-	public List<T> find4Role(Trace t, Long[] roleIds) {
-		return dao().find4RoleByIds(t, roleIds);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String roleGovCode) {
-		return dao().find4RoleByGovCode(t, roleGovCode);
-	}
-
-	@Override
-	public List<T> find4Role(Trace t, String[] roleGovCodes) {
-		return dao().find4RoleByGovCodes(t, roleGovCodes);
-	}
-
-	@Override
-	public List<T> findByRoleCompany(Trace t, Long companyId, Long roleId) {
-		return dao().findByRoleCompany(t, companyId, roleId);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long roleId) {
-		return dao().findDepartmentUser4RoleById(t, departmentId, roleId);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, Long[] roleIds) {
-		return dao().findDepartmentUser4RoleByIds(t, departmentId, roleIds);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String roleGovCode) {
-		return dao().findDepartmentUser4RoleByGovCode(t, departmentId, roleGovCode);
-	}
-
-	@Override
-	public List<T> findDepartmentUser4Role(Trace t, Long departmentId, String[] roleGovCodes) {
-		return dao().findDepartmentUser4RoleByGovCodes(t, departmentId, roleGovCodes);
-	}
-
-	@Override
-	public List<Long> getUserAppOrgs(Trace t, Long userId, Long appId) {
-		return dao().findUserAppOrgs(t, userId, appId);
-	}
-
-	@Override
-	public List<Long> getUserAppAreas(Trace t, Long userId, Long appId) {
+	public List<Long> getUserAppAreas(Trace t, Long companyId, Long userId, Long appId) {
 		T user = dao().fetchById(t, userId);
 		Application app = applicationDao.fetchById(t, appId);
 		if (user == null || app == null) {
 			return null;
 		}
-		return dao().findUserAppAreas(t, userId, appId);
+		return dao().findUserAppAreas(t, companyId, userId, appId);
 	}
 
 	@Override
-	public String[] getUserAppMenus(Trace t, Long userId, Long appId) {
+	public String[] getUserAppMenus(Trace t, Long companyId, Long userId, Long appId) {
 		T user = dao().fetchById(t, userId);
 		Application app = applicationDao.fetchById(t, appId);
 		if (user == null || app == null) {
@@ -373,7 +374,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 			List<Menu> menus = findCompanyAppMenusWithButton(t, user.getCompanyId(), appId);
 			return menu2RescodeArray(menus);
 		} else {
-			return dao().findUserAppMenuResCodes(t, userId, appId);
+			return dao().findUserAppMenuResCodes(t, companyId, userId, appId);
 		}
 	}
 
@@ -615,9 +616,9 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 	}
 
 	@Override
-	public boolean isUserDepartmentAdmin(Trace t, Long userId) {
+	public boolean isUserDepartmentAdmin(Trace t, Long userId, Long companyId) {
 		boolean depAdmin = false;
-		List<R> roles = getRoleDao().find4User(t, userId);
+		List<R> roles = getRoleDao().find4User(t, userId, companyId);
 		for (R role : roles) {
 			if (role.getGovCode().equals(departmentAdminRoleCode())) {
 				depAdmin = true;

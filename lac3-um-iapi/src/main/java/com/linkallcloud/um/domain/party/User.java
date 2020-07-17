@@ -44,6 +44,11 @@ public abstract class User extends Party {
 	private String zwuid;// 政务服务网用户ID
 	private String dduid;// 钉钉用户ID
 	private int ddStatus;// 钉钉用户状态，0：未同步，1：同步成功，2：浙政钉用户同步失败
+	
+	private int dyType;//是否党员，1：是，0：否
+	@JSONField(format = "yyyy-MM-dd")
+	private Date rdDate;//入党日期
+	private String dorg;//所在党组织
 
 	/*
 	 * 以下字段为查询字段
@@ -51,6 +56,8 @@ public abstract class User extends Party {
 	private String companyName;
 	private List<Long> roleIds;// 新增和编辑界面上选中中角色
 	private boolean roleEnabled;// 编辑时否维护用户的角色
+	private Long jzCompanyId;//兼职公司id，用于兼职目标公司管理员编辑此用户信息时记录目标公司id
+	private String jzCompanyName;
 
 	/** 原密码 */
 	@JSONField(serialize = false)
@@ -257,6 +264,46 @@ public abstract class User extends Party {
 
 	public Long getRootDepartmentId() {
 		return Domains.parseMyRootDepartmentId(getCode());
+	}
+
+	public int getDyType() {
+		return dyType;
+	}
+
+	public void setDyType(int dyType) {
+		this.dyType = dyType;
+	}
+
+	public Date getRdDate() {
+		return rdDate;
+	}
+
+	public void setRdDate(Date rdDate) {
+		this.rdDate = rdDate;
+	}
+
+	public String getDorg() {
+		return dorg;
+	}
+
+	public void setDorg(String dorg) {
+		this.dorg = dorg;
+	}
+
+	public Long getJzCompanyId() {
+		return jzCompanyId;
+	}
+
+	public void setJzCompanyId(Long jzCompanyId) {
+		this.jzCompanyId = jzCompanyId;
+	}
+
+	public String getJzCompanyName() {
+		return jzCompanyName;
+	}
+
+	public void setJzCompanyName(String jzCompanyName) {
+		this.jzCompanyName = jzCompanyName;
 	}
 
 }

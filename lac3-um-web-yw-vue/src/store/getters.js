@@ -10,11 +10,15 @@ const getters = {
   name: state => state.user.name,
   loginMode: state => state.user.loginMode,
   resources: state => state.user.menuPermissions,
+  orgId: state => state.user.orgId,
+  orgType: state => state.user.orgType,
+  orgName: state => state.user.orgName,
+  myOrgs: state => state.user.myOrgs,
   permission_routes: state => state.permission.routes,
   myCompanyAreaTree: state => state.laccache.myCompanyAreaTree,
   orgCertificateType: state => state.laccache.orgCertificateType,
   personCertificateType: state => state.laccache.personCertificateType,
-  orgType: state => state.laccache.orgType,
+  // orgType: state => state.laccache.orgType,
   errorLogs: state => state.errorLog.logs
 }
 export default getters

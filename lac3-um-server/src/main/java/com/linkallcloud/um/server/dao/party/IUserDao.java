@@ -33,89 +33,90 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 * @return
 	 */
 	List<T> findPage4Role(@Param("t") Trace t, @Param("page") Page<T> page);
+
 	List<T> findPage4UnRole(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleId
-	 * @return
-	 */
-	List<T> find4RoleById(@Param("t") Trace t, @Param("roleId") Long roleId);
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleId
+//	 * @return
+//	 */
+//	List<T> find4RoleById(@Param("t") Trace t, @Param("roleId") Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleIds
+//	 * @return
+//	 */
+//	List<T> find4RoleByIds(@Param("t") Trace t, @Param("roleIds") Long[] roleIds);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCode
+//	 * @return
+//	 */
+//	List<T> find4RoleByGovCode(@Param("t") Trace t, @Param("roleGovCode") String roleGovCode);
+//
+//	/**
+//	 * 查询某角色已分配的用户
+//	 *
+//	 * @param t
+//	 * @param roleGovCodes
+//	 * @return
+//	 */
+//	List<T> find4RoleByGovCodes(@Param("t") Trace t, @Param("roleGovCodes") String[] roleGovCodes);
 
-	List<T> findByRoleCompany(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("roleId") Long roleId);
-
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleIds
-	 * @return
-	 */
-	List<T> find4RoleByIds(@Param("t") Trace t, @Param("roleIds") Long[] roleIds);
-
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleGovCode
-	 * @return
-	 */
-	List<T> find4RoleByGovCode(@Param("t") Trace t, @Param("roleGovCode") String roleGovCode);
-
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param roleGovCodes
-	 * @return
-	 */
-	List<T> find4RoleByGovCodes(@Param("t") Trace t, @Param("roleGovCodes") String[] roleGovCodes);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param departmentId
-	 * @param roleId
-	 * @return
-	 */
-	List<T> findDepartmentUser4RoleById(@Param("t") Trace t, @Param("departmentId") Long departmentId,
-			@Param("roleId") Long roleId);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param departmentId
-	 * @param roleIds
-	 * @return
-	 */
-	List<T> findDepartmentUser4RoleByIds(@Param("t") Trace t, @Param("departmentId") Long departmentId,
-			@Param("roleIds") Long[] roleIds);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param departmentId
-	 * @param roleGovCode
-	 * @return
-	 */
-	List<T> findDepartmentUser4RoleByGovCode(@Param("t") Trace t, @Param("departmentId") Long departmentId,
-			@Param("roleGovCode") String roleGovCode);
-
-	/**
-	 * 查询某角色已分配给某部门的用户
-	 *
-	 * @param t
-	 * @param departmentId
-	 * @param roleGovCodes
-	 * @return
-	 */
-	List<T> findDepartmentUser4RoleByGovCodes(@Param("t") Trace t, @Param("departmentId") Long departmentId,
-			@Param("roleGovCodes") String[] roleGovCodes);
+//	List<T> findByRoleCompany(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("roleId") Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param departmentId
+//	 * @param roleId
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4RoleById(@Param("t") Trace t, @Param("departmentId") Long departmentId,
+//			@Param("roleId") Long roleId);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param departmentId
+//	 * @param roleIds
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4RoleByIds(@Param("t") Trace t, @Param("departmentId") Long departmentId,
+//			@Param("roleIds") Long[] roleIds);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param departmentId
+//	 * @param roleGovCode
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4RoleByGovCode(@Param("t") Trace t, @Param("departmentId") Long departmentId,
+//			@Param("roleGovCode") String roleGovCode);
+//
+//	/**
+//	 * 查询某角色已分配给某部门的用户
+//	 *
+//	 * @param t
+//	 * @param departmentId
+//	 * @param roleGovCodes
+//	 * @return
+//	 */
+//	List<T> findDepartmentUser4RoleByGovCodes(@Param("t") Trace t, @Param("departmentId") Long departmentId,
+//			@Param("roleGovCodes") String[] roleGovCodes);
 
 	/**
 	 * 添加用户角色
@@ -123,9 +124,11 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 * @param t
 	 * @param userId
 	 * @param roleIds
+	 * @param companyId 授权公司id
 	 * @return
 	 */
-	boolean addUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
+	boolean addUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
+			@Param("companyId") Long companyId);
 
 	/**
 	 * 移除用户角色
@@ -135,7 +138,8 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 * @param roleIds
 	 * @return
 	 */
-	boolean removeUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds);
+	boolean removeUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
+			@Param("companyId") Long companyId);
 
 	/**
 	 * 移除用户所有角色
@@ -144,7 +148,7 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 * @param userId
 	 * @return
 	 */
-	boolean removeUserAllRoles(@Param("t") Trace t, @Param("userId") Long userId);
+	boolean removeUserAllRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("companyId") Long companyId);
 
 	/**
 	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
@@ -238,7 +242,6 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 */
 	List<T> findPermedUserPage(@Param("t") Trace t, @Param("page") Page<T> page);
 
-
 	/**
 	 * 获取某用户某App的组织权限，不区分superadmin和管理员，都按照表中权限数据查询。
 	 *
@@ -247,8 +250,13 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	 * @param appId
 	 * @return
 	 */
-	List<Long> findUserAppOrgs(@Param("t") Trace t, @Param("userId") Long userId, @Param("appId") Long appId);
-	List<Long> findUserAppAreas(@Param("t") Trace t, @Param("userId") Long userId, @Param("appId") Long appId);
-	String[] findUserAppMenuResCodes(@Param("t") Trace t, @Param("userId") Long userId, @Param("appId") Long appId);
+	List<Long> findUserAppOrgs(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
+			@Param("appId") Long appId);
+
+	List<Long> findUserAppAreas(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
+			@Param("appId") Long appId);
+
+	String[] findUserAppMenuResCodes(@Param("t") Trace t, @Param("companyId") Long companyId,
+			@Param("userId") Long userId, @Param("appId") Long appId);
 
 }

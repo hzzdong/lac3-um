@@ -67,18 +67,18 @@ public abstract class RoleManager<T extends Role, U extends User, S extends IRol
 	}
 
 	@Override
-	public List<T> find4User(Trace t, Long userId) {
-		return service().find4User(t, userId);
+	public List<T> find4User(Trace t, Long userId, Long companyId) {
+		return service().find4User(t, userId, companyId);
 	}
 
 	@Override
-	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
-		return service().addRoleUsers(t, roleId, roleUuid, userUuidIds);
+	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
+		return service().addRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Override
-	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
-		return service().removeRoleUsers(t, roleId, roleUuid, userUuidIds);
+	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
+		return service().removeRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Override

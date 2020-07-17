@@ -1,5 +1,11 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
+import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -11,12 +17,8 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.um.domain.party.KhRole;
 import com.linkallcloud.um.iapi.party.IKhRoleManager;
+import com.linkallcloud.um.oapi.request.RoleFaceRequest;
 import com.linkallcloud.web.face.annotation.Face;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "/face/KhRole", method = RequestMethod.POST)
@@ -71,10 +73,10 @@ public class KhRoleFace {
 
 	@Face(login = false)
 	@RequestMapping(value = "/find4User", method = RequestMethod.POST)
-	public @ResponseBody Object find4User(IdFaceRequest faceReq, Trace t) throws Exception {
+	public @ResponseBody Object find4User(RoleFaceRequest faceReq, Trace t) throws Exception {
 		if (faceReq.getId() == null) {
 			return null;
 		}
-		return khRoleManager.find4User(t, faceReq.getId());
+		return khRoleManager.find4User(t, faceReq.getId(), faceReq.getCompanyId());
 	}
 }

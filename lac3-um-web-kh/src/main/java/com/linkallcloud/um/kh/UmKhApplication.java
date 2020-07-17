@@ -6,6 +6,7 @@ import javax.servlet.MultipartConfigElement;
 
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -25,6 +26,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.linkallcloud.core.log.Log;
+import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.sso.client.validation.ServiceTicketValidator;
 import com.linkallcloud.sso.client.web.filter.AuthenticationFilter;
 import com.linkallcloud.sso.client.web.filter.TicketValidationFilter;
@@ -37,7 +40,8 @@ import com.linkallcloud.web.support.TraceArgumentResolver;
 
 @Configuration
 @SpringBootApplication(scanBasePackages = { "com.linkallcloud.um.kh" })
-public class UmKhApplication implements WebMvcConfigurer {
+public class UmKhApplication implements WebMvcConfigurer, CommandLineRunner {
+	private static final Log log = Logs.get();
 
 	@Value("${lac.lf.appclazz:1}")
 	private int myAppClazz;
@@ -155,6 +159,11 @@ public class UmKhApplication implements WebMvcConfigurer {
 		// 设置总上传数据总大小
 		factory.setMaxRequestSize(DataSize.parse("102400KB"));
 		return factory.createMultipartConfig();
+	}
+	
+	@Override
+	public void run(String... args) throws Exception {
+		log.info("UmKhApplication服务器启动完成!");
 	}
 
 }

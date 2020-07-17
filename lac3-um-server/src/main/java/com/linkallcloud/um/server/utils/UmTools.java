@@ -32,17 +32,20 @@ public class UmTools {
 			IYwUserActivity ywUserActivity, IAreaActivity areaActivity) throws BaseException {
 		Equal ywUserIdRule = (Equal) query.getRule4Field("ywUserId");
 		Equal appIdRule = (Equal) query.getRule4Field("appId");
+		Equal companyIdRule = (Equal) query.getRule4Field("companyId");
+		
 		// if (ywUserIdRule == null || appIdRule == null) {
 		// log.error("参数错误: ywUserId,appId参数都不能为空。");
 		// throw new BaseRuntimeException("100001", "参数错误: ywUserId,appId参数都不能为空。");
 		// }
 
-		if (ywUserIdRule == null && appIdRule == null) {
+		if (ywUserIdRule == null && appIdRule == null && companyIdRule == null) {
 			return;
 		}
 
 		Long ywUserId = (Long) ywUserIdRule.getValue();
 		Long appId = (Long) appIdRule.getValue();
+		Long companyId = (Long) companyIdRule.getValue();
 
 		YwUser ywUser = ywUserActivity.fetchById(t, ywUserId);
 		if (ywUser == null) {
@@ -57,12 +60,12 @@ public class UmTools {
 		if(ywSystemConfigActivity.isCustomerManageMode4Area(t, ywUser.getCompanyId())) {//区域隔离
 			List<Long> areaIds = null;
 			if (ywUser.isAdmin()) {// 管理员，用公司区域权限
-				Long[] areaArray = ywCompanyActivity.getCompanyAreaRootIds(t, ywUser.getCompanyId());
+				Long[] areaArray = ywCompanyActivity.getCompanyAreaRootIds(t, companyId);//ywUser.getCompanyId()
 				if (areaArray != null && areaArray.length > 0) {
 					areaIds = Arrays.asList(areaArray);
 				}
 			} else {// 普通用户，用户区域权限
-				areaIds = ywUserActivity.getUserAppAreas(t, ywUserId, appId);
+				areaIds = ywUserActivity.getUserAppAreas(t, companyId, ywUserId, appId);
 			}
 
 			if (areaIds == null || areaIds.isEmpty()) {
@@ -82,17 +85,20 @@ public class UmTools {
 			IYwUserActivity ywUserActivity, IAreaActivity areaActivity) throws BaseException {
 		Equal ywUserIdRule = (Equal) query.getRule4Field("ywUserId");
 		Equal appIdRule = (Equal) query.getRule4Field("appId");
+		Equal companyIdRule = (Equal) query.getRule4Field("companyId");
+		
 		// if (ywUserIdRule == null || appIdRule == null) {
 		// log.error("参数错误: ywUserId,appId参数都不能为空。");
 		// throw new BaseRuntimeException("100001", "参数错误: ywUserId,appId参数都不能为空。");
 		// }
 
-		if (ywUserIdRule == null && appIdRule == null) {
+		if (ywUserIdRule == null && appIdRule == null && companyIdRule == null) {
 			return;
 		}
 
 		Long ywUserId = (Long) ywUserIdRule.getValue();
 		Long appId = (Long) appIdRule.getValue();
+		Long companyId = (Long) companyIdRule.getValue();
 
 		YwUser ywUser = ywUserActivity.fetchById(t, ywUserId);
 		if (ywUser == null) {
@@ -106,12 +112,12 @@ public class UmTools {
 
 		List<Long> areaIds = null;
 		if (ywUser.isAdmin()) {// 管理员，用公司区域权限
-			Long[] areaArray = ywCompanyActivity.getCompanyAreaRootIds(t, ywUser.getCompanyId());
+			Long[] areaArray = ywCompanyActivity.getCompanyAreaRootIds(t, companyId);
 			if (areaArray != null && areaArray.length > 0) {
 				areaIds = Arrays.asList(areaArray);
 			}
 		} else {// 普通用户，用户区域权限
-			areaIds = ywUserActivity.getUserAppAreas(t, ywUserId, appId);
+			areaIds = ywUserActivity.getUserAppAreas(t, companyId, ywUserId, appId);
 		}
 
 		if (areaIds == null || areaIds.isEmpty()) {

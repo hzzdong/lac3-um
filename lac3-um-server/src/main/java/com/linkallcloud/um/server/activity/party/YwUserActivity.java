@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.pagehelper.PageHelper;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.um.activity.party.IYwUserActivity;
@@ -75,24 +73,6 @@ public class YwUserActivity extends
 	@Override
 	protected IYwRoleDao getRoleDao() {
 		return ywRoleDao;
-	}
-
-	@Override
-	public Page<YwUser> findPermedUserPage(Trace t, Page<YwUser> page) {
-		page.checkPageParameters();
-		try {
-			PageHelper.startPage(page.getPageNum(), page.getLength());
-			List<YwUser> list = dao().findPermedUserPage(t, page);
-			if (list instanceof com.github.pagehelper.Page) {
-				page.setRecordsTotal(((com.github.pagehelper.Page<YwUser>) list).getTotal());
-				page.checkPageParameters();
-				page.setRecordsFiltered(page.getRecordsTotal());
-				page.addDataAll(list);
-			}
-			return page;
-		} finally {
-			PageHelper.clearPage();
-		}
 	}
 
 	@Transactional(readOnly = false)

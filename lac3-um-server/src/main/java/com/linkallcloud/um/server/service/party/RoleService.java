@@ -55,8 +55,8 @@ public abstract class RoleService<R extends Role, U extends User, C extends Comp
 	public abstract IApplicationActivity applicationActivity();
 
 	@Override
-	public List<R> find4User(Trace t, Long userId) {
-		return activity().find4User(t, userId);
+	public List<R> find4User(Trace t, Long userId, Long companyId) {
+		return activity().find4User(t, userId, companyId);
 	}
 
 	@Override
@@ -102,15 +102,15 @@ public abstract class RoleService<R extends Role, U extends User, C extends Comp
 	@Transactional(readOnly = false)
 	@Override
 	@ServLog(db = true, desc = "为角色([(${roleId})]) 添加关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
-	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
-		return activity().addRoleUsers(t, roleId, roleUuid, userUuidIds);
+	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
+		return activity().addRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
 	@ServLog(db = true, desc = "为角色([(${roleId})]) 移除关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
-	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
-		return activity().removeRoleUsers(t, roleId, roleUuid, userUuidIds);
+	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
+		return activity().removeRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Transactional(readOnly = false)

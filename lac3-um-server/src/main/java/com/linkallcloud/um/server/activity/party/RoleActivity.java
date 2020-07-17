@@ -61,8 +61,12 @@ public abstract class RoleActivity<R extends Role, U extends User, O extends Org
 	public abstract IApplicationDao applicationDao();
 
 	@Override
-	public List<R> find4User(Trace t, Long userId) {
-		return dao().find4User(t, userId);
+	public List<R> find4User(Trace t, Long userId, Long companyId) {
+		if (companyId == null) {
+			U user = userDao().fetchById(t, userId);
+			companyId = user.getCompanyId();
+		}
+		return dao().find4User(t, userId, companyId);
 	}
 
 	@Override
@@ -174,9 +178,13 @@ public abstract class RoleActivity<R extends Role, U extends User, O extends Org
 			return page;
 		}
 
-		// Long userId = Castors.me().castTo(query.get("userId"), Long.class);
-		// U user = userDao().fetchById(t, userId);
-		// query.put("parentId", user.myCompanyId());
+		if (!page.hasRule4Field("companyId")) {
+			CompareRule userIdRule = (CompareRule) page.getRule4Field("userId");
+			Long userId = Castors.me().castTo(userIdRule.getValue(), Long.class);
+			U user = userDao().fetchById(t, userId);
+			page.addRule(new Equal("companyId", user.getCompanyId()));
+			// page.put("parentId", user.myCompanyId());
+		}
 
 		try {
 			PageHelper.startPage(page.getPageNum(), page.getLength());
@@ -220,26 +228,27 @@ public abstract class RoleActivity<R extends Role, U extends User, O extends Org
 	}
 
 	@Override
-	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
+	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
 		R role = fetchByIdUuid(t, roleId, roleUuid);
 		if (role != null) {
 			List<U> checkedEntities = findUsersUuidIds(t, userUuidIds);
 			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == userUuidIds.size()) {
 				List<Long> userIds = Domains.parseIds(userUuidIds);
-				return dao().addRoleUsers(t, roleId, userIds);
+				return dao().addRoleUsers(t, roleId, userIds, companyId);
 			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds) {
+	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds,
+			Long companyId) {
 		R role = fetchByIdUuid(t, roleId, roleUuid);
 		if (role != null) {
 			List<U> checkedEntities = findUsersUuidIds(t, userUuidIds);
 			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == userUuidIds.size()) {
 				List<Long> userIds = Domains.parseIds(userUuidIds);
-				return dao().removeRoleUsers(t, roleId, userIds);
+				return dao().removeRoleUsers(t, roleId, userIds, companyId);
 			}
 		}
 		return false;

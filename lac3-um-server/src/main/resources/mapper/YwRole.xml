@@ -148,7 +148,7 @@
 		WHERE
 			u.status=0 AND rel.userId=#{page.cnds.userId}
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
-			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId}</if>
+			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId} AND rel.companyId=#{page.cnds.companyId}</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode like #{page.cnds.govCode}</if>
@@ -168,7 +168,7 @@
 		FROM
 			um_yw_role u join um_yw_rel_role_user rel on u.id=rel.roleId 
 		WHERE
-			u.status &lt;&gt; 9 AND rel.userId=#{userId}
+			u.status &lt;&gt; 9 AND rel.userId=#{userId} AND rel.companyId=#{companyId}
 	</select>
 
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.YwRole" useGeneratedKeys="true" keyProperty="entity.id">
@@ -256,10 +256,10 @@
 	
 	<insert id="addRoleUsers">
         insert into 
-        	um_yw_rel_role_user (status,createTime,updateTime,roleId,userId)
+        	um_yw_rel_role_user (status,createTime,updateTime,roleId,userId,companyId)
         values 
 	        <foreach collection="userIds" item="userId" index="index" separator=",">
-	        (0,now(),now(),#{roleId},#{userId})
+	        (0,now(),now(),#{roleId},#{userId},#{companyId})
 	        </foreach>
     </insert>
     
@@ -267,7 +267,7 @@
 		delete from 
 			um_yw_rel_role_user 
 		where 
-			roleId=#{roleId} and userId in 
+			roleId=#{roleId} and companyId=#{companyId} and userId in 
 			<foreach item="userId" index="index" collection="userIds" open="(" separator="," close=")">
 				#{userId}
 			</foreach>

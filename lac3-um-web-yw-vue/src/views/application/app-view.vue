@@ -505,7 +505,7 @@ import { fetchById, updateApp, deleteApp, changeAppStatus, updateAppInterface, u
 import { loadAppMenuTree, saveMenu, getMenuOperationPage, saveOperation, deleteOperation } from '@/api/menu'
 import { sheetClose, sheetRefresh, autoChildren } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { validURL } from '@/utils/validate'
+// import { validURL } from '@/utils/validate'
 import waves from '@/directive/waves' // waves directive
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
@@ -555,6 +555,7 @@ export default {
         rules: {
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '名称长度在 2 到 64 个字符', trigger: 'blur' }],
           govCode: [{ required: true, message: '编号不能为空', trigger: 'blur' }, { min: 2, max: 64, message: '编号长度在 2 到32 个字符', trigger: 'blur' }],
+          /*
           url: [
             { validator: (rule, value, callback) => {
               if (value && value !== '') {
@@ -566,6 +567,7 @@ export default {
               callback()
             }, trigger: 'blur' }
           ],
+          */
           sort: [{ required: true, message: '排序号不能为空' }, { type: 'number', message: '排序号必须为数字值' }],
           remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]
         },
