@@ -104,7 +104,7 @@ public class KhUserFace {
 			throw new ArgException("Arg", "Account和AppCode都不能为空");
 		}
 		return khUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(),
-				new Sid(faceReq.getCompanyId(), null, "KhCompany", null));
+				new Sid(faceReq.getOrgId(), null, faceReq.getOrgType(), null));
 	}
 
 	@Face(login = false)

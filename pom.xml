@@ -12,7 +12,7 @@
 
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3-um</artifactId>
-	<version>0.2.8</version>
+	<version>0.2.9</version>
 	<packaging>pom</packaging>
 
 	<name>Linkallcloud UM</name>

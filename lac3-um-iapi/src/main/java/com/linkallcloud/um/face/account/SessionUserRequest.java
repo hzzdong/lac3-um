@@ -7,16 +7,18 @@ public class SessionUserRequest extends FaceRequest {
 
 	private String account;
 	private String appCode;
-	private Long companyId;
+	private Long orgId;
+	private String orgType;
 
 	public SessionUserRequest() {
 		super();
 	}
 
-	public SessionUserRequest(String account, String appCode, Long companyId) {
+	public SessionUserRequest(String account, String appCode, Long orgId, String orgType) {
 		this.account = account;
 		this.appCode = appCode;
-		this.companyId = companyId;
+		this.orgId = orgId;
+		this.orgType = orgType;
 	}
 
 	public String getAccount() {
@@ -37,11 +39,20 @@ public class SessionUserRequest extends FaceRequest {
 		this.appCode = appCode;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
+	public Long getOrgId() {
+		return orgId;
 	}
 
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
+
+	public String getOrgType() {
+		return orgType;
+	}
+
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
+	}
+
 }

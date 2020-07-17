@@ -105,7 +105,7 @@ public class YwUserFace {
 		}
 
 		return ywUserManager.assembleSessionUser(t, faceReq.getAccount(), faceReq.getAppCode(),
-				new Sid(faceReq.getCompanyId(), null, "YwCompany", null));
+				new Sid(faceReq.getOrgId(), null, faceReq.getOrgType(), null));
 	}
 
 	@Face(login = false)
