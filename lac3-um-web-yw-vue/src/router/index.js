@@ -234,6 +234,12 @@ export const asyncRoutes = [
         component: () => import('@/views/yw-system-config/config'),
         name: 'YwSetup',
         meta: { title: '系统设置', requires: ['yw_sys_config_setup'] }
+      },
+      {
+        path: 'holiday',
+        component: () => import('@/views/yw-system-config/holiday'),
+        name: 'YwHoliday',
+        meta: { title: '假日设置', requires: ['yw_holiday_config'] }
       }
     ]
   },

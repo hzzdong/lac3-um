@@ -117,6 +117,13 @@ export default {
           window.location = `/api4umkh/dwLogout`
         }).catch(err => console.log(err))
       }).catch(err => console.log(err))
+    },
+    onCompanyChange(val) {
+      console.log(val)
+      this.$store.dispatch('user/logout').then(() => {
+        const tos = val.split('#')
+        window.location = '/api4umkh/orgLogin?orgId=' + tos[0] + '&orgType=' + tos[1]
+      }).catch(err => console.log(err))
     }
   }
 }

@@ -132,7 +132,7 @@ public class KhUserManager
 			/* 处理所在机构+兼职机构列表 */
 			List<Sid> myOrgs = new ArrayList<>();
 			// orgId,companyId,orgClass,orgName
-			myOrgs.add(new Sid(org.getId(), company.getId().toString(), org.getClass().getSimpleName(),
+			myOrgs.add(new Sid(selfOrg.getId(), selfOrg.myCompanyId().toString(), selfOrg.getClass().getSimpleName(),
 					(selfOrg instanceof YwCompany) ? selfOrg.getName()
 							: (company.getName() + "-" + selfOrg.getName())));
 			List<KhPartTimeJob> jzOrgs = getUserJzOrgs(t, dbUser.getId());

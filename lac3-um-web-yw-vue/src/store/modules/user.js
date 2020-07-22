@@ -124,7 +124,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       getSessionUserInfo().then(response => {
         const { data } = response
-        debugger
         if (!data) {
           reject('Verification failed, please Login again.')
         }
