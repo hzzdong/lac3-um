@@ -9,6 +9,8 @@ public class CalendarRequest extends LoginFaceRequest {
 	private Integer month;
 	private Integer day;
 
+	private Integer status;
+
 	public CalendarRequest() {
 		super();
 	}
@@ -42,6 +44,14 @@ public class CalendarRequest extends LoginFaceRequest {
 
 	public void setDay(Integer day) {
 		this.day = day;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

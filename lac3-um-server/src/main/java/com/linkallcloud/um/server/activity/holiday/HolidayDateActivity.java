@@ -161,7 +161,7 @@ public class HolidayDateActivity extends BaseActivity<HolidayDate, IHolidayDateD
 		}
 		return holidayDateDao.queryHolidayDate(record);
 	}
-	
+
 	/**
 	 * Init month list. 按月爬取节假日
 	 * 
@@ -220,6 +220,11 @@ public class HolidayDateActivity extends BaseActivity<HolidayDate, IHolidayDateD
 		}
 		return holidayDate;
 
+	}
+
+	@Override
+	public Boolean setHoliday(HolidayDate hd) {
+		return dao().updateHolidayDate(hd) > 0;
 	}
 
 }

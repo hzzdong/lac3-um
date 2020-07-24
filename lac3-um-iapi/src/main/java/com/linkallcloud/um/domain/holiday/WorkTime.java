@@ -1,7 +1,9 @@
 package com.linkallcloud.um.domain.holiday;
 
 import com.linkallcloud.core.domain.Domain;
+import com.linkallcloud.core.domain.annotation.ShowName;
 
+@ShowName(value = "工作时间", logFields = "id")
 public class WorkTime extends Domain {
 	private static final long serialVersionUID = 6306817295964289868L;
 
@@ -21,6 +23,25 @@ public class WorkTime extends Domain {
 
 	private Integer pmGoOffWorkHour;// 下午下班：X点
 	private Integer pmGoOffWorkMinute;// 下午下班：X分
+
+	public WorkTime() {
+		super();
+	}
+
+	public WorkTime(Long companyId, Integer amGoToWorkHour, Integer amGoToWorkMinute, Integer amGoOffWorkHour,
+			Integer amGoOffWorkMinute, Integer pmGoToWorkHour, Integer pmGoToWorkMinute, Integer pmGoOffWorkHour,
+			Integer pmGoOffWorkMinute) {
+		super();
+		this.companyId = companyId;
+		this.amGoToWorkHour = amGoToWorkHour;
+		this.amGoToWorkMinute = amGoToWorkMinute;
+		this.amGoOffWorkHour = amGoOffWorkHour;
+		this.amGoOffWorkMinute = amGoOffWorkMinute;
+		this.pmGoToWorkHour = pmGoToWorkHour;
+		this.pmGoToWorkMinute = pmGoToWorkMinute;
+		this.pmGoOffWorkHour = pmGoOffWorkHour;
+		this.pmGoOffWorkMinute = pmGoOffWorkMinute;
+	}
 
 	public Long getCompanyId() {
 		return companyId;

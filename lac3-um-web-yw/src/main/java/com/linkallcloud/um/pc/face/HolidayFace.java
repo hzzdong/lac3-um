@@ -28,7 +28,7 @@ public class HolidayFace {
 
 	@Face(simple = true)
 	@RequestMapping(value = "/getByMonth", method = RequestMethod.POST)
-	public @ResponseBody Object find(CalendarRequest fr, Trace t, SessionUser su) {
+	public @ResponseBody Object getByMonth(CalendarRequest fr, Trace t, SessionUser su) {
 		String date = null;
 		if (fr.getYear() != null && fr.getMonth() != null) {
 			date = fr.getYear() + "-" + (fr.getMonth() >= 10 ? fr.getMonth() : ("0" + fr.getMonth()));
@@ -37,6 +37,17 @@ public class HolidayFace {
 		}
 		List<HolidayDate> entities = holidayDateManager.getHolidays(su.companyId(), date);
 		return entities;
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/setHoliday", method = RequestMethod.POST)
+	public @ResponseBody Object setHoliday(CalendarRequest fr, Trace t, SessionUser su) {
+		HolidayDate hd = new HolidayDate();
+		hd.setCompanyId(su.companyId());
+		hd.setDate(fr.getYear() + "-" + (fr.getMonth() >= 10 ? fr.getMonth() : ("0" + fr.getMonth())) + "-"
+				+ (fr.getDay() >= 10 ? fr.getDay() : ("0" + fr.getDay())));
+		hd.setStatus(fr.getStatus());
+		return holidayDateManager.setHoliday(hd);
 	}
 
 }
