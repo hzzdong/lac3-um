@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkallcloud.um.server.dao.holiday.IWorkTimeDao">
+
+	<sql id="Base_Column_List">
+		u.id,u.uuid,u.status,u.createTime,u.updateTime
+		,u.companyId
+		,u.amGoToWorkHour
+		,u.amGoToWorkMinute
+		,u.amGoOffWorkHour
+		,u.amGoOffWorkMinute
+		,u.pmGoToWorkHour
+		,u.pmGoToWorkMinute
+		,u.pmGoOffWorkHour
+		,u.pmGoOffWorkMinute
+	</sql>
+	
+	<select id="fetchByCompanyId" resultType="com.linkallcloud.um.domain.holiday.WorkTime">
+		select
+			<include refid="Base_Column_List" />
+		from 
+			um_work_time u
+		where 
+			u.companyId=#{companyId}
+	</select>
+	
+	<insert id="insert" parameterType="com.linkallcloud.um.domain.holiday.WorkTime" useGeneratedKeys="true" keyProperty="entity.id">
+		insert into um_work_time 
+			( uuid,status,createTime,updateTime
+			,companyId
+			,amGoToWorkHour
+			,amGoToWorkMinute
+			,amGoOffWorkHour
+			,amGoOffWorkMinute
+			,pmGoToWorkHour
+			,pmGoToWorkMinute
+			,pmGoOffWorkHour
+			,pmGoOffWorkMinute
+			)
+		values
+			(#{entity.uuid},0,now(),now()
+			,#{entity.companyId}
+			,#{entity.amGoToWorkHour}
+			,#{entity.amGoToWorkMinute}
+			,#{entity.amGoOffWorkHour}
+			,#{entity.amGoOffWorkMinute}
+			,#{entity.pmGoToWorkHour}
+			,#{entity.pmGoToWorkMinute}
+			,#{entity.pmGoOffWorkHour}
+			,#{entity.pmGoOffWorkMinute}
+			)
+	</insert>
+	
+	<update id="update">
+		update 
+			um_work_time 
+		set 
+			updateTime=now()
+			,amGoToWorkHour=#{entity.amGoToWorkHour}
+			,amGoToWorkMinute=#{entity.amGoToWorkMinute}
+			,amGoOffWorkHour=#{entity.amGoOffWorkHour}
+			,amGoOffWorkMinute=#{entity.amGoOffWorkMinute}
+			,pmGoToWorkHour=#{entity.pmGoToWorkHour}
+			,pmGoToWorkMinute=#{entity.pmGoToWorkMinute}
+			,pmGoOffWorkHour=#{entity.pmGoOffWorkHour}
+			,pmGoOffWorkMinute=#{entity.pmGoOffWorkMinute}
+		where 
+			companyId=#{entity.companyId} 
+	</update>
+	
+	<delete id="delete">
+		update 
+			um_work_time 
+		set
+			status=9,updateTime=now()
+		where
+			id=#{id} and uuid=#{uuid}
+	</delete>
+
+	<update id="updateStatus">
+		update
+			um_work_time
+		set
+			status=#{status},updateTime=now()
+		where
+			id=#{id} and uuid=#{uuid}
+	</update>
+	
+</mapper>

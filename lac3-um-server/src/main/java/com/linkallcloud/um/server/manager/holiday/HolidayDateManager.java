@@ -55,4 +55,9 @@ public class HolidayDateManager extends BaseManager<HolidayDate, IHolidayDateSer
 		return service().getHolidays(companyId, date);
 	}
 
+	@Override
+	public Boolean setHoliday(HolidayDate hd) {
+		return service().setHoliday(hd);
+	}
+
 }

@@ -30,5 +30,7 @@ public interface IHolidayDateActivity extends IActivity<HolidayDate> {
 	HolidayDate getHoliday(Long companyId, Integer day);
 
 	List<HolidayDate> getHolidays(Long companyId, String date);
+	
+	Boolean setHoliday(HolidayDate hd);
 
 }

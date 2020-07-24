@@ -57,4 +57,9 @@ public class HolidayDateService extends BaseService<HolidayDate, IHolidayDateAct
 		return activity().getHolidays(companyId, date);
 	}
 
+	@Override
+	public Boolean setHoliday(HolidayDate hd) {
+		return activity().setHoliday(hd);
+	}
+
 }
