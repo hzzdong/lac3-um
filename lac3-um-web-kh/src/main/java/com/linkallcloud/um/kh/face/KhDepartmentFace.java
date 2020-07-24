@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -107,7 +107,7 @@ public class KhDepartmentFace extends BaseTreeFace<KhDepartment, IKhDepartmentMa
 	}
 
 	@Face(simple = true)
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]机构领导([(${fr.data.userId})]), TID:[(${tid})]")
 	@RequestMapping(value = "/addLeader", method = RequestMethod.POST)
 	public @ResponseBody Object addLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
 		Rel4OrgLeader leader = fr.getData();
@@ -115,7 +115,7 @@ public class KhDepartmentFace extends BaseTreeFace<KhDepartment, IKhDepartmentMa
 	}
 
 	@Face(simple = true)
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]的机构领导([(${fr.data.userId})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]的机构领导([(${fr.data.userId})]), TID:[(${tid})]")
 	@RequestMapping(value = "/deleteLeader", method = RequestMethod.POST)
 	public @ResponseBody Object deleteLeaders(ObjectFaceRequest<Rel4OrgLeader> fr, Trace t) {
 		Rel4OrgLeader leader = fr.getData();

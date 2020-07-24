@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.ServLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.pagination.Page;
@@ -101,35 +101,35 @@ public abstract class RoleService<R extends Role, U extends User, C extends Comp
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})]) 添加关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})]) 添加关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
 	public boolean addRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
 		return activity().addRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})]) 移除关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})]) 移除关联用户([(${userUuidIds})]), TID:[(${t.tid})]")
 	public boolean removeRoleUsers(Trace t, Long roleId, String roleUuid, Map<String, Long> userUuidIds, Long companyId) {
 		return activity().removeRoleUsers(t, roleId, roleUuid, userUuidIds, companyId);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})]) 添加许可应用([(${appUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})]) 添加许可应用([(${appUuidIds})]), TID:[(${t.tid})]")
 	public boolean addRoleApps(Trace t, Long roleId, String roleUuid, Map<String, Long> appUuidIds) {
 		return activity().addRoleApps(t, roleId, roleUuid, appUuidIds);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})]) 移除许可应用([(${appUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})]) 移除许可应用([(${appUuidIds})]), TID:[(${t.tid})]")
 	public boolean removeRoleApps(Trace t, Long roleId, String roleUuid, Map<String, Long> appUuidIds) {
 		return activity().removeRoleApps(t, roleId, roleUuid, appUuidIds);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})])保存应用([(${appId})])的菜单权限([(${menuUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})])保存应用([(${appId})])的菜单权限([(${menuUuidIds})]), TID:[(${t.tid})]")
 	public Boolean saveRoleAppMenuPerm(Trace t, Long roleId, String roleUuid, Long appId, String appUuid,
 			Map<String, Long> menuUuidIds) {
 		return activity().saveRoleAppMenuPerm(t, roleId, roleUuid, appId, appUuid, menuUuidIds);
@@ -137,7 +137,7 @@ public abstract class RoleService<R extends Role, U extends User, C extends Comp
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})])保存应用([(${appId})])的菜单权限([(${menuUuidIds})]), TID:[(${t.tid})]")
+	@LacLog(desc = "为角色([(${roleId})])保存应用([(${appId})])的菜单权限([(${menuUuidIds})]), TID:[(${t.tid})]")
 	public Boolean saveRoleAppOrgPerm(Trace t, Long roleId, String roleUuid, Long appId, String appUuid,
 			Map<String, Long> appUuidIds) {
 		return activity().saveRoleAppOrgPerm(t, roleId, roleUuid, appId, appUuid, appUuidIds);
@@ -172,7 +172,7 @@ public abstract class RoleService<R extends Role, U extends User, C extends Comp
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为角色([(${roleId})]) 清空关联用户, TID:[(${tid})]")
+	@LacLog(desc = "为角色([(${roleId})]) 清空关联用户, TID:[(${tid})]")
 	public boolean clearRoleUsers(Trace t, Long roleId, String roleUuid) {
 		return activity().clearRoleUsers(t, roleId, roleUuid);
 	}

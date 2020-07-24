@@ -7,7 +7,7 @@
 		id,uuid,tid,module,operateDesc,operateTime,costTime,operateResult,errorMessage,ip
 	</sql>
 
-	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.sys.UmServiceLog">
+	<select id="fetchByIdUuid" resultType="com.linkallcloud.core.laclog.LacBusiLog">
 		SELECT
 			<include refid="Base_Column_List" />
 		FROM
@@ -16,7 +16,7 @@
 			u.id = #{id} and u.uuid=#{uuid}
 	</select>
 
-	<select id="findPage" resultType="com.linkallcloud.um.domain.sys.UmServiceLog">
+	<select id="findPage" resultType="com.linkallcloud.core.laclog.LacBusiLog">
 		SELECT
 			<include refid="Base_Column_List" />
 		FROM
@@ -39,7 +39,7 @@
 		</choose>
 	</select>
 
-	<insert id="insert" parameterType="com.linkallcloud.um.domain.sys.UmServiceLog" useGeneratedKeys="true" keyProperty="entity.id">
+	<insert id="insert" parameterType="com.linkallcloud.core.laclog.LacBusiLog" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into 
 			um_service_log (uuid,tid,module,operateDesc,operateTime,costTime,operateResult,errorMessage,ip)
 		values

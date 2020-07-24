@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
@@ -84,7 +84,7 @@ public class YwSystemConfigFace extends BaseFace<YwSystemConfig, IYwSystemConfig
 		}
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]信息([(${fr.orgId})], [(${fr.key})], [(${fr.value})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
 	public @ResponseBody Object change(ConfigFaceRequest fr, Trace t, SessionUser su) {

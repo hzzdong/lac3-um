@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -106,7 +106,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return roles;
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])把角色 [(${fr.id})]分配给了新用户, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])把角色 [(${fr.id})]分配给了新用户, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addUsers", method = RequestMethod.POST)
 	public @ResponseBody Object addUsers(RelFaceRequest fr, Trace t, SessionUser suser) {
@@ -117,7 +117,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return manager().addRoleUsers(t, fr.getId(), fr.getUuid(), fr.getUuidIds(), companyId);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])取消了部分用户的角色 [(${fr.id})], TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])取消了部分用户的角色 [(${fr.id})], TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeUser", method = RequestMethod.POST)
 	public @ResponseBody Object removeUser(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -130,14 +130,14 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return manager().removeRoleUsers(t, fr.getParentId(), fr.getParentUuid(), userUuidIds, companyId);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])给角色 [(${fr.id})]许可了新应用, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])给角色 [(${fr.id})]许可了新应用, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
 	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser suser) {
 		return manager().addRoleApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])取消了角色 [(${fr.id})]部分应用许可, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])取消了角色 [(${fr.id})]部分应用许可, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
 	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -153,7 +153,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return tree.getChildren();
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的菜单权限, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的菜单权限, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppMenuPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppMenuPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -169,7 +169,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return Arrays.asList(tree);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的机构权限, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的机构权限, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppOrgPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppOrgPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -185,7 +185,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 		return tree.getChildren();
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的区域权限, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了角色([(${fr.parentId})]) 应用([(${fr.id})]) 的区域权限, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveRoleAppAreaPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveRoleAppAreaPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {

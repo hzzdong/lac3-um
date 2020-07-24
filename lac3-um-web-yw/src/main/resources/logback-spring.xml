@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+	<springProperty scope="context" name="appName" source="log.appName" defaultValue="" />
+	<springProperty scope="context" name="appType" source="log.appType" defaultValue="" />
+	<springProperty scope="context" name="mqGroupName" source="log.mq.mqGroupName" defaultValue="" />
+	<springProperty scope="context" name="namesrvAddr" source="log.mq.namesrvAddr" defaultValue="" />
+	<springProperty scope="context" name="accessKey" source="log.mq.accessKey" defaultValue="" />
+	<springProperty scope="context" name="secretKey" source="log.mq.secretKey" defaultValue="" />
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
@@ -10,10 +17,10 @@
     <timestamp key="timestamp" datePattern="yyyy-MM-dd"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/info.log</file>
+        <file>logs/yw-${timestamp}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>./logs/info_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/yw.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- retain 30 days logs -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -23,11 +30,42 @@
         </encoder>
     </appender>
     
-    <logger name="com.apache.ibatis" level="INFO"/>
-    <logger name="com.linkallcloud.um.pc" level="INFO"/>
-
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </root>
+	<appender name="rocketmqLog" class="com.linkallcloud.log.logback.appender.RocketmqAppender">
+		<appName>${appName}</appName>
+		<appType>${appType}</appType>
+		<mqGroupName>${mqGroupName}</mqGroupName>
+		<namesrvAddr>${namesrvAddr}</namesrvAddr>
+		<accessKey>${accessKey}</accessKey>
+		<secretKey>${secretKey}</secretKey>
+<!-- 		<encoder>
+			<pattern>%date [%level] from %logger in %thread - %message%n%xException</pattern>
+		</encoder>
+ -->	</appender>    
+    
+    
+   	<springProfile name="dev">
+   	    <logger name="com.apache.ibatis" level="DEBUG"/>
+    	<logger name="com.linkallcloud.um.pc" level="DEBUG"/>
+		<root level="DEBUG">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+	<springProfile name="test">
+	 	<logger name="com.apache.ibatis" level="INFO"/>
+    	<logger name="com.linkallcloud.um.pc" level="INFO"/>
+		<root level="INFO">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+	<springProfile name="prod">
+	 	<logger name="com.apache.ibatis" level="ERROR"/>
+    	<logger name="com.linkallcloud.um.pc" level="ERROR"/>
+		<root level="ERROR">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+    
 </configuration>

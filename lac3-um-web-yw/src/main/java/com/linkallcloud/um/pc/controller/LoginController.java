@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
@@ -78,7 +78,7 @@ public class LoginController {
 	@Value("${lac.lf.h5.home}")
 	private String h5Home;
 
-	@WebLog(db = true, desc = "用户([(${lvo.loginName})])登录系统,TID:[(${tid})].")
+	@LacLog(desc = "用户([(${lvo.loginName})])登录系统,TID:[(${tid})].")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody Object postLcLogin(@RequestBody LoginVo lvo, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session, Trace t) {
