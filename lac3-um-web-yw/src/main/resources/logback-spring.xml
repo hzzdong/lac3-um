@@ -20,7 +20,7 @@
         <file>logs/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>./logs/yw.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- retain 30 days logs -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
