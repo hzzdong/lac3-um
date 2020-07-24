@@ -1,28 +1,59 @@
 package com.linkallcloud.um.server.aop;
 
-import com.linkallcloud.core.busilog.BusiServiceLogAspect;
-import com.linkallcloud.um.domain.sys.UmServiceLog;
-import com.linkallcloud.um.service.sys.IUmServiceLogService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
+import com.linkallcloud.core.busilog.BusiServiceLogAspect;
+import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.log.core.rocketmq.RocketmqProducerClient;
+import com.linkallcloud.um.service.sys.IUmServiceLogService;
 
 @Aspect
 @Component
 @Order(5)
-public class XfBusiServiceLogAspect extends BusiServiceLogAspect<UmServiceLog, IUmServiceLogService> {
-
+public class XfBusiServiceLogAspect extends BusiServiceLogAspect<LacBusiLog> {
     @Autowired
     private IUmServiceLogService umServiceLogService;
 
+    @Value("${log.storage.type:es}")
+    private String logStorageType;
+    @Value("${log.appName}")
+    private String appName;
+    @Value("${log.appType}")
+    private String appType;
+
     @Override
-    protected IUmServiceLogService logService() {
-        return umServiceLogService;
+    protected void logStorage(LacBusiLog operatelog) throws Exception {
+        if (operatelog != null) {
+            operatelog.setAppName(appName);
+            operatelog.setAppType(appType);
+            if ("es".equals(logStorageType)) {
+                LacBusiLog log = new LacBusiLog();
+                BeanUtils.copyProperties(operatelog, log);
+                log.setError(null);
+                String logStr = JSON.toJSONString(log);
+                log.setCreateTime(null);
+                log.setUuid(null);
+                RocketmqProducerClient.getInstance().sendMsg(logStr);
+            } else {
+                if (operatelog.getErrorMessage() != null && operatelog.getErrorMessage().length() > 512) {
+                    operatelog.setErrorMessage(operatelog.getErrorMessage().substring(0, 512));
+                }
+                umServiceLogService.insert(new Trace(operatelog.getTid()), operatelog);
+            }
+        }
     }
+
+
 
     // @Pointcut("@annotation(com.linkallcloud.core.busilog.annotation.ServLog)")
     @Pointcut("execution(public * com.linkallcloud.um.server.manager..*.*(..))")

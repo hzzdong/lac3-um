@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -116,7 +116,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		super.doSave(t, entity, su);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]应用许可, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addApps", method = RequestMethod.POST)
 	public @ResponseBody Object addApps(RelFaceRequest fr, Trace t, SessionUser su) {
@@ -126,7 +126,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		return manager().addApps(t, fr.getId(), fr.getUuid(), fr.getUuidIds());
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除了 [(${domainShowName})]应用许可([(${fr.id})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])删除了 [(${domainShowName})]应用许可([(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removeApp", method = RequestMethod.POST)
 	public @ResponseBody Object removeApp(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -147,7 +147,7 @@ public class KhCompanyFace extends BaseFace<KhCompany, IKhCompanyManager> {
 		return tree.getChildren();
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]应用菜单权限([(${fr.parentId})], [(${fr.id})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})]应用菜单权限([(${fr.parentId})], [(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveAppMenuPerm", method = RequestMethod.POST)
 	public @ResponseBody Object saveAppMenuPerm(RelParentIdFaceRequest fr, Trace t, SessionUser suser) {

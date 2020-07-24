@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
@@ -225,7 +225,7 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		return null;
 	}
 
-	@WebLog(db = true)
+	@LacLog()
 	@Face(simple = true)
 	@RequestMapping(value = "/saveInter", method = RequestMethod.POST)
 	public @ResponseBody Object saveInter(ObjectFaceRequest<Application> fr, Trace t, SessionUser su) {
@@ -241,7 +241,7 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		return convert(t, "save", fr, dbApp);
 	}
 
-	@WebLog(db = true)
+	@LacLog()
 	@Face(simple = true)
 	@RequestMapping(value = "/saveMappingInter", method = RequestMethod.POST)
 	public @ResponseBody Object saveMappingInter(ObjectFaceRequest<Application> fr, Trace t, SessionUser su) {
@@ -261,7 +261,7 @@ public class ApplicationFace extends BaseFace<Application, IApplicationManager> 
 		super.doSave(t, app, su);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])上传了应用([(${fr.id})])的图标([(${fr.type})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])上传了应用([(${fr.id})])的图标([(${fr.type})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/updateIco", method = RequestMethod.POST)
 	public @ResponseBody Object updateIco(IdFaceRequest fr, Trace t, SessionUser su) {

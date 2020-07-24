@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.ServLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -61,7 +61,7 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 	}
 
 	@Transactional(readOnly = false)
-	@ServLog(db = true)
+	@LacLog()
 	public Long insert(Trace t, T entity) throws BaseRuntimeException {
 		return activity().insert(t, entity);
 	}
@@ -89,14 +89,14 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为用户([(${userId})]) 添加关联角色([(${roleUuidIds})]), TID:[(${tid})]")
+	@LacLog(desc = "为用户([(${userId})]) 添加关联角色([(${roleUuidIds})]), TID:[(${tid})]")
 	public boolean addUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
 		return activity().addUserRoles(t, userId, companyId, roleUuidIds);
 	}
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "为用户([(${userId})]) 移除关联角色([(${roleUuidIds})]), TID:[(${tid})]")
+	@LacLog(desc = "为用户([(${userId})]) 移除关联角色([(${roleUuidIds})]), TID:[(${tid})]")
 	public boolean removeUserRoles(Trace t, Long userId, Long companyId, Map<String, Long> roleUuidIds) {
 		return activity().removeUserRoles(t, userId, companyId, roleUuidIds);
 	}
@@ -210,14 +210,14 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "修改密码([(${userId})]), TID:[(${tid})]")
+	@LacLog(desc = "修改密码([(${userId})]), TID:[(${tid})]")
 	public boolean updatePassword(Trace t, Long userId, String userUuid, String oldPwd, String newPwd) {
 		return activity().updatePassword(t, userId, userUuid, oldPwd, newPwd);
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	@ServLog(db = true, desc = "验证登录账号([(${accountOrMobile})]), TID:[(${tid})]")
+	@LacLog(desc = "验证登录账号([(${accountOrMobile})]), TID:[(${tid})]")
 	public T loginValidate(Trace t, String accountOrMobile, String password) {
 		return activity().loginValidate(t, accountOrMobile, password);
 	}

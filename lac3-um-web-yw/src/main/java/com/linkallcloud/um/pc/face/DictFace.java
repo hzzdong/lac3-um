@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -51,7 +51,7 @@ public class DictFace extends BaseTreeFace<Dict, IDictManager> {
 		return Arrays.asList(root);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])保存了 数据字典类型 [(${fr.data.name})], TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])保存了 数据字典类型 [(${fr.data.name})], TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/saveDictTree", method = RequestMethod.POST)
 	public @ResponseBody Object saveDictTree(ObjectFaceRequest<DictType> fr, Trace t, SessionUser su) {
@@ -68,7 +68,7 @@ public class DictFace extends BaseTreeFace<Dict, IDictManager> {
 
 	@Face(simple = true)
 	@RequestMapping(value = "/deleteDictTree", method = RequestMethod.POST)
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除了 数据字典类型 [(${fr.id})], TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])删除了 数据字典类型 [(${fr.id})], TID:[(${tid})]")
 	public @ResponseBody Object deleteDictTree(IdFaceRequest fr, Trace t, SessionUser su) {
 		if (fr.getId() == null || Strings.isBlank(fr.getUuid())) {
 			throw new BizException(Exceptions.CODE_ERROR_DELETE, "参数错误");

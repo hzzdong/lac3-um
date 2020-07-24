@@ -1,4 +1,4 @@
-package com.linkallcloud.um.pc.face;
+    package com.linkallcloud.um.pc.face;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.busilog.annotation.Module;
-import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
@@ -73,7 +73,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		return manager().fetchById(t, suser.id());
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])更新了个人信息, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])更新了个人信息, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/updateMe", method = RequestMethod.POST)
 	public @ResponseBody Object updateMe(ObjectFaceRequest<YwUser> fr, Trace t, SessionUser su) {
@@ -87,7 +87,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		return manager().update(t, entity);
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])更新其头像为[(${fr.data.value})], TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])更新其头像为[(${fr.data.value})], TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/updateHeaderImage", method = RequestMethod.POST)
 	public @ResponseBody Object updateHeaderImage(ObjectFaceRequest<NameValue> fr, Trace t, SessionUser suser) {
@@ -98,7 +98,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		return manager().updateHeaderImage(t, suser.getSid(), nv.getValue());
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])修改了密码, TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])修改了密码, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/updatePass", method = RequestMethod.POST)
 	public @ResponseBody Object updatePass(PasswordFaceRequest fr, Trace t, SessionUser su) {
@@ -165,7 +165,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		super.doSave(t, entity, su);
 	}
 
-	@WebLog(db = true)
+	@LacLog()
 	@Face(simple = true)
 	@RequestMapping(value = "/updateJz", method = RequestMethod.POST)
 	public @ResponseBody Object updateJz(ObjectFaceRequest<YwUser> fr, Trace t, SessionUser su) {
@@ -256,7 +256,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		return page;
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]兼职人员([(${fr.id})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])添加 [(${domainShowName})]兼职人员([(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/addPartTimeJob", method = RequestMethod.POST)
 	public @ResponseBody Object addPartTimeJob(ParentIdFaceRequest fr, Trace t, SessionUser suser) {
@@ -264,7 +264,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 				new Sid(fr.getParentId(), fr.getParentUuid(), fr.getParentClass(), ""), fr.getRemark());
 	}
 
-	@WebLog(db = true, desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]兼职人员([(${fr.id})]), TID:[(${tid})]")
+	@LacLog(desc = "用户([(${su.sid.name})])删除 [(${domainShowName})]兼职人员([(${fr.id})]), TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/removePartTimeJob", method = RequestMethod.POST)
 	public @ResponseBody Object removePartTimeJob(IdFaceRequest fr, Trace t, SessionUser suser) {

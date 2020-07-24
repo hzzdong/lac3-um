@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.linkallcloud.core.busilog.annotation.ServLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BaseRuntimeException;
@@ -105,7 +105,7 @@ public class DictTypeService extends BaseTreeService<DictType, IDictTypeActivity
 //			@CacheEvict(value = "Dict", key = "\"TypeTree-\" + #entity.id") })
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true)
+	@LacLog()
 	public boolean update(Trace t, DictType entity) throws BaseRuntimeException {
 		return super.update(t, entity);
 	}
@@ -113,7 +113,7 @@ public class DictTypeService extends BaseTreeService<DictType, IDictTypeActivity
 	// @CacheEvict(value = { "Dict", "DictTree" }, key = "#id")
 	@Transactional(readOnly = false)
 	@Override
-	@ServLog(db = true, desc = "删除 [(${domainShowName})]([(${id})]), TID:[(${tid})]")
+	@LacLog(desc = "删除 [(${domainShowName})]([(${id})]), TID:[(${tid})]")
 	public boolean delete(Trace t, Long id, String uuid) throws BaseRuntimeException {
 		return super.delete(t, id, uuid);
 	}
