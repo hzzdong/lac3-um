@@ -1,5 +1,6 @@
 package com.linkallcloud.um.face.account;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 
 public class SessionUserRequest extends FaceRequest {
@@ -12,6 +13,15 @@ public class SessionUserRequest extends FaceRequest {
 
 	public SessionUserRequest() {
 		super();
+	}
+
+	public SessionUserRequest(String account, String appCode, Sid org) {
+		this.account = account;
+		this.appCode = appCode;
+		if (org != null) {
+			this.orgId = org.getId();
+			this.orgType = org.getCode();
+		}
 	}
 
 	public SessionUserRequest(String account, String appCode, Long orgId, String orgType) {
