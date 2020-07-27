@@ -19,7 +19,7 @@
           <el-form-item>
             <el-switch v-model="mode" active-text="我要编辑" inactive-text="查看" />
           </el-form-item>
-          <el-form-item v-if="mode === true" label="切换到编辑模式，请先选择日期类型，再点击日期。">
+          <el-form-item v-if="mode === true" label="切换到编辑模式，请先选择日期类型，再点击日期设置。">
             <el-radio-group v-model="dayType">
               <el-radio-button label="0">工作日</el-radio-button>
               <el-radio-button label="1">周末</el-radio-button>

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.activity.BaseActivity;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.activity.holiday.IWorkTimeActivity;
 import com.linkallcloud.um.domain.holiday.WorkTime;
@@ -21,13 +22,13 @@ public class WorkTimeActivity extends BaseActivity<WorkTime, IWorkTimeDao> imple
 	}
 
 	@Override
-	public WorkTime fetchByCompanyId(Trace t, Long companyId) {
-		return dao().fetchByCompanyId(t, companyId);
+	public WorkTime fetchByCompanyId(Trace t, Sid company) {
+		return dao().fetchByCompanyId(t, company.getId(), company.getCode());
 	}
 
 	@Override
-	public Boolean initCompanyWorkTime(Trace t, Long companyId) {
-		WorkTime entity = new WorkTime(companyId, 8, 30, 12, 0, 13, 30, 17, 30);
+	public Boolean initCompanyWorkTime(Trace t, Sid company) {
+		WorkTime entity = new WorkTime(company.getId(), company.getCode(), 8, 30, 12, 0, 13, 30, 17, 30);
 		return dao().insert(t, entity) > 0;
 	}
 

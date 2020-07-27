@@ -35,7 +35,7 @@ public class HolidayFace {
 		} else {
 			date = new SimpleDateFormat("yyyy-MM").format(Calendar.getInstance().getTime());
 		}
-		List<HolidayDate> entities = holidayDateManager.getHolidays(su.companyId(), date);
+		List<HolidayDate> entities = holidayDateManager.getHolidays(su.getCompany(), date);
 		return entities;
 	}
 
@@ -43,7 +43,8 @@ public class HolidayFace {
 	@RequestMapping(value = "/setHoliday", method = RequestMethod.POST)
 	public @ResponseBody Object setHoliday(CalendarRequest fr, Trace t, SessionUser su) {
 		HolidayDate hd = new HolidayDate();
-		hd.setCompanyId(su.companyId());
+		hd.setCompanyId(su.getCompany().getId());
+		hd.setCompanyType(su.getCompany().getCode());
 		hd.setDate(fr.getYear() + "-" + (fr.getMonth() >= 10 ? fr.getMonth() : ("0" + fr.getMonth())) + "-"
 				+ (fr.getDay() >= 10 ? fr.getDay() : ("0" + fr.getDay())));
 		hd.setStatus(fr.getStatus());

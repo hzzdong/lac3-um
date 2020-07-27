@@ -81,5 +81,8 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	
 	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 	Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
+	
+	void updateChildrenCompaniesHolidaySetup(Trace t, Long companyId);
+	void updateHolidays(Trace t, Long holidayId, List<Long> companyIds);
 
 }

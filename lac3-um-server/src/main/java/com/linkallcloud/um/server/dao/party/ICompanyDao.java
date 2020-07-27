@@ -51,5 +51,7 @@ public interface ICompanyDao<T extends Company> extends IOrgDao<T> {
 	
 	int addApps(@Param("t") Trace t, @Param("id") Long id, @Param("appIds") List<Long> appIds);
 	int removeApps(@Param("t") Trace t, @Param("id") Long id, @Param("appIds") List<Long> appIds);
+	
+	int updateHolidays(@Param("t") Trace t, @Param("holidayId") Long holidayId, @Param("companyIds") List<Long> companyIds);
 
 }

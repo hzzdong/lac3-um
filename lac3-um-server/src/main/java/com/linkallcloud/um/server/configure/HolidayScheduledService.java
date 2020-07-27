@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.um.domain.holiday.HolidayDate;
@@ -24,25 +25,25 @@ public class HolidayScheduledService {
 	 */
 	@Scheduled(cron = "0 0 1 25 * ?")
 	public void getWorkDay() {
-		Long companyId = 1L;
+		Sid company = new Sid(1L, "YwCompany");
 
 		Calendar calendar = Calendar.getInstance();
-		HolidayDate today = holidayDateService.getHoliday(companyId, DateUtil.getCurDayInt());
-		HolidayDate nextday = holidayDateService.getHoliday(companyId, DateUtil.getCurDayInt() + 1);
+		HolidayDate today = holidayDateService.getHoliday(company, DateUtil.getCurDayInt());
+		HolidayDate nextday = holidayDateService.getHoliday(company, DateUtil.getCurDayInt() + 1);
 		if (today == null || nextday == null) {
-			holidayDateService.initWorkDay(companyId, calendar.get(Calendar.YEAR));
+			holidayDateService.initWorkDay(company, calendar.get(Calendar.YEAR));
 			return;
 		}
 		if (today.getStatus() == 3 && nextday.getStatus() != 3) {
 			// 如果今天是节假日的最后一天（明天不是节假日)，更新节假日信息
-			holidayDateService.initWorkDay(companyId, calendar.get(Calendar.YEAR));
+			holidayDateService.initWorkDay(company, calendar.get(Calendar.YEAR));
 		}
 		if (today.getDay() == 25) {
 			// 每月的25日，更新节假日信息
 			log.info("每月25日凌晨一点,更新节假日信息，如果是12月，同时获取下一年的节日信息");
-			holidayDateService.initWorkDay(companyId, calendar.get(Calendar.YEAR));
+			holidayDateService.initWorkDay(company, calendar.get(Calendar.YEAR));
 			if (calendar.get(Calendar.MONTH) == 11) {
-				holidayDateService.initWorkDay(companyId, calendar.get(Calendar.YEAR) + 1);
+				holidayDateService.initWorkDay(company, calendar.get(Calendar.YEAR) + 1);
 			}
 		}
 	}

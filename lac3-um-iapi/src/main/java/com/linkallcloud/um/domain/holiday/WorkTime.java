@@ -11,6 +11,7 @@ public class WorkTime extends Domain {
 	 * 公司ID
 	 */
 	private Long companyId;
+	private String companyType;
 
 	private Integer amGoToWorkHour;// 上午上班时间：X点
 	private Integer amGoToWorkMinute;// 上午上班时间：X分
@@ -28,11 +29,12 @@ public class WorkTime extends Domain {
 		super();
 	}
 
-	public WorkTime(Long companyId, Integer amGoToWorkHour, Integer amGoToWorkMinute, Integer amGoOffWorkHour,
-			Integer amGoOffWorkMinute, Integer pmGoToWorkHour, Integer pmGoToWorkMinute, Integer pmGoOffWorkHour,
-			Integer pmGoOffWorkMinute) {
+	public WorkTime(Long companyId, String companyType, Integer amGoToWorkHour, Integer amGoToWorkMinute,
+			Integer amGoOffWorkHour, Integer amGoOffWorkMinute, Integer pmGoToWorkHour, Integer pmGoToWorkMinute,
+			Integer pmGoOffWorkHour, Integer pmGoOffWorkMinute) {
 		super();
 		this.companyId = companyId;
+		this.companyType = companyType;
 		this.amGoToWorkHour = amGoToWorkHour;
 		this.amGoToWorkMinute = amGoToWorkMinute;
 		this.amGoOffWorkHour = amGoOffWorkHour;
@@ -49,6 +51,14 @@ public class WorkTime extends Domain {
 
 	public void setCompanyId(Long companyId) {
 		this.companyId = companyId;
+	}
+
+	public String getCompanyType() {
+		return companyType;
+	}
+
+	public void setCompanyType(String companyType) {
+		this.companyType = companyType;
 	}
 
 	public Integer getAmGoToWorkHour() {

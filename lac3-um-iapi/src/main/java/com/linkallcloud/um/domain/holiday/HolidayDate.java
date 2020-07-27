@@ -18,6 +18,7 @@ public class HolidayDate extends Domain {
 	 * 公司ID
 	 */
 	private Long companyId;
+	private String companyType;
 
 	/**
 	 * 主键 日期yyyy-MM-dd isNullAble:0
@@ -90,6 +91,14 @@ public class HolidayDate extends Domain {
 
 	public void setDay(Integer day) {
 		this.day = day;
+	}
+
+	public String getCompanyType() {
+		return companyType;
+	}
+
+	public void setCompanyType(String companyType) {
+		this.companyType = companyType;
 	}
 
 }

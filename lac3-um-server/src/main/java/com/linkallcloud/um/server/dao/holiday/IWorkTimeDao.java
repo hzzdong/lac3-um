@@ -8,6 +8,7 @@ import com.linkallcloud.um.domain.holiday.WorkTime;
 
 public interface IWorkTimeDao extends IDao<WorkTime> {
 
-	WorkTime fetchByCompanyId(@Param("t") Trace t, @Param("companyId") Long companyId);
+	WorkTime fetchByCompanyId(@Param("t") Trace t, @Param("companyId") Long companyId,
+			@Param("companyType") String companyType);
 
 }

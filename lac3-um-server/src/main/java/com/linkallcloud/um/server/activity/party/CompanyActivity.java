@@ -36,7 +36,7 @@ import com.linkallcloud.um.server.dao.sys.IAccountDao;
 import com.linkallcloud.um.server.dao.sys.IApplicationDao;
 import com.linkallcloud.um.server.dao.sys.IAreaDao;
 
-public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<T>, U extends User, UD extends IUserDao<U>, D extends Department, DD extends IDepartmentDao<D>,A extends Account,AD extends IAccountDao<A>>
+public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<T>, U extends User, UD extends IUserDao<U>, D extends Department, DD extends IDepartmentDao<D>, A extends Account, AD extends IAccountDao<A>>
 		extends OrgActivity<T, CD, U, UD> implements ICompanyActivity<T> {
 
 	@Autowired
@@ -50,6 +50,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	protected abstract DD getDepartmentDao();
+
 	protected abstract AD getAccountDao();
 
 	@Transactional(readOnly = false)
@@ -334,6 +335,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 				T parent = dao().fetchById(t, entity.getParentId());
 				if (parent != null) {
 					entity.setLevel(parent.getLevel() + 1);
+					entity.setHolidayId(parent.getHolidayId());
 				}
 			}
 		} else {// 修改
@@ -478,7 +480,7 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	 * @param user
 	 */
 	protected abstract void autoAddSysAdminRole(Trace t, U user);
-	
+
 	protected abstract void autoCreateAccount(Trace t, U user);
 
 //	protected void autoCreateAccount(Trace t, User user) {
@@ -507,8 +509,8 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	@Transactional(readOnly = false)
 	@Override
 	public Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
-		T khCompany = fetchByIdUuid(t, id, uuid);
-		if (khCompany != null) {
+		T company = fetchByIdUuid(t, id, uuid);
+		if (company != null) {
 			List<Application> checkedEntities = findAppsByUuidIds(t, appUuidIds);
 			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == appUuidIds.size()) {
 				List<Long> appIds = Domains.parseIds(appUuidIds);
@@ -522,8 +524,8 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	@Transactional(readOnly = false)
 	@Override
 	public Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
-		T khCompany = fetchByIdUuid(t, id, uuid);
-		if (khCompany != null) {
+		T company = fetchByIdUuid(t, id, uuid);
+		if (company != null) {
 			List<Application> checkedEntities = findAppsByUuidIds(t, appUuidIds);
 			if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == appUuidIds.size()) {
 				List<Long> appIds = Domains.parseIds(appUuidIds);
@@ -532,6 +534,52 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 			}
 		}
 		return false;
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void updateChildrenCompaniesHolidaySetup(Trace t, Long companyId) {
+		T company = fetchById(t, companyId);
+		if (company != null) {
+			List<Long> childrenCompanyIds = new ArrayList<Long>();
+			childrenCompanyIds.add(companyId);
+			findChildrenCompanyIds(t, company, childrenCompanyIds);
+
+			updateHolidays(t, companyId, childrenCompanyIds);
+		}
+	}
+
+	private void findChildrenCompanyIds(Trace t, T parentCompany, List<Long> childrenCompanyIds) {
+		List<T> children = this.findDirectCompaniesByParentId(t, parentCompany.getId());
+		if (children != null && !children.isEmpty()) {
+			for (T child : children) {
+				if (child.getHolidayId() == null) {// child没设置过
+					childrenCompanyIds.add(child.getId());
+					findChildrenCompanyIds(t, child, childrenCompanyIds);
+				} else {
+					if (child.getHolidayId().equals(child.getId())) {// child自己设置了自己的
+						// child不变
+					} else {
+						if (parentCompany.getHolidayId() == null) {// parent没设置过
+							// child不变
+						} else {
+							if (child.getHolidayId().equals(parentCompany.getHolidayId())) {// child和parent之前设置的相同
+								childrenCompanyIds.add(child.getId());
+								findChildrenCompanyIds(t, child, childrenCompanyIds);
+							} else {
+								// child不变
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Transactional(readOnly = false)
+	@Override
+	public void updateHolidays(Trace t, Long holidayId, List<Long> companyIds) {
+		dao().updateHolidays(t, holidayId, companyIds);
 	}
 
 }

@@ -11,6 +11,8 @@ import com.linkallcloud.core.lang.Strings;
 public abstract class Company extends Org {
 	private static final long serialVersionUID = -4216405193715567536L;
 
+	private Long holidayId;// 假日，工作时间设置采用的父companyId
+
 	private String address;// 单位地址
 	private String phone;// 单位电话
 	private String fax;// 单位传真
@@ -308,6 +310,14 @@ public abstract class Company extends Org {
 		treeNode.addAttribute("areaId", this.getAreaId());
 		treeNode.addAttribute("typeCode", this.getTypeCode());
 		return treeNode;
+	}
+
+	public Long getHolidayId() {
+		return holidayId;
+	}
+
+	public void setHolidayId(Long holidayId) {
+		this.holidayId = holidayId;
 	}
 
 }

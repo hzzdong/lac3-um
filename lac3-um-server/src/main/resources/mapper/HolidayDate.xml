@@ -4,7 +4,7 @@
 
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime
-		,u.companyId
+		,u.companyId,u.companyType
 		,u.date
 		,u.year
 		,u.month
@@ -14,7 +14,7 @@
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.holiday.HolidayDate" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into tab_holiday_date 
 			( uuid,status,createTime,updateTime
-			,companyId
+			,companyId,companyType
 			,date
 			,year
 			,month
@@ -22,7 +22,7 @@
 			)
 		values
 			(#{entity.uuid},#{entity.status},now(),now()
-			,#{entity.companyId}
+			,#{entity.companyId},#{entity.companyType}
 			,#{entity.date}
 			,#{entity.year}
 			,#{entity.month}
@@ -33,7 +33,7 @@
 	<insert id="insertHolidayDate" parameterType="com.linkallcloud.um.domain.holiday.HolidayDate">
         (
         <trim suffixOverrides=",">
-        	`uuid`,`createTime`,`updateTime`,`companyId`,
+        	`uuid`,`createTime`,`updateTime`,`companyId`,`companyType`,
             <if test="date!=null">
                 `date`,
             </if>
@@ -54,7 +54,7 @@
         VALUES
         (
         <trim suffixOverrides=",">
-        	#{uuid},now(),now(),#{companyId},
+        	#{uuid},now(),now(),#{companyId},#{companyType},
             <if test="date!=null">
                 #{date},
             </if>
@@ -77,10 +77,10 @@
 
     <insert id="batchInsertHolidayDate"  parameterType="java.util.List" >
         INSERT INTO `um_holiday_date`
-        	( `uuid`,`createTime`,`updateTime`,`companyId`,`date`,`year`,`month`,`day`,`status` )
+        	( `uuid`,`createTime`,`updateTime`,`companyId`,`companyType`,`date`,`year`,`month`,`day`,`status` )
         VALUES
         <foreach collection="list" item="item" index="index"   separator=",">
-            ( #{item.uuid},now(),now(),#{item.companyId},#{item.date},#{item.year},#{item.month},#{item.day}, #{item.status})
+            ( #{item.uuid},now(),now(),#{item.companyId},#{item.companyType},#{item.date},#{item.year},#{item.month},#{item.day}, #{item.status})
         </foreach>
         ON DUPLICATE KEY UPDATE
         `status` = values(status)
@@ -106,7 +106,7 @@
         </trim>
         WHERE
         <trim suffixOverrides="and">
-            `date` = #{date} and `companyId` = #{companyId} and
+            `date` = #{date} and `companyId` = #{companyId} and `companyType` = #{companyType} and
         </trim>
     </update>
 
@@ -206,6 +206,7 @@
         <result property="createTime" column="createTime"/>
         <result property="updateTime" column="updateTime"/>
         <result property="companyId" column="companyId"/>
+        <result property="companyType" column="companyType"/>
         <result property="date" column="date"/>
         <result property="year" column="year"/>
         <result property="month" column="month"/>
@@ -221,6 +222,9 @@
         <trim prefix="where" suffixOverrides="and | or">
             <if test="companyId != null">
                 `companyId` = #{companyId} and
+            </if>
+            <if test="companyType != null">
+                `companyType` = #{companyType} and
             </if>
             <if test="date != null and date!=''">
                 `date` = #{date} and
@@ -247,6 +251,9 @@
         <trim prefix="where" suffixOverrides="and | or">
             <if test="companyId != null">
                 `companyId` = #{companyId} and
+            </if>
+            <if test="companyType != null">
+                `companyType` = #{companyType} and
             </if>
             <if test="date != null and date!=''">
                 `date` = #{date} and
@@ -276,6 +283,7 @@
         	`createTime`,
         	`updateTime`,
 			`companyId`,
+			`companyType`,
             `date`,
             `year`,
             `month`,

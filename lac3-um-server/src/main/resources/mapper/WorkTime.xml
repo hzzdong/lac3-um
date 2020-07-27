@@ -5,6 +5,7 @@
 	<sql id="Base_Column_List">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime
 		,u.companyId
+		,u.companyType
 		,u.amGoToWorkHour
 		,u.amGoToWorkMinute
 		,u.amGoOffWorkHour
@@ -21,13 +22,14 @@
 		from 
 			um_work_time u
 		where 
-			u.companyId=#{companyId}
+			u.companyId=#{companyId} AND u.companyType=#{companyType}
 	</select>
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.holiday.WorkTime" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_work_time 
 			( uuid,status,createTime,updateTime
 			,companyId
+			,companyType
 			,amGoToWorkHour
 			,amGoToWorkMinute
 			,amGoOffWorkHour
@@ -40,6 +42,7 @@
 		values
 			(#{entity.uuid},0,now(),now()
 			,#{entity.companyId}
+			,#{entity.companyType}
 			,#{entity.amGoToWorkHour}
 			,#{entity.amGoToWorkMinute}
 			,#{entity.amGoOffWorkHour}
@@ -65,7 +68,7 @@
 			,pmGoOffWorkHour=#{entity.pmGoOffWorkHour}
 			,pmGoOffWorkMinute=#{entity.pmGoOffWorkMinute}
 		where 
-			companyId=#{entity.companyId} 
+			companyId=#{entity.companyId} AND companyType=#{entity.companyType} 
 	</update>
 	
 	<delete id="delete">
