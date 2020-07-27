@@ -178,12 +178,23 @@ export const asyncRoutes = [
   {
     path: '/config',
     component: Layout,
+    redirect: '/config/setup',
+    name: 'KhSystemConfig',
+    meta: {
+      title: '系统设置', icon: 'example', requires: ['selfkh_sys_config']
+    },
     children: [
       {
-        path: 'index',
+        path: 'setup',
         component: () => import('@/views/kh-system-config/config'),
-        name: 'KhSystemConfig',
-        meta: { title: '系统设置', icon: 'example', requires: ['selfkh_sys_config'] }
+        name: 'KhSysConfig',
+        meta: { title: '系统设置', requires: ['selfkh_sys_config_setup'] }
+      },
+      {
+        path: 'holiday',
+        component: () => import('@/views/kh-system-config/holiday'),
+        name: 'KhHoliday',
+        meta: { title: '假日设置', requires: ['kh_holiday_config'] }
       }
     ]
   },
