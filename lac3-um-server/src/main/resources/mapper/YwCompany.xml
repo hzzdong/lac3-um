@@ -189,7 +189,7 @@
 		set 
 			holidayId=#{holidayId}
 		where 
-			u.id in
+			id in
 			<foreach item="id" index="index" collection="companyIds" open="(" separator="," close=")">
 				#{id}
 			</foreach>

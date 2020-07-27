@@ -6,14 +6,14 @@
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 		u.parentId,u.parentClass,u.govCode,u.code,u.name,u.fullName,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,u.scale,
 		u.juridical,u.jphone,u.jType,u.jNo,u.ywCompanyId,u.createUserId,
-		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart
+		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,u.holidayId
 	</sql>
 	
 	<sql id="Column_with_orgName">
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 		u.parentId,u.parentClass,u.govCode,u.code,u.name,u.fullName,u.scale,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,
 		u.juridical,u.jphone,u.jType,u.jNo,u.ywCompanyId,u.createUserId,d.name as orgName,
-		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,
+		u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,u.holidayId,
 		area.name as areaName
 	</sql>
 	
@@ -86,7 +86,7 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.url,u.type,u.ico,u.remark,u.typeCode,
 			u.parentId,u.parentClass,u.govCode,u.code,u.name,u.scale,u.areaId,u.level,u.address,u.phone,u.fax,u.certificateType,u.certificateNo,u.business,u.credentials,u.juridical,u.jphone,u.jType,u.jNo,
-			u.ywCompanyId,u.createUserId,u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,area.name as areaName
+			u.ywCompanyId,u.createUserId,u.area1Id,u.area2Id,u.area3Id,u.area4Id,u.area5Id,u.area6Id,u.area7Id,u.area8Id,u.businessStart,u.holidayId,area.name as areaName
 		FROM
 			um_kh_company u LEFT JOIN um_area area ON u.areaId=area.id 
 		WHERE
@@ -274,11 +274,11 @@
 		insert into um_kh_company 
 			(uuid, status,createTime,updateTime,sort,url,type,ico,remark,typeCode,ywCompanyId,createUserId,
 				parentId,parentClass,govCode,code,name,scale,areaId,address,phone,fax,certificateType,certificateNo,business,credentials,
-				juridical,jphone,jType,jNo,businessStart)
+				juridical,jphone,jType,jNo,businessStart,holidayId)
 		values
 			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.typeCode},#{entity.ywCompanyId},#{entity.createUserId},
 				#{entity.parentId},#{entity.parentClass},#{entity.govCode},#{entity.code},#{entity.name},#{entity.scale},#{entity.areaId},#{entity.address},#{entity.phone},#{entity.fax},#{entity.certificateType},#{entity.certificateNo},#{entity.business},#{entity.credentials},
-				#{entity.juridical},#{entity.jphone},#{entity.jType},#{entity.jNo},#{entity.businessStart})
+				#{entity.juridical},#{entity.jphone},#{entity.jType},#{entity.jNo},#{entity.businessStart},#{entity.holidayId})
 	</insert>
 	
 	<update id="update">
@@ -293,8 +293,21 @@
 			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>
+			<if test="entity.holidayId != null"> ,holidayId=#{entity.holidayId}</if>
 		where 
 			id=#{entity.id} and uuid=#{entity.uuid}
+	</update>
+	
+	<update id="updateHolidays">
+		update 
+			um_kh_company 
+		set 
+			holidayId=#{holidayId}
+		where 
+			id in
+			<foreach item="id" index="index" collection="companyIds" open="(" separator="," close=")">
+				#{id}
+			</foreach>
 	</update>
 	
 	<update id="updateCompanyLogo">
