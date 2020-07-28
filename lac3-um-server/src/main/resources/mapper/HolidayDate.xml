@@ -243,6 +243,27 @@
             </if>
         </trim>
     </select>
+    
+    <select id="queryHolidayDate13" resultMap="HolidayDateMap">
+        select
+        <include refid="baseResult"></include>
+        from  `um_holiday_date`
+        <trim prefix="where" suffixOverrides="and | or">
+            `companyId` = #{companyId} and `companyType` = #{companyType} and (`status` = 1 or `status` = 3) and
+            <if test="date != null and date!=''">
+                `date` = #{date} and
+            </if>
+            <if test="year != null">
+                `year` = #{year} and
+            </if>
+            <if test="month != null">
+                `month` = #{month} and
+            </if>
+            <if test="day != null">
+                `day` = #{day} and
+            </if>
+        </trim>
+    </select>
 
     <select id="queryHolidayDateLimit1" resultMap="HolidayDateMap">
         select
