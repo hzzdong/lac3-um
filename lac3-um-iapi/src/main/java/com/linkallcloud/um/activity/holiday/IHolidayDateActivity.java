@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.linkallcloud.core.activity.IActivity;
 import com.linkallcloud.core.dto.Sid;
+import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.domain.holiday.HolidayDate;
+import com.linkallcloud.um.dto.holiday.HolidayVo;
 
 public interface IHolidayDateActivity extends IActivity<HolidayDate> {
 
@@ -33,5 +35,14 @@ public interface IHolidayDateActivity extends IActivity<HolidayDate> {
 	List<HolidayDate> getHolidays(Sid company, String date);
 	
 	Boolean setHoliday(HolidayDate hd);
+	
+	/**
+	 * 查询休息日和工作时间
+	 * 
+	 * @param company
+	 * @param date
+	 * @return
+	 */
+	HolidayVo getCompanyHoliday(Trace t, Sid company, String date);
 
 }

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.dto.Sid;
+import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.service.BaseService;
 import com.linkallcloud.um.activity.holiday.IHolidayDateActivity;
 import com.linkallcloud.um.domain.holiday.HolidayDate;
+import com.linkallcloud.um.dto.holiday.HolidayVo;
 import com.linkallcloud.um.service.holiday.IHolidayDateService;
 
 @Service
@@ -61,6 +63,11 @@ public class HolidayDateService extends BaseService<HolidayDate, IHolidayDateAct
 	@Override
 	public Boolean setHoliday(HolidayDate hd) {
 		return activity().setHoliday(hd);
+	}
+
+	@Override
+	public HolidayVo getCompanyHoliday(Trace t, Sid company, String date) {
+		return activity().getCompanyHoliday(t, company, date);
 	}
 
 }

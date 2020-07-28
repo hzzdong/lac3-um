@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
 
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Sid;
+import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.BaseManager;
 import com.linkallcloud.um.domain.holiday.HolidayDate;
+import com.linkallcloud.um.dto.holiday.HolidayVo;
 import com.linkallcloud.um.iapi.holiday.IHolidayDateManager;
 import com.linkallcloud.um.service.holiday.IHolidayDateService;
 
@@ -59,6 +61,11 @@ public class HolidayDateManager extends BaseManager<HolidayDate, IHolidayDateSer
 	@Override
 	public Boolean setHoliday(HolidayDate hd) {
 		return service().setHoliday(hd);
+	}
+
+	@Override
+	public HolidayVo getCompanyHoliday(Trace t, Sid company, String date) {
+		return service().getCompanyHoliday(t, company, date);
 	}
 
 }

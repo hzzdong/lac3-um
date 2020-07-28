@@ -12,9 +12,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.linkallcloud.core.activity.BaseActivity;
 import com.linkallcloud.core.dto.Sid;
+import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.activity.holiday.IHolidayDateActivity;
 import com.linkallcloud.um.domain.holiday.HolidayDate;
+import com.linkallcloud.um.domain.holiday.WorkTime;
+import com.linkallcloud.um.dto.holiday.HolidayVo;
+import com.linkallcloud.um.dto.holiday.WorkTimeVo;
 import com.linkallcloud.um.server.dao.holiday.IHolidayDateDao;
+import com.linkallcloud.um.server.dao.holiday.IWorkTimeDao;
 import com.linkallcloud.um.server.utils.DateTimeUtils;
 import com.linkallcloud.um.server.utils.DateUtil;
 import com.linkallcloud.um.server.utils.HolidayUtil;
@@ -24,6 +29,9 @@ public class HolidayDateActivity extends BaseActivity<HolidayDate, IHolidayDateD
 
 	@Autowired
 	private IHolidayDateDao holidayDateDao;
+
+	@Autowired
+	private IWorkTimeDao workTimeDao;
 
 	@Override
 	public IHolidayDateDao dao() {
@@ -232,6 +240,39 @@ public class HolidayDateActivity extends BaseActivity<HolidayDate, IHolidayDateD
 	@Override
 	public Boolean setHoliday(HolidayDate hd) {
 		return dao().updateHolidayDate(hd) > 0;
+	}
+
+	@Override
+	public HolidayVo getCompanyHoliday(Trace t, Sid company, String date) {
+		HolidayVo result = new HolidayVo();
+
+		HolidayDate record = new HolidayDate();
+		record.setCompanyId(company.getId());
+		record.setCompanyType(company.getCode());
+		String[] split = date.split("-");
+		if (split.length == 1) {
+			record.setYear(Integer.parseInt(split[0]));
+		} else if (split.length == 2) {
+			record.setYear(Integer.parseInt(split[0]));
+			record.setMonth(Integer.parseInt(split[1]));
+		} else if (split.length == 3) {
+			record.setDate(date);
+		}
+		List<HolidayDate> dates = holidayDateDao.queryHolidayDate13(record);
+		WorkTime worktime = workTimeDao.fetchByCompanyId(t, company.getId(), company.getCode());
+		if (worktime != null) {
+			result.setWorktime(new WorkTimeVo(worktime.getAmGoToWorkHour(), worktime.getAmGoToWorkMinute(),
+					worktime.getAmGoOffWorkHour(), worktime.getAmGoOffWorkMinute(), worktime.getPmGoToWorkHour(),
+					worktime.getPmGoToWorkMinute(), worktime.getPmGoOffWorkHour(), worktime.getPmGoOffWorkMinute()));
+		}
+
+		if (dates != null && !dates.isEmpty()) {
+			for (HolidayDate hd : dates) {
+				result.addHolidayDate(hd.getDate());
+			}
+		}
+
+		return result;
 	}
 
 }

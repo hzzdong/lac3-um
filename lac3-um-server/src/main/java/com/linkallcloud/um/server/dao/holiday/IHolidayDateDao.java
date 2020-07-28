@@ -38,6 +38,14 @@ public interface IHolidayDateDao extends IDao<HolidayDate> {
 	 * @return the list
 	 */
 	List<HolidayDate> queryHolidayDate(HolidayDate object);
+	
+	/**
+	 * 查询status为1和3的记录
+	 * 
+	 * @param record
+	 * @return
+	 */
+	List<HolidayDate> queryHolidayDate13(HolidayDate record);
 
 	/**
 	 * Query holiday date limit 1 holiday date.
@@ -46,5 +54,7 @@ public interface IHolidayDateDao extends IDao<HolidayDate> {
 	 * @return the holiday date
 	 */
 	HolidayDate queryHolidayDateLimit1(HolidayDate object);
+
+	
 
 }
