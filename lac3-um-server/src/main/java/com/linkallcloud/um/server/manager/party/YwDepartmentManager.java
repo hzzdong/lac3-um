@@ -1,6 +1,6 @@
 package com.linkallcloud.um.server.manager.party;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import com.linkallcloud.um.service.party.IYwCompanyService;
 import com.linkallcloud.um.service.party.IYwDepartmentService;
 import com.linkallcloud.um.service.party.IYwUserService;
 
-@Service(interfaceClass = IYwDepartmentManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IYwDepartmentManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "运维部门")
 public class YwDepartmentManager extends

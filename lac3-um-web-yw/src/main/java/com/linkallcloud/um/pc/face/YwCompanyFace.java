@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,16 +49,16 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 	@Value("${oapi.appcode}")
 	private String myAppCode;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwCompanyManager ywCompanyManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwSystemConfigManager ywSystemConfigManager;
 
 	@Override

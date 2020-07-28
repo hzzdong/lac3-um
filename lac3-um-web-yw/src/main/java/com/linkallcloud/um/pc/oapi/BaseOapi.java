@@ -1,11 +1,9 @@
 package com.linkallcloud.um.pc.oapi;
 
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 
-import org.apache.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.TypeReference;
-import com.linkallcloud.sh.sm.ISignatureMessage;
-import com.linkallcloud.sh.sm.SignatureMessage;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
@@ -14,13 +12,15 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.security.MsgSignObject;
+import com.linkallcloud.sh.sm.ISignatureMessage;
+import com.linkallcloud.sh.sm.SignatureMessage;
 import com.linkallcloud.um.domain.sys.Application;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 
 public abstract class BaseOapi {
 	protected static Log log = Logs.get();
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
 	@Value("${oapi.url.um}")

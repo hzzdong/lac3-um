@@ -1,6 +1,6 @@
 package com.linkallcloud.um.pc.face;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,16 +29,16 @@ import com.linkallcloud.web.session.SessionUser;
 public class SysKhRoleFace extends
 		RoleBaseFace<KhRole, KhUser, IKhRoleManager, IKhUserManager, KhCompany, IKhCompanyManager, KhDepartment, IKhDepartmentManager> {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhRoleManager khRoleManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhDepartmentManager khDepartmentManager;
 
 	@Override

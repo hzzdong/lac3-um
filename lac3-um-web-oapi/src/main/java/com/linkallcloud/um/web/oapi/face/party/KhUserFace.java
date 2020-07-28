@@ -2,7 +2,7 @@ package com.linkallcloud.um.web.oapi.face.party;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,19 +35,19 @@ import com.linkallcloud.web.face.annotation.Face;
 @Module(name = "客户用户")
 public class KhUserFace {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhCompanyManager khCompanyManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhDepartmentManager khDepartmentManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IAreaManager areaManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
 	@Face(login = false)

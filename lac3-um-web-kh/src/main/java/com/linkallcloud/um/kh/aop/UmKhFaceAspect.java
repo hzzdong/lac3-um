@@ -2,7 +2,7 @@ package com.linkallcloud.um.kh.aop;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,10 +28,10 @@ import com.linkallcloud.web.session.SimpleSessionUser;
 @Order(2)
 public class UmKhFaceAspect extends FaceAspect {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
 
 	@Pointcut("execution(public * com.linkallcloud.um.kh.face..*.*(..))")

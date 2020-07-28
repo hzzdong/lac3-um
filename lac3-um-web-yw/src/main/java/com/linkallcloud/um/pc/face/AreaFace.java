@@ -3,7 +3,7 @@ package com.linkallcloud.um.pc.face;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,10 +28,10 @@ import com.linkallcloud.web.session.SessionUser;
 @Module(name = "区域")
 public class AreaFace extends BaseTreeFace<Area, IAreaManager> {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IAreaManager areaManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwCompanyManager ywCompanyManager;
 
 	@Override

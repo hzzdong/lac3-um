@@ -12,7 +12,7 @@ import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.um.domain.party.KhDepartment;
 import com.linkallcloud.um.iapi.party.IKhDepartmentManager;
 import com.linkallcloud.web.face.annotation.Face;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Module(name = "客户部门")
 public class KhDepartmentFace {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhDepartmentManager khDepartmentManager;
 
 	@Face(login = false)

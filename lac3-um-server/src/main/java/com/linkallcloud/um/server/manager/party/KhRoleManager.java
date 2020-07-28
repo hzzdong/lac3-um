@@ -1,6 +1,6 @@
 package com.linkallcloud.um.server.manager.party;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import com.linkallcloud.um.iapi.party.IKhRoleManager;
 import com.linkallcloud.um.service.party.IKhCompanyService;
 import com.linkallcloud.um.service.party.IKhRoleService;
 
-@Service(interfaceClass = IKhRoleManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IKhRoleManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "客户角色")
 public class KhRoleManager extends RoleManager<KhRole, KhUser, IKhRoleService, KhCompany, IKhCompanyService>

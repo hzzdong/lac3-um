@@ -2,7 +2,7 @@ package com.linkallcloud.um.pc.aop;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,9 +28,9 @@ import com.linkallcloud.web.session.SimpleSessionUser;
 @Order(2)
 public class UmYwFaceAspect extends FaceAspect {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IApplicationManager applicationManager;
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
 
 	@Pointcut("execution(public * com.linkallcloud.um.pc.face..*.*(..))")

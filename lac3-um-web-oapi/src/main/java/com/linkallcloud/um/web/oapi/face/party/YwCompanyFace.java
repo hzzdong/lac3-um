@@ -1,6 +1,6 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +25,7 @@ import com.linkallcloud.web.face.annotation.Face;
 @Module(name = "运维公司")
 public class YwCompanyFace {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwCompanyManager ywCompanyManager;
 
 	@Face(login = false)

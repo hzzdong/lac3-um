@@ -2,7 +2,7 @@ package com.linkallcloud.um.server.manager.sys;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
@@ -15,7 +15,7 @@ import com.linkallcloud.um.domain.sys.Area;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.um.service.sys.IAreaService;
 
-@Service(interfaceClass = IAreaManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IAreaManager.class, version = "${dubbo.service.version}")
 @Module(name = "区域")
 public class AreaManager extends BaseTreeManager<Area, IAreaService> implements IAreaManager {
 

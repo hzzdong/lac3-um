@@ -34,7 +34,7 @@ public class UmOapiApplication implements WebMvcConfigurer, CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		log.info("UmOapiApplication服务器启动完成!");
+		log.error("Track:UmOapiApplication服务器启动完成!");
 	}
 
 }

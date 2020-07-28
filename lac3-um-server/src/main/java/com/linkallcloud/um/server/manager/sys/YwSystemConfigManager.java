@@ -2,7 +2,7 @@ package com.linkallcloud.um.server.manager.sys;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
@@ -13,7 +13,7 @@ import com.linkallcloud.um.domain.sys.YwSystemConfig;
 import com.linkallcloud.um.iapi.sys.IYwSystemConfigManager;
 import com.linkallcloud.um.service.sys.IYwSystemConfigService;
 
-@Service(interfaceClass = IYwSystemConfigManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IYwSystemConfigManager.class, version = "${dubbo.service.version}")
 @Module(name = "系统配置")
 public class YwSystemConfigManager extends BaseManager<YwSystemConfig, IYwSystemConfigService>
 		implements IYwSystemConfigManager {

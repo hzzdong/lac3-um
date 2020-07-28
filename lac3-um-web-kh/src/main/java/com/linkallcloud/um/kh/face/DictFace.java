@@ -3,7 +3,7 @@ package com.linkallcloud.um.kh.face;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,10 +25,10 @@ import com.linkallcloud.web.face.annotation.Face;
 @Module(name = "数据字典")
 public class DictFace {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IDictTypeManager dictTypeManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IDictManager dictManager;
 
 	/**

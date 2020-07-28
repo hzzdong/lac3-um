@@ -1,20 +1,21 @@
 package com.linkallcloud.um.kh.aop;
 
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.um.iapi.sys.IOperationManager;
-import com.linkallcloud.web.interceptors.AbstractPermissionInterceptor;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.um.iapi.sys.IOperationManager;
+import com.linkallcloud.web.interceptors.AbstractPermissionInterceptor;
 
 public class LacPermissionInterceptor extends AbstractPermissionInterceptor {
 
     private static Map<Long, Map<String, String[]>> appUriRescodeMap = new HashMap<>();
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IOperationManager operationManager;
 
     @Value("${oapi.appcode}")

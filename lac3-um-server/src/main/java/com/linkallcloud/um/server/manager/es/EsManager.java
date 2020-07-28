@@ -3,7 +3,7 @@ package com.linkallcloud.um.server.manager.es;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -18,7 +18,7 @@ import com.linkallcloud.um.dto.es.EsResultHits;
 import com.linkallcloud.um.iapi.es.IEsManager;
 import com.linkallcloud.um.service.es.IEsService;
 
-@Service(interfaceClass = IEsManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IEsManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "ES")
 public class EsManager implements IEsManager<LacBusiLog> {

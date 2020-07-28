@@ -37,10 +37,7 @@
 		<namesrvAddr>${namesrvAddr}</namesrvAddr>
 		<accessKey>${accessKey}</accessKey>
 		<secretKey>${secretKey}</secretKey>
-<!-- 		<encoder>
-			<pattern>%date [%level] from %logger in %thread - %message%n%xException</pattern>
-		</encoder>
- -->	</appender>    
+	</appender>    
     
     
    	<springProfile name="dev">

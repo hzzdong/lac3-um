@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.LacLog;
+import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Lang;
@@ -39,22 +39,22 @@ import com.linkallcloud.web.vc.SessionValidateCode;
 @Module(name = "用户登录")
 public class LoginController {
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IKhAccountManager khAccountManager;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IKhUserManager khUserManager;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IKhCompanyManager khCompanyManager;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IKhDepartmentManager khDepartmentManager;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IApplicationManager applicationManager;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IAreaManager areaManager;
 
     @Value("${lac.lf.appcode}")

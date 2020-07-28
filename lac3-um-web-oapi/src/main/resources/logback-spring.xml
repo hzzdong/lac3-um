@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+	<springProperty scope="context" name="appName" source="log.appName" defaultValue="" />
+	<springProperty scope="context" name="appType" source="log.appType" defaultValue="" />
+	<springProperty scope="context" name="mqGroupName" source="log.mq.mqGroupName" defaultValue="" />
+	<springProperty scope="context" name="namesrvAddr" source="log.mq.namesrvAddr" defaultValue="" />
+	<springProperty scope="context" name="accessKey" source="log.mq.accessKey" defaultValue="" />
+	<springProperty scope="context" name="secretKey" source="log.mq.secretKey" defaultValue="" />
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
@@ -23,10 +30,43 @@
         </encoder>
     </appender>
     
-    <logger name="com.linkallcloud.um.web.oapi" level="INFO"/>
+   	<appender name="rocketmqLog" class="com.linkallcloud.log.logback.appender.RocketmqAppender">
+		<appName>${appName}</appName>
+		<appType>${appType}</appType>
+		<mqGroupName>${mqGroupName}</mqGroupName>
+		<namesrvAddr>${namesrvAddr}</namesrvAddr>
+		<accessKey>${accessKey}</accessKey>
+		<secretKey>${secretKey}</secretKey>
+	</appender>     
+	
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
+    
+      <springProfile name="dev">
+    	<logger name="com.linkallcloud.um.web.oapi" level="DEBUG"/>
+		<root level="DEBUG">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+	<springProfile name="test">
+	 	<logger name="com.linkallcloud.um.web.oapi" level="INFO"/>
+		<root level="INFO">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+	<springProfile name="prod">
+	 	<logger name="com.linkallcloud.um.web.oapi" level="ERROR"/>
+		<root level="ERROR">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+    
+    
+    
 </configuration>

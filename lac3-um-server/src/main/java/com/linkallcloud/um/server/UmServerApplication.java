@@ -46,7 +46,7 @@ public class UmServerApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		log.info("UmServerApplication服务器启动完成!");
+		log.error("Track:UmServerApplication服务器启动完成!");
 	}
 
 }

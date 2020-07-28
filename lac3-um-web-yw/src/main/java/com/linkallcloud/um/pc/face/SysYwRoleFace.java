@@ -1,6 +1,6 @@
 package com.linkallcloud.um.pc.face;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,16 +24,16 @@ import com.linkallcloud.um.iapi.party.IYwUserManager;
 @Module(name = "运维系统角色")
 public class SysYwRoleFace extends RoleBaseFace<YwRole, YwUser, IYwRoleManager, IYwUserManager, YwCompany, IYwCompanyManager, YwDepartment, IYwDepartmentManager> {
 	
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwRoleManager ywRoleManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwCompanyManager ywCompanyManager;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwDepartmentManager ywDepartmentManager;
 
 	@Override

@@ -2,7 +2,7 @@ package com.linkallcloud.um.pc.face;
 
 import java.util.Arrays;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +24,7 @@ import com.linkallcloud.web.face.base.BaseTreeFace;
 @Module(name = "菜单")
 public class MenuFace extends BaseTreeFace<Menu, IMenuManager> {
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IMenuManager menuManager;
 
 	@Override

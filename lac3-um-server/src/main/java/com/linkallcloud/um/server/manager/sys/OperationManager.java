@@ -3,17 +3,17 @@ package com.linkallcloud.um.server.manager.sys;
 import java.util.List;
 import java.util.Map;
 
-import com.linkallcloud.um.service.sys.IOperationService;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.apache.dubbo.config.annotation.Service;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.manager.BaseManager;
 import com.linkallcloud.um.domain.sys.Operation;
 import com.linkallcloud.um.iapi.sys.IOperationManager;
+import com.linkallcloud.um.service.sys.IOperationService;
 
-@Service(interfaceClass = IOperationManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IOperationManager.class, version = "${dubbo.service.version}")
 @Module(name = "操作")
 public class OperationManager extends BaseManager<Operation, IOperationService> implements IOperationManager {
 

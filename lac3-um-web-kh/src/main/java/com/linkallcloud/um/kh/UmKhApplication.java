@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.servlet.MultipartConfigElement;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -58,7 +58,7 @@ public class UmKhApplication implements WebMvcConfigurer, CommandLineRunner {
 	@Value("${lac.lf.loginUrl:/login}")
 	private String loginUrl;
 
-	@Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IKhUserManager khUserManager;
 
 	@Bean
@@ -163,7 +163,7 @@ public class UmKhApplication implements WebMvcConfigurer, CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		log.info("UmKhApplication服务器启动完成!");
+		log.error("Track:UmKhApplication服务器启动完成!");
 	}
 
 }

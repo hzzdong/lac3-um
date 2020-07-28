@@ -2,7 +2,7 @@ package com.linkallcloud.um.server.manager.sys;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
@@ -15,7 +15,7 @@ import com.linkallcloud.um.iapi.sys.IDictManager;
 import com.linkallcloud.um.service.sys.IDictService;
 import com.linkallcloud.um.service.sys.IDictTypeService;
 
-@Service(interfaceClass = IDictManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IDictManager.class, version = "${dubbo.service.version}")
 @Module(name = "数据字典")
 public class DictManager extends BaseTreeManager<Dict, IDictService> implements IDictManager {
 

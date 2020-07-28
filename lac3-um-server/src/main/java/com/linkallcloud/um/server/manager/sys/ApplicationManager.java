@@ -2,7 +2,7 @@ package com.linkallcloud.um.server.manager.sys;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.linkallcloud.core.busilog.annotation.Module;
@@ -16,7 +16,7 @@ import com.linkallcloud.um.exception.AppException;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.service.sys.IApplicationService;
 
-@Service(interfaceClass = IApplicationManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IApplicationManager.class, version = "${dubbo.service.version}")
 @Module(name = "应用")
 public class ApplicationManager extends BaseManager<Application, IApplicationService> implements IApplicationManager {
 

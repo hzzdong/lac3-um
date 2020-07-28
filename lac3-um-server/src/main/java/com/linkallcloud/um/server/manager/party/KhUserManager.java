@@ -3,7 +3,7 @@ package com.linkallcloud.um.server.manager.party;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ import com.linkallcloud.um.service.ptj.IKhPartTimeJobService;
 import com.linkallcloud.um.service.sys.IAreaService;
 import com.linkallcloud.web.session.SessionUser;
 
-@Service(interfaceClass = IKhUserManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IKhUserManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "用户")
 public class KhUserManager

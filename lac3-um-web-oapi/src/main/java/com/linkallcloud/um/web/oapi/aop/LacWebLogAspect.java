@@ -1,6 +1,6 @@
 package com.linkallcloud.um.web.oapi.aop;
 
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,7 +29,7 @@ public class LacWebLogAspect extends BusiWebLogAspect<LacBusiLog> {
     @Value("${log.appType}")
     private String appType;
 
-    @Reference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+    @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
     private IUmWebLogManager umWebLogManager;
 
     @Override

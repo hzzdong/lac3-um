@@ -2,7 +2,7 @@ package com.linkallcloud.um.server.manager.party;
 
 import java.util.List;
 
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import com.linkallcloud.um.service.party.IKhDepartmentService;
 import com.linkallcloud.um.service.party.IKhRoleService;
 import com.linkallcloud.um.service.party.IKhUserService;
 
-@Service(interfaceClass = IKhCompanyManager.class, version = "${dubbo.service.version}")
+@DubboService(interfaceClass = IKhCompanyManager.class, version = "${dubbo.service.version}")
 @Component
 @Module(name = "客户单位")
 public class KhCompanyManager extends

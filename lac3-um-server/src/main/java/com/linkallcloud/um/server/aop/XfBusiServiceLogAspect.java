@@ -40,9 +40,9 @@ public class XfBusiServiceLogAspect extends BusiServiceLogAspect<LacBusiLog> {
                 LacBusiLog log = new LacBusiLog();
                 BeanUtils.copyProperties(operatelog, log);
                 log.setError(null);
-                String logStr = JSON.toJSONString(log);
                 log.setCreateTime(null);
                 log.setUuid(null);
+                String logStr = JSON.toJSONString(log);
                 RocketmqProducerClient.getInstance().sendMsg(logStr);
             } else {
                 if (operatelog.getErrorMessage() != null && operatelog.getErrorMessage().length() > 512) {
