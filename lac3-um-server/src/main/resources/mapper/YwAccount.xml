@@ -224,7 +224,15 @@
 			id=#{id}
 	</update>
 
-	<update id="updateWechatOpenId">
+	<update id="updateAccountWechatOpenId">
+		update 
+			um_yw_account 
+		set 
+			updateTime=now(),wechatOpenId=#{openid}
+		where 
+			id=#{id}
+	</update>
+<!-- 	<update id="updateWechatOpenId">
 		update 
 			um_yw_account 
 		set 
@@ -241,5 +249,5 @@
 		where 
 			id=#{id}
 	</update>
-	
+	 -->
 </mapper>

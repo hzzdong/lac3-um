@@ -40,12 +40,9 @@
 	</appender>     
 	
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </root>
+
     
-      <springProfile name="dev">
+    <springProfile name="dev">
     	<logger name="com.linkallcloud.um.web.oapi" level="DEBUG"/>
 		<root level="DEBUG">
 			<appender-ref ref="rocketmqLog" />
