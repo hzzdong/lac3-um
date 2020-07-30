@@ -1,5 +1,6 @@
 package com.linkallcloud.um.dto.holiday;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import com.linkallcloud.core.dto.Sid;
@@ -27,8 +28,7 @@ public class HolidayRequest extends LoginFaceRequest {
 		this.companyId = companyId;
 		this.companyType = companyType;
 		if (Strings.isBlank(date)) {
-			Calendar start = Calendar.getInstance();
-			this.date = start.get(Calendar.YEAR) + "";
+			this.date = new SimpleDateFormat("yyyy-MM").format(Calendar.getInstance().getTime());
 		} else {
 			this.date = date;
 		}

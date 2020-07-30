@@ -1,5 +1,6 @@
 package com.linkallcloud.um.web.oapi.face.holiday;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -29,12 +30,11 @@ public class HolidayFace {
 		if (faceReq.getCompanyId() == null || Strings.isBlank(faceReq.getCompanyType())) {
 			return null;
 		}
-		
+
 		if (Strings.isBlank(faceReq.getDate())) {
-			Calendar start = Calendar.getInstance();
-			faceReq.setDate(start.get(Calendar.YEAR) + "");
+			faceReq.setDate(new SimpleDateFormat("yyyy-MM").format(Calendar.getInstance().getTime()));
 		}
-		
+
 		return holidayDateManager.getCompanyHoliday(t, faceReq.getCompany(), faceReq.getDate());
 	}
 

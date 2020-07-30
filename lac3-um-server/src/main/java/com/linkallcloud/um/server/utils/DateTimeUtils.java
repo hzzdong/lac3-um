@@ -235,6 +235,21 @@ public class DateTimeUtils {
 	}
 
 	/**
+	 * 获取给定日期几天后的日期
+	 * 
+	 * @param date yyyy-MM-dd
+	 * @param num
+	 * @return yyyy-MM-dd
+	 * @throws ParseException
+	 */
+	public static Date getTheFutureFewDay(Date date, int num) throws ParseException {
+		Calendar now = Calendar.getInstance();
+		now.setTime(date);
+		now.set(Calendar.DATE, now.get(Calendar.DATE) + num);
+		return now.getTime();
+	}
+
+	/**
 	 * 获取一段时间内的日期
 	 * 
 	 * @param startTime
@@ -249,6 +264,27 @@ public class DateTimeUtils {
 			times.add(tempStr);
 			tempStr = getTheFutureFewDay(tempStr, 1);
 		} while (tempStr.compareTo(endTime) <= 0);
+		return times;
+	}
+
+	/**
+	 * 获取一段时间内的日期
+	 * 
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<String> getDayPeriod(Date startTime, Date endTime) throws Exception {
+		List<String> times = new ArrayList<String>();
+		String endTimeStr = getFormatDateStr(endTime, DATE_FORMAT);
+		Date tempTime = startTime;
+		String tempStr = getFormatDateStr(tempTime, DATE_FORMAT);
+		do {
+			times.add(tempStr);
+			tempTime = getTheFutureFewDay(tempTime, 1);
+			tempStr = getFormatDateStr(tempTime, DATE_FORMAT);
+		} while (tempStr.compareTo(endTimeStr) <= 0);
 		return times;
 	}
 

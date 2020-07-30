@@ -253,14 +253,14 @@
             <if test="date != null and date!=''">
                 `date` = #{date} and
             </if>
-            <if test="year != null">
-                `year` = #{year} and
+            <if test="year != null and month == null">
+                `year` &gt;= #{year-1} and `year` &lt;= #{year} and
             </if>
-            <if test="month != null">
-                `month` = #{month} and
+            <if test="month != null and month lt 6">
+                ( (`year` = #{year-1} and `month` &gt;= #{7 + month}) or (`year` = #{year} and `month` &lt;= #{month}) ) and
             </if>
-            <if test="day != null">
-                `day` = #{day} and
+            <if test="month != null and month ge 6">
+                `year` = #{year} and `month` &lt;= #{month} and
             </if>
         </trim>
     </select>
