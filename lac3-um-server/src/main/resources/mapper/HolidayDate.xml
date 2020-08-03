@@ -259,7 +259,7 @@
             <if test="month != null and month lt 6">
                 ( (`year` = #{year-1} and `month` &gt;= #{7 + month}) or (`year` = #{year} and `month` &lt;= #{month}) ) and
             </if>
-            <if test="month != null and month ge 6">
+            <if test="month != null and month gte 6">
                 `year` = #{year} and `month` &lt;= #{month} and
             </if>
         </trim>
