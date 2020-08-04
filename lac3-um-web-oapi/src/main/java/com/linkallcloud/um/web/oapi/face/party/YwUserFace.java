@@ -1,6 +1,9 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Controller;
@@ -20,12 +23,14 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.um.domain.party.YwUser;
+import com.linkallcloud.um.domain.ptj.YwPartTimeJob;
 import com.linkallcloud.um.exception.ArgException;
 import com.linkallcloud.um.face.account.SessionUserRequest;
 import com.linkallcloud.um.face.account.UserAppRequest;
 import com.linkallcloud.um.iapi.party.IYwCompanyManager;
 import com.linkallcloud.um.iapi.party.IYwDepartmentManager;
 import com.linkallcloud.um.iapi.party.IYwUserManager;
+import com.linkallcloud.um.iapi.ptj.IYwPartTimeJobManager;
 import com.linkallcloud.um.iapi.sys.IApplicationManager;
 import com.linkallcloud.um.iapi.sys.IAreaManager;
 import com.linkallcloud.web.face.annotation.Face;
@@ -37,6 +42,9 @@ public class YwUserFace {
 
 	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwUserManager ywUserManager;
+
+	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
+	private IYwPartTimeJobManager ywPartTimeJobManager;
 
 	@DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
 	private IYwCompanyManager ywCompanyManager;
@@ -162,6 +170,48 @@ public class YwUserFace {
 		}
 		return null;
 	}
+	
+    @Face(login = false)
+    @RequestMapping(value = "/findAndPtj", method = RequestMethod.POST)
+    public @ResponseBody Object findAndPtj(ListFaceRequest faceReq, Trace t) {
+        WebQuery wq = faceReq.getQuery();
+        if (wq != null) {
+            List<YwUser> users = ywUserManager.find(t, wq.toQuery());
+            Set<Long> ids = new HashSet<Long>();
+            List<Long> fids = new ArrayList<Long>();
+
+            if (users != null && users.size() > 0) {
+                for (YwUser user : users) {
+                    ids.add(user.getId());
+                }
+            }
+            try {
+                List<YwPartTimeJob> ptjs = ywPartTimeJobManager.find(t, wq.toQuery());
+
+                if (ptjs != null && ptjs.size() > 0) {
+                    for (YwPartTimeJob job : ptjs) {
+                        if (!ids.contains(job.getUserId())) {
+                            fids.add(job.getUserId());
+                        }
+                    }
+
+                }
+            } catch (Exception e) {
+            }
+            if (fids.size() > 0) {
+                List<YwUser> users1 = ywUserManager.findByIds(t, fids);
+                if (users != null) {
+                    users.addAll(users1);
+                } else {
+                    users = users1;
+                }
+            }
+
+            desensitization(users);
+            return users;
+        }
+        return null;
+    }
 
 	@Face(login = false)
 	@RequestMapping(value = "/findPage", method = RequestMethod.POST)
