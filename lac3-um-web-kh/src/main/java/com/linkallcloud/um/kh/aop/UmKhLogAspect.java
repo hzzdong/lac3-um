@@ -1,4 +1,4 @@
-package com.linkallcloud.um.pc.aop;
+package com.linkallcloud.um.kh.aop;
 
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.log.core.rocketmq.RocketmqProducerClient;
-import com.linkallcloud.um.iapi.sys.IUmWebLogManager;
+import com.linkallcloud.um.iapi.sys.IUmLogManager;
 import com.linkallcloud.web.busilog.BusiWebLogAspect;
 
 @Aspect
 @Component
 @Order(5)
-public class UmYwWebLogAspect extends BusiWebLogAspect<LacBusiLog> {
+public class UmKhLogAspect extends BusiWebLogAspect<BusiLog> {
 
     @Value("${log.storage.type:es}")
     private String logStorageType;
@@ -30,15 +30,15 @@ public class UmYwWebLogAspect extends BusiWebLogAspect<LacBusiLog> {
     private String appType;
 
     @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-    private IUmWebLogManager umWebLogManager;
+    private IUmLogManager umLogManager;
 
     @Override
-    protected void logStorage(LacBusiLog operatelog) throws Exception {
+    protected void logStorage(BusiLog operatelog) throws Exception {
         if (operatelog != null) {
             operatelog.setAppName(appName);
             operatelog.setAppType(appType);
             if ("es".equals(logStorageType)) {
-                LacBusiLog log = new LacBusiLog();
+            	BusiLog log = new BusiLog();
                 BeanUtils.copyProperties(operatelog, log);
                 log.setError(null);
                 log.setCreateTime(null);
@@ -49,23 +49,24 @@ public class UmYwWebLogAspect extends BusiWebLogAspect<LacBusiLog> {
                 if (operatelog.getErrorMessage() != null && operatelog.getErrorMessage().length() > 512) {
                     operatelog.setErrorMessage(operatelog.getErrorMessage().substring(0, 512));
                 }
-                umWebLogManager.insert(new Trace(operatelog.getTid()), operatelog);
+                umLogManager.insert(new Trace(operatelog.getTid()), operatelog);
             }
         }
     }
-    // @Pointcut("@annotation(com.linkallcloud.core.busilog.annotation.WebLog)")
-    @Pointcut("execution(public * com.linkallcloud.um.pc.face..*.*(..))")
-    public void xfWebLog() {
-    }
 
-    @Pointcut("execution(* com.linkallcloud.web.face.base.*.*(..))")
-    public void webLog() {
-    }
+	// @Pointcut("@annotation(com.linkallcloud.core.busilog.annotation.WebLog)")
+	@Pointcut("execution(public * com.linkallcloud.um.kh.face..*.*(..))")
+	public void xfWebLog() {
+	}
 
-    @Override
-    @Around("xfWebLog() || webLog()")
-    public Object autoLog(ProceedingJoinPoint joinPoint) throws Throwable {
-        return super.autoLog(joinPoint);
-    }
+	@Pointcut("execution(* com.linkallcloud.web.face.base.*.*(..))")
+	public void webLog() {
+	}
+
+	@Override
+	@Around("xfWebLog() || webLog()")
+	public Object autoLog(ProceedingJoinPoint joinPoint) throws Throwable {
+		return super.autoLog(joinPoint);
+	}
 
 }

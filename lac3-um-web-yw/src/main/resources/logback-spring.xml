@@ -41,9 +41,9 @@
     
     
    	<springProfile name="dev">
-   	    <logger name="com.apache.ibatis" level="DEBUG"/>
-    	<logger name="com.linkallcloud.um.pc" level="DEBUG"/>
-		<root level="DEBUG">
+   	    <logger name="com.apache.ibatis" level="INFO"/>
+    	<logger name="com.linkallcloud.um.pc" level="INFO"/>
+		<root level="INFO">
 			<appender-ref ref="rocketmqLog" />
 			<appender-ref ref="STDOUT" />
 		</root>

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.um.iapi.es.IEsManager;
 import com.linkallcloud.web.face.annotation.Face;
@@ -25,12 +25,12 @@ import cn.hutool.core.date.DateUtil;
 public class LogFace {
 
     @DubboReference(version = "${dubbo.service.version}", application = "${dubbo.application.id}")
-    private IEsManager<LacBusiLog> esManager;
+    private IEsManager<BusiLog> esManager;
 
     @Face(simple = true)
     @RequestMapping(value = "/page", method = { RequestMethod.POST, RequestMethod.GET })
     public @ResponseBody Object page(PageFaceRequest faceReq, Trace t, SessionUser su) {
-        Page<LacBusiLog> page = new Page<>(faceReq);
+        Page<BusiLog> page = new Page<>(faceReq);
 
         String dateStr = "2020-07-23 00:00:00";
         Date date1 = DateUtil.parse(dateStr);

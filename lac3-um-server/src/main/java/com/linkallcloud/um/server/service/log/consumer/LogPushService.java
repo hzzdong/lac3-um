@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.log.core.constant.LogMessageConstant;
 import com.linkallcloud.um.service.es.IEsService;
 
@@ -23,39 +23,39 @@ import cn.hutool.core.date.DateUtil;
 @Component
 public class LogPushService implements MessageListenerConcurrently {
 
-    @Autowired
-    private IEsService esService;
+	@Autowired
+	private IEsService esService;
 
-    @Override
-    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+	@Override
+	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
 
-        Multimap<String, String> ds = ArrayListMultimap.create();
-        for (MessageExt msg : msgs) {
-            LacBusiLog log = null;
-            String body = null;
-            try {
-                body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
-                log = JSON.parseObject(body, LacBusiLog.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-                continue;
-            }
-            if (log != null) {
-                if (log.getOperateTime() == null) {
-                    log.setOperateTime(new Date());
-                }
-                String ikey = log.getAppName() + LogMessageConstant.UNDER_LINE
-                        + DateUtil.format(log.getOperateTime(), LogMessageConstant.DATE_FORMAT_YYYYMMDD)
-                        + LogMessageConstant.KEY_SEPARATOR + log.getAppType();
+		Multimap<String, String> ds = ArrayListMultimap.create();
+		for (MessageExt msg : msgs) {
+			BusiLog log = null;
+			String body = null;
+			try {
+				body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
+				log = JSON.parseObject(body, BusiLog.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+			if (log != null) {
+				if (log.getOperateTime() == null) {
+					log.setOperateTime(new Date());
+				}
+				String ikey = log.getAppName() + LogMessageConstant.UNDER_LINE
+						+ DateUtil.format(log.getOperateTime(), LogMessageConstant.DATE_FORMAT_YYYYMMDD)
+						+ LogMessageConstant.KEY_SEPARATOR + log.getAppType();
 
-                ds.put(ikey, body);
-            }
-        }
+				ds.put(ikey, body);
+			}
+		}
 
-        boolean b = esService.instertBulk(ds);
-        if (!b) {
-            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
-        }
-        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-    }
+		boolean b = esService.instertBulk(ds);
+		if (!b) {
+			return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+		}
+		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+	}
 }
