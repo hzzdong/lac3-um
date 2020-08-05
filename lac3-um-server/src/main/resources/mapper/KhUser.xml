@@ -13,7 +13,7 @@
 		u.id,u.uuid,u.status,u.createTime,u.updateTime,
 		u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
 		u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
-		d.name as orgName,d.fullName as orgFullName,c.name as companyName
+		d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 	</sql>
 	
 	<select id="find4Company" resultType="com.linkallcloud.um.domain.party.KhUser">
@@ -199,7 +199,8 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,
+			d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
@@ -265,7 +266,7 @@
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
 			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
-			d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
+			d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
 		FROM
 			um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
@@ -293,7 +294,8 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,
+			d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
@@ -325,7 +327,7 @@
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
 			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,u.dyType,u.rdDate,u.dorg,
-			d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
+			d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName,rel.companyId as jzCompanyId,pc.name as jzCompanyName
 		FROM
 			um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
@@ -353,7 +355,8 @@
 		SELECT
 			u.id,u.uuid,u.status,u.createTime,u.updateTime,
 			u.companyId,u.parentId,u.parentClass,u.account,u.password,u.salt,u.name,u.nickName,u.mobile,u.idCard,u.sex,u.birthday,u.remark,u.lastLoginTime,
-			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+			u.email,u.sort,u.type,u.ico,u.code,u.govCode,u.jobPosition,u.job,u.sms,u.zwuid,u.dduid,u.ddStatus,
+			d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 		FROM um_kh_user u 
 			left join um_kh_department d on u.parentId=d.id AND u.parentClass='KhDepartment' 
 			left join um_kh_company c on u.companyId=c.id 
@@ -416,7 +419,7 @@
 							else ku.parentId*-1
 							end parentId,
 							ku.parentClass,ku.account,ku.name,ku.nickName,ku.mobile,ku.idCard,ku.sex,ku.birthday,ku.remark,ku.lastLoginTime,
-							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
 							LEFT JOIN um_kh_department d on ku.parentId=d.id AND ku.parentClass='KhDepartment' 
@@ -454,7 +457,7 @@
 							else ku.parentId*-1
 							end parentId,
 							ku.parentClass,ku.account,ku.name,ku.nickName,ku.mobile,ku.idCard,ku.sex,ku.birthday,ku.remark,ku.lastLoginTime,
-							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.name as orgName,d.fullName as orgFullName,c.name as companyName
+							ku.email,ku.sort,ku.type,ku.ico,ku.code,ku.govCode,d.id as orgId,d.name as orgName,d.fullName as orgFullName,c.name as companyName
 						FROM
 							um_kh_user ku 
 								LEFT JOIN um_kh_department d on ku.parentId=d.id AND ku.parentClass='KhDepartment' 

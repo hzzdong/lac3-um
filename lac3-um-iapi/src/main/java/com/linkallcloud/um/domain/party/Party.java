@@ -11,6 +11,7 @@ public abstract class Party extends TreeDomain {
 	/*
 	 * 以下字段为查询字段
 	 */
+	private Long orgId;
 	private String orgName;
 	private String orgFullName;
 
@@ -24,6 +25,14 @@ public abstract class Party extends TreeDomain {
 
 	public Party(Long id) {
 		super(id);
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 
 	public String getOrgName() {
