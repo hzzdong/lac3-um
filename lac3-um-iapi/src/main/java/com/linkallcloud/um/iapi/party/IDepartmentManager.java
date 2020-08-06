@@ -3,6 +3,7 @@ package com.linkallcloud.um.iapi.party;
 import java.util.List;
 
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
 
@@ -47,13 +48,22 @@ public interface IDepartmentManager<T extends Department, U extends User> extend
 	List<T> findCompanyDirectDepartments(Trace t, Long companyId);
 
 	/**
-	 * 根据parentDepartmentId获取此部门下所有子部门
+	 * 根据parentDepartmentId获取此部门下所有子部门，不含父部门
 	 * 
 	 * @param t
 	 * @param parentDepartmentId
 	 * @return
 	 */
 	List<T> findDepartmentsByParentDepartmentId(Trace t, Long parentDepartmentId);
+	
+	/**
+	 * 根据parentDepartmentId获取此部门下所有子部门树，含父部门
+	 * 
+	 * @param t
+	 * @param parentDepartmentId
+	 * @return
+	 */
+	Tree findDepartmentTreeByParentDepartmentId(Trace t, Long parentDepartmentId);
 
 	/**
 	 * 根据parentDepartmentGoveCode获取此部门下直接子部门

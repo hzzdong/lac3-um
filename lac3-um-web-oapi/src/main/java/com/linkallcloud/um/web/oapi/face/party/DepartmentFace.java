@@ -127,4 +127,14 @@ public abstract class DepartmentFace<T extends Department, U extends User, TM ex
 		return manager().findDepartmentsByParentDepartmentId(t, faceReq.getId());
 	}
 
+	@Face(login = false)
+	@RequestMapping(value = "/findDepartmentTreeByParentDepartmentId", method = RequestMethod.POST)
+	public @ResponseBody Object findDepartmentTreeByParentDepartmentId(IdFaceRequest faceReq, Trace t)
+			throws Exception {
+		if (faceReq.getId() == null) {
+			return null;
+		}
+		return manager().findDepartmentTreeByParentDepartmentId(t, faceReq.getId());
+	}
+
 }

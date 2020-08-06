@@ -1,10 +1,13 @@
 package com.linkallcloud.um.server.manager.party;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
+import com.linkallcloud.core.dto.Trees;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
@@ -62,6 +65,29 @@ public abstract class DepartmentManager<T extends Department, S extends IDepartm
 			return service().findDepartmentsByParentDepartmentCode(t, dep.getCode());
 		}
 		return null;
+	}
+
+	@Override
+	public Tree findDepartmentTreeByParentDepartmentId(Trace t, Long parentDepartmentId) {
+		T dep = service().fetchById(t, parentDepartmentId);
+		if (dep != null) {
+			List<T> deps = service().findDepartmentsByParentDepartmentCode(t, dep.getCode());
+			return assembleTree4Domains(dep, deps);
+		}
+		return null;
+	}
+
+	private Tree assembleTree4Domains(T parent, List<T> domains) {
+		List<Tree> nodes = new ArrayList<Tree>();
+		if (domains != null && !domains.isEmpty()) {
+			for (T domain : domains) {
+				Tree item = domain.toTreeNode();
+				nodes.add(item);
+			}
+		}
+		Tree root = parent.toTreeNode();
+		Trees.assembleTree(root, nodes);
+		return root;
 	}
 
 	@Override
