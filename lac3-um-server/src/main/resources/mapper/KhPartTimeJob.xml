@@ -73,7 +73,7 @@
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
 			</when>
 			<otherwise>
-				order by u.parentId
+				order by u.id desc
 			</otherwise>
 		</choose>
 	</select>
