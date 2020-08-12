@@ -24,7 +24,7 @@ public abstract class AccountFace<T extends Account, TM extends IAccountManager<
 	@RequestMapping(value = "/fetchByAccount", method = RequestMethod.POST)
 	public @ResponseBody Object fetchByAccount(ObjectFaceRequest<String> faceReq, Trace t) {
 		String account = faceReq.getData();
-		if (Strings.isBlank(account)) {
+		if (!Strings.isBlank(account)) {
 			T ua = manager().fecthByAccount(t, account);
 			ua.desensitization();
 			return ua;
@@ -36,7 +36,7 @@ public abstract class AccountFace<T extends Account, TM extends IAccountManager<
 	@RequestMapping(value = "/fetchByMobile", method = RequestMethod.POST)
 	public @ResponseBody Object fetchByMobile(ObjectFaceRequest<String> faceReq, Trace t) {
 		String m = faceReq.getData();
-		if (Strings.isBlank(m)) {
+		if (!Strings.isBlank(m)) {
 			T ua = manager().fecthByMobile(t, m);
 			ua.desensitization();
 			return ua;
