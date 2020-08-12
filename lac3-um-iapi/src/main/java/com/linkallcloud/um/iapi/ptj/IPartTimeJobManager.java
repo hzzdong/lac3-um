@@ -9,4 +9,6 @@ public interface IPartTimeJobManager<T extends PartTimeJob> extends IManager<T> 
 
 	T add(Trace t, Sid user, Sid destOrg, String remark);
 
+	//List<T> findUserPtjs(Trace t, Long userId);
+
 }

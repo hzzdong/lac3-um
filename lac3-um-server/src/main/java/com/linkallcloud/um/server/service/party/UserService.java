@@ -172,7 +172,7 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 		if (user.isAdmin()) {
 			List<Tree> orgs = getCompanyActivity().getCompanyTreeList(t, Consts.ORG_TREE_TYPE_COMPANY,
 					user.getCompanyId());
-			return Trees.getLongIds(orgs, true);
+			return Trees.getLongIds(orgs, false);
 		} else {
 			return activity().getUserAppOrgs(t, companyId, userId, appId);
 		}
