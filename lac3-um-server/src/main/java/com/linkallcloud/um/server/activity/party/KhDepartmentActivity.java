@@ -48,18 +48,22 @@ public class KhDepartmentActivity
 
 	@Override
 	protected void dealFullName(Trace t, boolean isNew, KhDepartment entity) {
-		if (entity.getParentId() != null && !Strings.isBlank(entity.getParentClass())
-				&& entity.getParentClass().equals(KhDepartment.class.getSimpleName())) {
-			KhDepartment parent = khDepartmentDao.fetchById(t, entity.getParentId());
-			if (parent != null) {
-				entity.setFullName(parent.getFullName() + "," + entity.getName());
-			}
-		} else {
-			entity.setParentClass(null);
-			entity.setParentId(0L);
-			KhCompany parent = khCompanyDao.fetchById(t, entity.getCompanyId());
-			if (parent != null) {
-				entity.setFullName(parent.getName() + "," + entity.getName());
+		if (entity != null) {
+			if (Strings.isBlank(entity.getFullName())) {
+				if (entity.getParentId() != null && !Strings.isBlank(entity.getParentClass())
+						&& entity.getParentClass().equals(KhDepartment.class.getSimpleName())) {
+					KhDepartment parent = khDepartmentDao.fetchById(t, entity.getParentId());
+					if (parent != null) {
+						entity.setFullName(parent.getFullName() + "," + entity.getName());
+					}
+				} else {
+					entity.setParentClass(null);
+					entity.setParentId(0L);
+					KhCompany parent = khCompanyDao.fetchById(t, entity.getCompanyId());
+					if (parent != null) {
+						entity.setFullName(parent.getName() + "," + entity.getName());
+					}
+				}
 			}
 		}
 	}

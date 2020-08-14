@@ -10,7 +10,7 @@ const state = {
   myCompanyAreaTree: [],
   orgCertificateType: [],
   personCertificateType: [],
-  orgType: [],
+  orgTypes: [],
   companyPositions: []
 }
 
@@ -25,7 +25,7 @@ const mutations = {
     state.personCertificateType = data
   },
   SET_ORG_TYPE: (state, data) => {
-    state.orgType = data
+    state.orgTypes = data
   },
   SET_COMPANY_POSTIONS: (state, data) => {
     state.companyPositions = data

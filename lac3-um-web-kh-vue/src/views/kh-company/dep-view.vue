@@ -39,7 +39,7 @@
             <div class="text item">
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="上级机构:" prop="orgName">
+                  <el-form-item label="上级部门:" prop="orgName">
                     <span class="el-span_view">{{ dep.orgName || '无' }}</span>
                   </el-form-item>
                 </el-col>
@@ -63,6 +63,18 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
+                  <el-form-item label="部门全称:" prop="fullName">
+                    <span class="el-span_view">{{ dep.fullName }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="机构类型:" prop="type">
+                    <span class="el-span_view">{{ dep.type | depOrgTypeFilter }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
                   <el-form-item label="联系人:" prop="linkUserName">
                     <span class="el-span_view">{{ dep.linkUserName }}</span>
                   </el-form-item>
@@ -75,8 +87,8 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="机构类型:" prop="type">
-                    <span class="el-span_view">{{ dep.type | depOrgTypeFilter }}</span>
+                  <el-form-item label="管理部门:" prop="type">
+                    <span class="el-span_view">{{ dep.mdep | yesNoFilter }}</span>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -235,6 +247,20 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="部门全称" prop="fullName">
+              <el-input v-model="entity.fullName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="机构类型" prop="type">
+              <el-select v-model="entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                <el-option v-for="item in depTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="联系人" prop="linkUserName">
               <el-input v-model="entity.linkUserName" />
             </el-form-item>
@@ -247,10 +273,11 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="机构类型" prop="type">
-              <el-select v-model="entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
-                <el-option v-for="item in depTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
+            <el-form-item label="管理部门" prop="mdep">
+              <el-radio-group v-model="entity.mdep" size="small">
+                <el-radio-button label="0">否</el-radio-button>
+                <el-radio-button label="1">是</el-radio-button>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">

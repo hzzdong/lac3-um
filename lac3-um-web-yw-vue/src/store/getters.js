@@ -18,7 +18,7 @@ const getters = {
   myCompanyAreaTree: state => state.laccache.myCompanyAreaTree,
   orgCertificateType: state => state.laccache.orgCertificateType,
   personCertificateType: state => state.laccache.personCertificateType,
-  // orgType: state => state.laccache.orgType,
+  orgTypes: state => state.laccache.orgTypes,
   errorLogs: state => state.errorLog.logs
 }
 export default getters

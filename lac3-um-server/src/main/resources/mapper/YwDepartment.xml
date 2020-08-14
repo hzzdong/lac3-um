@@ -6,13 +6,13 @@
 	        针对sort被清理
 	    u.id,u.uuid,u.status,u.createTime,u.updateTime,sort-->
 	<sql id="Base_Column_List">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.type,u.ico,u.remark,
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.type,u.ico,u.remark,u.mdep,
 		u.code,u.name,u.fullName,u.govCode,u.level,u.companyId,u.parentId,u.parentClass,
 		u.linkUserId,u.linkUserName,u.linkUserPhone
 	</sql>
 	
 	<sql id="Column_with_orgName">
-		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.type,u.ico,u.remark,
+		u.id,u.uuid,u.status,u.createTime,u.updateTime,u.sort,u.type,u.ico,u.remark,u.mdep,
 		u.code,u.name,u.fullName,u.govCode,u.level,u.companyId,u.parentId,u.parentClass,u.linkUserId,u.linkUserName,u.linkUserPhone,d.name as orgName
 	</sql>
 	
@@ -64,6 +64,8 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
 			<if test="page.cnds!=null and page.cnds.govCodeLike != null"> AND u.govCode like #{page.cnds.govCodeLike}</if>
+			<if test="page.cnds!=null and page.cnds.mdep != null"> AND u.mdep = #{page.cnds.mdep}</if>
+			<if test="page.cnds!=null and page.cnds.type != null and page.cnds.type>0"> AND u.type = #{page.cnds.type}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -86,8 +88,10 @@
 		    <if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
 		    <if test="query!=null and query.cnds!=null and query.cnds.govCode != null"> AND u.govCode = #{query.cnds.govCode}</if>
 		    <if test="query!=null and query.cnds!=null and query.cnds.govCodeLike != null"> AND u.govCode like #{query.cnds.govCodeLike}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.companyId != null"> AND u.companyId = #{query.cnds.companyId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.mdep != null"> AND u.mdep = #{query.cnds.mdep}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.type != null and query.cnds.type > 0"> AND u.type = #{query.cnds.type}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
@@ -100,10 +104,10 @@
 	
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.YwDepartment" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_yw_department 
-			(uuid, status,createTime,updateTime,sort,type,ico,remark,code,name,fullName,govCode,level,companyId,parentId,parentClass,
+			(uuid, status,createTime,updateTime,sort,type,ico,remark,mdep,code,name,fullName,govCode,level,companyId,parentId,parentClass,
 			 linkUserId,linkUserName,linkUserPhone)
 		values
-			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.type},#{entity.ico},#{entity.remark},
+			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.type},#{entity.ico},#{entity.remark},#{entity.mdep},
 				#{entity.code},#{entity.name},#{entity.fullName},#{entity.govCode},#{entity.level},#{entity.companyId},#{entity.parentId},#{entity.parentClass},
 				#{entity.linkUserId},#{entity.linkUserName},#{entity.linkUserPhone})
 	</insert>
@@ -112,10 +116,12 @@
 		update 
 			um_yw_department 
 		set 
-			type=#{entity.type},ico=#{entity.ico},remark=#{entity.remark},
+			ico=#{entity.ico},remark=#{entity.remark},
 			linkUserId=#{entity.linkUserId},linkUserName=#{entity.linkUserName},linkUserPhone=#{entity.linkUserPhone},
 			name=#{entity.name},level=#{entity.level},updateTime=now()
 			<if test="entity.fullName != null"> ,fullName=#{entity.fullName}</if>
+			<if test="entity.mdep != null"> ,mdep=#{entity.mdep}</if>
+			<if test="entity.type != null and entity.type > 0"> ,type=#{entity.type}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.parentId != null"> ,parentId=#{entity.parentId},parentClass=#{entity.parentClass}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>

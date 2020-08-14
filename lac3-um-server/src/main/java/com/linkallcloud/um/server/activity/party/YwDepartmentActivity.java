@@ -49,18 +49,22 @@ public class YwDepartmentActivity
 
 	@Override
 	protected void dealFullName(Trace t, boolean isNew, YwDepartment entity) {
-		if (entity != null && entity.getCompanyId() != null) {
-			YwCompany company = getCompanyDao().fetchById(t, entity.getCompanyId());
-			if (company != null) {
-				if (company.getAreaId() != null) {
-					Area area = areaDao.fetchById(t, company.getAreaId());
-					if (area != null) {
-						entity.setFullName(area.getFullName() + entity.getName());
-					}
-				} else if (!Strings.isBlank(company.getGovCode())) {
-					Area area = areaDao.fetchByGovCode(t, company.getGovCode());
-					if (area != null) {
-						entity.setFullName(area.getFullName() + entity.getName());
+		if (entity != null) {
+			if (Strings.isBlank(entity.getFullName())) {
+				if (entity.getCompanyId() != null) {
+					YwCompany company = getCompanyDao().fetchById(t, entity.getCompanyId());
+					if (company != null) {
+						if (company.getAreaId() != null) {
+							Area area = areaDao.fetchById(t, company.getAreaId());
+							if (area != null) {
+								entity.setFullName(area.getFullName() + entity.getName());
+							}
+						} else if (!Strings.isBlank(company.getGovCode())) {
+							Area area = areaDao.fetchByGovCode(t, company.getGovCode());
+							if (area != null) {
+								entity.setFullName(area.getFullName() + entity.getName());
+							}
+						}
 					}
 				}
 			}

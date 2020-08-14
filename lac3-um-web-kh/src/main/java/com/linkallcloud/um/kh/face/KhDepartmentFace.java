@@ -51,7 +51,7 @@ public class KhDepartmentFace extends BaseTreeFace<KhDepartment, IKhDepartmentMa
 	@Override
 	protected void doSave(Trace t, KhDepartment entity, SessionUser su) {
 		entity.setCompanyId(su.companyId());
-		if (!entity.getParentClass().equals(KhDepartment.class.getSimpleName()) || entity.getParentId() == null
+		if (!KhDepartment.class.getSimpleName().equals(entity.getParentClass()) || entity.getParentId() == null
 				|| entity.getParentId().longValue() == 0) {
 			entity.setParentClass(null);
 			entity.setParentId(0L);

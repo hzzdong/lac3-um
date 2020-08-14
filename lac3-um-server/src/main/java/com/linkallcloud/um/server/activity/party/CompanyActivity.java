@@ -343,6 +343,20 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 			// 若area更改了，则更新AreaFields
 			updateAreaFieldsIfModified(t, entity);
 		}
+		dealFullName(t, isNew, entity);
+	}
+
+	protected void dealFullName(Trace t, boolean isNew, T entity) {
+		if (Strings.isBlank(entity.getFullName())) {
+			if (entity.getAreaId() != null) {
+				Area area = areaDao.fetchById(t, entity.getAreaId());
+				if (area != null) {
+					entity.setFullName(area.getName() + entity.getName());
+				}
+			} else {
+				entity.setFullName(entity.getName());
+			}
+		}
 	}
 
 	/**

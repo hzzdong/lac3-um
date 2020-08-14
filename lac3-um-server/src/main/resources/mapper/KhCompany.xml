@@ -273,11 +273,11 @@
 	<insert id="insert" parameterType="com.linkallcloud.um.domain.party.KhCompany" useGeneratedKeys="true" keyProperty="entity.id">
 		insert into um_kh_company 
 			(uuid, status,createTime,updateTime,sort,url,type,ico,remark,typeCode,ywCompanyId,createUserId,
-				parentId,parentClass,govCode,code,name,scale,areaId,address,phone,fax,certificateType,certificateNo,business,credentials,
+				parentId,parentClass,govCode,code,name,fullName,scale,areaId,address,phone,fax,certificateType,certificateNo,business,credentials,
 				juridical,jphone,jType,jNo,businessStart,holidayId)
 		values
 			(#{entity.uuid},#{entity.status},now(),now(),#{entity.sort},#{entity.url},#{entity.type},#{entity.ico},#{entity.remark},#{entity.typeCode},#{entity.ywCompanyId},#{entity.createUserId},
-				#{entity.parentId},#{entity.parentClass},#{entity.govCode},#{entity.code},#{entity.name},#{entity.scale},#{entity.areaId},#{entity.address},#{entity.phone},#{entity.fax},#{entity.certificateType},#{entity.certificateNo},#{entity.business},#{entity.credentials},
+				#{entity.parentId},#{entity.parentClass},#{entity.govCode},#{entity.code},#{entity.name},#{entity.fullName},#{entity.scale},#{entity.areaId},#{entity.address},#{entity.phone},#{entity.fax},#{entity.certificateType},#{entity.certificateNo},#{entity.business},#{entity.credentials},
 				#{entity.juridical},#{entity.jphone},#{entity.jType},#{entity.jNo},#{entity.businessStart},#{entity.holidayId})
 	</insert>
 	
@@ -285,11 +285,13 @@
 		update 
 			um_kh_company 
 		set 
-			sort=#{entity.sort},url=#{entity.url},type=#{entity.type},remark=#{entity.remark},businessStart=#{entity.businessStart},
+			sort=#{entity.sort},url=#{entity.url},remark=#{entity.remark},businessStart=#{entity.businessStart},
 			name=#{entity.name},scale=#{entity.scale},areaId=#{entity.areaId},address=#{entity.address},phone=#{entity.phone},fax=#{entity.fax},
 			certificateType=#{entity.certificateType},certificateNo=#{entity.certificateNo},business=#{entity.business},credentials=#{entity.credentials},
 			juridical=#{entity.juridical},jphone=#{entity.jphone},jType=#{entity.jType},jNo=#{entity.jNo},updateTime=now()
 			<if test="entity.typeCode != null"> ,typeCode=#{entity.typeCode}</if>
+			<if test="entity.type != null and entity.type > 0"> ,type=#{entity.type}</if>
+			<if test="entity.fullName != null"> ,fullName=#{entity.fullName}</if>
 			<if test="entity.ico != null"> ,ico=#{entity.ico}</if>
 			<if test="entity.status != null"> ,status=#{entity.status}</if>
 			<if test="entity.code != null"> ,code=#{entity.code}</if>

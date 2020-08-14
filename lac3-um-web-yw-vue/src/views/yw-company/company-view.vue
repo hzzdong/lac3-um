@@ -63,6 +63,18 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
+                  <el-form-item label="单位全称:" prop="fullName">
+                    <span class="el-span_view">{{ company.fullName }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="机构类型:" prop="type">
+                    <span class="el-span_view">{{ company.type | orgTypeFilter }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
                   <el-form-item label="电话:" prop="phone">
                     <span class="el-span_view">{{ company.phone }}</span>
                   </el-form-item>
@@ -534,6 +546,20 @@
             </el-row>
             <el-row>
               <el-col :span="12">
+                <el-form-item label="单位全称" prop="fullName">
+                  <el-input v-model="entity.fullName" placeholder="请输入单位全称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="机构类型" prop="type">
+                  <el-select v-model="entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in cd.orgTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
                 <el-form-item label="电话" prop="phone">
                   <el-input v-model="entity.phone" placeholder="请输入单位联系电话" />
                 </el-form-item>
@@ -704,6 +730,18 @@ export default {
   components: { Pagination, LacUserSingleSelect, LacAreaSingleSelect },
   directives: { waves, permission },
   filters: {
+    orgTypeFilter(type) {
+      const otype = type + ''
+      if (commonData.orgTypeOptions && commonData.orgTypeOptions.length > 0) {
+        for (const ct of commonData.orgTypeOptions) {
+          debugger
+          if (ct.key === otype) {
+            return ct.display_name
+          }
+        }
+      }
+      return ''
+    },
     certificateTypeFilter(type) {
       if (commonData.certificateTypeOptions && commonData.certificateTypeOptions.length > 0) {
         for (const ct of commonData.certificateTypeOptions) {
@@ -966,6 +1004,7 @@ export default {
       fetchCompany({ id, uuid }).then(response => {
         console.log('fetchCompany', response.data)
         this.company = response.data
+        this.company.type = this.company.type + ''
         this.setTagsViewTitle()
         this.setPageTitle()
       }).catch(err => console.log(err))

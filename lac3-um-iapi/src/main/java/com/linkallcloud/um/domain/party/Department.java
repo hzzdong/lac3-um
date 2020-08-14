@@ -14,6 +14,8 @@ public abstract class Department extends Org {
 	private String linkUserName;
 	private String linkUserPhone;
 
+	private Integer mdep;// 是否管理部门，1：是；0：否
+
 	public Department() {
 		super();
 	}
@@ -53,6 +55,14 @@ public abstract class Department extends Org {
 
 	public void setLinkUserPhone(String linkUserPhone) {
 		this.linkUserPhone = linkUserPhone;
+	}
+
+	public Integer getMdep() {
+		return mdep;
+	}
+
+	public void setMdep(Integer mdep) {
+		this.mdep = mdep;
 	}
 
 	@Override
