@@ -304,7 +304,7 @@
 			AND u.id not in ( SELECT rel.userId FROM um_kh_rel_role_user rel WHERE rel.roleId = #{page.cnds.roleId} AND rel.companyId = #{page.cnds.companyId} ) 
 			AND u.companyId = #{page.cnds.companyId}
 			<if test="page.cnds!=null and page.cnds.level == 9 "> 
-				AND ( u.parentClass = 'KhCompany' OR d.type = 1 )
+				AND ( u.parentClass = 'KhCompany' OR d.mdep = 1 )
 			</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>

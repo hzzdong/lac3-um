@@ -200,7 +200,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 	protected List<R> findCompanyRolesByDepartmentId(Trace t, Long departmentId) {
 		Department depart = departmentManager().fetchById(t, departmentId);
 		if (depart != null) {
-			return manager().findCompanyRolesByLevel(t, depart.getCompanyId(), 1 == depart.getType() ? 9 : null);
+			return manager().findCompanyRolesByLevel(t, depart.getCompanyId(), 1 == depart.getMdep() ? 9 : null);
 		}
 		return null;
 	}
@@ -224,7 +224,7 @@ public abstract class RoleBaseFace<R extends Role, U extends User, S extends IRo
 					} else {
 						Department depart = departmentManager().fetchById(t, user.getParentId());
 						if (depart != null) {
-							isAdminDepartment = 1 == depart.getType();
+							isAdminDepartment = 1 == depart.getMdep();
 						}
 					}
 					if (operatorCompanyId == null) {
