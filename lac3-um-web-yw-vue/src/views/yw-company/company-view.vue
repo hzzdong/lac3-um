@@ -734,7 +734,6 @@ export default {
       const otype = type + ''
       if (commonData.orgTypeOptions && commonData.orgTypeOptions.length > 0) {
         for (const ct of commonData.orgTypeOptions) {
-          debugger
           if (ct.key === otype) {
             return ct.display_name
           }

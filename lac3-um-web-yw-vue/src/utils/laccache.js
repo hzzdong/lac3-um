@@ -68,6 +68,7 @@ export function loadPersonCertificateType() {
 
 export function loadOrgType() {
   const ocdata = store.getters.orgTypes
+  debugger
   if (ocdata && ocdata instanceof Array && ocdata.length > 0) {
     return new Promise((resolve, reject) => {
       console.log('Load orgType from CACHE', ocdata)
