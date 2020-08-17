@@ -11,13 +11,27 @@
     >
       <el-table-column prop="name" label="名称" width="250">
         <template slot-scope="{row}">
-          <span v-if="row.attributes.alias === 'Company' && checkPermission(['yw_org_view']) === false">{{ row.name }}</span>
+          <span v-if="row.attributes.alias === 'Company' && checkPermission(['yw_org_view']) === false">
+            <i v-if="row.attributes.alias==='Company'" class="el-icon-office-building" title="单位" />
+            {{ row.name }}
+          </span>
           <router-link v-if="row.attributes.alias === 'Company' && checkPermission(['yw_org_view']) === true" :to="'/org/company-view/'+row.id.substring(1)+'/'+row.uuid" class="link-type">
-            <span>{{ row.name }}</span>
+            <span>
+              <i v-if="row.attributes.alias==='Company'" class="el-icon-office-building" title="单位" />
+              {{ row.name }}
+            </span>
           </router-link>
-          <span v-if="row.attributes.alias !== 'Company' && checkPermission(['yw_dep_view']) === false">{{ row.name }}</span>
+          <span v-if="row.attributes.alias !== 'Company' && checkPermission(['yw_dep_view']) === false">
+            <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep !== 1" class="el-icon-user" title="部门" />
+            <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep === 1" class="el-icon-user-solid" title="管理部门" />
+            {{ row.name }}
+          </span>
           <router-link v-if="row.attributes.alias !== 'Company' && checkPermission(['yw_dep_view']) === true" :to="'/org/dep-view/'+row.id+'/'+row.uuid" class="link-type">
-            <span>{{ row.name }}</span>
+            <span>
+              <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep !== 1" class="el-icon-user" title="部门" />
+              <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep === 1" class="el-icon-user-solid" title="管理部门" />
+              {{ row.name }}
+            </span>
           </router-link>
         </template>
       </el-table-column>
@@ -34,7 +48,7 @@
       </el-table-column>
       <el-table-column prop="type" label="类型" width="80">
         <template slot-scope="{row}">
-          <el-tag :effect="row.attributes.alias==='Company' ? 'dark' : 'plain'">{{ row.attributes.alias | orgTypeFilter }}<span v-if="row.type === '1'">(管)</span></el-tag>
+          <el-tag v-if="row.type!==null && row.type>0" effect="dark" size="small">{{ row.type | orgTypeFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序" width="60" />
@@ -362,9 +376,28 @@ import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
 import { statusOptions, companyClasses } from '@/filters'
 
+const ccd = {
+  certificateTypeOptions: [],
+  personCertificateTypeOptions: [],
+  orgTypeOptions: [],
+  companyPositions: []
+}
+
 export default {
   name: 'CompanyTree',
   directives: { permission },
+  filters: {
+    orgTypeFilter(type) {
+      if (ccd.orgTypeOptions && ccd.orgTypeOptions.length > 0) {
+        for (const ct of ccd.orgTypeOptions) {
+          if (ct.key === type || ct.key === (type + '')) {
+            return ct.display_name
+          }
+        }
+      }
+      return ''
+    }
+  },
   data() {
     return {
       currentNode: undefined,
@@ -484,9 +517,9 @@ export default {
     }
   },
   created() {
+    this.loadCommonData()
     this.getTree()
     this.getAreaTree()
-    this.loadCommonData()
   },
   methods: {
     checkPermission,
@@ -500,6 +533,7 @@ export default {
       }).catch((err) => console.log(err))
 
       loadOrgType().then(res => {
+        ccd.orgTypeOptions = (res && res.length > 0) ? res : []
         this.commonData.orgTypeOptions = (res && res.length > 0) ? res : []
       }).catch((err) => console.log(err))
     },

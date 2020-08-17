@@ -201,7 +201,13 @@
                     :expand-on-click-node="false"
                     :check-on-click-node="true"
                     :check-strictly="true"
-                  />
+                  >
+                    <span slot-scope="{ node, data }" class="custom-tree-node">
+                      <span>
+                        <i :class="data.attributes.alias==='Company'?'el-icon-office-building':(data.attributes.mdep === 1?'el-icon-user-solid':'el-icon-user')" />{{ node.label }}
+                      </span>
+                    </span>
+                  </el-tree>
                 </el-tab-pane>
                 <el-tab-pane v-if="role.type !== 9" name="tabPermArea" label="区域权限">
                   <el-tree

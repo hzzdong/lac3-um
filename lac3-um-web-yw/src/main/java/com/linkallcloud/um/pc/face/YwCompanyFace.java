@@ -91,7 +91,7 @@ public class YwCompanyFace extends BaseTreeFace<YwCompany, IYwCompanyManager> {
 	}
 
 	/**
-	 * 加载当前登录用户有权限的组织树（子单位紧紧包含子单位的根节点）。
+	 * 加载当前登录用户有权限的组织树（子单位仅仅包含子单位的根节点）。
 	 */
 	@Override
 	public List<Tree> doLoadTree(Trace t, IdFaceRequest fr, SessionUser su) {

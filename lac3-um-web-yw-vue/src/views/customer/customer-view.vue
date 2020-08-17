@@ -190,7 +190,12 @@
         >
           <el-table-column prop="name" label="名称" width="250">
             <template slot-scope="{row}">
-              <span>{{ row.name }}</span>
+              <span>
+                <i v-if="row.attributes.alias==='Company'" class="el-icon-office-building" title="单位" />
+                <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep !== 1" class="el-icon-user" title="部门" />
+                <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep === 1" class="el-icon-user-solid" title="管理部门" />
+                {{ row.name }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="govCode" label="编号" width="150" />
@@ -206,17 +211,16 @@
           </el-table-column>
           <el-table-column prop="type" label="类型" width="80">
             <template slot-scope="{row}">
-              <span v-if="row.attributes.alias === 'Company'">公司</span>
-              <span v-if="row.attributes.alias !== 'Company'">部门<span v-if="row.type === '1'">(管)</span></span>
+              <el-tag v-if="row.type!==null && row.type>0" size="small">{{ row.type | orgTypeFilter }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="sort" label="排序" width="60" />
+          <el-table-column prop="remark" label="备注说明" min-width="100" />
           <el-table-column label="" class-name="status-col" width="40" prop="status">
             <template slot-scope="{row}">
               <el-tag effect="dark" size="small" :type="row.status | statusTypeFilter" :title="row.status | statusFilter" />
             </template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注说明" min-width="100" />
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="单位许可应用" name="tabCompanyApps">
@@ -714,6 +718,17 @@ export default {
   components: { Pagination, LacOrgSingleSelect },
   directives: { waves, permission },
   filters: {
+    orgTypeFilter(type) {
+      const otype = type + ''
+      if (commonData.orgTypeOptions && commonData.orgTypeOptions.length > 0) {
+        for (const ct of commonData.orgTypeOptions) {
+          if (ct.key === otype) {
+            return ct.display_name
+          }
+        }
+      }
+      return ''
+    },
     certificateTypeFilter(type) {
       if (commonData.certificateTypeOptions && commonData.certificateTypeOptions.length > 0) {
         for (const ct of commonData.certificateTypeOptions) {

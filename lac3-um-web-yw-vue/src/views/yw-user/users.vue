@@ -19,7 +19,13 @@
               :check-strictly="true"
               @node-click="handleNodeClick"
               @check-change="handleCheckChange"
-            />
+            >
+              <span slot-scope="{ node, data }" class="custom-tree-node">
+                <span>
+                  <i :class="data.attributes.alias==='Company'?'el-icon-office-building':(data.attributes.mdep === 1?'el-icon-user-solid':'el-icon-user')" />{{ node.label }}
+                </span>
+              </span>
+            </el-tree>
           </div>
         </el-card>
       </el-col>

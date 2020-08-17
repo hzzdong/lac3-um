@@ -274,7 +274,12 @@
         >
           <el-table-column prop="name" label="名称" width="250">
             <template slot-scope="{row}">
-              <span>{{ row.name }}</span>
+              <span>
+                <i v-if="row.attributes.alias==='Company'" class="el-icon-office-building" title="单位" />
+                <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep !== 1" class="el-icon-user" title="部门" />
+                <i v-if="row.attributes.alias!=='Company' && row.attributes.mdep === 1" class="el-icon-user-solid" title="管理部门" />
+                {{ row.name }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="govCode" label="编号" width="150" />
@@ -290,8 +295,7 @@
           </el-table-column>
           <el-table-column prop="type" label="类型" width="80">
             <template slot-scope="{row}">
-              <span v-if="row.attributes.alias === 'Company'">公司</span>
-              <span v-if="row.attributes.alias !== 'Company'">部门<span v-if="row.type === '1'">(管)</span></span>
+              <el-tag v-if="row.type!==null && row.type>0" size="small">{{ row.type | orgTypeFilter }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="sort" label="排序" width="60" />

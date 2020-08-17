@@ -86,6 +86,7 @@ public abstract class Department extends Org {
 		treeNode.addAttribute("linkUserName", this.getLinkUserName());
 		treeNode.addAttribute("linkUserPhone", this.getLinkUserPhone());
 		treeNode.addAttribute("code", this.getCode());
+		treeNode.addAttribute("mdep", this.getMdep());
 		return treeNode;
 	}
 }
