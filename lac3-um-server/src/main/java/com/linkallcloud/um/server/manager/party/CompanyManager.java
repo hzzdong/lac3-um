@@ -144,6 +144,11 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 	}
 
 	@Override
+	public Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes) {
+		return service().getTypedCompanyTree(t, companyId, orgTypes);
+	}
+
+	@Override
 	public Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
 		return service().addApps(t, id, uuid, appUuidIds);
 	}

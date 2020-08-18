@@ -22,6 +22,16 @@ public interface ICompanyActivity<T extends Company> extends IOrgActivity<T> {
 	 * @return
 	 */
 	Tree getCompanyTree(Trace t, String treeType, Long companyId);
+	
+	/**
+	 * 根据orgTypes得到companyId的专业机构树
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @param orgTypes
+	 * @return
+	 */
+	Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes);
 
 	/**
 	 * 根据treeType得到company的机构树列表

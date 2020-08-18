@@ -111,6 +111,16 @@ public interface ICompanyService<T extends Company> extends IOrgService<T> {
 	 * @return
 	 */
 	Tree getCompanyTree(Trace t, String treeType, Sid companyId);
+	
+	/**
+	 * 根据orgTypes得到companyId的专业机构树
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @param orgTypes
+	 * @return
+	 */
+	Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes);
 
 	Boolean addApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds);
 

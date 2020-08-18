@@ -43,8 +43,8 @@
     
     
     <springProfile name="dev">
-   	    <logger name="com.linkallcloud.um.server" level="DEBUG"/>
-		<root level="DEBUG">
+   	    <logger name="com.linkallcloud.um.server" level="INFO"/>
+		<root level="INFO">
 			<appender-ref ref="rocketmqLog" />
 			<appender-ref ref="STDOUT" />
 		</root>

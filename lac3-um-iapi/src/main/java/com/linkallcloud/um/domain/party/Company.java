@@ -295,7 +295,7 @@ public abstract class Company extends Org {
 	public String getOrgFullName() {
 		String fn = super.getFullName();
 		if (Strings.isBlank(fn)) {
-			return this.getName();
+			fn = this.getName();
 		}
 		return fn;
 	}
@@ -303,6 +303,7 @@ public abstract class Company extends Org {
 	@Override
 	public Tree toTreeNode() {
 		Tree treeNode = super.toTreeNode();
+		treeNode.setFullName(getOrgFullName());
 		treeNode.addAttribute("linkUserId", "");
 		treeNode.addAttribute("linkUserName", this.getJuridical());
 		treeNode.addAttribute("linkUserPhone", this.getJphone());

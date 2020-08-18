@@ -65,6 +65,11 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	}
 
 	@Override
+	public Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes) {
+		return activity().getTypedCompanyTree(t, companyId, orgTypes);
+	}
+
+	@Override
 	public Tree getUserAppCompanyTree(Trace t, Long appId, Long userId, Long companyId) {
 		U user = getUserActivity().fetchById(t, userId);
 		if (user == null) {

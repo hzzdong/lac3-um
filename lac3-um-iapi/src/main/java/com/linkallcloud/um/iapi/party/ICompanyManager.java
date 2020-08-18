@@ -57,6 +57,16 @@ public interface ICompanyManager<T extends Company, U extends User> extends IOrg
 	 */
 	Tree getCompanyTree(Trace t, String treeType, Sid companyId);
 	
+	/**
+	 * 根据orgTypes得到companyId的专业机构树
+	 * 
+	 * @param t
+	 * @param companyId
+	 * @param orgTypes
+	 * @return
+	 */
+	Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes);
+	
 
 	/**
 	 * 公司全局可设置根区域树。1.顶层公司为系统全区域；2.子公司为父公司根区域（父公司管理员给父公司设定的根区域，若未设置，继续往上找）；

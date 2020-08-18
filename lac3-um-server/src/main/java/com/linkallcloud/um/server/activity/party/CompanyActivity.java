@@ -94,6 +94,23 @@ public abstract class CompanyActivity<T extends Company, CD extends ICompanyDao<
 	}
 
 	@Override
+	public Tree getTypedCompanyTree(Trace t, Long companyId, int[] orgTypes) {
+		Tree ftree = getCompanyTree(t, Consts.ORG_TREE_TYPE_FULL, companyId);
+		if (orgTypes != null && orgTypes.length > 0) {
+			Tree typedTree = Trees.vroot(ftree.getName());
+			for (int type : orgTypes) {
+				Tree typeNode = Trees.orgTreeTypeFilter(ftree, type, true);
+				if (typeNode != null) {
+					typedTree.addChild(typeNode);
+				}
+			}
+			return typedTree;
+		} else {
+			return ftree;
+		}
+	}
+
+	@Override
 	public Tree loadCompanyOrgTree(Trace t, Long companyId) {
 		return getCompanyTree(t, Consts.ORG_TREE_TYPE_COMPANY, companyId);
 	}

@@ -74,7 +74,7 @@ public abstract class Department extends Org {
 	public String getOrgFullName() {
 		String fn = super.getFullName();
 		if (Strings.isBlank(fn)) {
-			return this.getName();
+			fn = this.getName();
 		}
 		return fn;
 	}
@@ -82,6 +82,7 @@ public abstract class Department extends Org {
 	@Override
 	public Tree toTreeNode() {
 		Tree treeNode = super.toTreeNode();
+		treeNode.setFullName(getOrgFullName());
 		treeNode.addAttribute("linkUserId", this.getLinkUserId());
 		treeNode.addAttribute("linkUserName", this.getLinkUserName());
 		treeNode.addAttribute("linkUserPhone", this.getLinkUserPhone());
