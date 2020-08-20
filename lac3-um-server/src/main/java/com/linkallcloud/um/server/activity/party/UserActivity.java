@@ -380,7 +380,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 
 	protected abstract List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId);
 
-	private String[] menu2RescodeArray(List<Menu> menus) {
+	protected String[] menu2RescodeArray(List<Menu> menus) {
 		if (menus != null && !menus.isEmpty()) {
 			String[] resCodes = new String[menus.size()];
 			int i = 0;

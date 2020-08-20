@@ -182,7 +182,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
 		<choose>
@@ -249,7 +249,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -278,7 +278,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -310,7 +310,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -339,7 +339,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -370,7 +370,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -396,7 +396,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.statusNe != null"> AND u.status &lt;&gt; #{page.cnds.statusNe}</if>
 		<choose>
@@ -435,7 +435,7 @@
 				<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 				<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 				<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-				<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+				<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 				<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -485,7 +485,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -511,7 +511,7 @@
 			<if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.sex != null"> AND u.sex = #{query.cnds.sex}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.account != null"> AND u.account = #{query.cnds.account}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.mobile != null"> AND u.mobile = #{query.cnds.mobile}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.mobile != null"> AND u.mobile like #{query.cnds.mobile}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.statusNe != null"> AND u.status &lt;&gt; #{query.cnds.statusNe}</if>
 		<choose>
@@ -536,7 +536,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		order by rel.sort
 	</select>

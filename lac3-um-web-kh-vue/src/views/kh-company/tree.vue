@@ -202,6 +202,20 @@
             </el-row>
             <el-row>
               <el-col :span="12">
+                <el-form-item label="单位全称" prop="fullName">
+                  <el-input v-model="company.entity.fullName" placeholder="请输入单位全称" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="机构类型" prop="type">
+                  <el-select v-model="company.entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                    <el-option v-for="item in commonData.orgTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
                 <el-form-item label="电话" prop="phone">
                   <el-input v-model="company.entity.phone" placeholder="请输入单位联系电话" />
                 </el-form-item>
@@ -260,7 +274,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.typeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="单位规模" prop="scale">
                   <el-input v-model.number="company.entity.scale" placeholder="请输入人员规模" />
@@ -272,7 +286,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.typeCode === 'kh_qy'">
               <el-col :span="12">
                 <el-form-item label="证照类型" prop="certificateType">
                   <el-select v-model="company.entity.certificateType" class="filter-item" placeholder="请选择" style="width:100%;">
@@ -286,14 +300,14 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.typeCode === 'kh_qy'">
               <el-col :span="24">
                 <el-form-item label="经营范围" prop="business">
                   <el-input v-model="company.entity.business" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="company.khTypeCode === 'kh_qy'">
+            <el-row v-if="company.typeCode === 'kh_qy'">
               <el-col :span="24">
                 <el-form-item label="单位资质" prop="credentials">
                   <el-input v-model="company.entity.credentials" :autosize="{ minRows: 2, maxRows: 5}" type="textarea" placeholder="请输入经营范围" />
@@ -443,14 +457,14 @@ export default {
         }
       },
       company: {
-        khTypeCode: '',
+        typeCode: '',
         entity: {
           dataType: 'Object',
           id: undefined,
           uuid: '',
           parentId: undefined,
           parentClass: 'KhCompany',
-          khTypeCode: '',
+          typeCode: '',
           orgName: '',
           name: '',
           govCode: '',
@@ -487,7 +501,7 @@ export default {
           business: [{ min: 5, max: 500, message: '经营范围长度在 5 到 250 个字符', trigger: 'blur' }],
           credentials: [{ min: 2, max: 120, message: '单位资质长度在 2 到 120 个字符', trigger: 'blur' }],
           juridical: [{ min: 2, max: 60, message: '法人/联系人长度在 2 到 60 个字符', trigger: 'blur' }],
-          jphone: [{ min: 2, max: 30, message: '联系方式长度在 2 到 30 个字符', trigger: 'blur' }],
+          jphone: [{ required: true, message: '联系方式不能为空', trigger: 'blur' }, { min: 2, max: 30, message: '联系方式长度在 2 到 30 个字符', trigger: 'blur' }],
           jNo: [{ min: 2, max: 60, message: '证照号码长度在 2 到 60 个字符', trigger: 'blur' }],
           sort: [{ required: true, message: '排序号不能为空', trigger: 'blur' }, { type: 'number', message: '排序号必须为数字值' }],
           remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]
@@ -580,7 +594,7 @@ export default {
         if (items && items.length > 0) {
           this.autoChildren(items)
           this.data = items
-          this.company.khTypeCode = this.data[0].attributes.khTypeCode
+          this.company.typeCode = this.data[0].attributes.typeCode
         }
       }).catch((err) => console.log(err))
     },
@@ -619,7 +633,7 @@ export default {
         dataType: 'Object',
         id: (me && me.id) ? me.id : undefined,
         uuid: (me && me.uuid) ? me.uuid : '',
-        khTypeCode: parent ? parent.attributes.khTypeCode : (me ? me.khTypeCode : this.company.khTypeCode),
+        typeCode: parent ? parent.attributes.typeCode : (me ? me.typeCode : this.company.typeCode),
         parentId: me ? me.parentId : (parent ? parent.id : 0),
         parentClass: 'KhCompany',
         orgName: parent ? parent.name : '',

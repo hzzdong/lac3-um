@@ -59,7 +59,7 @@
 			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId}</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
-			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode like #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
@@ -102,7 +102,7 @@
 		WHERE
 			u.status &lt;&gt; 9  AND ( u.companyId = #{companyId} OR u.type = 9 ) 
 			<if test="cnds!=null and cnds.name != null"> AND u.name like #{cnds.name}</if>
-			<if test="cnds!=null and cnds.govCode != null"> AND u.govCode like #{cnds.govCode}</if>
+			<if test="cnds!=null and cnds.govCode != null"> AND u.govCode = #{cnds.govCode}</if>
 			<if test="cnds!=null and cnds.status != null"> AND u.status = #{cnds.status}</if>
 	</select>
 	
@@ -133,7 +133,7 @@
 			<if test="page.cnds!=null and page.cnds.type != null"> AND u.type = #{page.cnds.type}</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
-			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode like #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>
@@ -155,7 +155,7 @@
 			<if test="page.cnds!=null and page.cnds.companyId != null"> AND u.companyId = #{page.cnds.companyId} AND rel.companyId=#{page.cnds.companyId}</if>
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
-			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode like #{page.cnds.govCode}</if>
+			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
 		<choose>
 			<when test="page.orders != null and page.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="page.orders" separator=","> u.${ord} </foreach>

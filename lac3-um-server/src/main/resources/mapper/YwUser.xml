@@ -334,7 +334,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
@@ -388,7 +388,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
@@ -420,7 +420,7 @@
 			<if test="page.cnds!=null and page.cnds.parentId != null"> AND u.parentId = #{page.cnds.parentId}</if>
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
@@ -455,7 +455,7 @@
 			<if test="page.cnds!=null and page.cnds.name != null"> AND u.name like #{page.cnds.name}</if>
 			<if test="page.cnds!=null and page.cnds.sex != null"> AND u.sex = #{page.cnds.sex}</if>
 			<if test="page.cnds!=null and page.cnds.account != null"> AND u.account = #{page.cnds.account}</if>
-			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile = #{page.cnds.mobile}</if>
+			<if test="page.cnds!=null and page.cnds.mobile != null"> AND u.mobile like #{page.cnds.mobile}</if>
 			<if test="page.cnds!=null and page.cnds.status != null"> AND u.status = #{page.cnds.status}</if>
 			<if test="page.cnds!=null and page.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
 			<if test="page.cnds!=null and page.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>

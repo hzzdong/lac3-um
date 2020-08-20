@@ -105,7 +105,12 @@ public class YwUserActivity extends
 
 	@Override
 	protected List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId) {
-		return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
+		YwCompany company = getCompanyDao().fetchById(t, companyId);
+		if (company.isTopParent()) {
+			return menuDao.findAppMenusWithButton(t, appId, true);
+		} else {
+			return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
+		}
 	}
 
 	@Override

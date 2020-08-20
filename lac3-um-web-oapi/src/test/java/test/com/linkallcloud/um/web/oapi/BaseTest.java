@@ -20,7 +20,7 @@ public class BaseTest {
 	protected static final String SIGN_ALG = "SHA1";
 
 	protected static final String SERVER = "http://localhost:8012/umoapi";
-//	protected static final String SERVER = "http://mp.mzlink.net/oapi";
+//	protected static final String SERVER = "http://47.96.234.18/umoapi";
 
 	public FaceRequest convertToFaceRequest(Object message) {
 		FaceRequest request = null;

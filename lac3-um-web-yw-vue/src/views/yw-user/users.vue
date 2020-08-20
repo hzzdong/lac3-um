@@ -34,7 +34,7 @@
           <el-tab-pane label="用户列表" name="tabUser">
             <div class="filter-container">
               <el-input v-model="listQuery.rules.name.fv" placeholder="姓名 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-              <el-input v-model="listQuery.rules.account.fv" placeholder="登录账号 模糊匹配" style="width: 150px;" class="filter-item" />
+              <el-input v-model="listQuery.rules.account.fv" placeholder="登录账号 精确匹配" style="width: 150px;" class="filter-item" />
               <el-input v-model="listQuery.rules.mobile.fv" placeholder="手机号 模糊匹配" style="width: 150px;" class="filter-item" />
               <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter" />
               <el-button
@@ -503,7 +503,7 @@ export default {
           parentId: { fv: undefined, oper: 'eq', stype: 'L' },
           companyId: { fv: undefined, oper: 'eq', stype: 'L' },
           name: { fv: undefined, oper: 'cn', stype: 'S' },
-          account: { fv: undefined, oper: 'cn', stype: 'S' },
+          account: { fv: undefined, oper: 'eq', stype: 'S' },
           mobile: { fv: undefined, oper: 'cn', stype: 'S' },
           status: { fv: undefined, oper: 'eq', stype: 'I' },
           statusNe: { fv: 8, oper: 'eq', stype: 'I' }

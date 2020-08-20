@@ -301,7 +301,7 @@ export default {
         business: [{ min: 5, max: 500, message: '经营范围长度在 5 到 250 个字符', trigger: 'blur' }],
         credentials: [{ min: 2, max: 120, message: '单位资质长度在 2 到 120 个字符', trigger: 'blur' }],
         juridical: [{ min: 2, max: 60, message: '法人/联系人长度在 2 到 60 个字符', trigger: 'blur' }],
-        jphone: [{ min: 2, max: 30, message: '联系方式长度在 2 到 30 个字符', trigger: 'blur' }],
+        jphone: [{ required: true, message: '联系方式不能为空', trigger: 'blur' }, { min: 2, max: 30, message: '联系方式长度在 2 到 30 个字符', trigger: 'blur' }],
         jNo: [{ min: 2, max: 60, message: '证照号码长度在 2 到 60 个字符', trigger: 'blur' }],
         sort: [{ required: true, message: '排序号不能为空', trigger: 'blur' }, { type: 'number', message: '排序号必须为数字值' }],
         remark: [{ max: 256, message: '备注说明长度不能大于 256 个字符', trigger: 'blur' }]

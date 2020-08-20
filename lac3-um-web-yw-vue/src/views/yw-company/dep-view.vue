@@ -23,7 +23,7 @@
             @click="toChangeStatus(0)"
           />
           <el-button
-            v-if="checkPermission(['yw_org_edit']) === true"
+            v-if="checkPermission(['yw_org_del']) === true"
             type="danger"
             icon="el-icon-delete"
             circle

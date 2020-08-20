@@ -164,11 +164,17 @@ public class KhCompanyFace extends BaseTreeFace<KhCompany, IKhCompanyManager> {
 	@Override
 	protected void doSave(Trace t, KhCompany entity, SessionUser su) {
 		entity.setCreateUserId(su.id());
-		
+
 		entity.setParentId(su.companyId());
 		entity.setParentClass(KhCompany.class.getSimpleName());
-		
+
 		entity.setIco(null);
+
+		if (Strings.isBlank(entity.getTypeCode())) {
+			KhCompany parent = manager().fetchById(t, su.companyId());
+			entity.setTypeCode(parent.getTypeCode());
+		}
+
 		super.doSave(t, entity, su);
 	}
 

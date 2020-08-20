@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.rules.name.fv" placeholder="角色名称 模糊匹配" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.rules.govCode.fv" placeholder="角色编号 模糊匹配" style="width: 150px;" class="filter-item" />
+      <el-input v-model="listQuery.rules.govCode.fv" placeholder="角色编号 精确匹配" style="width: 150px;" class="filter-item" />
       <el-select v-model="listQuery.rules.status.fv" placeholder="状态" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
