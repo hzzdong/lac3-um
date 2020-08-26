@@ -90,5 +90,22 @@ public abstract class CompanyFace<T extends Company, U extends User, TM extends 
 		}
 		return manager().getTypedCompanyTree(t, fr.getCompanyId(), fr.getTypes());
 	}
+	
+	/**
+	 * 公司全局根区域的ids。由公司管理员在系统设置中设定。若未设定，默认同父公司。顶层公司未设定为系统全区域。
+	 * 
+	 * @param fr
+	 * @param t
+	 * @return
+	 * @throws Exception
+	 */
+	@Face(login = false)
+	@RequestMapping(value = "/getCompanyAreaRootIds", method = RequestMethod.POST)
+	public @ResponseBody Object getCompanyAreaRootIds(IdFaceRequest fr, Trace t) throws Exception {
+		if (fr.getId() == null) {
+			return null;
+		}
+		return manager().getCompanyAreaRootIds(t, fr.getId());
+	}
 
 }
