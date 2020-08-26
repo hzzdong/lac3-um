@@ -47,10 +47,10 @@
         <maven.compiler.target>11</maven.compiler.target>
         <java.version>11</java.version>
 
-		<comm-core.version>0.6.7</comm-core.version>
-		<comm-cache.version>0.6.7</comm-cache.version>
-		<comm-handshake.version>0.6.7</comm-handshake.version>
-		<comm-web.version>0.6.7</comm-web.version>
+		<comm-core.version>0.6.8</comm-core.version>
+		<comm-cache.version>0.6.8</comm-cache.version>
+		<comm-handshake.version>0.6.8</comm-handshake.version>
+		<comm-web.version>0.6.8</comm-web.version>
 
 		<lac3-sso-client.version>0.3.1</lac3-sso-client.version>
 

@@ -8,14 +8,17 @@ import com.linkallcloud.um.domain.sys.Account;
 
 public interface IAccountDao<T extends Account> extends IDao<T> {
 
-    T fecthByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
+	T fecthByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
 
-    T fecthByAccount(@Param("t") Trace t, @Param("account") String account);
+	T fecthByAccount(@Param("t") Trace t, @Param("account") String account);
 
-    boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
+	boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
 
-    T fechByWechatOpenId(@Param("t") Trace t, @Param("openid") String openid);
+	T fechByWechatOpenId(@Param("t") Trace t, @Param("openid") String openid);
 
-    int updateAccountWechatOpenId(@Param("t") Trace t, @Param("id") Long id, @Param("openid") String openid);
+	int updateAccountWechatOpenId(@Param("t") Trace t, @Param("id") Long id, @Param("openid") String openid);
+
+	int updateStatusByCompany(@Param("t") Trace t, @Param("status") int status, @Param("companyId") Long companyId);
+	int updateStatusByDepartment(@Param("t") Trace t, @Param("status") int status, @Param("departmentId") Long departmentId);
 
 }

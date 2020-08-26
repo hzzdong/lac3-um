@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -33,23 +32,18 @@ public class UmYwLogAspect extends BusiWebLogAspect<BusiLog> {
 	private IUmLogManager umLogManager;
 
 	@Override
-	protected void logStorage(BusiLog operatelog) throws Exception {
-		if (operatelog != null) {
-			operatelog.setAppName(appName);
-			operatelog.setAppType(appType);
+	protected void logStorage(BusiLog log) throws Exception {
+		if (log != null) {
+			log.setAppName(appName);
+			log.setAppType(appType);
 			if ("es".equals(logStorageType)) {
-				BusiLog log = new BusiLog();
-				BeanUtils.copyProperties(operatelog, log);
 				log.setError(null);
 				log.setCreateTime(null);
 				log.setUuid(null);
 				String logStr = JSON.toJSONString(log);
 				RocketmqProducerClient.getInstance().sendMsg(logStr);
 			} else {
-				if (operatelog.getErrorMessage() != null && operatelog.getErrorMessage().length() > 512) {
-					operatelog.setErrorMessage(operatelog.getErrorMessage().substring(0, 512));
-				}
-				umLogManager.insert(new Trace(operatelog.getTid()), operatelog);
+				umLogManager.insert(new Trace(log.getTid()), log);
 			}
 		}
 	}

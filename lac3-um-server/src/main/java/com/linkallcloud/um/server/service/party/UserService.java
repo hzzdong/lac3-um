@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.busilog.annotation.LacLog;
+import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
@@ -256,6 +256,12 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
 		return activity().updateStatusByDepartment(t, status, departmentId);
 	}
 
+	@Transactional(readOnly = false)
+	@Override
+	public boolean updateStatus(Trace t, int status, Long id, String uuid) {
+		return super.updateStatus(t, status, id, uuid);
+	}
+	
 	@Override
 	public T fetchCompanyAdmin(Trace t, Sid companyId) {
 		return activity().fetchCompanyAdmin(t, companyId);

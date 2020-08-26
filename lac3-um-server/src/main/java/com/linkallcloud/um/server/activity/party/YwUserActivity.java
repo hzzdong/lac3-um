@@ -119,5 +119,22 @@ public class YwUserActivity extends
 				entity.getPassword(), entity.getSalt());
 		getAccountDao().insert(t, account);
 	}
+	
+	@Override
+	protected int updateUserAccountStatus(Trace t, int status, Long userId, String userUuid) {
+		YwUser user = fetchByIdUuid(t, userId, userUuid);
+		YwAccount account = getAccountDao().fecthByAccount(t, user.getAccount());
+		return getAccountDao().updateStatus(t, status, account.getId(), account.getUuid());
+	}
+
+	@Override
+	protected int updateUserAccountStatusByCompany(Trace t, int status, Long companyId) {
+		return getAccountDao().updateStatusByCompany(t, status, companyId);
+	}
+
+	@Override
+	protected int updateUserAccountStatusByDepartment(Trace t, int status, Long departmentId) {
+		return getAccountDao().updateStatusByDepartment(t, status, departmentId);
+	}
 
 }

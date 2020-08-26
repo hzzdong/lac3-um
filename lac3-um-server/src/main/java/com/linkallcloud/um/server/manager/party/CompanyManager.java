@@ -9,7 +9,6 @@ import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
-import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.Role;
@@ -99,14 +98,6 @@ public abstract class CompanyManager<T extends Company, S extends ICompanyServic
 //			Map<String, Long> uuidIds) {
 //		return service().saveCompanyAppAreaPerm(t, companyId, companyUuid, appId, appUuid, uuidIds);
 //	}
-
-	@Override
-	public boolean updateStatus(Trace t, int status, Long id, String uuid) throws BaseRuntimeException {
-		if (status != 0) {
-			userService().updateStatusByCompany(t, status, id);
-		}
-		return super.updateStatus(t, status, id, uuid);
-	}
 
 	@Override
 	public Long[] getConfigCompanyAreaRootIds(Trace t, Long companyId) {

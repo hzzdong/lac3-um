@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.um.activity.party.ICompanyActivity;
 import com.linkallcloud.um.activity.party.IDepartmentActivity;
@@ -41,5 +42,15 @@ public abstract class DepartmentService<T extends Department, DA extends IDepart
     public List<T> findDirectDepartmentsByParentDepartmentId(Trace t, Long parentDepartmentId) {
         return activity().findDirectDepartmentsByParentDepartmentId(t, parentDepartmentId);
     }
+
+    @Transactional(readOnly = false)
+	@Override
+	public boolean updateStatus(Trace t, int status, Long id, String uuid) {
+		if(Domain.STATUS_NORMAL != status) {
+			getUserActivity().updateStatusByDepartment(t, status, id);
+		}
+		return super.updateStatus(t, status, id, uuid);
+	}
+	
 
 }

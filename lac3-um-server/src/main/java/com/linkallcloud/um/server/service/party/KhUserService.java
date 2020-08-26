@@ -42,14 +42,14 @@ public class KhUserService extends
 	@Autowired
 	private IKhRoleActivity khRoleActivity;
 
-    @Autowired
-    private IYwCompanyActivity ywCompanyActivity;
+	@Autowired
+	private IYwCompanyActivity ywCompanyActivity;
 
-    @Autowired
-    private IYwUserActivity ywUserActivity;
+	@Autowired
+	private IYwUserActivity ywUserActivity;
 
-    @Autowired
-    private IAreaActivity areaActivity;
+	@Autowired
+	private IAreaActivity areaActivity;
 
 	@Override
 	public IKhUserActivity activity() {

@@ -3,12 +3,9 @@ package com.linkallcloud.um.server.manager.party;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
-import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.um.domain.party.Company;
 import com.linkallcloud.um.domain.party.Department;
 import com.linkallcloud.um.domain.party.User;
@@ -102,15 +99,6 @@ public abstract class DepartmentManager<T extends Department, S extends IDepartm
 	@Override
 	public List<T> findDirectDepartmentsByParentDepartmentId(Trace t, Long parentDepartmentId) {
 		return service().findDirectDepartmentsByParentDepartmentId(t, parentDepartmentId);
-	}
-
-	@Transactional(readOnly = false)
-	@Override
-	public boolean updateStatus(Trace t, int status, Long id, String uuid) throws BaseRuntimeException {
-		if (status != 0) {
-			userService().updateStatusByDepartment(t, status, id);
-		}
-		return super.updateStatus(t, status, id, uuid);
 	}
 
 }

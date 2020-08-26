@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.NameValue;
 import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
@@ -214,6 +215,15 @@ public abstract class CompanyService<C extends Company, CA extends ICompanyActiv
 	@Override
 	public Boolean removeApps(Trace t, Long id, String uuid, Map<String, Long> appUuidIds) {
 		return activity().removeApps(t, id, uuid, appUuidIds);
+	}
+	
+	@Transactional(readOnly = false)
+	@Override
+	public boolean updateStatus(Trace t, int status, Long id, String uuid) {
+		if (Domain.STATUS_NORMAL != status) {
+			getUserActivity().updateStatusByCompany(t, status, id);
+		}
+		return super.updateStatus(t, status, id, uuid);
 	}
 
 }

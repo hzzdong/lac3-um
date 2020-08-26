@@ -17,4 +17,7 @@ public interface IAccountActivity<T extends Account> extends IActivity<T> {
     T fechByWechatOpenId(Trace t, String openid);
 
     boolean updateAccountWechatOpenId(Trace t, Long accountId, String openid);
+    
+    boolean updateStatusByCompany(Trace t, int status, Long companyId);
+	boolean updateStatusByDepartment(Trace t, int status, Long departmentId);
 }

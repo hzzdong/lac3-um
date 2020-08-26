@@ -184,6 +184,35 @@
 		where
 			id=#{entity.id} and uuid=#{entity.uuid}
 	</update>
+	
+	<update id="updateStatus">
+		update 
+			um_kh_account 
+		set 
+			status=#{status},updateTime=now()
+		where 
+			id=#{id} and uuid=#{uuid}
+	</update>
+	
+	<update id="updateStatusByCompany">
+		update  
+			um_kh_account acc 
+			join um_kh_user user on acc.loginname=user.account
+		set 
+			acc.status=#{status},acc.updateTime=now()
+		where 
+			user.companyId=#{companyId} 
+	</update>
+	
+	<update id="updateStatusByDepartment">
+		update  
+			um_kh_account acc 
+			join um_kh_user user on acc.loginname=user.account
+		set 
+			acc.status=#{status},acc.updateTime=now()
+		where 
+			user.parentId=#{departmentId} AND user.parentClass='YwDepartment'
+	</update>
 
 	<update id="updatePassword">
 		update

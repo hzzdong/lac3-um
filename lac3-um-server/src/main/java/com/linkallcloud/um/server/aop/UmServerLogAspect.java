@@ -45,9 +45,6 @@ public class UmServerLogAspect extends BusiServiceLogAspect<BusiLog> {
 				String logStr = JSON.toJSONString(log);
 				RocketmqProducerClient.getInstance().sendMsg(logStr);
 			} else {
-				if (operatelog.getErrorMessage() != null && operatelog.getErrorMessage().length() > 512) {
-					operatelog.setErrorMessage(operatelog.getErrorMessage().substring(0, 512));
-				}
 				umLogService.insert(new Trace(operatelog.getTid()), operatelog);
 			}
 		}

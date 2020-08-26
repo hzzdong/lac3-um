@@ -595,6 +595,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 
 	@Override
 	public boolean updateStatusByCompany(Trace t, int status, Long companyId) {
+		updateUserAccountStatusByCompany(t, status, companyId);
 		int rows = dao().updateStatusByCompany(t, status, companyId);
 		if (rows > 0) {
 			log.debug("updateStatusByCompany 成功，tid：" + t.getTid() + ", companyId:" + companyId);
@@ -606,6 +607,7 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 
 	@Override
 	public boolean updateStatusByDepartment(Trace t, int status, Long departmentId) {
+		updateUserAccountStatusByDepartment(t, status, departmentId);
 		int rows = dao().updateStatusByDepartment(t, status, departmentId);
 		if (rows > 0) {
 			log.debug("updateStatusByDepartment 成功，tid：" + t.getTid() + ", companyId:" + departmentId);
@@ -614,6 +616,16 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 		}
 		return retBool(rows);
 	}
+
+	@Override
+	public boolean updateStatus(Trace t, int status, Long id, String uuid) {
+		updateUserAccountStatus(t, status, id, uuid);
+		return super.updateStatus(t, status, id, uuid);
+	}
+	
+	protected abstract int updateUserAccountStatusByCompany(Trace t, int status, Long companyId);
+	protected abstract int updateUserAccountStatusByDepartment(Trace t, int status, Long departmentId);
+	protected abstract int updateUserAccountStatus(Trace t, int status, Long userId, String userUuid);
 
 	@Override
 	public boolean isUserDepartmentAdmin(Trace t, Long userId, Long companyId) {
