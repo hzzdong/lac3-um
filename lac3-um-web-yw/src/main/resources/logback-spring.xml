@@ -64,5 +64,13 @@
 			<appender-ref ref="FILE" />
 		</root>
 	</springProfile>
+	<springProfile name="jh">
+	 	<logger name="com.apache.ibatis" level="ERROR"/>
+    	<logger name="com.linkallcloud.um.pc" level="ERROR"/>
+		<root level="ERROR">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
     
 </configuration>
