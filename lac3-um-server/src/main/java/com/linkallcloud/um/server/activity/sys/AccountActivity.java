@@ -79,10 +79,10 @@ public abstract class AccountActivity<T extends Account, TD extends IAccountDao<
 
 	@Override
 	public boolean updateAccountWechatOpenId(Trace t, Long accountId, String openid) {
-		T account = dao().fechByWechatOpenId(t, openid);
-		if (account != null) {// 已经有绑定，不能再绑定
-			return false;
-		}
+//		T account = dao().fechByWechatOpenId(t, openid);
+//		if (account != null) {// 已经有绑定，不能再绑定
+//			return false;
+//		}
 
 		int rows = dao().updateAccountWechatOpenId(t, accountId, openid);
 		return retBool(rows);
