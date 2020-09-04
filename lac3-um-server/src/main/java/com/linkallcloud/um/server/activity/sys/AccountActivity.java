@@ -70,11 +70,18 @@ public abstract class AccountActivity<T extends Account, TD extends IAccountDao<
 
 	@Override
 	public T fechByWechatOpenId(Trace t, String openid) {
-		T account = dao().fechByWechatOpenId(t, openid);
-		if (account != null && account.isValid()) {
+		try{
+			T account = dao().fechByWechatOpenId(t, openid);
+			if (account != null) {
+				 if(!account.isValid()) {
+					throw new AccountException("10002", "您的账号暂时无法登陆系统，请联系管理员！");
+				 }
+			}
 			return account;
+		} catch (Throwable e){
+//			throw new AccountException("10002", "您的账号暂时无法登陆系统，请联系管理员！");
+			throw new AccountException("10002", e.getMessage());
 		}
-		throw new AccountException("10002", "您的账号暂时无法登陆系统，请联系管理员！");
 	}
 
 	@Override

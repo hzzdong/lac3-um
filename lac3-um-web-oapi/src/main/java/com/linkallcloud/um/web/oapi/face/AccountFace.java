@@ -49,7 +49,9 @@ public abstract class AccountFace<T extends Account, TM extends IAccountManager<
 	public @ResponseBody Object fechByWechatOpenId(AccountWeChatRequest faceReq, Trace t) {
 		if (!Strings.isBlank(faceReq.getOpenid())) {
 			T ua = manager().fechByWechatOpenId(t, faceReq.getOpenid());
-			ua.desensitization();
+			if(ua != null){
+				ua.desensitization();
+			}
 			return ua;
 		}
 		return null;
