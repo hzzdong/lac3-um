@@ -56,6 +56,13 @@
 			<appender-ref ref="FILE" />
 		</root>
 	</springProfile>
+	<springProfile name="testbyjd">
+	 	<logger name="com.linkallcloud.um.server" level="INFO"/>
+		<root level="INFO">
+			<appender-ref ref="rocketmqLog" />
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
 	<springProfile name="prod">
 	 	<logger name="com.linkallcloud.um.server" level="ERROR"/>
 		<root level="ERROR">

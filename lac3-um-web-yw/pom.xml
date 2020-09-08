@@ -255,6 +255,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>testbyjd</id>
+			<properties>
+				<activatedProperties>testbyjd</activatedProperties>
+			</properties>
+		</profile>
+		<profile>
 			<id>vsms</id>
 			<properties>
 				<activatedProperties>vsms</activatedProperties>
