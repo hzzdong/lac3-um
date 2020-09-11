@@ -1,4 +1,4 @@
-    package com.linkallcloud.um.pc.face;
+package com.linkallcloud.um.pc.face;
 
 import java.util.List;
 
@@ -98,6 +98,19 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 		return manager().updateHeaderImage(t, suser.getSid(), nv.getValue());
 	}
 
+	@LacLog(desc = "管理员([(${su.sid.name})])更新用户([(${fr.data.key})])头像为[(${fr.data.value})], TID:[(${tid})]")
+	@Face(simple = true)
+	@RequestMapping(value = "/updateUserHeaderImage", method = RequestMethod.POST)
+	public @ResponseBody Object updateUserHeaderImage(ObjectFaceRequest<NameValue> fr, Trace t, SessionUser suser) {
+		if (!checkReferer(true)) {
+			return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+		}
+		NameValue nv = fr.getData();
+		Long userId = Long.parseLong(nv.getKey());
+		String userUuid = nv.getTitle();
+		return manager().updateHeaderImage(t, new Sid(userId, userUuid), nv.getValue());
+	}
+
 	@LacLog(desc = "用户([(${su.sid.name})])修改了密码, TID:[(${tid})]")
 	@Face(simple = true)
 	@RequestMapping(value = "/updatePass", method = RequestMethod.POST)
@@ -129,7 +142,7 @@ public class YwUserFace extends BaseFace<YwUser, IYwUserManager> {
 			if (su.isAdmin()) {
 				page = manager().findUserPage4Org(t, page);
 			} else {
-				if(companyId.equals(su.companyId())) {
+				if (companyId.equals(su.companyId())) {
 					page.addRule(new Equal("appId", su.appId()));
 					page.addRule(new Equal("userId", su.id()));
 					page = manager().findPermedUserPage(t, page);

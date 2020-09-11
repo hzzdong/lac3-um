@@ -84,9 +84,19 @@ export function updateMe(data) {
   })
 }
 
+// 用户更改自己的头像
 export function updateHeaderImage(data) {
   return request({
     url: '/api4umkh/face/KhUser/updateHeaderImage',
+    method: 'post',
+    data
+  })
+}
+
+// 管理员更改用户的头像
+export function updateUserHeaderImage(data) {
+  return request({
+    url: '/api4umkh/face/KhUser/updateUserHeaderImage',
     method: 'post',
     data
   })

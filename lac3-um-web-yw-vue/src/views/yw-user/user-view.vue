@@ -118,6 +118,28 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="头像:" prop="ico">
+                <my-upload
+                  v-model="show"
+                  field="file"
+                  :width="300"
+                  :height="300"
+                  url="/fss/pub/Archive/upload"
+                  :params="params"
+                  :headers="headers"
+                  img-format="png"
+                  @src-file-set="srcFileSet"
+                  @crop-success="cropSuccess"
+                  @crop-upload-success="cropUploadSuccess"
+                  @crop-upload-fail="cropUploadFail"
+                />
+                <el-avatar :size="100" :src="user.ico" />
+                <el-button @click="toggleShow()">更换头像</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="角色列表" name="tabUserRoles">
@@ -413,7 +435,7 @@
 </template>
 
 <script>
-import { fetchById, updateUser, deleteUser, changeUserStatus, getJzPageOfUser, addPartTimeJob, removePartTimeJob } from '@/api/user'
+import { fetchById, updateUser, deleteUser, changeUserStatus, getJzPageOfUser, addPartTimeJob, removePartTimeJob, updateUserHeaderImage } from '@/api/user'
 import { findCompanyRoles, findUserRoles } from '@/api/ywrole'
 import { validateMobile } from '@/utils/validate'
 import { sheetClose, sheetRefresh } from '@/utils'
@@ -425,13 +447,15 @@ import LacUserSingleSelect from '@/views/yw-user/components/user-single-select'
 import LacOrgSingleSelect from '@/views/yw-company/components/org-single-select'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import checkPermission from '@/utils/permission' // 权限判断函数
+import myUpload from 'vue-image-crop-upload'
 
 export default {
   name: 'YwUserDetail',
   components: {
     Pagination,
     LacUserSingleSelect,
-    LacOrgSingleSelect
+    LacOrgSingleSelect,
+    'my-upload': myUpload
   },
   directives: { waves, permission },
   data() {
@@ -474,6 +498,16 @@ export default {
       activeTab: 'tabUser',
       tempRoute: {},
       loading: false,
+      show: false,
+      params: {
+        appId: '16',
+        appName: '用户中心',
+        objectId: '',
+        objectType: '10001'
+      },
+      headers: {
+        smail: '*_~'
+      },
       user: {
         id: undefined,
         uuid: '',
@@ -611,6 +645,9 @@ export default {
           } else {
             this.user.orgName = this.user.companyName
           }
+        }
+        if (this.user.ico) {
+          this.user.ico = this.$store.state.settings.fssBaseUrl + this.user.ico
         }
         // console.log('user', this.user)
         this.setTagsViewTitle()
@@ -828,6 +865,53 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    toggleShow() {
+      this.show = true
+    },
+    srcFileSet(fileName, fileType, fileSize) {
+      this.params.objectId = this.user.uuid
+    },
+    /**
+			 * crop success
+			 *
+			 * [param] imgDataUrl
+			 * [param] field
+			 */
+    cropSuccess(imgDataUrl, field) {
+      console.log('-------- crop success --------')
+      this.user.ico = imgDataUrl
+    },
+    /**
+			 * upload success
+			 *
+			 * [param] jsonData   服务器返回数据，已进行json转码
+			 * [param] field
+			 */
+    cropUploadSuccess(jsonData, field) {
+      const that = this
+      console.log('-------- upload success --------')
+      console.log(jsonData)
+      console.log('field: ' + field)
+      if (jsonData && jsonData.code === '0') {
+        const icoReq = { dataType: 'Object', key: that.user.id, value: jsonData.data.path, title: that.user.uuid }
+        updateUserHeaderImage(icoReq).then((response) => {
+          // that.$store.dispatch('user/updateHeaderImage', icoReq.value)
+          that.show = false
+          that.$notify({ title: '提示', message: '头像上传成功！', type: 'success', duration: 2000 })
+        })
+      }
+    },
+    /**
+			 * upload fail
+			 *
+			 * [param] status    server api return error status, like 500
+			 * [param] field
+			 */
+    cropUploadFail(status, field) {
+      console.log('-------- upload fail --------')
+      console.log(status)
+      console.log('field: ' + field)
     }
 
   }
