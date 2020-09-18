@@ -176,6 +176,10 @@ public class KhUserFace extends BaseFace<KhUser, IKhUserManager> {
 		} else {
 			entity.setCompanyId(su.companyId());
 		}
+		
+		if (!Strings.isBlank(entity.getIco()) && entity.getIco().startsWith("http")) {
+            entity.setIco(null);
+        }
 		super.doSave(t, entity, su);
 	}
 

@@ -900,6 +900,7 @@ export default {
           // that.$store.dispatch('user/updateHeaderImage', icoReq.value)
           that.show = false
           that.$notify({ title: '提示', message: '头像上传成功！', type: 'success', duration: 2000 })
+          sheetRefresh(that)
         })
       }
     },
