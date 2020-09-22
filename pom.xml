@@ -52,7 +52,7 @@
 		<comm-handshake.version>0.7.1</comm-handshake.version>
 		<comm-web.version>0.7.1</comm-web.version>
 
-		<lac3-sso-client.version>0.3.1</lac3-sso-client.version>
+		<lac3-sso-client.version>0.3.2</lac3-sso-client.version>
 
 		<dubbo.version>2.7.7</dubbo.version>
 		<dubbo-spring-boot.version>2.7.7</dubbo-spring-boot.version>
