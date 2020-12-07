@@ -37,7 +37,6 @@ public class OperationManager extends BaseManager<Operation, IOperationService> 
 
 	@Override
 	public Map<String, String[]> loadAppUriRescodeMap(Trace t, Long appId) {
-		// TODO Auto-generated method stub
 		return service().loadAppUriRescodeMap(t, appId);
 	}
 
