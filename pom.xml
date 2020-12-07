@@ -102,10 +102,7 @@
  		<dependency>
 			<groupId>com.sun</groupId>
 			<artifactId>tools</artifactId>
-			<version>${java.version}</version>
-			<scope>system</scope>
-			<systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
-			<optional>true</optional>
+			<version>1.8</version>
 		</dependency>
 	</dependencies>
 
