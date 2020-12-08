@@ -232,7 +232,8 @@ export default {
     dayOnClick(date, data) {
       const that = this
       const da = data.day.split('-')
-      if (da[0] !== (that.year + '') || da[1] !== that.month) {
+      debugger
+      if (da[0] !== (that.year + '') || da[1] !== (that.month + '')) {
         const req = { year: da[0], month: da[1] }
         getCompanyHolidays4Month(req).then(response => {
           that.calendarArr = response.data

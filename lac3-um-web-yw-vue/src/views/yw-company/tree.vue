@@ -121,6 +121,20 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="部门全称:" prop="fullName">
+              <el-input v-model="department.entity.fullName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="机构类型" prop="type">
+              <el-select v-model="department.entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
+                <el-option v-for="item in commonData.orgTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="联系人" prop="linkUserName">
               <el-input v-model="department.entity.linkUserName" />
             </el-form-item>
@@ -133,10 +147,11 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="机构类型" prop="type">
-              <el-select v-model="department.entity.type" class="filter-item" placeholder="请选择" style="width:100%;">
-                <el-option v-for="item in commonData.orgTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
+            <el-form-item label="管理部门" prop="mdep">
+              <el-radio-group v-model="department.entity.mdep" size="small">
+                <el-radio-button label="0">否</el-radio-button>
+                <el-radio-button label="1">是</el-radio-button>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -419,10 +434,12 @@ export default {
           parentClass: '',
           orgName: '',
           name: '',
+          fullName: '',
           govCode: '',
           linkUserName: '',
           linkUserPhone: '',
           type: '0',
+          mdep: '0',
           sort: 1,
           status: 0,
           remark: ''
@@ -605,10 +622,12 @@ export default {
         parentClass: (parent && parent.id > 0) ? 'YwDepartment' : 'YwCompany',
         orgName: parent ? parent.name : '',
         name: (me && me.name) ? me.name : '',
+        fullName: (me && me.fullName) ? me.fullName : '',
         govCode: (me && me.govCode) ? me.govCode : '',
         linkUserName: (me && me.linkUserName) ? me.linkUserName : '',
         linkUserPhone: (me && me.linkUserPhone) ? me.linkUserPhone : '',
         type: (me && me.type) ? (me.type + '') : '0',
+        mdep: (me && me.mdep) ? (me.mdep + '') : '0',
         sort: (me && me.sort) ? me.sort : 1,
         status: (me && me.status) ? me.status : 0,
         remark: (me && me.remark) ? me.remark : ''
