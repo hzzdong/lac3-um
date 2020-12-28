@@ -600,9 +600,12 @@
 			<if test="query!=null and query.cnds!=null and query.cnds.mobileEq != null"> AND u.mobile = #{query.cnds.mobileEq}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.status != null"> AND u.status = #{query.cnds.status}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.ddStatus != null"> AND u.ddStatus = #{query.cnds.ddStatus}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.idCard != null"> AND u.idCard = #{page.cnds.idCard}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.govCode != null"> AND u.govCode = #{page.cnds.govCode}</if>
-			<if test="query!=null and query.cnds!=null and query.cnds.dyType != null"> AND u.dyType = #{page.cnds.dyType}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.idCard != null"> AND u.idCard = #{query.cnds.idCard}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.govCode != null"> AND u.govCode = #{query.cnds.govCode}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.dyType != null"> AND u.dyType = #{query.cnds.dyType}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.rdDateGe != null"> AND u.rdDate &gt;= #{query.cnds.rdDateGe}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.rdDateLe != null"> AND u.rdDate &lt;= #{query.cnds.rdDateLe}</if>
+		rdDate
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
