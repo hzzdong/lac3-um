@@ -605,7 +605,6 @@
 			<if test="query!=null and query.cnds!=null and query.cnds.dyType != null"> AND u.dyType = #{query.cnds.dyType}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.rdDateGe != null"> AND u.rdDate &gt;= #{query.cnds.rdDateGe}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.rdDateLe != null"> AND u.rdDate &lt;= #{query.cnds.rdDateLe}</if>
-		rdDate
 		<choose>
 			<when test="query != null and query.orders != null and query.orders.length > 0">
 				order by <foreach item="ord" index="index" collection="query.orders" separator=","> u.${ord} </foreach>
