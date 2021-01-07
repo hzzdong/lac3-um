@@ -25,116 +25,121 @@ import com.linkallcloud.um.server.dao.sys.IYwAccountDao;
 
 @Component
 public class YwUserActivity extends
-		UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao, YwAccount, IYwAccountDao>
-		implements IYwUserActivity {
+        UserActivity<YwUser, IYwUserDao, YwDepartment, IYwDepartmentDao, YwCompany, IYwCompanyDao, YwRole, IYwRoleDao, YwAccount, IYwAccountDao>
+        implements IYwUserActivity {
 
-	@Autowired
-	private IYwUserDao ywUserDao;
+    @Autowired
+    private IYwUserDao ywUserDao;
 
-	@Autowired
-	private IYwDepartmentDao ywDepartmentDao;
+    @Autowired
+    private IYwDepartmentDao ywDepartmentDao;
 
-	@Autowired
-	private IYwCompanyDao ywCompanyDao;
+    @Autowired
+    private IYwCompanyDao ywCompanyDao;
 
-	@Autowired
-	private IYwRoleDao ywRoleDao;
+    @Autowired
+    private IYwRoleDao ywRoleDao;
 
-	@Autowired
-	private IYwAccountDao ywAccountDao;
+    @Autowired
+    private IYwAccountDao ywAccountDao;
 
-	@Autowired
-	protected IMenuDao menuDao;
+    @Autowired
+    protected IMenuDao menuDao;
 
-	public YwUserActivity() {
-		super();
-	}
+    public YwUserActivity() {
+        super();
+    }
 
-	@Override
-	public IYwUserDao dao() {
-		return ywUserDao;
-	}
+    @Override
+    public IYwUserDao dao() {
+        return ywUserDao;
+    }
 
-	@Override
-	protected IYwAccountDao getAccountDao() {
-		return ywAccountDao;
-	}
+    @Override
+    protected IYwAccountDao getAccountDao() {
+        return ywAccountDao;
+    }
 
-	@Override
-	protected IYwDepartmentDao getDepartmentDao() {
-		return ywDepartmentDao;
-	}
+    @Override
+    protected IYwDepartmentDao getDepartmentDao() {
+        return ywDepartmentDao;
+    }
 
-	@Override
-	protected IYwCompanyDao getCompanyDao() {
-		return ywCompanyDao;
-	}
+    @Override
+    protected IYwCompanyDao getCompanyDao() {
+        return ywCompanyDao;
+    }
 
-	@Override
-	protected IYwRoleDao getRoleDao() {
-		return ywRoleDao;
-	}
+    @Override
+    protected IYwRoleDao getRoleDao() {
+        return ywRoleDao;
+    }
 
-	@Transactional(readOnly = false)
-	@Override
-	public void cleanOtherUserMobileByUserId(Trace t, String mobile, Long userId) {
-		Query query = new Query();
-		query.addRule(new Equal("mobileEq", mobile));
-		List<YwUser> users = find(t, query);
-		if (users != null && users.size() > 0) {
-			for (YwUser user : users) {
-				if (!user.getId().equals(userId)) {
-					user.setMobile("");
-					user.setPassword(null);
-					user.setSalt(null);
-					dao().update(t, user);
-				}
-			}
-		}
-	}
+    @Transactional(readOnly = false)
+    @Override
+    public void cleanOtherUserMobileByUserId(Trace t, String mobile, Long userId) {
+        Query query = new Query();
+        query.addRule(new Equal("mobileEq", mobile));
+        List<YwUser> users = find(t, query);
+        if (users != null && users.size() > 0) {
+            for (YwUser user : users) {
+                if (!user.getId().equals(userId)) {
+                    user.setMobile("");
+                    user.setPassword(null);
+                    user.setSalt(null);
+                    dao().update(t, user);
+                }
+            }
+        }
+    }
 
-	@Override
-	public YwUser findByMobileAndDdStatus(Trace t, String mobile) {
-		return dao().findByMobileAndDdStatus(t, mobile);
-	}
+    @Override
+    public YwUser findByMobileAndDdStatus(Trace t, String mobile) {
+        return dao().findByMobileAndDdStatus(t, mobile);
+    }
 
-	@Override
-	protected String departmentAdminRoleCode() {
-		return "YwRole_sys_dept";
-	}
+    @Override
+    public YwUser fetchByUuid(Trace t, String uuid) {
+        return dao().fetchByUuid(t, uuid);
+    }
 
-	@Override
-	protected List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId) {
-		YwCompany company = getCompanyDao().fetchById(t, companyId);
-		if (company.isTopParent()) {
-			return menuDao.findAppMenusWithButton(t, appId, true);
-		} else {
-			return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
-		}
-	}
+    @Override
+    protected String departmentAdminRoleCode() {
+        return "YwRole_sys_dept";
+    }
 
-	@Override
-	protected void autoCreateAccount(Trace t, YwUser entity) {
-		YwAccount account = new YwAccount(entity.getName(), entity.getMobile(), entity.getAccount(),
-				entity.getPassword(), entity.getSalt());
-		getAccountDao().insert(t, account);
-	}
-	
-	@Override
-	protected int updateUserAccountStatus(Trace t, int status, Long userId, String userUuid) {
-		YwUser user = fetchByIdUuid(t, userId, userUuid);
-		YwAccount account = getAccountDao().fecthByAccount(t, user.getAccount());
-		return getAccountDao().updateStatus(t, status, account.getId(), account.getUuid());
-	}
+    @Override
+    protected List<Menu> findCompanyAppMenusWithButton(Trace t, Long companyId, Long appId) {
+        YwCompany company = getCompanyDao().fetchById(t, companyId);
+        if (company.isTopParent()) {
+            return menuDao.findAppMenusWithButton(t, appId, true);
+        } else {
+            return menuDao.findYwCompanyAppMenusWithButton(t, companyId, appId, true);
+        }
+    }
 
-	@Override
-	protected int updateUserAccountStatusByCompany(Trace t, int status, Long companyId) {
-		return getAccountDao().updateStatusByCompany(t, status, companyId);
-	}
+    @Override
+    protected void autoCreateAccount(Trace t, YwUser entity) {
+        YwAccount account = new YwAccount(entity.getName(), entity.getMobile(), entity.getAccount(),
+                entity.getPassword(), entity.getSalt());
+        getAccountDao().insert(t, account);
+    }
 
-	@Override
-	protected int updateUserAccountStatusByDepartment(Trace t, int status, Long departmentId) {
-		return getAccountDao().updateStatusByDepartment(t, status, departmentId);
-	}
+    @Override
+    protected int updateUserAccountStatus(Trace t, int status, Long userId, String userUuid) {
+        YwUser user = fetchByIdUuid(t, userId, userUuid);
+        YwAccount account = getAccountDao().fecthByAccount(t, user.getAccount());
+        return getAccountDao().updateStatus(t, status, account.getId(), account.getUuid());
+    }
+
+    @Override
+    protected int updateUserAccountStatusByCompany(Trace t, int status, Long companyId) {
+        return getAccountDao().updateStatusByCompany(t, status, companyId);
+    }
+
+    @Override
+    protected int updateUserAccountStatusByDepartment(Trace t, int status, Long departmentId) {
+        return getAccountDao().updateStatusByDepartment(t, status, departmentId);
+    }
 
 }

@@ -91,6 +91,11 @@ public class YwUserManager
 	}
 
 	@Override
+	public YwUser fetchByUuid(Trace t, String uuid) {
+		return service().fetchByUuid(t, uuid);
+	}
+
+	@Override
 	public void cleanOtherUserMobileByUserId(Trace t, String mobile, Long userId) {
 		service().cleanOtherUserMobileByUserId(t, mobile, userId);
 	}

@@ -23,4 +23,13 @@ public interface IYwUserManager extends IUserManager<YwUser> {
 	 */
 	YwUser findByMobileAndDdStatus(Trace t, String mobile);
 
+	/**
+	 * 根据手UUID取用户对象
+	 *
+	 * @param t
+	 * @param uuid
+	 * @return
+	 */
+	YwUser fetchByUuid(Trace t, String uuid);
+
 }

@@ -43,7 +43,17 @@
 		where 
 			u.id=#{id}
 	</select>
-	
+
+	<select id="fetchByUuid" resultType="com.linkallcloud.um.domain.party.YwUser">
+		select
+			<include refid="Column_with_dep_com_Name" />
+		from um_yw_user u
+			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment'
+			left join um_yw_company c on u.companyId=c.id
+		where
+			u.uuid=#{uuid}
+	</select>
+
 	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
 			<include refid="Column_with_dep_com_Name" />

@@ -25,10 +25,19 @@ public interface IYwUserActivity extends IUserActivity<YwUser> {
 
     /**
      * 根据手机号码和dd同步状态获取用户对象
+     *
      * @param t
      * @param mobile
      * @return
      */
     YwUser findByMobileAndDdStatus(Trace t, String mobile);
 
+    /**
+     * 根据UUID获取用户对象
+     *
+     * @param t
+     * @param uuid
+     * @return
+     */
+    YwUser fetchByUuid(Trace t, String uuid);
 }
