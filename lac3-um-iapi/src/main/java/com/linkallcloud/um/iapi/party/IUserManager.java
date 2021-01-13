@@ -217,4 +217,12 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
 	 */
 	Page<T> findPermedUserPage(Trace t, Page<T> page);
 
+	/**
+	 * 修改工号
+	 * @param t
+	 * @param uuid
+	 * @param govCode
+	 * @return
+	 */
+    boolean changeGovCode(Trace t, String uuid, String govCode);
 }

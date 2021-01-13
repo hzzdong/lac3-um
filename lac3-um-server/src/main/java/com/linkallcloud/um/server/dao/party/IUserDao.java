@@ -259,4 +259,5 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 	String[] findUserAppMenuResCodes(@Param("t") Trace t, @Param("companyId") Long companyId,
 			@Param("userId") Long userId, @Param("appId") Long appId);
 
+	boolean changeGovCode(@Param("t") Trace t,@Param("uuid")  String uuid, @Param("govCode") String govCode);
 }

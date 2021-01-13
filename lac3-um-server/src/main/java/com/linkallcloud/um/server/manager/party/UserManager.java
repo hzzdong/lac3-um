@@ -318,4 +318,9 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
 		return service().findPermedUserPage(t, page);
 	}
 
+	@Override
+	public boolean changeGovCode(Trace t, String uuid, String govCode) {
+		boolean result = service().changeGovCode(t, uuid,govCode);
+		return result;
+	}
 }

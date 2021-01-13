@@ -53,6 +53,14 @@
 		where
 			u.uuid=#{uuid}
 	</select>
+	<update id="changeGovCode" >
+		update
+			um_yw_user
+		set
+			govCode=#{govCode},updateTime=now()
+		where
+		    uuid=#{uuid}
+	</update>
 
 	<select id="fetchByIdUuid" resultType="com.linkallcloud.um.domain.party.YwUser">
 		SELECT
