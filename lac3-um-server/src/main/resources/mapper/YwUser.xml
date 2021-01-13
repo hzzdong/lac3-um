@@ -609,6 +609,7 @@
 		WHERE
 			u.status &lt;&gt; 9
 			<if test="query!=null and query.cnds!=null and query.cnds.companyId != null"> AND u.companyId = #{query.cnds.companyId}</if>
+			<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.parentId != null"> AND u.parentId = #{query.cnds.parentId}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.parentClass != null"> AND u.parentClass = #{query.cnds.parentClass}</if>
 			<if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
