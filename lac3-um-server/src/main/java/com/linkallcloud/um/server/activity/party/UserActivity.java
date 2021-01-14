@@ -716,7 +716,11 @@ public abstract class UserActivity<T extends User, UD extends IUserDao<T>, D ext
 
     @Override
     public boolean changeGovCode(Trace t, String uuid, String govCode) {
-	    return  dao().changeGovCode(t,uuid,govCode);
+        return dao().changeGovCode(t, uuid, govCode);
     }
 
+    @Override
+    public List<T> find4CompanyAndDepartment(Trace t, Query query) {
+        return dao().find4CompanyAndDepartment(t, query);
+    }
 }

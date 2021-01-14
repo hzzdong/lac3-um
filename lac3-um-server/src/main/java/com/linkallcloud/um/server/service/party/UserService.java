@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.linkallcloud.core.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -282,4 +283,10 @@ public abstract class UserService<T extends User, UA extends IUserActivity<T>, D
     public boolean changeGovCode(Trace t, String uuid, String govCode) {
         return activity().changeGovCode(t, uuid, govCode);
     }
+
+    @Override
+    public List<T> find4CompanyAndDepartment(Trace t, Query query) {
+        return activity().find4CompanyAndDepartment(t, query);
+    }
+
 }

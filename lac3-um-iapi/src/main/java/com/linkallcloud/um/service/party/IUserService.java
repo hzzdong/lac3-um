@@ -7,6 +7,7 @@ import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BaseRuntimeException;
 import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.core.query.Query;
 import com.linkallcloud.um.domain.party.User;
 
 public abstract interface IUserService<T extends User> extends IPartyService<T> {
@@ -230,4 +231,13 @@ public abstract interface IUserService<T extends User> extends IPartyService<T> 
      * @return
      */
     boolean changeGovCode(Trace t, String uuid, String govCode);
+
+    /**
+     * 根据查询条件，查找部门下人员实体列表
+     *
+     * @param t     trace，含业务流水ID
+     * @param query 查询条件
+     * @return Entities list
+     */
+    List<T> find4CompanyAndDepartment(Trace t, Query query);
 }

@@ -2,6 +2,7 @@ package com.linkallcloud.um.server.dao.party;
 
 import java.util.List;
 
+import com.linkallcloud.core.query.Query;
 import org.apache.ibatis.annotations.Param;
 
 import com.linkallcloud.core.dto.Sid;
@@ -11,30 +12,30 @@ import com.linkallcloud.um.domain.party.User;
 
 public interface IUserDao<T extends User> extends IPartyDao<T> {
 
-	List<T> find4Company(@Param("t") Trace t, @Param("companyId") Long companyId);
+    List<T> find4Company(@Param("t") Trace t, @Param("companyId") Long companyId);
 
-	List<T> find4Department(@Param("t") Trace t, @Param("departmentId") Long departmentId);
+    List<T> find4Department(@Param("t") Trace t, @Param("departmentId") Long departmentId);
 
-	List<T> findByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
+    List<T> findByMobile(@Param("t") Trace t, @Param("mobile") String mobile);
 
-	T fecthByAccount(@Param("t") Trace t, @Param("account") String account);
+    T fecthByAccount(@Param("t") Trace t, @Param("account") String account);
 
-	boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
+    boolean updateLastLoginTime(@Param("t") Trace t, @Param("id") Long userId);
 
-	List<T> leaderPage(@Param("t") Trace t, @Param("page") Page<T> page);
+    List<T> leaderPage(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	List<T> findOrgLeaders(@Param("t") Trace t, @Param("orgId") Long orgId, @Param("orgUuid") String orgUuid);
+    List<T> findOrgLeaders(@Param("t") Trace t, @Param("orgId") Long orgId, @Param("orgUuid") String orgUuid);
 
-	/**
-	 * 查询某角色已分配的用户
-	 *
-	 * @param t
-	 * @param page 查询条件中必须包含：roleId和roleUuid参数
-	 * @return
-	 */
-	List<T> findPage4Role(@Param("t") Trace t, @Param("page") Page<T> page);
+    /**
+     * 查询某角色已分配的用户
+     *
+     * @param t
+     * @param page 查询条件中必须包含：roleId和roleUuid参数
+     * @return
+     */
+    List<T> findPage4Role(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	List<T> findPage4UnRole(@Param("t") Trace t, @Param("page") Page<T> page);
+    List<T> findPage4UnRole(@Param("t") Trace t, @Param("page") Page<T> page);
 
 //	/**
 //	 * 查询某角色已分配的用户
@@ -118,146 +119,155 @@ public interface IUserDao<T extends User> extends IPartyDao<T> {
 //	List<T> findDepartmentUser4RoleByGovCodes(@Param("t") Trace t, @Param("departmentId") Long departmentId,
 //			@Param("roleGovCodes") String[] roleGovCodes);
 
-	/**
-	 * 添加用户角色
-	 *
-	 * @param t
-	 * @param userId
-	 * @param roleIds
-	 * @param companyId 授权公司id
-	 * @return
-	 */
-	boolean addUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
-			@Param("companyId") Long companyId);
+    /**
+     * 添加用户角色
+     *
+     * @param t
+     * @param userId
+     * @param roleIds
+     * @param companyId 授权公司id
+     * @return
+     */
+    boolean addUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
+                         @Param("companyId") Long companyId);
 
-	/**
-	 * 移除用户角色
-	 *
-	 * @param t
-	 * @param userId
-	 * @param roleIds
-	 * @return
-	 */
-	boolean removeUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
-			@Param("companyId") Long companyId);
+    /**
+     * 移除用户角色
+     *
+     * @param t
+     * @param userId
+     * @param roleIds
+     * @return
+     */
+    boolean removeUserRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("roleIds") List<Long> roleIds,
+                            @Param("companyId") Long companyId);
 
-	/**
-	 * 移除用户所有角色
-	 *
-	 * @param t
-	 * @param userId
-	 * @return
-	 */
-	boolean removeUserAllRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("companyId") Long companyId);
+    /**
+     * 移除用户所有角色
+     *
+     * @param t
+     * @param userId
+     * @return
+     */
+    boolean removeUserAllRoles(@Param("t") Trace t, @Param("userId") Long userId, @Param("companyId") Long companyId);
 
-	/**
-	 * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
-	 *
-	 * @param t
-	 * @param page
-	 * @return
-	 */
-	List<T> findPermedUserPage4Select(@Param("t") Trace t, @Param("page") Page<T> page);
+    /**
+     * 根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+     *
+     * @param t
+     * @param page
+     * @return
+     */
+    List<T> findPermedUserPage4Select(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	/**
-	 * 根据政务服务网uid查询用户
-	 *
-	 * @param t
-	 * @param zwuid
-	 * @return
-	 */
-	T fecthByAZwuid(@Param("t") Trace t, @Param("zwuid") String zwuid);
+    /**
+     * 根据政务服务网uid查询用户
+     *
+     * @param t
+     * @param zwuid
+     * @return
+     */
+    T fecthByAZwuid(@Param("t") Trace t, @Param("zwuid") String zwuid);
 
-	/**
-	 * 根据钉钉uid查询用户
-	 *
-	 * @param t
-	 * @param dduid
-	 * @return
-	 */
-	T fecthByDduid(@Param("t") Trace t, @Param("dduid") String dduid);
+    /**
+     * 根据钉钉uid查询用户
+     *
+     * @param t
+     * @param dduid
+     * @return
+     */
+    T fecthByDduid(@Param("t") Trace t, @Param("dduid") String dduid);
 
-	/**
-	 * 更新用户的政务服务网uid
-	 *
-	 * @param t
-	 * @param umUserId
-	 * @param zwuid
-	 * @return
-	 */
-	int updateZwuid(@Param("t") Trace t, @Param("umUserId") Long umUserId, @Param("zwuid") String zwuid);
+    /**
+     * 更新用户的政务服务网uid
+     *
+     * @param t
+     * @param umUserId
+     * @param zwuid
+     * @return
+     */
+    int updateZwuid(@Param("t") Trace t, @Param("umUserId") Long umUserId, @Param("zwuid") String zwuid);
 
-	/**
-	 * 更新用户的钉钉uid
-	 *
-	 * @param t
-	 * @param umUserId
-	 * @param dduid
-	 * @param ddStatus
-	 * @return
-	 */
-	int updateDduid(@Param("t") Trace t, @Param("umUserId") Long umUserId, @Param("dduid") String dduid,
-			@Param("ddStatus") int ddStatus);
+    /**
+     * 更新用户的钉钉uid
+     *
+     * @param t
+     * @param umUserId
+     * @param dduid
+     * @param ddStatus
+     * @return
+     */
+    int updateDduid(@Param("t") Trace t, @Param("umUserId") Long umUserId, @Param("dduid") String dduid,
+                    @Param("ddStatus") int ddStatus);
 
-	/**
-	 * 更新单位下所有用户的状态
-	 *
-	 * @param t
-	 * @param status
-	 * @param companyId
-	 * @return
-	 */
-	int updateStatusByCompany(@Param("t") Trace t, @Param("status") int status, @Param("companyId") Long companyId);
+    /**
+     * 更新单位下所有用户的状态
+     *
+     * @param t
+     * @param status
+     * @param companyId
+     * @return
+     */
+    int updateStatusByCompany(@Param("t") Trace t, @Param("status") int status, @Param("companyId") Long companyId);
 
-	/**
-	 * 更新部门下所有用户的状态
-	 *
-	 * @param t
-	 * @param status
-	 * @param departmentId
-	 * @return
-	 */
-	int updateStatusByDepartment(@Param("t") Trace t, @Param("status") int status,
-			@Param("departmentId") Long departmentId);
+    /**
+     * 更新部门下所有用户的状态
+     *
+     * @param t
+     * @param status
+     * @param departmentId
+     * @return
+     */
+    int updateStatusByDepartment(@Param("t") Trace t, @Param("status") int status,
+                                 @Param("departmentId") Long departmentId);
 
-	List<T> findCompanyAdmin(@Param("t") Trace t, @Param("company") Sid company);
+    List<T> findCompanyAdmin(@Param("t") Trace t, @Param("company") Sid company);
 
-	int updateHeaderImage(@Param("t") Trace t, @Param("user") Sid user, @Param("ico") String ico);
+    int updateHeaderImage(@Param("t") Trace t, @Param("user") Sid user, @Param("ico") String ico);
 
-	/**
-	 * 客户单位操作员，查公司或者部门下人员分页列表
-	 * 
-	 * @param t
-	 * @param page
-	 * @return
-	 */
-	List<T> findUserPage4Org(@Param("t") Trace t, @Param("page") Page<T> page);
+    /**
+     * 客户单位操作员，查公司或者部门下人员分页列表
+     *
+     * @param t
+     * @param page
+     * @return
+     */
+    List<T> findUserPage4Org(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	/**
-	 * 客户单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
-	 * 
-	 * @param t
-	 * @param page
-	 * @return
-	 */
-	List<T> findPermedUserPage(@Param("t") Trace t, @Param("page") Page<T> page);
+    /**
+     * 客户单位操作员，根据用户组织权限查某用户某应用全公司人员分页列表，Page中必须包含appId，userId，companyId参数
+     *
+     * @param t
+     * @param page
+     * @return
+     */
+    List<T> findPermedUserPage(@Param("t") Trace t, @Param("page") Page<T> page);
 
-	/**
-	 * 获取某用户某App的组织权限，不区分superadmin和管理员，都按照表中权限数据查询。
-	 *
-	 * @param t
-	 * @param userId
-	 * @param appId
-	 * @return
-	 */
-	List<Long> findUserAppOrgs(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
-			@Param("appId") Long appId);
+    /**
+     * 获取某用户某App的组织权限，不区分superadmin和管理员，都按照表中权限数据查询。
+     *
+     * @param t
+     * @param userId
+     * @param appId
+     * @return
+     */
+    List<Long> findUserAppOrgs(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
+                               @Param("appId") Long appId);
 
-	List<Long> findUserAppAreas(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
-			@Param("appId") Long appId);
+    List<Long> findUserAppAreas(@Param("t") Trace t, @Param("companyId") Long companyId, @Param("userId") Long userId,
+                                @Param("appId") Long appId);
 
-	String[] findUserAppMenuResCodes(@Param("t") Trace t, @Param("companyId") Long companyId,
-			@Param("userId") Long userId, @Param("appId") Long appId);
+    String[] findUserAppMenuResCodes(@Param("t") Trace t, @Param("companyId") Long companyId,
+                                     @Param("userId") Long userId, @Param("appId") Long appId);
 
-	boolean changeGovCode(@Param("t") Trace t,@Param("uuid")  String uuid, @Param("govCode") String govCode);
+    boolean changeGovCode(@Param("t") Trace t, @Param("uuid") String uuid, @Param("govCode") String govCode);
+
+    /**
+     * 根据查询条件，查找部门下人员实体列表
+     *
+     * @param t     trace，含业务流水ID
+     * @param query 查询/排序条件
+     * @return Entities list
+     */
+    List<T> find4CompanyAndDepartment(@Param("t") Trace t, @Param("query") Query query);
 }

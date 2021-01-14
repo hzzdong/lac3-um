@@ -24,7 +24,19 @@
 			left join um_yw_company c on u.companyId=c.id 
 		where u.companyId = #{companyId}
 	</select>
-	
+
+	<select id="find4CompanyAndDepartment" resultType="com.linkallcloud.um.domain.party.YwUser">
+		select
+			<include refid="Column_with_dep_com_Name" />
+		from um_yw_user u
+			left join um_yw_department d on u.parentId=d.id AND u.parentClass='YwDepartment'
+			left join um_yw_company c on u.companyId=c.id
+		where u.status &lt;&gt; 9 and u.companyId = #{companyId}
+		<if test="query!=null and query.cnds!=null and query.cnds.type != null"> AND u.type = #{query.cnds.type}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.parentId != null"> AND u.parentId = #{query.cnds.parentId}</if>
+		<if test="query!=null and query.cnds!=null and query.cnds.name != null"> AND u.name like #{query.cnds.name}</if>
+	</select>
+
 	<select id="find4Department" resultType="com.linkallcloud.um.domain.party.YwUser">
 		select
 			<include refid="Column_with_dep_com_Name" />

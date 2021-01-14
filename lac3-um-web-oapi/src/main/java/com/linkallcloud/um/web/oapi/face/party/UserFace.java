@@ -233,7 +233,7 @@ public abstract class UserFace<T extends User, M extends IUserManager<T>, PT ext
         return page;
     }
 
-    private void desensitization(List<T> users) {
+    protected void desensitization(List<T> users) {
         if (users != null && users.size() > 0) {
             for (T user : users) {
                 user.desensitization();
