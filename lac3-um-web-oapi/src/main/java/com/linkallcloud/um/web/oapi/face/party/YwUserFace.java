@@ -57,9 +57,10 @@ public class YwUserFace extends UserFace<YwUser, IYwUserManager, YwPartTimeJob, 
 
     @Face(login = false)
     @RequestMapping(value = "/find4CompanyAndDepartment", method = RequestMethod.POST)
-    public @ResponseBody Object find4CompanyAndDepartment(ListFaceRequest faceReq, Trace t) {
+    public @ResponseBody
+    Object find4CompanyAndDepartment(ListFaceRequest faceReq, Trace t) {
         WebQuery wq = faceReq.getQuery();
-        if (wq != null) {
+        if (wq != null && wq.getCnds() != null && wq.getCnds().size() > 0) {
             List<YwUser> users = userManager().find4CompanyAndDepartment(t, wq.toQuery());
             desensitization(users);
             return users;
