@@ -329,4 +329,17 @@ public abstract class UserManager<T extends User, S extends IUserService<T>, R e
     public List<T> find4CompanyAndDepartment(Trace t, Query query) {
         return service().find4CompanyAndDepartment(t, query);
     }
+
+    @Override
+    public boolean changeUserInfo(Trace t, User entity) {
+        T old = service().fetchByIdUuid(t, entity.getId(), entity.getUuid());
+        old.setGovCode(entity.getGovCode());
+        old.setMobile(entity.getMobile());
+        old.setJob(entity.getJob());
+        old.setJobPosition(entity.getJobPosition());
+        //account 暂不修改
+
+        boolean result = service().update(t, old);
+        return result;
+    }
 }

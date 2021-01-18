@@ -239,4 +239,13 @@ public abstract interface IUserManager<T extends User> extends IPartyManager<T> 
      * @return Entities list
      */
     List<T> find4CompanyAndDepartment(Trace t, Query query);
+
+    /**
+     * 修改部分用户信息
+     *
+     * @param t
+     * @param entity
+     * @return
+     */
+    boolean changeUserInfo(Trace t, User entity);
 }

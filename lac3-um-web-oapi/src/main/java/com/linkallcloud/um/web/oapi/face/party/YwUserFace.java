@@ -1,11 +1,16 @@
 package com.linkallcloud.um.web.oapi.face.party;
 
+import com.linkallcloud.core.busilog.annotation.LacLog;
+import com.linkallcloud.core.dto.NameValue;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.ListFaceRequest;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.web.face.annotation.Face;
+import com.linkallcloud.web.session.SessionUser;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Controller;
@@ -66,6 +71,16 @@ public class YwUserFace extends UserFace<YwUser, IYwUserManager, YwPartTimeJob, 
             return users;
         }
         return null;
+    }
+
+    @Face(login = false)
+    @RequestMapping(value = "/updateHeaderImage", method = RequestMethod.POST)
+    public @ResponseBody
+    Object updateHeaderImage(IdFaceRequest fr, Trace t) {
+        Sid sid = new Sid();
+        sid.setId(fr.getId());
+        sid.setUuid(fr.getUuid());
+        return userManager().updateHeaderImage(t, sid, fr.getType());
     }
 
 }

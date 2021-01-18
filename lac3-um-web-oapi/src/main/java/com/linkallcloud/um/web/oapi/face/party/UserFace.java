@@ -47,6 +47,18 @@ public abstract class UserFace<T extends User, M extends IUserManager<T>, PT ext
         user.desensitization();
         return user;
     }
+    @Face(login = false)
+    @RequestMapping(value = "/changeUserInfo", method = RequestMethod.POST)
+    public @ResponseBody Object changeUserInfo(ObjectFaceRequest<User> req, Trace t) {
+        if (req != null) {
+            User user = req.getData();
+            if ( user.getId()!=null && !Strings.isBlank(user.getUuid())) {
+                boolean b = userManager().changeUserInfo(t, user);
+                return b;
+            }
+        }
+        return false;
+    }
 
     @Face(login = false)
     @RequestMapping(value = "/fetchByGovCode", method = RequestMethod.POST)
